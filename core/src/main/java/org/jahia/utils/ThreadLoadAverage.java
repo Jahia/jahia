@@ -45,6 +45,7 @@ package org.jahia.utils;
 /**
  * Load average class based on active thread count.
  */
+@Deprecated(forRemoval = true)
 public class ThreadLoadAverage extends LoadAverage {
 
     public ThreadLoadAverage(String threadName) {

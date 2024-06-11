@@ -46,14 +46,18 @@ import org.jahia.tools.jvm.ThreadMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
 /**
  * This class makes it easy to calculate a load average, using an average calculation like the following formula:
  * load(t) = load(t – 1) e^(-5/60m) + n (1 – e^(-5/60m))
  * where n = what we are evaluating over time (number of active threads, requests, etc...)
  * and m = time in minutes over which to perform the average
  *
- * TODO: https://jira.jahia.org/browse/TECH-1808
  */
+@Deprecated(forRemoval = true)
 public abstract class LoadAverage implements Runnable {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -102,7 +106,6 @@ public abstract class LoadAverage implements Runnable {
         return getDisplayName() + " = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad;
     }
 
-    private Thread loadCalcThread;
     private final String threadName;
     private boolean running = false;
 
@@ -110,45 +113,36 @@ public abstract class LoadAverage implements Runnable {
 
     private boolean threadDumpOnHighLoad;
 
+    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture;
+
     public LoadAverage(String threadName) {
         this.threadName = threadName;
     }
 
     public void start() {
         if (calcFreqMillis > 0) {
-            loadCalcThread = new Thread(this, threadName);
-            loadCalcThread.setDaemon(true);
+            scheduledFuture = executor.scheduleWithFixedDelay(this, 0, calcFreqMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
             running = true;
-            loadCalcThread.start();
         }
     }
 
     public void stop() {
         if (running) {
             running = false;
-            loadCalcThread.interrupt();
-            try {
-                loadCalcThread.join(200);
-            } catch (InterruptedException e) {
-            }
+            scheduledFuture.cancel(false);
         }
     }
 
     public void run() {
         double calcFreqDouble = calcFreqMillis / 1000d;
-        while (running) {
-            double timeInMinutes = 1;
-            oneMinuteLoad = oneMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
-            timeInMinutes = 5;
-            fiveMinuteLoad = fiveMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
-            timeInMinutes = 15;
-            fifteenMinuteLoad = fifteenMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
-            tickCallback();
-            try {
-                Thread.sleep(calcFreqMillis);
-            } catch (InterruptedException e) {
-            }
-        }
+        double timeInMinutes = 1;
+        oneMinuteLoad = oneMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
+        timeInMinutes = 5;
+        fiveMinuteLoad = fiveMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
+        timeInMinutes = 15;
+        fifteenMinuteLoad = fifteenMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));
+        tickCallback();
     }
 
     public double getOneMinuteLoad() {

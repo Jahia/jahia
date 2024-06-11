@@ -46,8 +46,8 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 
 /**
  * Request load average tool.
- * TODO: https://jira.jahia.org/browse/TECH-1808
  */
+@Deprecated(forRemoval = true)
 public class RequestLoadAverage extends LoadAverage {
 
     private static transient RequestLoadAverage instance = null;

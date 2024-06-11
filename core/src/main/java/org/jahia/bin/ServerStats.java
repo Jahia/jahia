@@ -64,7 +64,10 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 
 /**
  * Simple servlet to expose server statistics in JSON.
+ *
+ * That
  */
+@Deprecated(forRemoval = true)
 public class ServerStats implements Controller {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ServerStats.class);
 

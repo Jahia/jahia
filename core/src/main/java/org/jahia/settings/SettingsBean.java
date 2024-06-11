@@ -188,6 +188,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int jahiaSiteImportScannerInterval;
     private long dbJournalJanitorBatchLimit;
     private int dbJournalJanitorHourOfDay;
+    private int maxSearchLimit;
 
     // Timeout (in seconds) waiting for a bean to be available when using SpringContextSingleton.
     // Mostly used during startup when a module needs to access beans from another module starting independently.
@@ -459,6 +460,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             dbJournalJanitorBatchLimit = getLong("jahia.jackrabbit.dbJournal.janitorBatchLimit", 10000L);
             dbJournalJanitorHourOfDay = getInt("jahia.jackrabbit.dbJournal.janitorHourOfDay", 3);
+            maxSearchLimit = getInt("search.maxLimit", 5000);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
@@ -1578,5 +1580,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getDbJournalJanitorHourOfDay() {
         return dbJournalJanitorHourOfDay;
+    }
+
+    public int getMaxSearchLimit() {
+        return maxSearchLimit;
     }
 }

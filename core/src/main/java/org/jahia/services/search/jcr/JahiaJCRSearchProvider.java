@@ -111,6 +111,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private static final Pattern OR_PATTERN = Pattern.compile(" OR ");
     private static final String AND = "and";
     private static final String OR = "or";
+    private static final int MAX_LIMIT = SettingsBean.getInstance().getMaxSearchLimit();
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
 
@@ -140,7 +141,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                             context.getMainResource().getLocale(), context.getFallbackLocale());
             Query query = buildQuery(criteria, session);
             final int offset = criteria.getOffset() < 0 ? 0 : (int) criteria.getOffset();
-            final int limit = criteria.getLimit() <= 0 ? Integer.MAX_VALUE : (int) criteria.getLimit();
+            final int limit = (criteria.getLimit() <= 0) ? MAX_LIMIT : Math.min(MAX_LIMIT, criteria.getLimit());
             response.setOffset(offset);
             response.setLimit(limit);
             int count = 0;

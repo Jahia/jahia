@@ -86,7 +86,9 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private boolean allowEmptySearchTerm = false;
 
-    private long limit = -1;
+    private final int MAX_LIMIT = SettingsBean.getInstance().getMaxSearchLimit();
+
+    private int limit = MAX_LIMIT;
     private long offset = 0;
 
     @Override
@@ -250,7 +252,7 @@ public class ResultsTag extends AbstractJahiaTag {
         searchCriteriaVar = null;
         termVar = null;
         allowEmptySearchTerm = false;
-        limit = -1;
+        limit = MAX_LIMIT;
         offset = 0;
         basePagePath = SettingsBean.getInstance().getPropertiesFile().getProperty("search.basePathPath", "/sites/");
         super.resetState();

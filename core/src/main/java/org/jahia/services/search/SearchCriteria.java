@@ -64,6 +64,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -75,6 +76,8 @@ import org.joda.time.format.DateTimeFormatter;
  */
 @SuppressWarnings("unchecked")
 public class SearchCriteria implements Serializable {
+
+    private static final int MAX_LIMIT = SettingsBean.getInstance().getMaxSearchLimit();
 
     /**
      * Base class for all facet definitions; encapsulates any common facet definition attributes like sort order of aggregated results.
@@ -822,7 +825,6 @@ public class SearchCriteria implements Serializable {
         }
     }
 
-
     protected static class NodePropertyFactory implements Factory, Serializable {
         private static final long serialVersionUID = 3303613294641347422L;
 
@@ -1304,7 +1306,7 @@ public class SearchCriteria implements Serializable {
 
     private String lastModifiedBy;
 
-    private long limit;
+    private int limit = MAX_LIMIT;
 
     private String nodeType;
 
@@ -1387,7 +1389,7 @@ public class SearchCriteria implements Serializable {
      * Returns the maximum hit count to be returned. If the limit was not set, returns 0.
      * @return the maximum hit count to be returned. If the limit was not set, returns 0
      */
-    public long getLimit() {
+    public int getLimit() {
         return limit;
     }
 
@@ -1552,8 +1554,8 @@ public class SearchCriteria implements Serializable {
      * Sets the maximum size of the result set to <code>limit</code>.
      * @param limit the maximum hot count to be returned
      */
-    public void setLimit(long limit) {
-        this.limit = limit;
+    public void setLimit(int limit) {
+        this.limit = (limit <= 0) ? MAX_LIMIT : Math.min(limit, MAX_LIMIT);
     }
 
     public void setNodeType(String nodeType) {

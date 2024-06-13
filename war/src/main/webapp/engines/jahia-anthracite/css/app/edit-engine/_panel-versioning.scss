@@ -70,7 +70,7 @@ div.engine-window {
                 overflow: scroll;
 
                 &:before {
-                    content: "Compare versions";
+                    content: _dictionary("compareVersions");
                     text-transform: uppercase;
                     color: _color("primary");
                 }

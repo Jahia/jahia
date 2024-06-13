@@ -127,9 +127,12 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             httpServletRequest.setAttribute(VALVE_RESULT, OK);
             authContext.getSessionFactory().setCurrentUser(jahiaUser);
 
+            // set UI locale to the user's preferred locale after login
+            Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
+            httpServletRequest.getSession().setAttribute(Constants.SESSION_UI_LOCALE, preferredUserLocale);
+
             // do a switch to the user's preferred language
             if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
                 httpServletRequest.getSession().setAttribute(Constants.SESSION_LOCALE, preferredUserLocale);
             }
 

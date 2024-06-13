@@ -263,6 +263,31 @@ public final class NodeVersionHistoryHelper {
         }
     }
 
+    private static VersionHistoryCheckStatus internalPurgeVersionHistories(final Set<String> nodeIdentifiers) {
+        final VersionHistoryCheckStatus status = new VersionHistoryCheckStatus();
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+                SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
+                InternalVersionManager vm = providerSession.getInternalVersionManager();
+
+                List<InternalVersionHistory> histories = new LinkedList<>();
+                for (String id : nodeIdentifiers) {
+                    try {
+                        histories.add(vm.getVersionHistoryOfNode(NodeId.valueOf(id)));
+                    } catch (ItemNotFoundException e) {
+                        // no history found
+                    }
+                }
+
+                internalPurgeVersionHistories(histories, session, status);
+                return Boolean.TRUE;
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return status;
+    }
+
     /**
      * Returns <code>true</code> if the process for checking orphans is currently running.
      *
@@ -315,53 +340,36 @@ public final class NodeVersionHistoryHelper {
         internalPurgeVersionHistories(histories, session, status);
     }
 
-    private static void purgeVersionHistoryChunk(OutWrapper out, Set<String> ids, VersionHistoryCheckStatus status) {
-        VersionHistoryCheckStatus result = purgeVersionHistoryForNodes(ids, out);
-        ids.clear();
-        status.checked += result.checked;
-        status.deleted += result.deleted;
-        status.deletedVersionItems += result.deletedVersionItems;
-        out.echo(status.toString());
-    }
-
     /**
      * Performs the removal of unused versions for the specified nodes. All unused versions are removed, no mater the "age" of the version.
      *
-     * @param nodes
-     *            an instance of {@link NodeIterator} for processing nodes
-     * @param statusOut
-     *            a writer to log current processing status into
+     * @param nodes an instance of {@link NodeIterator} for processing nodes
+     * @param statusOut a writer to log current processing status into
      * @return the status object to indicate the result of the check
-     * @throws RepositoryException
-     *             in case of JCR errors
+     * @throws RepositoryException in case of JCR errors
      */
     public static VersionHistoryCheckStatus purgeVersionHistoryForNodes(NodeIterator nodes, Writer statusOut)
             throws RepositoryException {
-        long total = nodes.getSize();
         OutWrapper out = new OutWrapper(logger, statusOut);
-        if (total > 0) {
-            out.echo("Start checking version history for {} nodes", total);
+        out.echo("Start checking version history");
+
+        Set<String> ids = new HashSet<>();
+        VersionHistoryCheckStatus status = new VersionHistoryCheckStatus();
+        while (nodes.hasNext()) {
+            ids.add(nodes.nextNode().getIdentifier());
+            if (ids.size() >= PURGE_HISTORY_CHUNK) {
+                VersionHistoryCheckStatus chunkResult = internalPurgeVersionHistories(ids);
+                ids.clear();
+                status.merge(chunkResult);
+                out.echo(status.toString());
+            }
         }
-        Set<String> ids = new HashSet<String>();
-        VersionHistoryCheckStatus status = null;
-        if (nodes.getSize() <= PURGE_HISTORY_CHUNK) {
-            for (; nodes.hasNext();) {
-                ids.add(nodes.nextNode().getIdentifier());
-            }
-            status = purgeVersionHistoryForNodes(ids, out);
+        if (!ids.isEmpty()) {
+            // purge the rest
+            VersionHistoryCheckStatus chunkResult = internalPurgeVersionHistories(ids);
+            ids.clear();
+            status.merge(chunkResult);
             out.echo(status.toString());
-        } else {
-            status = new VersionHistoryCheckStatus();
-            for (; nodes.hasNext();) {
-                ids.add(nodes.nextNode().getIdentifier());
-                if (ids.size() >= PURGE_HISTORY_CHUNK) {
-                    purgeVersionHistoryChunk(out, ids, status);
-                }
-            }
-            if (ids.size() > 0) {
-                // purge the rest
-                purgeVersionHistoryChunk(out, ids, status);
-            }
         }
 
         return status;
@@ -370,67 +378,42 @@ public final class NodeVersionHistoryHelper {
     /**
      * Performs the removal of unused versions for the specified nodes. All unused versions are removed, no mater the "age" of the version.
      *
-     * @param nodeIdentifiers
-     *            a set of node IDs to process
+     * @param nodeIdentifiers a set of node IDs to process
      * @return the status object to indicate the result of the check
      */
     public static VersionHistoryCheckStatus purgeVersionHistoryForNodes(final Set<String> nodeIdentifiers) {
         return purgeVersionHistoryForNodes(nodeIdentifiers, (Writer) null);
     }
 
-    static void purgeVersionHistoryForNodes(final Set<String> nodeIdentifiers, JCRSessionWrapper session,
-            VersionHistoryCheckStatus status) throws VersionException, RepositoryException {
-        SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
-        InternalVersionManager vm = providerSession.getInternalVersionManager();
-
-        List<InternalVersionHistory> histories = new LinkedList<InternalVersionHistory>();
-        for (String id : nodeIdentifiers) {
-            try {
-                histories.add(vm.getVersionHistoryOfNode(NodeId.valueOf(id)));
-            } catch (ItemNotFoundException e) {
-                // no history found
-            }
-        }
-
-        internalPurgeVersionHistories(histories, session, status);
-    }
-
-    private static VersionHistoryCheckStatus purgeVersionHistoryForNodes(final Set<String> nodeIdentifiers,
-            OutWrapper out) {
-        final VersionHistoryCheckStatus status = new VersionHistoryCheckStatus();
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-
-                @Override
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    purgeVersionHistoryForNodes(nodeIdentifiers, session, status);
-                    return Boolean.TRUE;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return status;
-    }
-
     /**
      * Performs the removal of unused versions for the specified nodes. All unused versions are removed, no mater the "age" of the version.
      *
-     * @param nodeIdentifiers
-     *            a set of node IDs to process
-     * @param statusOut
-     *            a writer to log current processing status into
+     * @param nodeIdentifiers a set of node IDs to process
+     * @param statusOut a writer to log current processing status into
      * @return the status object to indicate the result of the check
      */
-    public static VersionHistoryCheckStatus purgeVersionHistoryForNodes(final Set<String> nodeIdentifiers,
-            Writer statusOut) {
+    public static VersionHistoryCheckStatus purgeVersionHistoryForNodes(final Set<String> nodeIdentifiers, Writer statusOut) {
         final OutWrapper out = new OutWrapper(logger, statusOut);
-        out.echo("Start checking version history for {} nodes", nodeIdentifiers.size());
+        out.echo("Start checking version history for {} nodes, using batch of {} nodes", nodeIdentifiers.size(), PURGE_HISTORY_CHUNK);
 
-        final VersionHistoryCheckStatus status = purgeVersionHistoryForNodes(nodeIdentifiers, out);
+        Set<String> ids = new HashSet<>();
+        VersionHistoryCheckStatus status = new VersionHistoryCheckStatus();
+        for (String nodeIdentifier : nodeIdentifiers) {
+            ids.add(nodeIdentifier);
+            if (ids.size() >= PURGE_HISTORY_CHUNK) {
+                VersionHistoryCheckStatus chunkResult = internalPurgeVersionHistories(ids);
+                ids.clear();
+                status.merge(chunkResult);
+            }
+        }
+        if (!ids.isEmpty()) {
+            // purge the rest
+            VersionHistoryCheckStatus chunkResult = internalPurgeVersionHistories(ids);
+            ids.clear();
+            status.merge(chunkResult);
+        }
 
         out.echo("Done checking version history for nodes. Version history status: {}", status.toString());
-
         return status;
     }
 

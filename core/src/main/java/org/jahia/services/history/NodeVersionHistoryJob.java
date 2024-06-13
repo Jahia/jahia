@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Node version history purge operation as a background job.
- *
+ * TODO (TECH-1834): to be rework and replace by a better system to manage version history of removed nodes
  * @author Sergiy Shyrkov
  */
 public class NodeVersionHistoryJob extends BackgroundJob {
@@ -70,8 +70,7 @@ public class NodeVersionHistoryJob extends BackgroundJob {
 
         long timer = System.currentTimeMillis();
 
-        VersionHistoryCheckStatus status = NodeVersionHistoryHelper.purgeVersionHistoryForNodes(
-                ids);
+        VersionHistoryCheckStatus status = NodeVersionHistoryHelper.purgeVersionHistoryForNodes(ids);
 
         logger.info(
                 "Purged version histories for nodes of the site {} in {} ms. Status: {}",

@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * JCR listener for purging the version history of nodes when a site is deleted.
- *
+ * TODO (TECH-1834): to be rework and replace by a better system to manage version history of removed nodes
  * @author Sergiy Shyrkov
  */
 public class NodeVersionHistoryListener extends DefaultEventListener {

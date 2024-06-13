@@ -468,9 +468,9 @@ public class JCRVersionService extends JahiaService {
 
     public void addVersionLabel(final JCRNodeWrapper node, final String label) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, node.getSession().getWorkspace().getName(), null,
-                new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
+                session -> {
+                    JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
+                    if (nodeWrapper.isVersioned()) {
                         VersionManager versionManager = session.getWorkspace().getVersionManager();
                         VersionHistory versionHistory = versionManager.getVersionHistory(node.getPath());
                         String labelWithWs = node.getSession().getWorkspace().getName() + "_" + label;
@@ -480,12 +480,10 @@ public class JCRVersionService extends JahiaService {
                                 logger.debug("Add version label " + labelWithWs + " on " + node.getPath() + " for version " +
                                         version.getName());
                             }
-                            if (nodeWrapper.isVersioned()) {
-                                versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
-                            }
+                            versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                         }
-                        return null;
                     }
+                    return null;
                 });
     }
 
@@ -494,14 +492,14 @@ public class JCRVersionService extends JahiaService {
         if (allUuids == null || allUuids.isEmpty()) {
             return;
         }
-        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                VersionManager versionManager = session.getWorkspace().getVersionManager();
-                final int batchSize = 100;
-                for (int i = 0; i < allUuids.size(); i++) {
-                    String allUuid = allUuids.get(i);
-                    try {
-                        JCRNodeWrapper nodeWrapper = session.getNodeByUUID(allUuid);
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, session -> {
+            VersionManager versionManager = session.getWorkspace().getVersionManager();
+            final int batchSize = 100;
+            for (int i = 0; i < allUuids.size(); i++) {
+                String allUuid = allUuids.get(i);
+                try {
+                    JCRNodeWrapper nodeWrapper = session.getNodeByUUID(allUuid);
+                    if (nodeWrapper.isVersioned() && JCRContentUtils.needVersion(nodeWrapper, versionedTypes, excludedVersionedTypes)) {
                         String path = nodeWrapper.getPath();
                         VersionHistory versionHistory = versionManager.getVersionHistory(path);
                         String labelWithWs = workspace + "_" + label;
@@ -511,24 +509,22 @@ public class JCRVersionService extends JahiaService {
                                 logger.debug("Add version label " + labelWithWs + " on " + path + " for version " +
                                         version.getName());
                             }
-                            if (nodeWrapper.isVersioned() && JCRContentUtils.needVersion(nodeWrapper, versionedTypes, excludedVersionedTypes)) {
-                                versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        logger.debug(e.getMessage(), e);
-                    } finally {
-                        // Flush session internal cache every 100 items, to avoid memory issues
-                        // The current function can be called with a large number of UUIDs in during import.
-                        // We do not really benefit from the internal cache in current case, I would disable it if there was a way to do it easily
-                        // But for now, we just flush it every 100 items
-                        if ((i + 1) % batchSize == 0) {
-                            session.refresh(false);
+                            versionHistory.addVersionLabel(version.getName(), labelWithWs, true);
                         }
                     }
+                } catch (RepositoryException e) {
+                    logger.debug(e.getMessage(), e);
+                } finally {
+                    // Flush session internal cache every 100 items, to avoid memory issues
+                    // The current function can be called with a large number of UUIDs in during import.
+                    // We do not really benefit from the internal cache in current case, I would disable it if there was a way to do it easily
+                    // But for now, we just flush it every 100 items
+                    if ((i + 1) % batchSize == 0) {
+                        session.refresh(false);
+                    }
                 }
-                return null;
             }
+            return null;
         });
     }
 

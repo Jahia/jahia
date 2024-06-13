@@ -42,11 +42,14 @@
  */
 package org.jahia.utils.zip;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -56,11 +59,11 @@ import java.util.zip.ZipInputStream;
 public class DirectoryZipInputStream extends ZipInputStream {
 
     File sourceDirectory;
-    List<File> sourceDirectoryEntries;
-    Iterator<File> sourceDirectoryEntriesIterator;
+    Iterator<Path> sourceDirectoryEntriesIterator;
     File currentEntry;
     FileInputStream currentEntryInputStream;
     ZipEntry currentZipEntry;
+    Stream<Path> directoryStream;
 
     /**
      * Creates a new ZIP input stream.
@@ -70,14 +73,13 @@ public class DirectoryZipInputStream extends ZipInputStream {
     public DirectoryZipInputStream(File sourceDirectory) {
         super(new ByteArrayInputStream(new byte[0]));
         this.sourceDirectory = sourceDirectory;
-        this.sourceDirectoryEntries = new ArrayList<>(FileUtils.listFilesAndDirs(sourceDirectory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE));
-        if (sourceDirectoryEntries.get(0).equals(sourceDirectory)) {
-            sourceDirectoryEntries.remove(0);
-        } else if (sourceDirectoryEntries.get(sourceDirectoryEntries.size() - 1).equals(sourceDirectory)) {
-            sourceDirectoryEntries.remove(sourceDirectoryEntries.size() - 1);
+        try {
+            directoryStream = Files.walk(sourceDirectory.toPath());
+            this.sourceDirectoryEntriesIterator = directoryStream.skip(1).iterator();
+        } catch (IOException e) {
+            //This should never happen as existence of directory has been validated before in our code, but in case we call it from new places, safer to throw exception
+            throw new RuntimeException(e);
         }
-
-        this.sourceDirectoryEntriesIterator = sourceDirectoryEntries.iterator();
     }
 
     public File getSourceDirectory() {
@@ -92,7 +94,7 @@ public class DirectoryZipInputStream extends ZipInputStream {
         if (!sourceDirectoryEntriesIterator.hasNext()) {
             return null;
         }
-        currentEntry = sourceDirectoryEntriesIterator.next();
+        currentEntry = sourceDirectoryEntriesIterator.next().toFile();
         String currentEntryName = currentEntry.getPath();
         if (currentEntryName.startsWith(sourceDirectory.getPath()+File.separator)) {
             currentEntryName = currentEntryName.substring(sourceDirectory.getPath().length()+1);
@@ -137,6 +139,9 @@ public class DirectoryZipInputStream extends ZipInputStream {
     public void close() throws IOException {
         if (currentEntryInputStream != null) {
             currentEntryInputStream.close();
+        }
+        if (directoryStream != null) {
+            directoryStream.close();
         }
     }
 

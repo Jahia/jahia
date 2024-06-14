@@ -327,7 +327,9 @@
             target: '.x-grid3-row',
             callback: function () {
                 var label = jGet.node(this).filter('.x-grid3-col-displayName').getHTML();
-                var localisedLabel = Anthracite.dictionary.get('workflowType').replace('%n%', label);
+                var localisedLabel = (Anthracite.dictionary.get(label + 'WorkflowType')) ?
+                    Anthracite.dictionary.get(label + 'WorkflowType') :
+                    Anthracite.dictionary.get('workflowType').replace('%n%', label)
                 var localisedChooseLabel = Anthracite.dictionary.get('chooseWorkflowType').replace('%n%', label);
 
                 // Update labels

@@ -35,7 +35,7 @@ div.engine-window {
                     }
 
                     &:before {
-                        content: "Workflow Settings";
+                        content: _dictionary("workflowSettings");
                         text-transform: uppercase;
                         position: absolute;
                         top: -30px;
@@ -168,7 +168,7 @@ div.engine-window {
                 box-sizing: border-box;
 
                 &:before {
-                    content: "Workflow History";
+                    content: _dictionary("workflowHistory");
                     text-transform: uppercase;
                     position: absolute;
                     top: 17px;

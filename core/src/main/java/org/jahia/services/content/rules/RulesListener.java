@@ -429,30 +429,17 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             return;
         }
 
-        final List<Event> events = new ArrayList<Event>();
-        while (eventIterator.hasNext()) {
-            Event event = eventIterator.nextEvent();
-            if (!isExternal(event)) {
-                events.add(event);
-            }
-        }
-        if (events.isEmpty()) {
-            return;
-        }
-
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), workspace, locale, new JCRCallback<Object>() {
 
                 Map<String, String> copies = null;
 
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
-                    Iterator<Event> it = events.iterator();
-
                     final List<Object> list = new ArrayList<Object>();
 
                     String nodeFactOperationType = getNodeFactOperationType(operationType);
-                    while (it.hasNext()) {
-                        Event event = it.next();
+                    while (eventIterator.hasNext()) {
+                        Event event = eventIterator.nextEvent();
                         String path = event.getPath();
                         try {
                             if (!path.startsWith("/jcr:system/")) {

@@ -84,6 +84,17 @@ public class VersionHistoryCheckStatus {
         return deletedVersionItems;
     }
 
+    /**
+     * Merges the status of another version history check operation into this one.
+     *
+     * @param status the status to merge
+     */
+    public void merge(VersionHistoryCheckStatus status) {
+        checked += status.checked;
+        deleted += status.deleted;
+        deletedVersionItems += status.deletedVersionItems;
+    }
+
     @Override
     public String toString() {
         return deleted > 0 ? MessageFormatter.arrayFormat("{} version histories checked. {} version items deleted."

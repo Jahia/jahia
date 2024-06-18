@@ -42,11 +42,9 @@
  */
 package org.jahia.services.content;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,9 +88,6 @@ public class DefaultValueListener extends DefaultEventListener {
                     Set<Session> sessions = null;
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
-                        if (isExternal(event)) {
-                            continue;
-                        }
                         try {
                             JCRNodeWrapper node = null;
                             String eventPath = event.getPath();

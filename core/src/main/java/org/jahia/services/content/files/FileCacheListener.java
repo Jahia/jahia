@@ -88,10 +88,6 @@ public class FileCacheListener extends DefaultEventListener {
         while (eventIterator.hasNext()) {
             Event event = eventIterator.nextEvent();
             try {
-                if (!shouldProcess(event)) {
-                    continue;
-                }
-
                 String path = event.getPath();
                 String parentPath = path.substring(0, path.lastIndexOf('/'));
                 String name = path.substring(path.lastIndexOf('/') + 1);
@@ -147,10 +143,6 @@ public class FileCacheListener extends DefaultEventListener {
                 cacheManager.invalidate(workspace, s);
             }
         }
-    }
-
-    protected boolean shouldProcess(Event event) {
-        return !isExternal(event);
     }
 
     private void flushSubNodes(final String nodePath, final String srcAbsPath, final String destAbsPath) throws RepositoryException {

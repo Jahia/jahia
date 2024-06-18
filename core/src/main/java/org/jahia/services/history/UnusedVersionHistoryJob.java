@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Unused node version history purge operation as a background job.
- *
+ * TODO (TECH-1834): to be rework and replace by a better system to manage version history of removed nodes
  * @author Sergiy Shyrkov
  */
 public class UnusedVersionHistoryJob extends BackgroundJob {

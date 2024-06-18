@@ -142,10 +142,6 @@ public class TextExtractionListener extends DefaultEventListener {
                     try {
                         while (eventIterator.hasNext()) {
                             Event event = eventIterator.nextEvent();
-                            if (isExternal(event)) {
-                                continue;
-                            }
-
                             String eventPath = event.getPath();
 
                             // skip /jcr:system path

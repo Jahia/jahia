@@ -197,14 +197,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 ReferencesHelper.resolveCrossReferences(session, references, false);
                 session.save(JCRObservationManager.IMPORT);
                 batchCount = 0;
+                session.refresh(false);
             } catch (CompositeConstraintViolationException e) {
                 logger.error("Constraint violation exception", e);
                 throw new SAXException("Cannot save batch", e);
             } catch (ConstraintViolationException e) {
-                if (e.getMessage().contains("mandatory child node") && nodes.size() > 1 && e.getMessage().startsWith(nodes.peek().getPath())) {
-                    // save on the next node when next node is needed (like content node for files)
-                    batchCount = maxBatch - 1;
-                } else {
+                // save on the next node when next node is needed (like content node for files)
+                boolean retryToSave = e.getMessage().contains("mandatory child node") && nodes.size() > 1 && e.getMessage().startsWith(nodes.peek().getPath());
+                if (!retryToSave) {
                     throw new SAXException("Cannot save batch", e);
                 }
             } catch (RepositoryException e) {

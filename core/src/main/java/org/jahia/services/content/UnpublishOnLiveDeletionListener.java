@@ -74,11 +74,6 @@ public class UnpublishOnLiveDeletionListener extends DefaultEventListener {
 								JCRObservationManager.setAllEventListenersDisabled(true);
 								while (eventIterator.hasNext()) {
 									Event event = eventIterator.nextEvent();
-
-									if (isExternal(event)) {
-										continue;
-									}
-
 									if (event.getType() == Event.NODE_REMOVED
 											&& workspace.equals(Constants.LIVE_WORKSPACE)) {
 										// check in default if exists

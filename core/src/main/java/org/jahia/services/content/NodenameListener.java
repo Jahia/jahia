@@ -78,11 +78,6 @@ public class NodenameListener extends DefaultEventListener {
 
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
-
-                        if (isExternal(event)) {
-                            continue;
-                        }
-
                         String path = event.getPath();
                         if (event.getType() == Event.NODE_ADDED) {
                             if (logger.isDebugEnabled()) {

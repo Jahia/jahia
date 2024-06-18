@@ -122,30 +122,30 @@ public class JCRSessionWrapper implements Session {
     private static final Logger logger = LoggerFactory.getLogger(JCRSessionWrapper.class);
     public static final String DEREF_SEPARATOR = "@/";
 
-    private JCRSessionFactory sessionFactory;
-    private JahiaUser user;
+    private final JCRSessionFactory sessionFactory;
+    private final JahiaUser user;
     private Credentials credentials;
-    private JCRWorkspaceWrapper workspace;
+    private final JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
-    private Locale locale;
-    private Set<String> tokens = new HashSet<>();
+    private final Locale locale;
+    private final Set<String> tokens = new HashSet<>();
 
-    private Map<JCRStoreProvider, Session> sessions = new HashMap<>();
+    private final Map<JCRStoreProvider, Session> sessions = new HashMap<>();
 
-    private Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<>();
-    private Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<>();
-    private Map<String, JCRNodeWrapper> newNodes = new HashMap<>();
-    private Map<String, JCRNodeWrapper> changedNodes = new HashMap<>();
+    private final Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<>();
+    private final Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<>();
+    private final Map<String, JCRNodeWrapper> newNodes = new HashMap<>();
+    private final Map<String, JCRNodeWrapper> changedNodes = new HashMap<>();
 
-    private Map<String, String> nsToPrefix = new HashMap<>();
-    private Map<String, String> prefixToNs = new HashMap<>();
+    private final Map<String, String> nsToPrefix = new HashMap<>();
+    private final Map<String, String> prefixToNs = new HashMap<>();
 
-    private Map<String, String> uuidMapping = new HashMap<>();
-    private Map<String, String> pathMapping = new LinkedHashMap<>();
+    private final Map<String, String> uuidMapping = new HashMap<>();
+    private final Map<String, String> pathMapping = new LinkedHashMap<>();
 
-    private Map<String, Object> resolvedReferences = new HashMap<>();
+    private final Map<String, Object> resolvedReferences = new HashMap<>();
 
-    private boolean isSystem;
+    private final boolean isSystem;
     private boolean skipValidation;
     private boolean isCurrentUserSession = false;
     private Date versionDate;
@@ -155,11 +155,11 @@ public class JCRSessionWrapper implements Session {
 
     private boolean readOnlyCacheEnabled = false;
 
-    private static AtomicLong activeSessions = new AtomicLong(0L);
+    private static final AtomicLong activeSessions = new AtomicLong(0L);
 
-    private Exception thisSessionTrace;
+    private final Exception thisSessionTrace;
     protected UUID uuid;
-    private static Map<UUID, JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<>();
+    private static final Map<UUID, JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<>();
 
     private boolean ignoreReadOnlyMode = false;
 
@@ -809,12 +809,20 @@ public class JCRSessionWrapper implements Session {
     }
 
     void doLogout() {
+        // Logout from all internal sessions
         for (Session session : sessions.values()) {
             if (session.isLive()) {
                 session.logout();
             }
         }
         sessions.clear();
+
+        // Flush internal caches
+        newNodes.clear();
+        changedNodes.clear();
+        flushCaches();
+
+        // Remove credential token
         if (credentials instanceof SimpleCredentials) {
             SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
             JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));

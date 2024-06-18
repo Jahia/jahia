@@ -99,39 +99,40 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     public static void consume(List<EventWrapper> list, JCRSessionWrapper session, int operationType, int lastOperationType) throws RepositoryException {
-        if (Boolean.TRUE.equals(allEventListenersDisabled.get()) && operationType != EXTERNAL_SYNC) {
+        if (list == null || list.isEmpty() || (Boolean.TRUE.equals(allEventListenersDisabled.get()) && operationType != EXTERNAL_SYNC)) {
             return;
         }
         String wspName = session.getWorkspace().getName();
         boolean duringPublicationOnly = eventListenersAvailableDuringPublishOnly.get() != null && eventListenersAvailableDuringPublishOnly.get() > 0 && operationType != EXTERNAL_SYNC;
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
+
             // check if the required workspace condition is matched
             // check if the events are not disabled or the listener is still available during publication
             // check if the event is not external or consumer accepts external events
             if (consumer.session.getWorkspace().getName().equals(wspName) &&
-                (!duringPublicationOnly || castListener == null || castListener.isAvailableDuringPublish())
-                        && (consumer.useExternalEvents || operationType != EXTERNAL_SYNC)
-                        && (consumer.useApiEvents || operationType != API)) {
-                    List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
-                    for (EventWrapper event : list) {
-                        if ((consumer.eventTypes & event.getType()) != 0 &&
-                                (consumer.pathPattern == null || consumer.pathPattern.matcher(event.getPath()).matches()) &&
-                                (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.uuid)) &&
-                                (castListener == null || castListener.isSupportedOperationType(operationType)) &&
-                                (consumer.nodeTypeName == null || checkNodeTypeNames(session, event, consumer.nodeTypeName))) {
-                            filteredEvents.add(event);
-                        }
-                    }
-                    try {
-                        if (!filteredEvents.isEmpty()) {
-                            consumer.listener.onEvent(new JCREventIterator(session, operationType, lastOperationType, filteredEvents.iterator(),
-                                    filteredEvents.size()));
-                        }
-                    } catch (Exception e) {
-                        logger.warn("Error processing event by listener. Cause: " + e.getMessage(), e);
-                    }
+                    (castListener == null || castListener.isSupportedOperationType(operationType)) &&
+                    (!duringPublicationOnly || castListener == null || castListener.isAvailableDuringPublish()) &&
+                    (consumer.useExternalEvents || operationType != EXTERNAL_SYNC) &&
+                    (consumer.useApiEvents || operationType != API)) {
 
+                List<EventWrapper> filteredEvents = new ArrayList<>();
+                for (EventWrapper event : list) {
+                    if ((consumer.eventTypes & event.getType()) != 0 &&
+                            (consumer.pathPattern == null || consumer.pathPattern.matcher(event.getPath()).matches()) &&
+                            (consumer.uuid == null || checkUuids(event.getIdentifier(), consumer.uuid)) &&
+                            (consumer.nodeTypeName == null || checkNodeTypeNames(session, event, consumer.nodeTypeName))) {
+                        filteredEvents.add(event);
+                    }
+                }
+                try {
+                    if (!filteredEvents.isEmpty()) {
+                        consumer.listener.onEvent(new JCREventIterator(session, operationType, lastOperationType, filteredEvents.iterator(),
+                                filteredEvents.size()));
+                    }
+                } catch (Exception e) {
+                    logger.warn("Error processing event by listener. Cause: " + e.getMessage(), e);
+                }
             }
         }
     }
@@ -316,12 +317,11 @@ public class JCRObservationManager implements ObservationManager {
     private static void consume(JCRSessionWrapper session, int lastOperationType) throws RepositoryException {
         int operationType = lastOp.get();
 
-        Map<JCRSessionWrapper, List<EventWrapper>> map = events.get();
+        Map<JCRSessionWrapper, List<EventWrapper>> eventsPerSession = events.get();
         events.set(null);
         currentSession.set(null);
-        if (map != null && map.containsKey(session)) {
-            List<EventWrapper> list = map.get(session);
-            consume(list, session, operationType, lastOperationType);
+        if (eventsPerSession != null && eventsPerSession.containsKey(session)) {
+            consume(eventsPerSession.get(session), session, operationType, lastOperationType);
         }
     }
 

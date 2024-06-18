@@ -51,6 +51,8 @@ import org.slf4j.LoggerFactory;
  * load(t) = load(t – 1) e^(-5/60m) + n (1 – e^(-5/60m))
  * where n = what we are evaluating over time (number of active threads, requests, etc...)
  * and m = time in minutes over which to perform the average
+ *
+ * TODO: https://jira.jahia.org/browse/TECH-1808
  */
 public abstract class LoadAverage implements Runnable {
 

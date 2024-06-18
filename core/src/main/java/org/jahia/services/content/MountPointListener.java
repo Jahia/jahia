@@ -182,8 +182,8 @@ public class MountPointListener extends DefaultEventListener implements External
                             continue;
                         }
                     }
-                    setStatus(changeLog, evt.getIdentifier(), evtType,isExternal(evt));
                     isExternal = isExternal(evt);
+                    setStatus(changeLog, evt.getIdentifier(), evtType, isExternal);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }

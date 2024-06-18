@@ -77,11 +77,7 @@ public class LastModifiedListener extends DefaultEventListener {
     public void onEvent(final EventIterator eventIterator) {
         try {
             final JahiaUser user = ((JCREventIterator)eventIterator).getSession().getUser();
-            final int type = ((JCREventIterator)eventIterator).getOperationType();
-
-            if (type == JCRObservationManager.NODE_CHECKOUT || type == JCRObservationManager.NODE_CHECKIN) {
-                return;
-            }
+            final boolean isImport = ((JCREventIterator)eventIterator).getOperationType() == JCRObservationManager.IMPORT;
 
             final Set<Session> sessions = new LinkedHashSet<>();
             final Set<String> nodes = new LinkedHashSet<>();
@@ -149,10 +145,6 @@ public class LastModifiedListener extends DefaultEventListener {
                             }
                         }
 
-                        if (isExternal(event)) {
-                            continue;
-                        }
-
                         String path = event.getPath();
                         if (path.startsWith("/jcr:system/")) {
                             continue;
@@ -195,7 +187,7 @@ public class LastModifiedListener extends DefaultEventListener {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
                                 sessions.add(n.getRealNode().getSession());
-                                updateProperty(n, c, user, autoPublishedIds, type);
+                                updateProperty(n, c, user, autoPublishedIds, isImport);
                             } catch (UnsupportedRepositoryOperationException e) {
                                 // Cannot write property
                             } catch (PathNotFoundException e) {
@@ -209,7 +201,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
-                                updateProperty(n, c, user, autoPublishedIds, type);
+                                updateProperty(n, c, user, autoPublishedIds, isImport);
                             } catch (UnsupportedRepositoryOperationException e) {
                                 // Cannot write property
                             } catch (PathNotFoundException e) {
@@ -240,7 +232,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
     }
 
-    private void updateProperty(JCRNodeWrapper n, Calendar c, JahiaUser user, List<String> autoPublished, int type) throws RepositoryException {
+    private void updateProperty(JCRNodeWrapper n, Calendar c, JahiaUser user, List<String> autoPublished, boolean isImport) throws RepositoryException {
         while (!n.isNodeType(MIX_LAST_MODIFIED)) {
             addAutoPublish(n, autoPublished);
             try {
@@ -252,7 +244,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
         boolean isAutoPublished = addAutoPublish(n, autoPublished);
 
-        if (type != JCRObservationManager.IMPORT || isAutoPublished) {
+        if (!isImport || isAutoPublished) {
             n.getSession().checkout(n);
             n.setProperty(JCR_LASTMODIFIED,c);
             n.setProperty(JCR_LASTMODIFIEDBY, user != null ? user.getUsername() : "");

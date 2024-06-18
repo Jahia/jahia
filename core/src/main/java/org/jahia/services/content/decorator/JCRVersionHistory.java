@@ -42,11 +42,8 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.VersionIteratorImpl;
-import org.jahia.services.content.NodeIteratorImpl;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -92,13 +89,7 @@ public class JCRVersionHistory extends JCRNodeDecorator implements VersionHistor
     }
 
     public VersionIterator getAllVersions() throws RepositoryException {
-        VersionIterator all = getRealNode().getAllVersions();
-        List l = new ArrayList();
-        while (all.hasNext()) {
-            Version v = all.nextVersion();
-            l.add(getProvider().getNodeWrapper(v, (JCRSessionWrapper) getSession()));
-        }
-        return new VersionIteratorImpl(l.iterator(), l.size());
+        return new VersionIteratorWrapper(getRealNode().getAllVersions(), getSession(), getProvider());
     }
 
     public JCRVersion getVersion(String s) throws VersionException, RepositoryException {
@@ -142,30 +133,15 @@ public class JCRVersionHistory extends JCRNodeDecorator implements VersionHistor
     }
 
     public VersionIterator getAllLinearVersions() throws RepositoryException {
-        VersionIterator vi = getRealNode().getAllLinearVersions();
-        List l = new ArrayList();
-        while (vi.hasNext()) {
-            l.add((Version) getProvider().getNodeWrapper((Node) vi.nextVersion(), (JCRSessionWrapper) getSession()));
-        }
-        return new VersionIteratorImpl(l.iterator(), l.size());
+        return new VersionIteratorWrapper(getRealNode().getAllLinearVersions(), getSession(), getProvider());
     }
 
     public NodeIterator getAllLinearFrozenNodes() throws RepositoryException {
-        NodeIterator vi = getRealNode().getAllLinearFrozenNodes();
-        List l = new ArrayList();
-        while (vi.hasNext()) {
-            l.add(getProvider().getNodeWrapper(vi.nextNode(), (JCRSessionWrapper) getSession()));
-        }
-        return new NodeIteratorImpl(l.iterator(), l.size());
+        return new NodeIteratorWrapper(getRealNode().getAllLinearFrozenNodes(), getSession(), getProvider());
     }
 
     public NodeIterator getAllFrozenNodes() throws RepositoryException {
-        NodeIterator vi = getRealNode().getAllFrozenNodes();
-        List l = new ArrayList();
-        while (vi.hasNext()) {
-            l.add(getProvider().getNodeWrapper(vi.nextNode(), (JCRSessionWrapper) getSession()));
-        }
-        return new NodeIteratorImpl(l.iterator(), l.size());
+        return new NodeIteratorWrapper(getRealNode().getAllFrozenNodes(), getSession(), getProvider());
     }
 
     @Override

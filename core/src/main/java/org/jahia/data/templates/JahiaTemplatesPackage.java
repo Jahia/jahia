@@ -1276,7 +1276,7 @@ public class JahiaTemplatesPackage {
             List<BundleWire> providedWires = bundleWiring.getProvidedWires(null);
             for (BundleWire wire : providedWires) {
                 Bundle bundle = wire.getRequirer().getBundle();
-                if (BundleUtils.isJahiaBundle(bundle)) {
+                if (BundleUtils.isJahiaBundle(bundle) && BundleUtils.isJahiaModuleBundle(bundle)) {
                     deps.add(BundleUtils.getModule(bundle));
                 }
             }

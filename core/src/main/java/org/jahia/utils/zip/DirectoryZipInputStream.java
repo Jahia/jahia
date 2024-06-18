@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -59,7 +60,7 @@ import java.util.zip.ZipInputStream;
 public class DirectoryZipInputStream extends ZipInputStream {
 
     File sourceDirectory;
-    Iterator<Path> sourceDirectoryEntriesIterator;
+    Iterator<String> sourceDirectoryEntriesIterator;
     File currentEntry;
     FileInputStream currentEntryInputStream;
     ZipEntry currentZipEntry;
@@ -75,7 +76,7 @@ public class DirectoryZipInputStream extends ZipInputStream {
         this.sourceDirectory = sourceDirectory;
         try {
             directoryStream = Files.walk(sourceDirectory.toPath());
-            this.sourceDirectoryEntriesIterator = directoryStream.skip(1).iterator();
+            this.sourceDirectoryEntriesIterator = directoryStream.skip(1).map(Path::toString).collect(Collectors.toList()).iterator();
         } catch (IOException e) {
             //This should never happen as existence of directory has been validated before in our code, but in case we call it from new places, safer to throw exception
             throw new RuntimeException(e);
@@ -94,7 +95,7 @@ public class DirectoryZipInputStream extends ZipInputStream {
         if (!sourceDirectoryEntriesIterator.hasNext()) {
             return null;
         }
-        currentEntry = sourceDirectoryEntriesIterator.next().toFile();
+        currentEntry = new File(sourceDirectoryEntriesIterator.next());
         String currentEntryName = currentEntry.getPath();
         if (currentEntryName.startsWith(sourceDirectory.getPath()+File.separator)) {
             currentEntryName = currentEntryName.substring(sourceDirectory.getPath().length()+1);

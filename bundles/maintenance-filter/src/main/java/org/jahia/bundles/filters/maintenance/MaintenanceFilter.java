@@ -61,7 +61,7 @@ public class MaintenanceFilter extends AbstractServletFilter implements ManagedS
     private Set<Pattern> allowedResources = new HashSet<>();
 
     @Activate public void activate(Map<String, ?> properties) {
-        logger.debug("Activating Service...");
+        logger.info("Activating Service...");
         this.setOrder(FILTER_ORDER);
         this.setFilterName(FILTER_NAME);
         this.setMatchAllUrls(FILTER_MATCH_ALL_URLS);
@@ -73,12 +73,12 @@ public class MaintenanceFilter extends AbstractServletFilter implements ManagedS
             logger.warn("Maintenance Filter allowedResource configuration is empty, this may cause an unreachable system if "
                     + "maintenance mode is activated.");
         } else {
-            logger.debug("Service activated with allowedResource: {}", this.allowedResources);
+            logger.info("Service activated with allowedResource: {}", this.allowedResources);
         }
     }
 
     @Override public void updated(Dictionary<String, ?> dictionary) {
-        logger.debug("Updating service...");
+        logger.info("Updating service...");
         if (dictionary != null) {
             this.allowedResources = Collections.list(dictionary.keys()).stream().filter(k -> k.startsWith("allowedResource"))
                     .map(k -> dictionary.get(k).toString()).map(Pattern::compile).collect(Collectors.toSet());
@@ -87,14 +87,14 @@ public class MaintenanceFilter extends AbstractServletFilter implements ManagedS
             logger.warn("Maintenance Filter allowedResource configuration is empty, this may cause an unreachable system if "
                     + "maintenance mode is activated.");
         } else {
-            logger.debug("Service updated with allowedResource: {}", this.allowedResources);
+            logger.info("Service updated with allowedResource: {}", this.allowedResources);
         }
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         logger.debug("Filter called");
         if (Jahia.isMaintenance()) {
-            logger.debug("Filter is active, allowing only whitelisted resources");
+            logger.debug("MaintenanceFilter is active, allowing only whitelisted resources");
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             final var uri = StringUtils.substringAfter(httpRequest.getRequestURI(), httpRequest.getContextPath());
             if (allowedResources.stream().noneMatch(pattern -> pattern.matcher(uri).matches())) {

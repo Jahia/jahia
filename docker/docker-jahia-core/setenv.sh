@@ -23,3 +23,12 @@ export CATALINA_OPTS="${CATALINA_OPTS} -Djavax.xml.validation.SchemaFactory:http
 
 # Prevent Karaf from intercepting sigterm
 export CATALINA_OPTS="${CATALINA_OPTS} -Dkaraf.handle.sigterm=false"
+
+#Set JVM modules access for some modules
+export CATALINA_OPTS="${CATALINA_OPTS} --add-modules java.se"
+export CATALINA_OPTS="${CATALINA_OPTS} --add-exports java.base/jdk.internal.ref=ALL-UNNAMED"
+export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
+export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/java.nio=ALL-UNNAMED"
+export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/sun.nio.ch=ALL-UNNAMED"
+export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.management/sun.management=ALL-UNNAMED"
+export CATALINA_OPTS="${CATALINA_OPTS} --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"

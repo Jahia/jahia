@@ -226,4 +226,8 @@ public abstract class DefaultEventListener implements EventListener {
         }
         return eventList;
     }
+
+    public Class getListenerClass() {
+        return this.getClass();
+    }
 }

@@ -658,24 +658,32 @@ public class TemplatePackageRegistry {
                         final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
                         while (registeredEventListeners.hasNext()) {
                             javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
-                            if (next.getClass().equals(eventListener.getClass())
-                                    && (!(next instanceof DefaultEventListener) || StringUtils.equals(
-                                    ((DefaultEventListener) next).getWorkspace(), eventListener.getWorkspace()))) {
-                                observationManager.removeEventListener(next);
-                                break;
+                            if (next instanceof DefaultEventListener) {
+                                DefaultEventListener nextDel = (DefaultEventListener)next;
+                                if ( nextDel.getListenerClass().equals(eventListener.getListenerClass())
+                                        && (StringUtils.equals(nextDel.getWorkspace(), eventListener.getWorkspace()))) {
+                                    observationManager.removeEventListener(nextDel);
+                                    logger.debug("Unregistered event listener {} for workspace '{}'",
+                                            nextDel.getListenerClass().getName(), nextDel.getWorkspace());
+                                    break;
+                                }
+                            } else {
+                                //In my opinion that case should never happen : eventListener is necessarly a DefaultEventListener (cast is
+                                // done before) and we test a class that is not an instance of DefaultEventListener for its name equality....
+                                if ( next.getClass().equals(eventListener.getListenerClass())) {
+                                    observationManager.removeEventListener(next);
+                                    logger.debug("Unregistered event listener {}", next.getClass().getName());
+                                    break;
+                                }
                             }
                         }
                         if (register) {
                             observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
+                            logger.debug("Registered event listener {} for workspace '{}'", eventListener.getClass().getName(), eventListener.getWorkspace());
                         }
                         return null;
                     }
                 });
-                if (logger.isDebugEnabled()) {
-                    logger.debug((register ? "Registering" : "Unregistering") + " event listener"
-                            + eventListener.getClass().getName() + " for workspace '"
-                            + eventListener.getWorkspace() + "'");
-                }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

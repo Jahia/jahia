@@ -81,14 +81,12 @@ public class CompositeFilter implements Filter {
     }
 
     public synchronized void registerFilter(AbstractServletFilter filter) throws ServletException {
-
-        logger.info("Registering servlet filter {}", filter);
         if(filterConfig != null){
             filter.init(filterConfig.getServletContext());
         }
+        logger.info("Registering servlet filter {}", filter);
         this.filters.add(filter);
         Collections.sort(this.filters);
-        logger.info("Servlet filter {} registered", filter.getFilterName());
     }
 
     public synchronized void unregisterFilter(AbstractServletFilter filter) {
@@ -99,7 +97,6 @@ public class CompositeFilter implements Filter {
             filters.remove(filter);
             Collections.sort(this.filters);
         }
-        logger.info("Servlet filter {} unregistered", filter.getFilterName());
     }
 
     public void setFilters(List<AbstractServletFilter> filters) {

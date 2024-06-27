@@ -526,11 +526,43 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             Set<String> remainingPublishedLanguages = new HashSet<>(info.getAllPublishedLanguagesInSubTree());
             remainingPublishedLanguages.removeAll(languages);
             boolean contentStillPublishedInOtherLanguage = hasI18NSubContent && !remainingPublishedLanguages.isEmpty();
-
-            if (info.getTranslationNodeIdentifier() == null && (clearedForTranslation || contentNotPublishedInLanguage || contentStillPublishedInOtherLanguage)) {
+            boolean sharedNodeToBeUnpublish = shouldUnpublishSharedNode(infosByPath, info, languages);
+            if (info.getTranslationNodeIdentifier() == null && (clearedForTranslation || contentNotPublishedInLanguage || contentStillPublishedInOtherLanguage || !sharedNodeToBeUnpublish)) {
                 infosByPath.remove(path);
             }
         }
+    }
+
+    /**
+     * Determines whether a shared node should be unpublished.
+     *
+     * @param infosByPath a map of publication information indexed by path
+     * @param info the publication information of the node to check
+     * @param languages a collection of languages to consider
+     * @return {@code true} if the node should be unpublished, otherwise {@code false}
+     */
+    private static boolean shouldUnpublishSharedNode(Map<String, FullPublicationInfoImpl> infosByPath, FullPublicationInfoImpl info, Collection<String> languages){
+        if (info.getNodeIdentifier() == null) {
+            return true;
+        }
+
+        boolean isRootNode = info.getNodeIdentifier().equals(info.getPublicationRootNodeIdentifier());
+        if (isRootNode) {
+            return true;
+        }
+
+        if (info.getAllPublishedLanguagesInSubTree().isEmpty()) {
+           for (String language : languages) {
+               FullPublicationInfoImpl rootNodeInfo = infosByPath.get(language + "/" + info.getPublicationRootNodeIdentifier());
+               if (rootNodeInfo != null) {
+                   Set<String> remainingLanguages = new HashSet<>(rootNodeInfo.getAllPublishedLanguagesInSubTree());
+                   remainingLanguages.removeAll(languages);
+                   return remainingLanguages.isEmpty();
+               }
+           }
+            return true;
+        }
+        return true;
     }
 
     private static Set<String> clearNodeIdentifiersOnTranslationNodes(Map<String, FullPublicationInfoImpl> infosByPath) {

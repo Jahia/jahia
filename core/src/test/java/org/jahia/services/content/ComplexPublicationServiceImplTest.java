@@ -200,6 +200,59 @@ public class ComplexPublicationServiceImplTest extends AbstractJUnitTest {
     }
 
     @Test
+    public void getInfoWhenUnpublishParentStillAvailableInOtherLanguages() throws RepositoryException {
+        getCleanSession();
+        // Given a published non i18n content
+        JCRNodeWrapper content = englishEditSession.getNode(testHomeEdit.getPath()).addNode("testReference", "jnt:contentReference");
+        englishEditSession.save();
+        frenchEditSession.getNode(testHomeEdit.getPath()).setProperty(Constants.JCR_TITLE, INITIAL_FRENCH_TEXT_NODE_PROPERTY_VALUE);
+        frenchEditSession.save();
+        publicationService.publishByMainId(content.getIdentifier());
+        publicationService.publishByMainId(testHomeEdit.getIdentifier());
+
+        // given a published node with 2 translations
+        JCRNodeWrapper enContent = englishEditSession.getNode(testHomeEdit.getPath()).addNode("testNode", "jnt:text");
+        enContent.setProperty("text", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        englishEditSession.save();
+        frenchEditSession.getNode(enContent.getPath()).setProperty("text", INITIAL_FRENCH_TEXT_NODE_PROPERTY_VALUE);
+        frenchEditSession.save();
+        publicationService.publishByMainId(enContent.getIdentifier());
+
+        // When querying the unpublication info in english for parent node, Then we should have one entries, no shared node
+        ResultInfo i18nResult = new ResultInfo(enContent.getI18N(Locale.ENGLISH).getIdentifier(), null);
+        ResultInfo pageResult = new ResultInfo(testHomeEdit.getI18N(Locale.ENGLISH).getIdentifier(), null);
+        checkPublicationInfos(Collections.singletonList(testHomeEdit.getIdentifier()),
+                Collections.singletonList(Locale.ENGLISH.toString()),
+                systemEditSession,
+                Arrays.asList(pageResult, i18nResult));
+    }
+
+    @Test
+    public void getInfoWhenUnpublishParentInLastLanguage() throws RepositoryException {
+        getCleanSession();
+        // Given a published non i18n content
+        JCRNodeWrapper content = englishEditSession.getNode(testHomeEdit.getPath()).addNode("testReference", "jnt:contentReference");
+        englishEditSession.save();
+        publicationService.publishByMainId(content.getIdentifier());
+        publicationService.publishByMainId(testHomeEdit.getIdentifier());
+
+        // given a published node with 2 translations
+        JCRNodeWrapper enContent = englishEditSession.getNode(testHomeEdit.getPath()).addNode("testNode", "jnt:text");
+        enContent.setProperty("text", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        englishEditSession.save();
+        publicationService.publishByMainId(enContent.getIdentifier());
+
+        // When querying the unpublication info in english for parent node, Then we should have three entries
+        ResultInfo i18nResult = new ResultInfo(enContent.getI18N(Locale.ENGLISH).getIdentifier(), null);
+        ResultInfo pageResult = new ResultInfo(testHomeEdit.getI18N(Locale.ENGLISH).getIdentifier(), null);
+        ResultInfo result = new ResultInfo(null, content.getIdentifier());
+        checkPublicationInfos(Collections.singletonList(testHomeEdit.getIdentifier()),
+                Collections.singletonList(Locale.ENGLISH.toString()),
+                systemEditSession,
+                Arrays.asList(pageResult, result, i18nResult));
+    }
+
+    @Test
     public void getFullUnpublicationInfosOnList() throws RepositoryException {
 
         getCleanSession();

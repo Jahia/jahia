@@ -52,7 +52,7 @@ import java.io.Serializable;
  * Custom GUI interface for Workflow dialogs
  */
 public interface CustomWorkflow extends Serializable, IsSerializable {
-    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog);
+    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog, int numberOfWorkflows);
 
     public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog);
 

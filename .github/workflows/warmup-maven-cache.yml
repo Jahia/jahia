@@ -16,9 +16,9 @@ jobs:
       - uses: snnaplab/delete-branch-cache-action@v1
         with:
           key: jahia-default-maven-m2-cache
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Generate cache with restore key jahia-default-maven-m2-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: jahia-default-maven-m2-cache

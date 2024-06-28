@@ -170,10 +170,11 @@ public class PublicationWorkflow implements CustomWorkflow {
             new PublicationStatusWindow(linker, null, null, cards, unpublish);
         }
         boolean showStartWfButton = false;
+        int numberOfWorkflows = infosListByWorflowGroup.size();
         for (Map.Entry<String, List<GWTJahiaPublicationInfo>> entry : infosListByWorflowGroup.entrySet()) {
             final List<GWTJahiaPublicationInfo> infoList = entry.getValue();
 
-            boolean entries = parseEntries(definitions, linker, unpublish, cards, infoList);
+            boolean entries = parseEntries(definitions, linker, unpublish, cards, infoList, numberOfWorkflows);
             showStartWfButton = showStartWfButton || entries;
         }
         if (showStartWfButton) {
@@ -198,7 +199,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         cards.showEngine();
     }
 
-    private static boolean parseEntries(Map<String, GWTJahiaWorkflowDefinition> definitions, Linker linker, boolean unpublish, EngineCards cards, List<GWTJahiaPublicationInfo> infoList) {
+    private static boolean parseEntries(Map<String, GWTJahiaWorkflowDefinition> definitions, Linker linker, boolean unpublish, EngineCards cards, List<GWTJahiaPublicationInfo> infoList, int numberOfWorkflows) {
         String workflowDefinition = infoList.get(0).getWorkflowDefinition();
         if (workflowDefinition != null) {
             final PublicationWorkflow custom = unpublish ? new UnpublicationWorkflow(infoList) : new PublicationWorkflow(infoList);
@@ -206,7 +207,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                     "{0} started by {1} on {2} - {3} content items involved",
                     new Object[]{definitions.get(workflowDefinition).getDisplayName(), JahiaGWTParameters.getCurrentUser(), DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(new Date()), infoList.size()}),
                     definitions.get(workflowDefinition),
-                    linker, custom, cards, infoList.get(0).getLanguage()
+                    linker, custom, cards, infoList.get(0).getLanguage(), numberOfWorkflows
             );
             return true;
         } else {
@@ -214,7 +215,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             final PublicationWorkflow custom = unpublish ? new UnpublicationWorkflow(infoList) : new PublicationWorkflow(infoList);
             new WorkflowActionDialog(infoList.get(0).getMainPath(), Messages.get("label.engineTab.publication", "Publication"),
                     null,
-                    linker, custom, cards, infoList.get(0).getLanguage()
+                    linker, custom, cards, infoList.get(0).getLanguage(), numberOfWorkflows
             );
         }
         return false;
@@ -340,17 +341,24 @@ public class PublicationWorkflow implements CustomWorkflow {
     }
 
     @Override
-    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog) {
+    public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog, int numberOfWorkflows) {
+        final boolean unpublish = this instanceof UnpublicationWorkflow;
         initDialog(dialog);
         if (dialog.getButtonsBar().getItemCount() > 0) {
             dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
         }
         Button button = getBypassWorkflowButton(dialog);
+        if (unpublish && numberOfWorkflows > 1) {
+            button.setVisible(false);
+        }
         if (button != null) {
             dialog.getButtonsBar().insert(button, 0);
         }
         if (workflow != null) {
             button = getStartWorkflowButton(workflow, dialog);
+            if (unpublish && numberOfWorkflows > 1) {
+                button.setVisible(false);
+            }
             if (button != null) {
                 dialog.getButtonsBar().insert(button, 0);
             }

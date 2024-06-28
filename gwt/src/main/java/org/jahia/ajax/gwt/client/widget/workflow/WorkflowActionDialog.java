@@ -91,6 +91,9 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     private String nodePath;
     private GWTJahiaWorkflow workflow;
+
+    private int numberOfWorkflows;
+
     private transient GWTJahiaWorkflowDefinition wfDefinition;
     private transient CustomWorkflow customWorkflow;
 
@@ -99,12 +102,12 @@ public class WorkflowActionDialog extends LayoutContainer {
     private ButtonBar buttonsBar;
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
-                                final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(nodePath, linker, container, title, null, wfDefinition.getFormResourceName(), null, false);
+                                final Linker linker, CustomWorkflow custom, EngineContainer container, int numberOfWorkflows) {
+        this(nodePath, linker, container, title, null, wfDefinition.getFormResourceName(), null, false, numberOfWorkflows);
         this.wfDefinition = wfDefinition;
         initStartWorkflowDialog(wfDefinition);
         if (custom != null) {
-            custom.initStartWorkflowDialog(wfDefinition, this);
+            custom.initStartWorkflowDialog(wfDefinition, this, numberOfWorkflows);
         }
     }
 
@@ -118,19 +121,23 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
-                                final Linker linker, CustomWorkflow custom, final EngineContainer container, String language) {
-        this(nodePath, linker, container, title, language, wfDefinition != null ? wfDefinition.getFormResourceName() : null, null, wfDefinition == null);
+                                final Linker linker, CustomWorkflow custom, final EngineContainer container, String language, int numberOfWorkflows) {
+        this(nodePath, linker, container, title, language, wfDefinition != null ? wfDefinition.getFormResourceName() : null, null, wfDefinition == null, numberOfWorkflows);
         this.wfDefinition = wfDefinition;
         this.customWorkflow = custom;
         if (wfDefinition != null) {
             initStartWorkflowDialog(wfDefinition);
         }
         if (custom != null) {
-            custom.initStartWorkflowDialog(wfDefinition, this);
+            custom.initStartWorkflowDialog(wfDefinition, this, numberOfWorkflows);
         }
 
     }
 
+    private WorkflowActionDialog(String nodePath, Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow workflow, boolean skipWorkflow, int numberOfWorkflows){
+        this(nodePath, linker, container, title, language, wfDefinitionNodeType, workflow, skipWorkflow);
+        this.numberOfWorkflows = numberOfWorkflows;
+    }
     private WorkflowActionDialog(String nodePath, Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow workflow, boolean skipWorkflow) {
         super();
         addStyleName("workflow-action-dialog");

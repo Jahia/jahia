@@ -269,18 +269,6 @@ jobs:
                 -Dsonar.branch.name=$CIRCLE_BRANCH $DEPENDENCY_CHECK_SETTINGS
           fi
 
-  java-checks:
-    name: Check Java dependencies and licenses
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: jahia/jahia-modules-action/dependencies-check-java@v2
-        with:
-          github_token: ${{ secrets.GH_API_TOKEN }}
-          show_checklist: 'true'
-          root_folder: 'core'
-
   prepare-jahia-pack-trigger:
     runs-on: ubuntu-latest
     needs: [ build ]

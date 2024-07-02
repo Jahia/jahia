@@ -270,7 +270,7 @@ public class EmptyEntryPoint extends CommonEntryPoint {
         selectionContext.setSelectedNodes(Collections.singletonList(node));
         selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
 
-        DeleteItemWindow window = new DeleteItemWindow(linker, selectionContext, deletePermanently, skipRefreshOnDelete, JahiaGWTParameters.getBaseEditUrl());
+        DeleteItemWindow window = new DeleteItemWindow(linker, selectionContext.getSelectedNodes(), deletePermanently, skipRefreshOnDelete, JahiaGWTParameters.getBaseEditUrl());
         window.show();
     }
 
@@ -283,7 +283,7 @@ public class EmptyEntryPoint extends CommonEntryPoint {
             selectionContext.setSelectedNodes(nodes);
             selectionContext.refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
 
-            DeleteItemWindow window = new DeleteItemWindow(linker, selectionContext, deletePermanently, skipRefreshOnDelete, JahiaGWTParameters.getBaseEditUrl());
+            DeleteItemWindow window = new DeleteItemWindow(linker, selectionContext.getSelectedNodes(), deletePermanently, skipRefreshOnDelete, JahiaGWTParameters.getBaseEditUrl());
             window.show();
         }
     }

@@ -172,39 +172,39 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        GWT.runAsync(new RunAsyncCallback() {
-
-            @Override
-            public void onFailure(Throwable reason) {
+        final LinkerSelectionContext lh = linker.getSelectionContext();
+        if (!lh.getMultipleSelection().isEmpty()) {
+            // Usages
+            final List<String> l = new ArrayList<String>();
+            final List<GWTJahiaNode> selectedNodes = new ArrayList<>();
+            for (GWTJahiaNode node : lh.getMultipleSelection()) {
+                l.add(node.getPath());
+                selectedNodes.add(node);
             }
 
-            @Override
-            public void onSuccess() {
-                final LinkerSelectionContext lh = linker.getSelectionContext();
-                if (!lh.getMultipleSelection().isEmpty()) {
-                    // Usages
-                    final List<String> l = new ArrayList<String>();
-                    for (GWTJahiaNode node : lh.getMultipleSelection()) {
-                        l.add(node.getPath());
-                    }
+            GWT.runAsync(new RunAsyncCallback() {
 
-                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-
-                        async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
-
-                            @Override
-                            public void onApplicationFailure(Throwable caught) {
-                                com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
-                            }
-
-                            @Override
-                            public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                                new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete, false, JahiaGWTParameters.getBaseUrl()).show();
-                            }
-                        });
+                @Override
+                public void onFailure(Throwable reason) {
                 }
-            }
-        });
+
+                @Override
+                public void onSuccess() {
+                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                    async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                        @Override
+                        public void onApplicationFailure(Throwable caught) {
+                            com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                        }
+
+                        @Override
+                        public void onSuccess(List<GWTJahiaNodeUsage> result) {
+                            new DeleteItemWindow(linker, selectedNodes, permanentlyDelete, false, JahiaGWTParameters.getBaseUrl()).show();
+                        }
+                    });
+                }
+            });
+        }
     }
 
     public void setPermanentlyDelete(boolean permanentlyDelete) {

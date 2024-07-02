@@ -574,7 +574,7 @@ public class ContentManagerHelper {
                         nodeToDelete.markForDeletion(comment);
                     } else {
                         // check if node exist in live before permanently delete it in default
-                        if (permanentlyDelete && nodeToDelete.isMarkedForDeletion()) {
+                        if (permanentlyDelete && (nodeToDelete.isMarkedForDeletion() || supportsMarkingForDeletion(nodeToDelete))) {
                             try {
                                 nodeToDelete.getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
                                 missedPaths.add(nodeToDelete.getPath() + Messages.getInternal("label.gwt.error.could.not.delete.node.exist.live", uiLocale));

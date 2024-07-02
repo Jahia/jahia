@@ -86,7 +86,7 @@ public class DeleteItemWindow extends Window {
     final Grid<GWTJahiaNodeUsage> usagesGrid;
     final FormPanel formPanel;
 
-    public DeleteItemWindow(final Linker linker, final LinkerSelectionContext lh, final boolean permanentlyDelete, final boolean skipRefreshOnDelete, String baseUsageUrl) {
+    public DeleteItemWindow(final Linker linker, List<GWTJahiaNode> nodesToBeDeleted, final boolean permanentlyDelete, final boolean skipRefreshOnDelete, String baseUsageUrl) {
 
         addStyleName("delete-item-window");
         setSize(windowWidth, windowHeight);
@@ -108,7 +108,7 @@ public class DeleteItemWindow extends Window {
         /* Usages grid */
         final List<GWTJahiaNode> selectedNodeList = new ArrayList<GWTJahiaNode>();
         final List<String> selectedPathList = new ArrayList<String>();
-        for (GWTJahiaNode node : lh.getMultipleSelection()) {
+        for (GWTJahiaNode node : nodesToBeDeleted) {
             selectedNodeList.add(node);
             selectedPathList.add(node.getPath());
         }
@@ -138,7 +138,7 @@ public class DeleteItemWindow extends Window {
             public void loaderLoad(LoadEvent le) {
                 List<GWTJahiaNode> data = le.getData();
                 int nbRows = data.size();
-                String strMessage = getConfirmationMessage(lh, nbSelectedNodes);
+                String strMessage = getConfirmationMessage(nodesToBeDeleted, nbSelectedNodes);
                 if (nbRows > 0) {
                     strMessage += "<br /><br />" + (nbSelectedNodes > 1 ? Messages.get("message.remove.multiple.usage", "Those nodes are still used in:") : Messages.get("message.remove.single.usage", "This node is still used by:"));
                 } else {
@@ -249,17 +249,18 @@ public class DeleteItemWindow extends Window {
         add(formPanel);
     }
 
-    private String getConfirmationMessage(LinkerSelectionContext lh, int nbSelectedNodes) {
+    private String getConfirmationMessage(List<GWTJahiaNode> nodes, int nbSelectedNodes) {
         String message = "";
         if (nbSelectedNodes > 1) {
             message = Messages.getWithArgs("message.remove.multiple.confirm", "Do you really want to remove the {0} selected resources?", new String[] { String.valueOf(nbSelectedNodes) });
         } else {
-            if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jmix:canBeUseAsTemplateModel")) {
-                message = Messages.getWithArgs("message.remove.single.pagemodel.confirm", "Do you really want to remove the selected PAGE model {0}?", new String[] { lh.getSingleSelection().getName() });
-            } else if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jnt:page")) {
-                message = Messages.getWithArgs("message.remove.single.page.confirm", "Do you really want to remove the selected PAGE {0}?", new String[] { lh.getSingleSelection().getName() });
+            GWTJahiaNode node = nodes.get(0);
+            if (node.getNodeTypes().contains("jmix:canBeUseAsTemplateModel")) {
+                message = Messages.getWithArgs("message.remove.single.pagemodel.confirm", "Do you really want to remove the selected PAGE model {0}?", new String[] { node.getName() });
+            } else if (node.getNodeTypes().contains("jnt:page")) {
+                message = Messages.getWithArgs("message.remove.single.page.confirm", "Do you really want to remove the selected PAGE {0}?", new String[] { node.getName() });
             } else {
-                message = Messages.getWithArgs("message.remove.single.confirm", "Do you really want to remove the selected resource {0}?", new String[] { lh.getSingleSelection().getName() });
+                message = Messages.getWithArgs("message.remove.single.confirm", "Do you really want to remove the selected resource {0}?", new String[] { node.getName() });
             }
         }
         return message;

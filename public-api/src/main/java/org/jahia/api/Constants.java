@@ -347,6 +347,20 @@ public class Constants {
 
     public static final String TO_CACHE_WITH_PARENT_FRAGMENT = "toCacheWithParentFragment";
 
+    public static final String JAHIAMIX_AUTO_PUBLISH = "jmix:autoPublish";
+    public static final String JAHIAMIX_MAIN_RESOURCE = "jmix:mainResource";
+    public static final String JAHIAMIX_NOLIVE = "jmix:nolive";
+
+    public static final String JAHIAMIX_I18N = "jmix:i18n";
+    public static final String INVALID_LANGUAGES = "j:invalidLanguages";
+
+    public static final String JAHIAMIX_LIVE_PROPERTIES = "jmix:liveProperties";
+    public static final String LIVE_PROPERTIES = "j:liveProperties";
+
+    public static final String JAHIANT_CONTENT_FOLDER = "jnt:contentFolder";
+    public static final String JAHIANT_CONTENT_TEMPLATE = "jnt:contentTemplate";
+    public static final String JAHIANT_PAGE_TEMPLATE = "jnt:pageTemplate";
+
     /**
      * The set of properties that are <strong>NOT</strong> internationalized properties but are still copied to translation nodes.
      * <p>

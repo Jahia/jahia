@@ -29,15 +29,15 @@ jobs:
       jahia_version: ${{ steps.tags.outputs.jahia_version }}
       image_tag: ${{ steps.tags.outputs.image_tag }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache local Maven repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: jahia-default-maven-m2-cache
       - name: Save/Restore build artifacts from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: run-${{ github.run_id }}
           path: |
@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}" >> $GITHUB_ENV
           echo "NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}" >> $GITHUB_ENV
-      - uses: docker/login-action@v2
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -143,10 +143,10 @@ jobs:
       - uses: KengoTODA/actions-setup-docker-compose@main
         with:
           version: '1.29.2'
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
           module_id: jahia-root
@@ -178,7 +178,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: jahia/jahia-modules-action/static-analysis@v2
         with:
           node_version: 14
@@ -193,8 +193,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v3
-      - uses: docker/login-action@v2
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -208,7 +208,7 @@ jobs:
       - name: Print content from the SARIF file
         shell: bash
         run: cat ${{ steps.scan-build-sbom.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text'
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: SARIF
           retention-days: 5
@@ -220,8 +220,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -229,7 +229,7 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v6
       - name: Save/Restore build artifacts from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: run-${{ github.run_id }}
           path: |
@@ -274,7 +274,7 @@ jobs:
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: jahia/jahia-modules-action/dependencies-check-java@v2
         with:
           github_token: ${{ secrets.GH_API_TOKEN }}

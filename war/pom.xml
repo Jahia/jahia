@@ -843,6 +843,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
+                    <!--
+                        Manual exclude of jackrabbit-data-*-tests.jar here, could be removed once we are using a Jackrabbit version
+                        That include: https://issues.apache.org/jira/browse/JCR-5076
+                    -->
+                    <packagingExcludes>WEB-INF/lib/jackrabbit-data-*-tests.jar</packagingExcludes>
                     <warSourceExcludes>*Resources*.properties,**/custom.properties</warSourceExcludes>
                     <webResources>
                         <resource>

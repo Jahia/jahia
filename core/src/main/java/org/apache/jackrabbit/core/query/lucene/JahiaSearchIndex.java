@@ -747,25 +747,52 @@ public class JahiaSearchIndex extends SearchIndex {
         return null;
     }
 
+    /**
+     * Prepares for a re-indexing of the repository content, creating a secondary index instance.
+     * @deprecated use {@link #prepareReindexing(boolean)} instead
+     *
+     */
+    @Deprecated
+    public synchronized boolean prepareReindexing() {
+        return this.prepareReindexing(true);
+    }
 
     /**
      * Prepares for a re-indexing of the repository content, creating a secondary index instance.
+     *
+     * @param forceConsistencyCheck
+     *          Force a consistency check on the new index
      */
-    public synchronized boolean prepareReindexing() {
+    public synchronized boolean prepareReindexing(boolean forceConsistencyCheck) {
         if (newIndex != null || switching) {
             return false;
         }
 
         newIndex = new JahiaSecondaryIndex(this);
+        newIndex.setForceConsistencyCheck(forceConsistencyCheck);
+        log.info("New index forced consistency check {}", (forceConsistencyCheck ? "enabled" : "disabled"));
 
         return true;
     }
 
     /**
      * Schedules the re-indexing of the repository content in a background job.
+     *
+     *  @deprecated use {@link #scheduleReindexing(boolean)} instead
      */
+    @Deprecated
     public void scheduleReindexing() {
-        if (!prepareReindexing()) {
+        this.scheduleReindexing(true);
+    }
+
+    /**
+     * Schedules the re-indexing of the repository content in a background job.
+     *
+     * @param forceConsistencyCheck
+     *          Force a consistency check on the new index
+     */
+    public void scheduleReindexing(boolean forceConsistencyCheck) {
+        if (!prepareReindexing(forceConsistencyCheck)) {
             return;
         }
 

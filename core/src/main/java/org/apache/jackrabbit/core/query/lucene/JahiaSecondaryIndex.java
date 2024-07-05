@@ -136,15 +136,16 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
 
         startTime = System.currentTimeMillis();
 
-        log.info("Running consistency check...");
-        try {
-            ConsistencyCheck check = runConsistencyCheck();
-            check.repair(true);
-        } catch (Exception e) {
-            log.warn("Failed to run consistency check on index: " + e);
+        if (this.getForceConsistencyCheck()) {
+            log.info("Running forced consistency check...");
+            try {
+                ConsistencyCheck check = runConsistencyCheck();
+                check.repair(true);
+            } catch (Exception e) {
+                log.warn("Failed to run consistency check on index: " + e);
+            }
+            log.info("Consistency check took {} ms", System.currentTimeMillis() - startTime);
         }
-
-        log.info("Consistency check took {} ms", System.currentTimeMillis() - startTime);
 
         initSpellChecker();
     }

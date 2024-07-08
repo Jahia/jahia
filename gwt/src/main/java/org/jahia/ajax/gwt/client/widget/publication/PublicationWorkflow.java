@@ -348,18 +348,18 @@ public class PublicationWorkflow implements CustomWorkflow {
             dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
         }
         Button button = getBypassWorkflowButton(dialog);
-        if (unpublish && numberOfWorkflows > 1) {
-            button.setVisible(false);
-        }
         if (button != null) {
+            if (unpublish && numberOfWorkflows > 1) {
+                button.setVisible(false);
+            }
             dialog.getButtonsBar().insert(button, 0);
         }
         if (workflow != null) {
             button = getStartWorkflowButton(workflow, dialog);
-            if (unpublish && numberOfWorkflows > 1) {
-                button.setVisible(false);
-            }
             if (button != null) {
+                if (unpublish && numberOfWorkflows > 1) {
+                    button.setVisible(false);
+                }
                 dialog.getButtonsBar().insert(button, 0);
             }
         }

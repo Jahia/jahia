@@ -219,7 +219,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         OutputDocument outputDocument = new OutputDocument(source);
 
         if (renderContext.isAjaxRequest()) {
-            out = renderAjaxStaticAssets(previousOut, renderContext, resource, out, source, outputDocument, assetsByTarget);
+            out = renderAjaxStaticAssets(renderContext, resource, out, source, outputDocument, assetsByTarget);
         } else if (resource.getContextConfiguration().equals("page")) {
             out = renderPageStaticAssets(renderContext, resource, source, outputDocument, assetsByTarget);
         }
@@ -305,7 +305,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         assets.put(type, stringMap);
     }
 
-    private String renderAjaxStaticAssets(String previousOut, RenderContext renderContext,
+    private String renderAjaxStaticAssets(RenderContext renderContext,
                                           org.jahia.services.render.Resource resource, String out, Source source, OutputDocument outputDocument,
                                           Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget) throws IOException, ScriptException {
 
@@ -336,7 +336,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
                     out = outputDocument.toString();
                 } else {
-                    out = staticsAsset + "\n" + previousOut;
+                    out = staticsAsset + "\n" + out;
                 }
             }
         }

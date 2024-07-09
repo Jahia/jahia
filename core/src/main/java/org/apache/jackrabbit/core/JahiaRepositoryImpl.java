@@ -163,23 +163,35 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
     }
 
     /**
-     * Schedules the re-indexing of the whole repository content.
+     * Schedules the re-indexing of the whole repository content with forced consistency check.
      *
      * @throws RepositoryException
      *             in case of a JCR-related error
      */
     public void scheduleReindexing() throws RepositoryException {
+        this.scheduleReindexing(true);
+    }
+
+    /**
+     * Schedules the re-indexing of the whole repository content.
+     *
+     * @param forceConsistencyCheck
+     *             force a consistency check when reindexing
+     * @throws RepositoryException
+     *             in case of a JCR-related error
+     */
+    public void scheduleReindexing(boolean forceConsistencyCheck) throws RepositoryException {
         List<JahiaSearchIndex> indexes = new LinkedList<>();
         JahiaSearchIndex index = (JahiaSearchIndex) getSystemSearchManager("default").getQueryHandler();
-        if (index.prepareReindexing()) {
+        if (index.prepareReindexing(forceConsistencyCheck)) {
             indexes.add(index);
         }
         index = (JahiaSearchIndex) getWorkspaceInfo("default").getSearchManager().getQueryHandler();
-        if (index.prepareReindexing()) {
+        if (index.prepareReindexing(forceConsistencyCheck)) {
             indexes.add(index);
         }
         index = (JahiaSearchIndex) getWorkspaceInfo("live").getSearchManager().getQueryHandler();
-        if (index.prepareReindexing()) {
+        if (index.prepareReindexing(forceConsistencyCheck)) {
             indexes.add(index);
         }
 
@@ -198,7 +210,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
     }
 
     /**
-     * Schedules the re-indexing of the repository content for the specified workspace.
+     * Schedules the re-indexing of the repository content for the specified workspace with forced consistency check.
      *
      * @param workspaceName
      *            the name of the workspace to be re-indexed
@@ -206,11 +218,25 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
      *             in case of a JCR-related error
      */
     public void scheduleReindexing(String workspaceName) throws RepositoryException {
+        this.scheduleReindexing(workspaceName, true);
+    }
+
+    /**
+     * Schedules the re-indexing of the repository content for the specified workspace.
+     *
+     * @param workspaceName
+     *            the name of the workspace to be re-indexed
+     * @param forceConsistencyCheck
+     *            force a consistency check when reindexing
+     * @throws RepositoryException
+     *             in case of a JCR-related error
+     */
+    public void scheduleReindexing(String workspaceName, boolean forceConsistencyCheck) throws RepositoryException {
         JahiaSearchIndex index = (JahiaSearchIndex) (workspaceName == null ?
                 getSystemSearchManager("default") :
                 getWorkspaceInfo(workspaceName).getSearchManager()).getQueryHandler();
 
-        index.scheduleReindexing();
+        index.scheduleReindexing(forceConsistencyCheck);
     }
 
     /**

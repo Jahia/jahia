@@ -78,7 +78,7 @@
         <lucene.version>3.6.2</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
-        <drools.version>${jbpm.version}</drools.version>
+        <drools.version>6.0.0.Final-jahia2</drools.version>
         <hibernate.version>5.5.3.Final</hibernate.version>
         <hibernate.core.version>5.5.3.Final</hibernate.core.version>
         <hibernate.validator.version>6.2.0.Final</hibernate.validator.version>

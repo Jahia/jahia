@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<parentWithChildReference xmlns:j="http://www.jahia.org/jahia/1.0"
+        xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        j:originWS="default"
+        jcr:created="2023-09-28T14:47:44.442+02:00"
+        jcr:createdBy="root"
+        jcr:lastModified="2023-09-28T16:29:21.163+02:00"
+        jcr:lastModifiedBy="root"
+        jcr:primaryType="test:rootWithReference"
+        childReference="#/child2">
+    <child
+              j:originWS="default"
+              jcr:created="2023-09-28T14:50:07.082+02:00"
+              jcr:createdBy="root"
+              jcr:lastModified="2023-09-28T16:28:39.244+02:00"
+              jcr:lastModifiedBy="root"
+              jcr:primaryType="test:childContent"/>
+    <child2
+          j:originWS="default"
+          jcr:created="2023-09-28T14:52:17.508+02:00"
+          jcr:createdBy="root"
+          jcr:lastModified="2023-09-28T16:28:58.089+02:00"
+          jcr:lastModifiedBy="root"
+          jcr:primaryType="test:childContent">
+    </child2>
+    <list jcr:primaryType="jnt:contentList">
+        <nestedNodeWithReference jcr:primaryType="test:rootWithReference" childReference="#/list/nestedNodeWithReference/child3">
+            <child3
+                    j:originWS="default"
+                    jcr:created="2023-09-28T14:50:07.082+02:00"
+                    jcr:createdBy="root"
+                    jcr:lastModified="2023-09-28T16:28:39.244+02:00"
+                    jcr:lastModifiedBy="root"
+                    jcr:primaryType="test:childContent"/>
+            <child4
+                    j:originWS="default"
+                    jcr:created="2023-09-28T14:52:17.508+02:00"
+                    jcr:createdBy="root"
+                    jcr:lastModified="2023-09-28T16:28:58.089+02:00"
+                    jcr:lastModifiedBy="root"
+                    jcr:primaryType="test:childContent">
+            </child4>
+        </nestedNodeWithReference>
+    </list>
+</parentWithChildReference>
+

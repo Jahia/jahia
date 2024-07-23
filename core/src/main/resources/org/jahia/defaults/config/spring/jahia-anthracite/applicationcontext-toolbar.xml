@@ -223,7 +223,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=repositoryexplorer-anthracite&amp;site=$siteuuid&amp;selectedPaths=$nodepath&amp;lang=$lang"/>
+                              value="$context/jahia/repository-explorer?site=$siteuuid&amp;selectedPaths=$nodepath&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>

@@ -159,7 +159,11 @@ public class WelcomeServlet extends HttpServlet {
         if (site == null && (defaultLocation == null || defaultLocation.contains(DEFAULT_SITE_HOME))) {
             userRedirect(request, response, context);
         } else {
-            redirect = getRedirectUrl(request, siteService, defaultSite, site, redirect, defaultLocation, mapping);
+            redirect = getRedirectPath(request, siteService, defaultSite, site, redirect, defaultLocation, mapping);
+            // Add query string to the redirect URL
+            if (request.getQueryString() != null) {
+                redirect += "?" + request.getQueryString();
+            }
             if (redirect == null) {
                 redirect(request.getContextPath() + DASHBOARD_HOME, response);
                 return;
@@ -168,8 +172,8 @@ public class WelcomeServlet extends HttpServlet {
         }
     }
 
-    private String getRedirectUrl(HttpServletRequest request, JahiaSitesService siteService, JahiaSite defaultSite, JCRSiteNode site,
-            String redirect, String defaultLocation, String mapping) throws JahiaException, RepositoryException {
+    private String getRedirectPath(HttpServletRequest request, JahiaSitesService siteService, JahiaSite defaultSite, JCRSiteNode site,
+                                   String redirect, String defaultLocation, String mapping) throws JahiaException, RepositoryException {
         defaultSite = defaultSite == null ? siteService.getDefaultSite() : defaultSite;
         String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
 

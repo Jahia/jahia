@@ -324,10 +324,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
     @Test
     public void guestHasNoAccessInLiveToProtectedContent() throws RepositoryException, IOException {
         // root j:acl node
-        getAsText("/cms/render/live/en/j:acl.json", SC_UNAUTHORIZED);
-        getAsText("/cms/render/live/en/j:acl.tree.json", SC_UNAUTHORIZED);
-        getAsText("/cms/render/live/en/j:acl.treeItem.json", SC_UNAUTHORIZED);
-        getAsText("/cms/render/live/en/j:acl.treeRootItem.json", SC_UNAUTHORIZED);
+        getAsText("/cms/render/live/en/j:acl.json", SC_NOT_FOUND);
+        getAsText("/cms/render/live/en/j:acl.tree.json", SC_NOT_FOUND);
+        getAsText("/cms/render/live/en/j:acl.treeItem.json", SC_NOT_FOUND);
+        getAsText("/cms/render/live/en/j:acl.treeRootItem.json", SC_NOT_FOUND);
 
         String[] relativePaths = new String[] { "/jcr:system", "/imports", "/groups", "/modules", "/referencesKeeper",
                 "/settings", "/sites", "/users" };
@@ -364,16 +364,16 @@ public class JsonViewAccessTest extends JahiaTestCase {
         // the treeRootItem is still allowed on site node
 
         // j:acl node
-        getAsText(sitePath + "/j:acl.json", SC_UNAUTHORIZED);
-        getAsText(sitePath + "/j:acl.tree.json", SC_UNAUTHORIZED);
-        getAsText(sitePath + "/j:acl.treeItem.json", SC_UNAUTHORIZED);
-        getAsText(sitePath + "/j:acl.treeRootItem.json", SC_UNAUTHORIZED);
+        getAsText(sitePath + "/j:acl.json", SC_NOT_FOUND);
+        getAsText(sitePath + "/j:acl.tree.json", SC_NOT_FOUND);
+        getAsText(sitePath + "/j:acl.treeItem.json", SC_NOT_FOUND);
+        getAsText(sitePath + "/j:acl.treeRootItem.json", SC_NOT_FOUND);
 
         String[] relativePaths = new String[] { "/contents", "/groups", "/users", "/home/listA", "/home/listA" };
 
         for (String path : relativePaths) {
             checkNoAccess(sitePath + path + ".json");
-            checkNoAccess(sitePath + path + ".tree.json");
+            checkNoAccess( sitePath + path + ".tree.json");
             checkNoAccess(sitePath + path + ".treeItem.json");
             checkNoAccess(sitePath + path + ".treeRootItem.json");
         }

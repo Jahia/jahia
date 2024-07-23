@@ -88,9 +88,9 @@
 
     <rule>
         <name>Add the /cms/render/live part</name>
-        <note>Prepend /cms/render/live to all page requests, which do not have it yet</note>
+        <note>Prepend /cms/render/live to all page requests, which do not have it yet, remove querystring to avoid duplicate params</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
-        <from>^/cms/(.*)$</from>
+        <from>^/cms/([^\?]*)(\?.*)?$</from>
         <to last="true">/cms/render/live/$1</to>
     </rule>
 

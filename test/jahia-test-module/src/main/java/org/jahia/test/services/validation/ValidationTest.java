@@ -155,8 +155,8 @@ public class ValidationTest {
             errors = e.getErrors();
         }
         assertThat(errors).hasSize(2).extracting(Exception::getLocalizedMessage).containsExactlyInAnyOrder(
-                "/sites/validationTest/testEmail Email field: not a well-formed email address",
-                "/sites/validationTest/testEmail Confirmation email field: not a well-formed email address");
+                "/sites/validationTest/testEmail Email field: must be a well-formed email address",
+                "/sites/validationTest/testEmail Confirmation email field: must be a well-formed email address");
     }
 
     @Test

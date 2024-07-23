@@ -52,6 +52,7 @@ import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
@@ -311,7 +312,7 @@ public class UrlRewriteTest extends JahiaTestCase {
         if (engine.prepareInbound(request, response)) {
             restored = engine.rewriteInbound(request, response);
         }
-        assertEquals("Restored (inbound) URL is wrong", expectedIn, restored != null ? request.getContextPath() + restored.getTarget()
+        assertEquals("Restored (inbound) URL is wrong", StringUtils.substringBefore(expectedIn,"?"), restored != null ? request.getContextPath() + restored.getTarget()
                 : out);
     }
 

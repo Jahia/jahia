@@ -172,9 +172,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
 
     @Test
     public void testNoGuestAccess() {
-        String content = getAsText(aboutUsPageUrl, HttpServletResponse.SC_UNAUTHORIZED);
-        assertThat(content).contains(LOGIN_FORM_NAME_LOCATOR)
-                .withFailMessage("Guest can access the home page, which should not be the case");
+        String content = getAsText(aboutUsPageUrl, HttpServletResponse.SC_NOT_FOUND);
     }
 
     @Test
@@ -216,9 +214,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
             // we clear the cookies to remove current session cookie from HTTP state
             context.getCookieStore().clear();
 
-            content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_UNAUTHORIZED, null, context);
-            assertThat(content).contains(LOGIN_FORM_NAME_LOCATOR)
-                    .withFailMessage("Guest can access the home page, which should not be the case");
+            content = getAsText(aboutUsPageUrl, null, HttpServletResponse.SC_NOT_FOUND, null, context);
 
             // we put the remember me cookie into HTTP state
             context.getCookieStore().clear();

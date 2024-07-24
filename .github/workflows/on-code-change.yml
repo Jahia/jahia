@@ -157,7 +157,7 @@ jobs:
           should_use_build_artifacts: false
           should_skip_testrail: false
           should_skip_zencrepes: true
-          github_artifact_name: jahia-integ-tests-${{ github.run_number }}
+          github_artifact_name: jahia-private-integ-tests-${{ github.run_number }}
           jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
           docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}

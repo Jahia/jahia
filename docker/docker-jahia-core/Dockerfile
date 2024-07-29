@@ -118,8 +118,8 @@ RUN printf "I'm building for TARGETPLATFORM=${TARGETPLATFORM}" \
     && printf "and  uname -m : " && uname -m
 
 # Add container user and grant permissions
-RUN groupadd -g 999 ${C_GROUP}
-RUN useradd -r -u 999 -g ${C_GROUP} ${C_USER} -d /home/${C_USER} -m
+RUN groupadd -g 9999 ${C_GROUP}
+RUN useradd -r -u 9999 -g ${C_GROUP} ${C_USER} -d /home/${C_USER} -m
 
 # Prepare data folders
 RUN mkdir -p ${DATA_FOLDER}/info ${DATA_FOLDER}/repository ${DATA_FOLDER}/modules ${DATA_FOLDER}/patches/provisioning ${LOGS_FOLDER} \

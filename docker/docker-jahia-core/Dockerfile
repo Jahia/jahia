@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk11
+FROM tomcat:9-jdk11-temurin-jammy
 
 LABEL maintainer="Jahia Product team <product@jahia.com>"
 

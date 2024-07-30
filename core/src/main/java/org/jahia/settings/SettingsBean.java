@@ -174,6 +174,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean expandImportedFilesOnDisk;
     private String expandImportedFilesOnDiskPath;
     private int accessManagerPathPermissionCacheMaxSize = 100;
+    private int nodesCachePerSessionMaxSize = 100;
     private int queryApproxCountLimit;
     private boolean readOnlyMode;
     private DataSource dataSource;
@@ -437,6 +438,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath", "/tmp");
 
             accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
+
+            nodesCachePerSessionMaxSize = getInt("jahia.jcr.nodesCachePerSessionMaxSize", 100);
 
             queryApproxCountLimit = getInt("queryApproxCountLimit", 100);
 
@@ -1429,6 +1432,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     @Override
     public int getAccessManagerPathPermissionCacheMaxSize() {
         return accessManagerPathPermissionCacheMaxSize;
+    }
+
+    @Override
+    public int getNodesCachePerSessionMaxSize() {
+        return nodesCachePerSessionMaxSize;
     }
 
     @Override

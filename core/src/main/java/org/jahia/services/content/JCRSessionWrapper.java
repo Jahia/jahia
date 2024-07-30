@@ -61,6 +61,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
+import org.jahia.utils.CollectionUtils;
 import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
@@ -132,8 +133,8 @@ public class JCRSessionWrapper implements Session {
 
     private final Map<JCRStoreProvider, Session> sessions = new HashMap<>();
 
-    private final Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<>();
-    private final Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<>();
+    private final Map<String, JCRNodeWrapper> sessionCacheByPath;
+    private final Map<String, JCRNodeWrapper> sessionCacheByIdentifier;
     private final Map<String, JCRNodeWrapper> newNodes = new HashMap<>();
     private final Map<String, JCRNodeWrapper> changedNodes = new HashMap<>();
 
@@ -182,11 +183,16 @@ public class JCRSessionWrapper implements Session {
         if (!isSystem) {
             activeSessions.incrementAndGet();
         }
-        if (SettingsBean.getInstance().isDevelopmentMode()) {
+        SettingsBean settingsBean = SettingsBean.getInstance();
+        if (settingsBean.isDevelopmentMode()) {
             thisSessionTrace = new Exception((isSystem ? "System " : "") + "Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
         } else {
             thisSessionTrace = new Exception((isSystem ? "System " : "") + "Session: " + uuid);
         }
+
+        int nodeCacheSize = settingsBean.getNodesCachePerSessionMaxSize();
+        this.sessionCacheByPath = nodeCacheSize > 0 ? CollectionUtils.lruCache(nodeCacheSize) : new HashMap<>();
+        this.sessionCacheByIdentifier = nodeCacheSize > 0 ? CollectionUtils.lruCache(nodeCacheSize) : new HashMap<>();
 
         activeSessionsObjects.put(uuid, this);
     }

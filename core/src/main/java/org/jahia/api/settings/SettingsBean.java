@@ -296,6 +296,8 @@ public interface SettingsBean {
 
     int getAccessManagerPathPermissionCacheMaxSize();
 
+    int getNodesCachePerSessionMaxSize();
+
     int getQueryApproxCountLimit();
 
     /**

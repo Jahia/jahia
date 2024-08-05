@@ -86,7 +86,7 @@ public class ImportSite implements Operation {
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
         try {
-            jcrTemplate.doExecuteWithSystemSession(session -> {
+            jcrTemplate.doExecuteWithLongSystemSession(session -> {
                 List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, IMPORT_SITE, "url");
                 for (Map<String, Object> subEntry : entries) {
                     try {

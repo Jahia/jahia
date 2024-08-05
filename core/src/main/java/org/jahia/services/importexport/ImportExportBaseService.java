@@ -43,7 +43,6 @@
 package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.collections.set.ListOrderedSet;
@@ -196,7 +195,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private Map<String, Templates> xsltTemplates = new ConcurrentHashMap<>(2);
     private LegacyPidMappingTool legacyPidMappingTool = null;
     private PostImportPatcher postImportPatcher = null;
-    
+
     private ImportExportBaseService() {
     }
 
@@ -474,7 +473,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             bw.flush();
 
             Set<String> externalReferences = new HashSet<>();
-            JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
+            JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession().disableSessionCache();
 
             exportSites(params, sites, serverDirectory, zout, externalReferences);
             exportUsers(params, serverDirectory, zout, externalReferences, session);
@@ -623,7 +622,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
         exportSiteInfos(zout, site);
-        final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
+        final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession().disableSessionCache();
         JCRNodeWrapper node = session.getNode(String.format("/sites/%s", site.getSiteKey()));
         Set<JCRNodeWrapper> nodes = Collections.singleton(node);
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, siteExportNodeTypesToIgnore,
@@ -683,7 +682,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         if (params.containsKey(INCLUDE_LIVE_EXPORT) &&
                 params.get(INCLUDE_LIVE_EXPORT) != null &&
                 Boolean.TRUE.equals(params.get(INCLUDE_LIVE_EXPORT))) {
-            final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live");
+            final JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live").disableSessionCache();
             try {
                 exportLiveRootNodeIfPossible(rootNode, nodes, zout, typesToIgnore, externalReferences, params, logProgress, liveSortedNodes, liveSession);
             } catch (RepositoryException e) {
@@ -1819,7 +1818,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     @Override
     public List<String[]> importUsers(final File file) throws IOException, RepositoryException {
         try (InputStream is = new BufferedInputStream(new FileInputStream(file));) {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String[]>>() {
+            return JCRTemplate.getInstance().doExecuteWithLongSystemSession(new JCRCallback<List<String[]>>() {
 
                 @Override
                 public List<String[]> doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -1876,16 +1875,15 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         XMLFormatDetectionHandler handler = new XMLFormatDetectionHandler();
         try {
             SAXParser parser = JahiaSAXParserFactory.newInstance().newSAXParser();
-
             parser.parse(is, handler);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return handler.getType();
     }
 
     @Override
     public void importXML(final String parentNodePath, InputStream content, final int rootBehavior) throws IOException, RepositoryException, JahiaException {
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession().disableSessionCache();
         final HashMap<String, List<String>> references = new HashMap<>();
         importXML(parentNodePath, content, rootBehavior, references, session);
         ReferencesHelper.resolveCrossReferences(session, references);
@@ -1948,7 +1946,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importZip(final String parentNodePath, final Resource file, final int rootBehavior) throws IOException, RepositoryException {
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null);
+        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession().disableSessionCache();
         importZip(parentNodePath, file, rootBehavior, session);
     }
 
@@ -2180,8 +2178,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 if (name.equals(LIVE_REPOSITORY_XML) && jcrStoreService.getSessionFactory().getCurrentUser() != null) {
                     long timerUGC = System.currentTimeMillis();
                     logger.info("Start importing user generated content");
-                    JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession(
-                            "live", null, null);
+                    JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live").disableSessionCache();
                     DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(
                             liveSession, parentNodePath, file, fileList);
 

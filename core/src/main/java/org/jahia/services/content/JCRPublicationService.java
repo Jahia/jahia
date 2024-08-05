@@ -144,7 +144,7 @@ public class JCRPublicationService extends JahiaService {
     public void lockForPublication(final List<String> publicationInfo, final String workspace,
                                    final String key) throws RepositoryException {
         JCRTemplate.getInstance()
-                .doExecuteWithSystemSessionAsUser(getSessionFactory().getCurrentUserSession(workspace).getUser(),
+                .doExecuteWithLongSystemSessionAsUser(getSessionFactory().getCurrentUserSession(workspace).getUser(),
                         workspace, null, new JCRCallback<Object>() {
 
                             @Override
@@ -173,7 +173,7 @@ public class JCRPublicationService extends JahiaService {
     public void unlockForPublication(final List<String> publicationInfo, final String workspace,
                                      final String key) throws RepositoryException {
         JCRTemplate.getInstance()
-                .doExecuteWithSystemSessionAsUser(getSessionFactory().getCurrentUserSession(workspace).getUser(),
+                .doExecuteWithLongSystemSessionAsUser(getSessionFactory().getCurrentUserSession(workspace).getUser(),
                         workspace, null, new JCRCallback<Object>() {
 
                             @Override
@@ -288,11 +288,11 @@ public class JCRPublicationService extends JahiaService {
         }
 
         if (!checkedUuids.isEmpty()) {
-            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, sourceWorkspace, null, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithLongSystemSessionAsUser(user, sourceWorkspace, null, new JCRCallback<Object>() {
 
                 @Override
                 public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, destinationWorkspace, null, new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithLongSystemSessionAsUser(user, destinationWorkspace, null, new JCRCallback<Object>() {
 
                         @Override
                         public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
@@ -347,7 +347,7 @@ public class JCRPublicationService extends JahiaService {
                 batch.clear();
             }
 
-            if (uuidsToPublish.size() > 0) {
+            if (!uuidsToPublish.isEmpty()) {
                 doPublish(uuidsToPublish, sourceSession, destinationSession, updateMetadata, comments);
             }
 
@@ -1069,11 +1069,11 @@ public class JCRPublicationService extends JahiaService {
                 return null;
             }
         };
-        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, EDIT_WORKSPACE, null, callback);
+        JCRTemplate.getInstance().doExecuteWithLongSystemSessionAsUser(user, EDIT_WORKSPACE, null, callback);
 
         JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, LIVE_WORKSPACE, null, callback);
+            JCRTemplate.getInstance().doExecuteWithLongSystemSessionAsUser(user, LIVE_WORKSPACE, null, callback);
         } finally {
             JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
         }
@@ -1156,7 +1156,9 @@ public class JCRPublicationService extends JahiaService {
                                                     final String sourceWorkspace, final String destinationWorkspace)
             throws RepositoryException {
         final JCRSessionWrapper sourceSession = sessionFactory.getCurrentUserSession(sourceWorkspace);
+        sourceSession.disableSessionCache();
         final JCRSessionWrapper destinationSession = sessionFactory.getCurrentUserSession(destinationWorkspace);
+        destinationSession.disableSessionCache();
         return getPublicationInfo(uuid, languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession);
     }
 

@@ -119,7 +119,7 @@ public class FindHistory extends BaseFindController {
                 return;
             }
 
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale()).disableSessionCache();
 
             writeResults(l, session, request, response);
         } catch (IllegalArgumentException e) {

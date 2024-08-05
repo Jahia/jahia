@@ -48,14 +48,14 @@ import javax.jcr.RepositoryException;
 import java.util.Locale;
 
 /**
- * Helper class to simplify and unify JCR data access.
- * <p/>
+ * Helper class to simplify and unify JCR data access.<br/>
+ * <br/>
  * The template is taking care of properly opening and closing sessions, so it does not
- * need to be done by the callback actions.
- * <p/>
+ * need to be done by the callback actions.<br/>
+ * <br/>
  * Data access or business logic service should rather use this template
- * than managing sessions by themselves.
- * <p/>
+ * than managing sessions by themselves.<br/>
+ * <br/>
  * Requires a {@link JCRSessionFactory} to provide access to a JCR repository.
  *
  * @author Cedric Mailleux
@@ -92,26 +92,11 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
         this.sessionFactory = sessionFactory;
     }
 
-    /**
-     * @return Returns the sessionFactory.
-     */
     @Override
     public JCRSessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
-    /**
-     * Execute the action specified by the given callback object within a system Session.
-     * <p/>
-     * The workspace and locale will be extracted by the current user session. This method assumes a current session
-     * is available, and will generate a RepositoryException if there is no current session.
-     * @param callback callback the <code>JCRCallback</code> that executes the client
-     *                 operation
-     * @param <X> the resulting object to return from the callback.
-     * @return a result object returned by the action, or null
-     * @throws RepositoryException if the method could not find a current user session, or if any other underlying
-     * JCR error occurred.
-     */
     @Override
     public <X> X doExecuteWithSystemSessionInSameWorkspaceAndLocale(JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
@@ -121,18 +106,6 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
         return doExecuteWithSystemSessionAsUser(null, session.getWorkspace().getName(), session.getLocale(), callback);
     }
 
-    /**
-     * Execute the action specified by the given callback object within a system Session.
-     * <p/>
-     * The workspace logged into will be the repository's default workspace. The user
-     * will be the current user of the thread obtained by JcrSessionFilter.getCurrentUser().
-     * The locale will be "default".
-     *
-     * @param callback the <code>JCRCallback</code> that executes the client
-     *                 operation
-     * @return a result object returned by the action, or null
-     * @throws RepositoryException in case of JCR errors
-     */
     @Override
     public <X> X doExecuteWithSystemSession(JCRCallback<X> callback) throws RepositoryException {
         return doExecuteWithSystemSessionAsUser(null, null, null, callback);
@@ -173,28 +146,29 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
         }
     }
 
-    /**
-     * Execute the action specified by the given callback object within a system Session.
-     * <p/>
-     * The workspace logged into will be the one given by the parameter or if null, the repository's
-     * default workspace will be taken.
-     * The user will be the one passed by the parameter or if null the current user of the thread
-     * obtained by JcrSessionFilter.getCurrentUser() will be taken.
-     * The locale will be "default".
-     *
-     * @param user           the user to open the session with
-     * @param workspace      the workspace name to log into
-     * @param locale         the locale of the session, null to use unlocalized session
-     * @param callback       the <code>JCRCallback</code> that executes the client
-     *                       operation
-     * @return a result object returned by the action, or null
-     * @throws RepositoryException in case of JCR errors
-     */
+    @Override
+    public <X> X doExecuteWithLongSystemSession(JCRCallback<X> callback) throws RepositoryException {
+        return doExecuteWithLongSystemSessionAsUser(null, null, null, callback);
+    }
+
     @Override
     public <X> X doExecuteWithSystemSessionAsUser(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
             session = sessionFactory.getSystemSession(user != null ? user.getUsername() : null, user != null ? user.getRealm() : null, workspace, locale);
+            return callback.doInJCR(session);
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
+        }
+    }
+
+    @Override
+    public <X> X doExecuteWithLongSystemSessionAsUser(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
+        JCRSessionWrapper session = null;
+        try {
+            session = sessionFactory.getSystemSession(user != null ? user.getUsername() : null, user != null ? user.getRealm() : null, workspace, locale).disableSessionCache();
             return callback.doInJCR(session);
         } finally {
             if (session != null) {
@@ -235,23 +209,6 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
         }
     }
 
-    /**
-     * Execute the action specified by the given callback object within a new user Session.
-     * <p/>
-     * The workspace logged into will be the one given by the parameter or if null, the repository's
-     * default workspace will be taken.
-     * The user will be the one passed by the parameter or if null the current user of the thread
-     * obtained by JcrSessionFilter.getCurrentUser() will be taken.
-     * The locale will be "default".
-     *
-     * @param user      the user to open the session with
-     * @param workspace the workspace name to log into
-     * @param locale    the locale of the session, null to use unlocalized session
-     * @param callback  the <code>JCRCallback</code> that executes the client
-     *                  operation
-     * @return a result object returned by the action, or null
-     * @throws RepositoryException in case of JCR errors
-     */
     @Override
     public <X> X doExecute(String username, String realm, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
@@ -265,23 +222,6 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
         }
     }
 
-    /**
-     * Execute the action specified by the given callback object within a new user Session.
-     * <p/>
-     * The workspace logged into will be the one given by the parameter or if null, the repository's
-     * default workspace will be taken.
-     * The user will be the one passed by the parameter or if null the current user of the thread
-     * obtained by JcrSessionFilter.getCurrentUser() will be taken.
-     * The locale will be "default".
-     *
-     * @param user      the user to open the session with
-     * @param workspace the workspace name to log into
-     * @param locale    the locale of the session, null to use unlocalized session
-     * @param callback  the <code>JCRCallback</code> that executes the client
-     *                  operation
-     * @return a result object returned by the action, or null
-     * @throws RepositoryException in case of JCR errors
-     */
     @Override
     public <X> X doExecute(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
@@ -316,6 +256,19 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
             return doExecuteWithSystemSession(username, workspace, callback);
         } else {
             return doExecuteWithUserSession(username, workspace, callback);
+        }
+    }
+
+    @Override
+    public <X> X doExecuteWithLongSession(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
+        JCRSessionWrapper session = null;
+        try {
+            session = sessionFactory.getUserSession(user != null ? user.getUsername() : null, user != null ? user.getRealm() : null, workspace, locale).disableSessionCache();
+            return callback.doInJCR(session);
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
         }
     }
 

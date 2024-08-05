@@ -159,11 +159,23 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         return getCurrentSession(workspace, locale, fallbackLocale, false);
     }
 
+    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale, Locale fallbackLocale, JCRSessionCacheStatus cacheStatus) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, false, cacheStatus);
+    }
+
     public JCRSessionWrapper getCurrentSystemSession(String workspace, Locale locale, Locale fallbackLocale) throws RepositoryException {
         return getCurrentSession(workspace, locale, fallbackLocale, true);
     }
 
+    public JCRSessionWrapper getCurrentSystemSession(String workspace, Locale locale, Locale fallbackLocale, JCRSessionCacheStatus cacheStatus) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, true, cacheStatus);
+    }
+
     public JCRSessionWrapper getCurrentSession(String workspace, Locale locale, Locale fallbackLocale, boolean system) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, system, JCRSessionCacheStatus.ENABLED);
+    }
+
+    public JCRSessionWrapper getCurrentSession(String workspace, Locale locale, Locale fallbackLocale, boolean system, JCRSessionCacheStatus cacheStatus) throws RepositoryException {
         // thread user session might be initialized/closed in an HTTP filter, instead of keeping it
         ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> sessionThreadLocal = system ? systemSession : userSession;
 
@@ -217,7 +229,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                 wsMap.put(key, s);
             }
         }
+
+        if ((cacheStatus.equals(JCRSessionCacheStatus.DISABLED))) {
+            s.disableSessionCache();
+        } else {
+            s.enableSessionCache();
+        }
         s.setReadOnlyCacheEnabled(getReadOnlyCacheEnabled());
+
         return s;
     }
 

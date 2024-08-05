@@ -50,14 +50,14 @@ import javax.jcr.RepositoryException;
 import java.util.Locale;
 
 /**
- * Helper class to simplify and unify JCR data access.
- * <p/>
+ * Helper class to simplify and unify JCR data access.<br/>
+ * <br/>
  * The template is taking care of properly opening and closing sessions, so it does not
- * need to be done by the callback actions.
- * <p/>
+ * need to be done by the callback actions.<br/>
+ * <br/>
  * Data access or business logic service should rather use this template
- * than managing sessions by themselves.
- * <p/>
+ * than managing sessions by themselves.<br/>
+ * <br/>
  * Requires a {@link JCRSessionFactory} to provide access to a JCR repository.
  *
  * @author Cedric Mailleux
@@ -69,8 +69,8 @@ public interface JCRTemplate {
     JCRSessionFactory getSessionFactory();
 
     /**
-     * Execute the action specified by the given callback object within a system Session.
-     * <p/>
+     * Execute the action specified by the given callback object within a system Session.<br/>
+     * <br/>
      * The workspace and locale will be extracted by the current user session. This method assumes a current session
      * is available, and will generate a RepositoryException if there is no current session.
      * @param callback callback the <code>JCRCallback</code> that executes the client
@@ -83,10 +83,10 @@ public interface JCRTemplate {
     <X> X doExecuteWithSystemSessionInSameWorkspaceAndLocale(JCRCallback<X> callback) throws RepositoryException;
 
     /**
-     * Execute the action specified by the given callback object within a system Session.
-     * <p/>
+     * Execute the action specified by the given callback object within a system Session.<br/>
+     * <br/>
      * The workspace logged into will be the repository's default workspace. The user
-     * will be the current user of the thread obtained by JcrSessionFilter.getCurrentUser().
+     * will be the current user of the thread obtained by JcrSessionFilter.getCurrentUser().<br/>
      * The locale will be "default".
      *
      * @param callback the <code>JCRCallback</code> that executes the client
@@ -97,12 +97,30 @@ public interface JCRTemplate {
     <X> X doExecuteWithSystemSession(JCRCallback<X> callback) throws RepositoryException;
 
     /**
+     * Execute the action specified by the given callback object within a system Session optimized for operations
+     * on many nodes (Session cache will be disabled to optimize memory footprint).<br/>
+     * <br/>
+     * The workspace logged into will be the repository's default workspace. The user
+     * will be the current user of the thread obtained by JcrSessionFilter.getCurrentUser().<br/>
+     * The locale will be "default".<br/>
+     * <br/>
+     * You need to takes into consideration that a 'long' session must not exceed some thresholds anyway, like about 100+ nodes created
+     * or modified (write cache still in use). In such situation you may split/batch your work and call the JCRSessionWrapper.save()
+     * method regularly to flush write caches.
+     *
+     * @param callback the <code>JCRCallback</code> that executes the client operation
+     * @return a result object returned by the action, or null
+     * @throws RepositoryException in case of JCR errors
+     */
+    <X> X doExecuteWithLongSystemSession(JCRCallback<X> callback) throws RepositoryException;
+
+    /**
      * Execute the action specified by the given callback object within a system Session.
      * <p/>
      * The workspace logged into will be the one given by the parameter or if null, the repository's
-     * default workspace will be taken.
+     * default workspace will be taken.<br/>
      * The user will be the one passed by the parameter or if null the current user of the thread
-     * obtained by JcrSessionFilter.getCurrentUser() will be taken.
+     * obtained by JcrSessionFilter.getCurrentUser() will be taken.<br/>
      * The locale will be "default".
      *
      * @param user           the user to open the session with
@@ -116,15 +134,39 @@ public interface JCRTemplate {
     <X> X doExecuteWithSystemSessionAsUser(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException;
 
     /**
-     * Execute the action specified by the given callback object within a new user Session.
-     * <p/>
+     * Execute the action specified by the given callback object within a system Session optimized for operations
+     * on many nodes (Session cache will be disabled to optimize memory footprint).<br/>
+     * <br/>
      * The workspace logged into will be the one given by the parameter or if null, the repository's
-     * default workspace will be taken.
+     * default workspace will be taken.<br/>
      * The user will be the one passed by the parameter or if null the current user of the thread
-     * obtained by JcrSessionFilter.getCurrentUser() will be taken.
+     * obtained by JcrSessionFilter.getCurrentUser() will be taken.<br/>
+     * The locale will be "default".<br/>
+     * <br/>
+     * You need to takes into consideration that a 'long' session must not exceed some thresholds anyway, like about 100+ nodes created
+     * or modified (write cache still in use). In such situation you may split/batch your work and call the JCRSessionWrapper.save()
+     * method regularly to flush write caches.
+     *
+     * @param user           the user to open the session with
+     * @param workspace      the workspace name to log into
+     * @param locale         the locale of the session, null to use unlocalized session
+     * @param callback       the <code>JCRCallback</code> that executes the client
+     *                       operation
+     * @return a result object returned by the action, or null
+     * @throws RepositoryException in case of JCR errors
+     */
+    <X> X doExecuteWithLongSystemSessionAsUser(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException;
+
+    /**
+     * Execute the action specified by the given callback object within a new user Session.<br/>
+     * <br/>
+     * The workspace logged into will be the one given by the parameter or if null, the repository's
+     * default workspace will be taken.<br/>
+     * The user will be the one passed by the parameter or if null the current user of the thread
+     * obtained by JcrSessionFilter.getCurrentUser() will be taken.<br/>
      * The locale will be "default".
      *
-     * @param user      the user to open the session with
+     * @param username  the username to open the session with
      * @param workspace the workspace name to log into
      * @param locale    the locale of the session, null to use unlocalized session
      * @param callback  the <code>JCRCallback</code> that executes the client
@@ -135,12 +177,12 @@ public interface JCRTemplate {
     <X> X doExecute(String username, String realm, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException;
 
     /**
-     * Execute the action specified by the given callback object within a new user Session.
-     * <p/>
+     * Execute the action specified by the given callback object within a new user Session.<br/>
+     * <br/>
      * The workspace logged into will be the one given by the parameter or if null, the repository's
-     * default workspace will be taken.
+     * default workspace will be taken.<br/>
      * The user will be the one passed by the parameter or if null the current user of the thread
-     * obtained by JcrSessionFilter.getCurrentUser() will be taken.
+     * obtained by JcrSessionFilter.getCurrentUser() will be taken.<br/>
      * The locale will be "default".
      *
      * @param user      the user to open the session with
@@ -152,4 +194,27 @@ public interface JCRTemplate {
      * @throws RepositoryException in case of JCR errors
      */
     <X> X doExecute(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException;
+
+    /**
+     * Execute the action specified by the given callback object within a new user Session optimized for operations
+     * on many nodes (Session cache will be disabled to optimize memory footprint).<br/>
+     * <br/>
+     * The workspace logged into will be the one given by the parameter or if null, the repository's
+     * default workspace will be taken.<br/>
+     * The user will be the one passed by the parameter or if null the current user of the thread
+     * obtained by JcrSessionFilter.getCurrentUser() will be taken.<br/>
+     * The locale will be "default".<br/>
+     * <br/>
+     * You need to takes into consideration that a 'long' session must not exceed some thresholds anyway, like about 100+ nodes created
+     * or modified (write cache still in use). In such situation you may split/batch your work and call the JCRSessionWrapper.save()
+     * method regularly to flush write caches.
+    *
+     * @param user      the user to open the session with
+     * @param workspace the workspace name to log into
+     * @param locale    the locale of the session, null to use unlocalized session
+     * @param callback  the <code>JCRCallback</code> that executes the client operation
+     * @return a result object returned by the action, or null
+     * @throws RepositoryException in case of JCR errors
+     */
+    <X> X doExecuteWithLongSession(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException;
 }

@@ -61,6 +61,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
+import org.jahia.utils.FakeMap;
 import org.jahia.utils.CollectionUtils;
 import org.jahia.utils.i18n.JahiaLocaleContextHolder;
 import org.jahia.utils.i18n.Messages;
@@ -133,8 +134,8 @@ public class JCRSessionWrapper implements Session {
 
     private final Map<JCRStoreProvider, Session> sessions = new HashMap<>();
 
-    private final Map<String, JCRNodeWrapper> sessionCacheByPath;
-    private final Map<String, JCRNodeWrapper> sessionCacheByIdentifier;
+    private Map<String, JCRNodeWrapper> sessionCacheByPath;
+    private Map<String, JCRNodeWrapper> sessionCacheByIdentifier;
     private final Map<String, JCRNodeWrapper> newNodes = new HashMap<>();
     private final Map<String, JCRNodeWrapper> changedNodes = new HashMap<>();
 
@@ -154,6 +155,7 @@ public class JCRSessionWrapper implements Session {
     private Locale fallbackLocale;
     private String versionLabel;
 
+    private JCRSessionCacheStatus sessionCacheStatus = JCRSessionCacheStatus.ENABLED;
     private boolean readOnlyCacheEnabled = false;
 
     private static final AtomicLong activeSessions = new AtomicLong(0L);
@@ -190,10 +192,7 @@ public class JCRSessionWrapper implements Session {
             thisSessionTrace = new Exception((isSystem ? "System " : "") + "Session: " + uuid);
         }
 
-        int nodeCacheSize = settingsBean.getNodesCachePerSessionMaxSize();
-        this.sessionCacheByPath = nodeCacheSize > 0 ? CollectionUtils.lruCache(nodeCacheSize) : new HashMap<>();
-        this.sessionCacheByIdentifier = nodeCacheSize > 0 ? CollectionUtils.lruCache(nodeCacheSize) : new HashMap<>();
-
+        this.initSessionCache();
         activeSessionsObjects.put(uuid, this);
     }
 
@@ -1416,6 +1415,60 @@ public class JCRSessionWrapper implements Session {
 
     public String getIdentifier() {
         return uuid.toString();
+    }
+
+    /**
+     * Returns the status of the internal session cache
+     *
+     * @return true if the cache is active, false otherwise
+     */
+    public boolean isSessionCacheEnabled() {
+        return sessionCacheStatus.equals(JCRSessionCacheStatus.ENABLED);
+    }
+
+    /**
+     * Enable the internal node session cache on the JCRSessionWrapper instance. The methods return the JCRSessionWrapper instance to allow chaining.
+     * The cache size is determined by the configuration file /etc/config/jahia.properties (default to 100)
+     * By default the cache is already activated on each session.
+     *
+     * @return the JCRSessionWrapper instance
+     */
+    public synchronized JCRSessionWrapper enableSessionCache() {
+        if (this.sessionCacheStatus.equals(JCRSessionCacheStatus.DISABLED)) {
+            this.sessionCacheStatus = JCRSessionCacheStatus.ENABLED;
+            this.initSessionCache();
+        }
+        return this;
+    }
+
+    /**
+     * Disable the internal node session cache on the JCRSessionWrapper instance. The methods return the JCRSessionWrapper instance to allow chaining.
+     * Disabling the cache can avoid excessive memory usage in some specific processes (crawling node tree, import, export, ...)
+     * It should be used only in specific cases when you are sure there is no benefits in caching nodes ; when each node is accessed only once for example.
+     * <code>JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).disableSessionCache();</code>
+     * You can also reactivate the cache in any time during the session life.
+     * Calling that methods multiple times will have no effect.
+     * By default, cache is activated on all sessions.
+     *
+     * @return the JCRSessionWrapper instance
+     */
+    public synchronized JCRSessionWrapper disableSessionCache() {
+        if (this.sessionCacheStatus.equals(JCRSessionCacheStatus.ENABLED)) {
+            this.sessionCacheStatus = JCRSessionCacheStatus.DISABLED;
+            this.initSessionCache();
+        }
+        return this;
+    }
+
+    private void initSessionCache() {
+        if (this.sessionCacheStatus.equals(JCRSessionCacheStatus.DISABLED)) {
+            sessionCacheByIdentifier = new FakeMap<>();
+            sessionCacheByPath = new FakeMap<>();
+        } else {
+            int nodeCacheSize = SettingsBean.getInstance().getNodesCachePerSessionMaxSize();
+            this.sessionCacheByPath = nodeCacheSize > 0 ? CollectionUtils.lruCache(nodeCacheSize) : new HashMap<>();
+            this.sessionCacheByIdentifier = nodeCacheSize > 0 ? CollectionUtils.lruCache(nodeCacheSize) : new HashMap<>();
+        }
     }
 
     public boolean isReadOnlyCacheEnabled() {

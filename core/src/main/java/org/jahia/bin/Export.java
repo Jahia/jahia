@@ -50,10 +50,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
@@ -136,7 +133,7 @@ public class Export extends JahiaController implements ServletContextAware {
             String nodePath = JCRContentUtils.escapeNodePath(String.format("/%s", m.group(2)));
             String exportFormat = m.group(3);
             JCRNodeWrapper exportRoot = null;
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).disableSessionCache();
             Map<String, Object> params = getRequestParams(request);
 
             if (StringUtils.isNotEmpty(request.getParameter("exportformat"))) {

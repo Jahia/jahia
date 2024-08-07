@@ -387,24 +387,29 @@
         </property>
     </bean>
 
-    <bean id="RequestLoadAverage" class="org.jahia.utils.RequestLoadAverage" init-method="start" destroy-method="stop">
+    <bean id="LoadAverageExecutor" class="org.jahia.utils.LoadAverageExecutor" destroy-method="stop"/>
+
+    <bean id="RequestLoadAverage" class="org.jahia.utils.RequestLoadAverage" init-method="start" destroy-method="stop" depends-on="LoadAverageExecutor">
         <constructor-arg index="0" value="request-loadaverage"/>
+        <property name="executor" ref="LoadAverageExecutor"/>
         <property name="displayName" value="Jahia Request Load"/>
         <property name="loggingTriggerValue" value="${requestLoadAverage.loggingTriggerValue:2.0}"/>
         <property name="threadDumpTriggerValue" value="${requestLoadAverage.threadDumpTriggerValue:20.0}"/>
         <property name="threadDumpOnHighLoad" value="${requestLoadAverage.threadDumpOnHighLoad:false}"/>
     </bean>
 
-    <bean id="JCRSessionLoadAverage" class="org.jahia.utils.JCRSessionLoadAverage" init-method="start" destroy-method="stop">
+    <bean id="JCRSessionLoadAverage" class="org.jahia.utils.JCRSessionLoadAverage" init-method="start" destroy-method="stop" depends-on="LoadAverageExecutor">
         <constructor-arg index="0" value="jcrsession-loadaverage"/>
+        <property name="executor" ref="LoadAverageExecutor"/>
         <property name="displayName" value="Jahia JCR Session Load"/>
         <property name="loggingTriggerValue" value="${jcrSessionLoadAverage.loggingTriggerValue:10.0}"/>
         <property name="threadDumpTriggerValue" value="${jcrSessionLoadAverage.threadDumpTriggerValue:20.0}"/>
         <property name="threadDumpOnHighLoad" value="${jcrSessionLoadAverage.threadDumpOnHighLoad:false}"/>
     </bean>
 
-    <bean id="JCRNodeCacheLoadAverage" class="org.jahia.utils.JCRNodeCacheLoadAverage" init-method="start" destroy-method="stop">
-        <constructor-arg index="0" value="jcrsession-loadaverage"/>
+    <bean id="JCRNodeCacheLoadAverage" class="org.jahia.utils.JCRNodeCacheLoadAverage" init-method="start" destroy-method="stop" depends-on="LoadAverageExecutor">
+        <constructor-arg index="0" value="nodecache-loadaverage"/>
+        <property name="executor" ref="LoadAverageExecutor"/>
         <property name="displayName" value="Jahia Node Cache Load"/>
         <property name="loggingTriggerValue" value="${jcrNodeCacheLoadAverage.loggingTriggerValue:10000.0}"/>
         <property name="threadDumpTriggerValue" value="${jcrNodeCacheLoadAverage.threadDumpTriggerValue:20000.0}"/>

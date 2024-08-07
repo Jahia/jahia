@@ -46,9 +46,12 @@ import org.jahia.tools.jvm.ThreadMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class makes it easy to calculate a load average, using an average calculation like the following formula:
@@ -66,7 +69,7 @@ public abstract class LoadAverage implements Runnable {
     protected double fiveMinuteLoad = 0.0;
     protected double fifteenMinuteLoad = 0.0;
 
-    private long calcFreqMillis = 5000;
+    protected long calcFreqMillis = 5000;
     private double loggingTriggerValue;
     private double threadDumpTriggerValue;
 
@@ -113,8 +116,15 @@ public abstract class LoadAverage implements Runnable {
 
     private boolean threadDumpOnHighLoad;
 
-    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private ScheduledFuture<?> scheduledFuture;
+    private LoadAverageExecutor executor;
+
+    public void setExecutor(LoadAverageExecutor executor) {
+        this.executor = executor;
+    }
+
+    public LoadAverageExecutor getExecutor() {
+        return executor;
+    }
 
     public LoadAverage(String threadName) {
         this.threadName = threadName;
@@ -122,7 +132,7 @@ public abstract class LoadAverage implements Runnable {
 
     public void start() {
         if (calcFreqMillis > 0) {
-            scheduledFuture = executor.scheduleWithFixedDelay(this, 0, calcFreqMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
+            executor.addLoadAverage(this);
             running = true;
         }
     }
@@ -130,7 +140,7 @@ public abstract class LoadAverage implements Runnable {
     public void stop() {
         if (running) {
             running = false;
-            scheduledFuture.cancel(false);
+            executor.removeLoadAverage(this);
         }
     }
 

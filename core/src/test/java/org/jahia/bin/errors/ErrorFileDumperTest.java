@@ -44,6 +44,7 @@ package org.jahia.bin.errors;
 
 import org.apache.commons.io.FileUtils;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.LoadAverageExecutor;
 import org.jahia.utils.RequestLoadAverage;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -148,7 +149,9 @@ public class ErrorFileDumperTest {
             }
         };
 
+        LoadAverageExecutor executor = new LoadAverageExecutor();
         RequestLoadAverage requestLoadAverage = new RequestLoadAverage("requestLoadAverage", requestCountProvider);
+        requestLoadAverage.setExecutor(executor);
         requestLoadAverage.start();
         logger.info("Waiting for load average to reach 10...");
         while (requestLoadAverage.getOneMinuteLoad() < 10.0) {

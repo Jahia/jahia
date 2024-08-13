@@ -59,11 +59,8 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
                                 Value originalValue) throws ValueFormatException, VersionException, LockException,
             ConstraintViolationException, RepositoryException {
         JCRSessionWrapper session = node.getSession();
-        if (!node.isNew()) {
-            session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
-        } else {
-            session.registerNewNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
-        }
+        JCRNodeWrapper changedNode = session.getNodeByIdentifier(node.getIdentifier()); // re-getting the node to eventually have the decorator
+        session.getCache().putNode(changedNode.getPath(), changedNode, true);
         return super.beforeSetValue(node, name, definition, originalValue);
     }
 
@@ -72,11 +69,8 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
                                    Value[] originalValues) throws ValueFormatException, VersionException, LockException,
             ConstraintViolationException, RepositoryException {
         JCRSessionWrapper session = node.getSession();
-        if (!node.isNew()) {
-            session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
-        } else {
-            session.registerNewNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
-        }
+        JCRNodeWrapper changedNode = session.getNodeByIdentifier(node.getIdentifier()); // re-getting the node to eventually have the decorator
+        session.getCache().putNode(changedNode.getPath(), changedNode, true);
         return super.beforeSetValues(node, name, definition, originalValues);
     }
 
@@ -84,11 +78,8 @@ public class ChangedNodeInterceptor extends BaseInterceptor {
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition)
             throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         JCRSessionWrapper session = node.getSession();
-        if (!node.isNew()) {
-            session.registerChangedNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
-        } else {
-            session.registerNewNode(session.getNodeByIdentifier(node.getIdentifier())); // re-getting the node to eventually have the decorator
-        }
+        JCRNodeWrapper changedNode = session.getNodeByIdentifier(node.getIdentifier()); // re-getting the node to eventually have the decorator
+        session.getCache().putNode(changedNode.getPath(), changedNode, true);
         super.beforeRemove(node, name, definition);
     }
 }

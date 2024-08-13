@@ -1439,6 +1439,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return nodesCachePerSessionMaxSize;
     }
 
+    public void setNodesCachePerSessionMaxSize(int nodesCachePerSessionMaxSize) {
+        this.nodesCachePerSessionMaxSize = nodesCachePerSessionMaxSize;
+    }
+
     @Override
     public int getQueryApproxCountLimit() {
         return queryApproxCountLimit;

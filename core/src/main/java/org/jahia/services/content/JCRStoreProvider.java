@@ -836,7 +836,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private JCRNodeWrapper createWrapper(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
         if (path == null || !path.contains(JCRSessionWrapper.DEREF_SEPARATOR)) {
-            JCRNodeWrapper wrapper = objectNode != null ? session.getCachedNode(objectNode.getIdentifier()) : null;
+            JCRNodeWrapper wrapper = objectNode != null ? session.getCache().getByUUID(objectNode.getIdentifier()) : null;
             if (wrapper != null) {
                 return wrapper;
             }

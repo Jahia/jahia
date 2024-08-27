@@ -52,9 +52,11 @@ import org.apache.commons.collections.map.LazySortedMap;
 import org.apache.commons.collections.map.TransformedSortedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.AgeFileFilter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.stream.Streams;
+import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -65,12 +67,15 @@ import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DateUtils;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -89,6 +94,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.util.*;
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 /**
@@ -763,11 +769,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             minifiedAggregatedPath += "?" + maxLastModified;
         }
 
-        if (minifiedAggregatedFile.exists()) {
+        if (minifiedAggregatedFile.exists() && !isGeneratedFileStaled(minifiedAggregatedFile)) {
             return minifiedAggregatedPath;
         }
         synchronized (this) {
-            if (minifiedAggregatedFile.exists()) {
+            if (minifiedAggregatedFile.exists() && !isGeneratedFileStaled(minifiedAggregatedFile)) {
                 return minifiedAggregatedPath;
             }
 
@@ -780,7 +786,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 Resource resource = entry.getValue();
                 String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                 File minifiedFile = new File(getFileSystemPath(minifiedFileName));
-                if (!minifiedFile.exists()) {
+                if (!minifiedFile.exists() || isGeneratedFileStaled(minifiedAggregatedFile)) {
                     minify(path, resource, type, minifiedFile);
                 }
                 minifiedFileNames.put(path, minifiedFileName);
@@ -1073,17 +1079,96 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         if (!generatedResourcesFolder.isDirectory()) {
             return;
         }
-        File marker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].dodelete");
+        if (purgeAllFiles(false)) {
+            logger.info("Generated resources folder {} purged successfully", generatedResourcesFolder);
+        }
+        if (purgeStaledFiles()) {
+            logger.info("Staled resources in folder {} cleaned successfully", generatedResourcesFolder);
+        }
+    }
+
+    public static void markGeneratedResourcesStaled() {
+        File generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
+        if (!generatedResourcesFolder.isDirectory()) {
+            return;
+        }
+        File marker = getStaledMarkerFile();
+        try {
+            if (marker.createNewFile()) {
+                logger.info("Validity marker for generated resources folder {} created successfully", generatedResourcesFolder);
+                buildPurgeJob();
+            } else if (marker.setLastModified(System.currentTimeMillis())) {
+                logger.info("Validity marker for generated resources folder {} updated successfully", generatedResourcesFolder);
+                buildPurgeJob();
+            } else {
+                logger.warn("Unable to update validity marker for generated resources folder {}, force purge of all files", generatedResourcesFolder);
+                purgeAllFiles(true);
+            }
+        } catch (IOException e) {
+            logger.warn("Unable to manage validity marker for generated resources folder {} force purge of all files", generatedResourcesFolder);
+            purgeAllFiles(true);
+        }
+    }
+
+    private static void buildPurgeJob() {
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("Purge staled files of the generated-resources folder", PurgeStaledGeneratedResourcesFolder.class);
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, 30);
+            Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", jobDetail.getGroup(), calendar.getTime());
+            ServicesRegistry.getInstance().getSchedulerService().getScheduler().scheduleJob(jobDetail, trigger);
+        } catch (SchedulerException e) {
+            logger.error("Unable to schedule background job for generated resources purge", e);
+        }
+    }
+
+    private static boolean purgeStaledFiles() {
+        File marker = getStaledMarkerFile();
         if (marker.exists()) {
+            long validityTime = marker.lastModified() - (15 * 60 * 1000); //consider files older than stale date plus 15 minutes
+            logger.info("Cleaning existing generated resources files older than {}", validityTime);
+            File generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
+            Iterator<File> staleFiles = FileUtils.iterateFiles(generatedResourcesFolder, new AgeFileFilter(validityTime), null);
+            while (staleFiles.hasNext()) {
+                FileUtils.deleteQuietly(staleFiles.next());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean purgeAllFiles(boolean force) {
+        File marker = getDoDeleteMarkerFile();
+        if (force || marker.exists()) {
+            File generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
             logger.info("Cleaning existing generated resources folder {}", generatedResourcesFolder);
             try {
                 FileUtils.cleanDirectory(generatedResourcesFolder);
-                FileUtils.deleteQuietly(marker);
+                if (marker.exists()) {
+                    FileUtils.deleteQuietly(marker);
+                }
             } catch (IOException e) {
-                logger.warn("Unable to purge content of the generated resources folder: " + generatedResourcesFolder,
-                        e);
+                logger.warn("Unable to purge content of the generated resources folder: {}", generatedResourcesFolder, e);
             }
+            return true;
         }
+        return false;
+    }
+
+    private boolean isGeneratedFileStaled(File minifiedAggregatedFile) {
+        File marker = getStaledMarkerFile();
+        if (marker.exists()) {
+            return minifiedAggregatedFile.lastModified() < marker.lastModified();
+        }
+        return false;
+    }
+
+    private static File getDoDeleteMarkerFile() {
+        return new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].dodelete");
+    }
+
+    private static File getStaledMarkerFile() {
+        return new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].staled");
     }
 
     @Override
@@ -1121,5 +1206,16 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
      */
     public void setCompressDuringAggregation(boolean compressAssets) {
         this.compressDuringAggregation = compressAssets;
+    }
+
+    /**
+     * Background job that performs generated-resources folder purge.
+     */
+    public static class PurgeStaledGeneratedResourcesFolder extends BackgroundJob implements StatefulJob {
+        @Override
+        public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
+            StaticAssetsFilter.purgeStaledFiles();
+            logger.info("Purge staled files of the generated resources folder {}", SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
+        }
     }
 }

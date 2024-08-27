@@ -42,30 +42,26 @@
  */
 package org.jahia.services.cache;
 
+import com.google.common.collect.Sets;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.management.ManagementService;
 import net.sf.ehcache.statistics.StatisticsGateway;
-
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.CacheInfo;
 import org.jahia.services.cache.ehcache.CacheManagerInfo;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
+import org.jahia.services.render.filter.StaticAssetsFilter;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
-
-import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.*;
 
@@ -137,14 +133,7 @@ public final class CacheHelper {
             sendCacheFlushCommandToCluster(CMD_FLUSH_ALL_CACHES, false, null, false);
         }
 
-        try {
-            File gr = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "generated-resources");
-            if (gr.exists()) {
-                org.apache.commons.io.FileUtils.cleanDirectory(gr);
-            }
-        } catch (IOException e) {
-            logger.error("Cannot flush generated-resources", e);
-        }
+        StaticAssetsFilter.markGeneratedResourcesStaled();
 
         logger.info("...done flushing all caches.");
     }

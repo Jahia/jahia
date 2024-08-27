@@ -53,6 +53,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
 import org.jodconverter.core.document.DocumentFamily;
@@ -69,6 +70,9 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -116,51 +120,6 @@ public final class FileUtils {
             return Hex.encodeHexString(digestInputStream.getMessageDigest().digest());
         } catch (IOException e) {
             throw new JahiaRuntimeException(e);
-        }
-    }
-
-    /**
-     * Cleans a directory without deleting it, considering also named exclusions.
-     *
-     * @param directory directory to clean
-     * @param filter the file filter to consider
-     * @throws IOException in case cleaning is unsuccessful
-     * @see org.apache.commons.io.FileUtils#cleanDirectory(File)
-     */
-    public static void cleanDirectory(File directory, FileFilter filter) throws IOException {
-        if (!directory.exists()) {
-            String message = directory + " does not exist";
-            throw new IllegalArgumentException(message);
-        }
-
-        if (!directory.isDirectory()) {
-            String message = directory + " is not a directory";
-            throw new IllegalArgumentException(message);
-        }
-
-        File[] files = directory.listFiles();
-        if (files == null) { // null if security restricted
-            throw new IOException("Failed to list contents of " + directory);
-        }
-
-        if (files.length == 0) {
-            return;
-        }
-
-        IOException exception = null;
-        for (File file : files) {
-            if (filter != null && !filter.accept(file)) {
-                continue;
-            }
-            try {
-                org.apache.commons.io.FileUtils.forceDelete(file);
-            } catch (IOException ioe) {
-                exception = ioe;
-            }
-        }
-
-        if (null != exception) {
-            throw exception;
         }
     }
 

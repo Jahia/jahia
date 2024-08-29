@@ -1113,6 +1113,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private static void buildPurgeJob() {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Purge staled files of the generated-resources folder", PurgeStaledGeneratedResourcesFolder.class);
         try {
+            if (!ServicesRegistry.getInstance().getSchedulerService().getAllJobs(jobDetail.getGroup()).isEmpty()) {
+                logger.info("Generated resources purge job already scheduled");
+                return;
+            }
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MINUTE, 30);
             Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", jobDetail.getGroup(), calendar.getTime());

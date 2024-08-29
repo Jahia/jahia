@@ -650,7 +650,7 @@
                                 // Group List Container
                                 .x-grid-group-body,
                                 .x-grid3-body {
-
+                                    height: unset !important;
                                     .x-grid3-row {
 
                                         &.indigo-cant-delete {

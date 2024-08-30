@@ -42,6 +42,8 @@
  */
 package org.jahia.osgi;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.osgi.framework.Bundle;
 import org.springframework.core.io.UrlResource;
 
@@ -93,4 +95,23 @@ public class BundleResource extends UrlResource {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BundleResource that = (BundleResource) o;
+
+        try {
+            return new EqualsBuilder().append(getBundle().getSymbolicName(), that.getBundle().getSymbolicName()).append(getURL().getPath(), that.getURL().getPath()).isEquals();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(getBundle()).toHashCode();
+    }
 }

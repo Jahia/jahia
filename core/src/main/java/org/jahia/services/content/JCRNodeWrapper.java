@@ -769,7 +769,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * checkinDate if available.
      * @throws RepositoryException happens if there was a problem retrieving the list of versions.
      */
-    public List<VersionInfo> getVersionInfos() throws RepositoryException;
+    List<VersionInfo> getVersionInfos() throws RepositoryException;
 
     /**
      * Retrieves the list of versions, ignoring internal version created in the publication process. This method should
@@ -780,7 +780,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * checkinDate if available.
      * @throws RepositoryException happens if there was a problem retrieving the list of versions.
      */
-    public List<VersionInfo> getLinearVersionInfos() throws RepositoryException;
+    List<VersionInfo> getLinearVersionInfos() throws RepositoryException;
 
     /**
      * Gets a list of all versions of this node

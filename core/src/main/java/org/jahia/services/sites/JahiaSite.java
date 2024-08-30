@@ -63,14 +63,14 @@ import java.util.*;
  */
 public interface JahiaSite {
 
-    public String getDefaultLanguage();
+    String getDefaultLanguage();
 
     /**
      * Returns the description, provided for this site.
      *
      * @return the description, provided for this site
      */
-    public String getDescription();
+    String getDescription();
 
 
     /**
@@ -78,16 +78,16 @@ public interface JahiaSite {
      *
      * @return a set of languages, which are deactivated completely for browsing and editing
      */
-    public Set<String> getInactiveLanguages();
+    Set<String> getInactiveLanguages();
 
     /**
      * Returns a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
      *
      * @return a set of languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation
      */
-    public Set<String> getInactiveLiveLanguages();
+    Set<String> getInactiveLiveLanguages();
 
-    public List<String> getInstalledModules();
+    List<String> getInstalledModules();
 
     /**
      * Returns a List of site language settings. The order of this List
@@ -95,7 +95,7 @@ public interface JahiaSite {
      *
      * @return a List containing String elements.
      */
-    public Set<String> getLanguages() ;
+    Set<String> getLanguages() ;
 
 
     /**
@@ -103,60 +103,60 @@ public interface JahiaSite {
      *
      * @return an List of Locale elements.
      */
-    public List<Locale> getLanguagesAsLocales() ;
+    List<Locale> getLanguagesAsLocales() ;
 
 
-    public Set<String> getMandatoryLanguages() ;
+    Set<String> getMandatoryLanguages() ;
 
     /**
      * Return the Full Qualified Domain Name ( www.jahia.org )
      */
-    public String getServerName() ;
+    String getServerName() ;
 
     /**
      * Returns a list of additional server names (aliases).
      *
      * @return list of additional server names (aliases)
      */
-    public List<String> getServerNameAliases();
+    List<String> getServerNameAliases();
 
     /**
      * Return the list of accepted server names.
      */
-    public List<String> getAllServerNames() ;
+    List<String> getAllServerNames() ;
 
     /**
      * Return the unique String identifier key ( ex: jahia )
      */
-    public String getSiteKey();
+    String getSiteKey();
 
     /**
      * Returns the corresponding template set name of this virtual site.
      *
      * @return the corresponding template set name of this virtual site
      */
-    public String getTemplatePackageName();
+    String getTemplatePackageName();
 
-    public String getTemplateFolder();
+    String getTemplateFolder();
 
-    public String getTitle();
+    String getTitle();
 
     /**
      * Returns <code>true</code> if this site is the default one on the server.
      *
      * @return <code>true</code> if this site is the default one on the server
      */
-    public boolean isDefault();
+    boolean isDefault();
 
-    public boolean isMixLanguagesActive();
+    boolean isMixLanguagesActive();
 
-    public boolean isAllowsUnlistedLanguages();
+    boolean isAllowsUnlistedLanguages();
 
-    public void setDefaultLanguage(String defaultLanguage);
+    void setDefaultLanguage(String defaultLanguage);
 
-    public void setDescr(String descr);
+    void setDescr(String descr);
 
-    public void setDescription(String description);
+    void setDescription(String description);
 
     /**
      * Sets languages, which are completely deactivated for browsing and editing.
@@ -164,7 +164,7 @@ public interface JahiaSite {
      * @param inactiveLanguages
      *            the set of inactive languages
      */
-    public void setInactiveLanguages(Set<String> inactiveLanguages);
+    void setInactiveLanguages(Set<String> inactiveLanguages);
 
     /**
      * Sets languages, which are not considered in live mode browsing, i.e. are currently inactive in navigation.
@@ -172,41 +172,41 @@ public interface JahiaSite {
      * @param inactiveLiveLanguages
      *            the set of inactive languages
      */
-    public void setInactiveLiveLanguages(Set<String> inactiveLiveLanguages);
+    void setInactiveLiveLanguages(Set<String> inactiveLiveLanguages);
 
-    public void setInstalledModules(List<String> installedModules);
+    void setInstalledModules(List<String> installedModules);
 
 
     /**
      * Sets the language settings for this site. This directly interfaces with
      * the persistant storage to store the modifications if there were any.
      */
-    public void setLanguages(Set<String> languages);
+    void setLanguages(Set<String> languages);
 
-    public void setMandatoryLanguages(Set<String> mandatoryLanguages);
+    void setMandatoryLanguages(Set<String> mandatoryLanguages);
 
     /**
      * Sets the value of the site property that controls
      *
      * @param mixLanguagesActive true or false
      */
-    public void setMixLanguagesActive(boolean mixLanguagesActive);
+    void setMixLanguagesActive(boolean mixLanguagesActive);
 
-    public void setAllowsUnlistedLanguages(boolean allowsUnlistedLanguages);
+    void setAllowsUnlistedLanguages(boolean allowsUnlistedLanguages);
 
     /**
      * Set the Full Qualified Domain Name ( www.jahia.org )
      */
-    public void setServerName(String name);
+    void setServerName(String name);
 
     /**
      * Sets a list of additional server names (aliases).
      *
      * @param names a list of additional server names (aliases)
      */
-    public void setServerNameAliases(List<String> names);
+    void setServerNameAliases(List<String> names);
 
-    public void setTitle(String value);
+    void setTitle(String value);
 
     String getJCRLocalPath();
 

@@ -472,6 +472,7 @@ public class JCRSessionWrapper implements Session {
 
         nodeWrapperCache.resetChanges();
 
+
         if (workspace.getName().equals("default")) {
             // If reference helper found values to update, update them in live too
             ReferencesHelper.updateReferencesInLive(getResolvedReferences());

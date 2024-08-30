@@ -43,6 +43,8 @@
 package org.jahia.services.content;
 
 import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
@@ -96,11 +98,13 @@ import java.util.LinkedHashMap;
  */
 public class JCRNodeWrapperCache {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JCRNodeWrapperCache.class);
+
     private final Map<String, JCRNodeWrapper> wrappersPerPath;
     private final Map<String, JCRNodeWrapper> changedWrappersPerPath = new HashMap<>();
     private final Map<String, String> uuidPath;
     private boolean disableCache = false;
-    private final int maxWrappedNodes;
+    private int maxWrappedNodes;
 
     protected JCRNodeWrapperCache(int maxWrappedNodes) {
         this.maxWrappedNodes = maxWrappedNodes;
@@ -128,7 +132,7 @@ public class JCRNodeWrapperCache {
      * @param path the path of the node, usually the node.getPath(), but could be different in case of dereferenced nodes
      * @param node the node to cache
      */
-    protected void putNode(String path, JCRNodeWrapper node) throws RepositoryException {
+    protected void putNode(String path, JCRNodeWrapper node) {
         putNode(path, node, false);
     }
 
@@ -183,10 +187,7 @@ public class JCRNodeWrapperCache {
      * @return the node wrapper or null if not found in caches
      */
     protected JCRNodeWrapper getByPath(String path) {
-        if (changedWrappersPerPath.containsKey(path)) {
-            return changedWrappersPerPath.get(path);
-        }
-        return wrappersPerPath.get(path);
+        return changedWrappersPerPath.getOrDefault(path, wrappersPerPath.get(path));
     }
 
     /**
@@ -304,8 +305,7 @@ public class JCRNodeWrapperCache {
         for (JCRNodeWrapper value : cacheByPath.values()) {
             try {
                 uuidPath.remove(value.getIdentifier());
-            } catch (RepositoryException e) {
-                // ignore
+            } catch (RepositoryException ignored) { //
             }
         }
         cacheByPath.clear();

@@ -241,7 +241,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     @Override
     public JCRUserNode getUser() {
         try {
-            return (JCRUserNode) session.getUserNode();
+            return session.getUserNode();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

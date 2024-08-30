@@ -1115,12 +1115,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MINUTE, 30);
-            Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", jobDetail.getGroup(), calendar.getTime());
-            if (!ServicesRegistry.getInstance().getSchedulerService().getAllJobs(jobDetail.getGroup()).isEmpty()) {
-                logger.info("Generated resources purge job already scheduled, rescheduling it");
-                ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().rescheduleJob(trigger.getName(), jobDetail.getGroup(), trigger);
+            JobDetail existingJob = ServicesRegistry.getInstance().getSchedulerService().getAllRAMJobs().stream().filter(job -> job.getGroup().equals(jobDetail.getGroup())).findFirst().orElse(null);
+            if (existingJob != null) {
+                logger.info("Generated resources purge job already scheduled, rescheduling it...");
+                Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", existingJob.getGroup(), existingJob.getName(), existingJob.getGroup(), calendar.getTime(), null, 0, 0 );
+                ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().rescheduleJob(trigger.getName(), trigger.getGroup(), trigger);
             } else {
-                logger.info("Generated resources purge job scheduled");
+                logger.info("Scheduling generated resources purge job...");
+                Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", jobDetail.getGroup(), calendar.getTime());
                 ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().scheduleJob(jobDetail, trigger);
             }
         } catch (SchedulerException e) {

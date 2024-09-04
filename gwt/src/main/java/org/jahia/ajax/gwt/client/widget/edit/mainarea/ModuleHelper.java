@@ -406,7 +406,7 @@ public class ModuleHelper {
             String link = DOM.getElementAttribute(element, "href");
             if (link.startsWith(baseUrl)) {
                 DOM.setElementAttribute(element, "href", "#" + link);
-                DOM.setElementAttribute(element, "onclick", "window.parent.goToUrl('"+link+"')");
+                DOM.setElementAttribute(element, "onclick", "window.parent.goToUrl('" + link + "'); return false;");
             }
         }
         GWT.log("Transform links : " + (System.currentTimeMillis() - start) + " ms");

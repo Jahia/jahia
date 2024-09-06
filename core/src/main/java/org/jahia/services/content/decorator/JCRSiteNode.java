@@ -388,6 +388,23 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         return Collections.unmodifiableList(result);
     }
 
+    private List<String> getAllServerNamesInternal(String serverName) {
+        List<String> result = new ArrayList<>();
+        result.add(serverName);
+        result.addAll(getServerNameAliases());
+        return Collections.unmodifiableList(result);
+    }
+
+    private List<String> getAllServerNamesInternal(List<String> serverAliases) {
+        List<String> result = new ArrayList<>();
+        String name = getServerName();
+        if (name != null) {
+            result.add(name);
+        }
+        result.addAll(serverAliases);
+        return Collections.unmodifiableList(result);
+    }
+
     @Override
     public String getSiteKey() {
         return getName();
@@ -846,7 +863,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             templateFolder = null;
         } else if (SitesSettings.SERVER_NAME.equals(s)) {
             serverName = value;
-            allServerNames = getAllServerNamesInternal();
+            allServerNames = getAllServerNamesInternal(serverName);
         }
 
         return super.setProperty(s, value);
@@ -886,7 +903,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             installedModulesWithDependencies = null;
         } else if (SitesSettings.SERVER_NAME_ALIASES.equals(s)) {
             serverAliases = toUnmodifiableList(values);
-            allServerNames = getAllServerNamesInternal();
+            allServerNames = getAllServerNamesInternal(serverAliases);
         }
 
         return super.setProperty(s, values);

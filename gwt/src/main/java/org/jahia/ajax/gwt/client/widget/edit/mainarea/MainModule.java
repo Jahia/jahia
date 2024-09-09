@@ -510,7 +510,13 @@ public class MainModule extends Module {
         frame.setForceCssRefresh(forceCssRefresh);
         frame.setForceJavascriptRefresh(forceJavascriptRefresh);
         frame.setUrl(url);
-        center.layout(true);
+        // Defer layout
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                center.layout(true);
+            }
+        });
     }
 
     public void goToSettingsUrl(final String url) {

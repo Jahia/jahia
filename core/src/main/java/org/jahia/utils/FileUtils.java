@@ -124,6 +124,52 @@ public final class FileUtils {
     }
 
     /**
+     * Cleans a directory without deleting it, considering also named exclusions.
+     *
+     * @param directory directory to clean
+     * @param filter the file filter to consider
+     * @throws IOException in case cleaning is unsuccessful
+     * @see org.apache.commons.io.FileUtils#cleanDirectory(File)
+     */
+    @Deprecated(forRemoval = true)
+    public static void cleanDirectory(File directory, FileFilter filter) throws IOException {
+        if (!directory.exists()) {
+            String message = directory + " does not exist";
+            throw new IllegalArgumentException(message);
+        }
+
+        if (!directory.isDirectory()) {
+            String message = directory + " is not a directory";
+            throw new IllegalArgumentException(message);
+        }
+
+        File[] files = directory.listFiles();
+        if (files == null) { // null if security restricted
+            throw new IOException("Failed to list contents of " + directory);
+        }
+
+        if (files.length == 0) {
+            return;
+        }
+
+        IOException exception = null;
+        for (File file : files) {
+            if (filter != null && !filter.accept(file)) {
+                continue;
+            }
+            try {
+                org.apache.commons.io.FileUtils.forceDelete(file);
+            } catch (IOException ioe) {
+                exception = ioe;
+            }
+        }
+
+        if (null != exception) {
+            throw exception;
+        }
+    }
+
+    /**
      * Returns the content of the specified {@link Resource} as a string.
      *
      * @param resource

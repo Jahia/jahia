@@ -786,7 +786,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 Resource resource = entry.getValue();
                 String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                 File minifiedFile = new File(getFileSystemPath(minifiedFileName));
-                if (!minifiedFile.exists() || isGeneratedFileStaled(minifiedAggregatedFile)) {
+                if (!minifiedFile.exists() || isGeneratedFileStaled(minifiedFile)) {
                     minify(path, resource, type, minifiedFile);
                 }
                 minifiedFileNames.put(path, minifiedFileName);

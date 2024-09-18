@@ -46,7 +46,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.decorator.validation.AdvancedGroup;
 import org.jahia.services.content.decorator.validation.AdvancedSkipOnImportGroup;
@@ -132,10 +131,7 @@ public class JCRSessionWrapper implements Session {
 
     private final Map<JCRStoreProvider, Session> sessions = new HashMap<>();
 
-    private final Map<String, JCRNodeWrapper> sessionCacheByPath = new HashMap<>();
-    private final Map<String, JCRNodeWrapper> sessionCacheByIdentifier = new HashMap<>();
-    private final Map<String, JCRNodeWrapper> newNodes = new HashMap<>();
-    private final Map<String, JCRNodeWrapper> changedNodes = new HashMap<>();
+    private final JCRNodeWrapperCache nodeWrapperCache;
 
     private final Map<String, String> nsToPrefix = new HashMap<>();
     private final Map<String, String> prefixToNs = new HashMap<>();
@@ -152,7 +148,6 @@ public class JCRSessionWrapper implements Session {
 
     private Locale fallbackLocale;
     private String versionLabel;
-
     private boolean readOnlyCacheEnabled = false;
 
     private static final AtomicLong activeSessions = new AtomicLong(0L);
@@ -182,12 +177,14 @@ public class JCRSessionWrapper implements Session {
         if (!isSystem) {
             activeSessions.incrementAndGet();
         }
-        if (SettingsBean.getInstance().isDevelopmentMode()) {
+        SettingsBean settingsBean = SettingsBean.getInstance();
+        if (settingsBean.isDevelopmentMode()) {
             thisSessionTrace = new Exception((isSystem ? "System " : "") + "Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
         } else {
             thisSessionTrace = new Exception((isSystem ? "System " : "") + "Session: " + uuid);
         }
 
+        nodeWrapperCache = new JCRNodeWrapperCache(settingsBean.getNodesCachePerSessionMaxSize());
         activeSessionsObjects.put(uuid, this);
     }
 
@@ -205,6 +202,13 @@ public class JCRSessionWrapper implements Session {
     @Override
     public String getUserID() {
         return ((SimpleCredentials) credentials).getUserID();
+    }
+
+    /**
+     * Get the internal wrapper cache for this session.
+     */
+    protected JCRNodeWrapperCache getCache() {
+        return nodeWrapperCache;
     }
 
     public boolean isSystem() {
@@ -253,8 +257,9 @@ public class JCRSessionWrapper implements Session {
         if (StringUtils.isEmpty(uuid)) {
             throw new RepositoryException("invalid identifier: " + uuid);
         }
-        if (sessionCacheByIdentifier.containsKey(uuid)) {
-            return sessionCacheByIdentifier.get(uuid);
+        JCRNodeWrapper cached = nodeWrapperCache.getByUUID(uuid);
+        if (cached != null) {
+            return cached;
         }
         RepositoryException originalEx = null;
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
@@ -278,8 +283,7 @@ public class JCRSessionWrapper implements Session {
                     wrapper = provider.getNodeWrapper(n, this);
                 }
                 if (!isAliased) {
-                    sessionCacheByIdentifier.put(uuid, wrapper);
-                    sessionCacheByPath.put(wrapper.getPath(), wrapper);
+                    nodeWrapperCache.putNode(wrapper.getPath(), wrapper);
                 }
 
                 return wrapper;
@@ -329,8 +333,9 @@ public class JCRSessionWrapper implements Session {
 
     public JCRItemWrapper getItem(String path, final boolean checkVersion)
             throws PathNotFoundException, RepositoryException {
-        if (sessionCacheByPath.containsKey(path)) {
-            return sessionCacheByPath.get(path);
+        JCRNodeWrapper cached = nodeWrapperCache.getByPath(path);
+        if (cached != null) {
+            return cached;
         }
         if (path.contains(DEREF_SEPARATOR)) {
             JCRNodeWrapper parent = (JCRNodeWrapper) getItem(StringUtils.substringBeforeLast(path, DEREF_SEPARATOR), checkVersion);
@@ -365,8 +370,7 @@ public class JCRSessionWrapper implements Session {
                     }
 
                     if (!isAliased) {
-                        sessionCacheByPath.put(path, wrapper);
-                        sessionCacheByIdentifier.put(wrapper.getIdentifier(), wrapper);
+                        nodeWrapperCache.putNode(path, wrapper);
                     }
 
                     return wrapper;
@@ -403,7 +407,7 @@ public class JCRSessionWrapper implements Session {
             fullPath = parent.getPath() + DEREF_SEPARATOR + refRootName + node.getPath().substring(realReferencedNode.getPath().length());
             wrapper = referencedNode.getProvider().getNodeWrapper(node, fullPath, null, this);
         }
-        sessionCacheByPath.put(fullPath, wrapper);
+        nodeWrapperCache.putNode(fullPath, wrapper);
         return wrapper;
     }
 
@@ -436,33 +440,7 @@ public class JCRSessionWrapper implements Session {
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
             LockException, RepositoryException {
         getWorkspace().move(source, dest, true);
-        updatePathInCache(source, dest, sessionCacheByPath);
-        updatePathInCache(source, dest, newNodes);
-        updatePathInCache(source, dest, changedNodes);
-    }
-
-    private void updatePathInCache(String source, String dest, Map<String, JCRNodeWrapper> cacheByPath) {
-        String sourcePrefix = source + "/";
-        Set<String> paths = new HashSet<>(cacheByPath.keySet());
-        for (String s : paths) {
-            if (s.equals(source) || s.startsWith(sourcePrefix)) {
-                JCRNodeWrapper n = cacheByPath.remove(s);
-                if (n instanceof JCRNodeDecorator) {
-                    n = ((JCRNodeDecorator) n).getDecoratedNode();
-                }
-                String newPath = dest;
-                if (source.length() < n.getPath().length()) {
-                    newPath += n.getPath().substring(source.length());
-                }
-                String localPath = newPath;
-                if (n.getProvider().getMountPoint().length() > 1) {
-                    localPath = newPath.substring(n.getProvider().getMountPoint().length());
-                }
-                ((JCRNodeWrapperImpl) n).localPath = localPath;
-                ((JCRNodeWrapperImpl) n).localPathInProvider = localPath;
-                cacheByPath.put(newPath, n);
-            }
-        }
+        nodeWrapperCache.moveNode(source, dest);
     }
 
     @Override
@@ -472,38 +450,8 @@ public class JCRSessionWrapper implements Session {
         save(JCRObservationManager.SESSION_SAVE);
     }
 
-    void registerNewNode(JCRNodeWrapper node) {
-        newNodes.put(node.getPath(), node);
-    }
-
-    void registerChangedNode(JCRNodeWrapper node) {
-        if (!newNodes.containsKey(node.getPath())) {
-            changedNodes.put(node.getPath(), node);
-        }
-    }
-
-    void unregisterNewNode(JCRNodeWrapper node) {
-        if (!newNodes.isEmpty() || !changedNodes.isEmpty()) {
-            newNodes.remove(node.getPath());
-            changedNodes.remove(node.getPath());
-            try {
-                if (node.hasNodes()) {
-                    NodeIterator it = node.getNodes();
-                    while (it.hasNext()) {
-                        unregisterNewNode((JCRNodeWrapper) it.next());
-                    }
-                }
-            } catch (RepositoryException e) {
-                logger.warn("Error unregistering new nodes", e);
-            }
-        }
-    }
-
     public Collection<JCRNodeWrapper> getChangedNodes() {
-        List<JCRNodeWrapper> nodes = new ArrayList<>(changedNodes.size() + newNodes.size());
-        nodes.addAll(changedNodes.values());
-        nodes.addAll(newNodes.values());
-        return nodes;
+        return nodeWrapperCache.getAllChangedNodes();
     }
 
     public void save(final int operationType)
@@ -522,8 +470,8 @@ public class JCRSessionWrapper implements Session {
             }
         });
 
-        newNodes.clear();
-        changedNodes.clear();
+        nodeWrapperCache.resetChanges();
+
 
         if (workspace.getName().equals("default")) {
             // If reference helper found values to update, update them in live too
@@ -537,8 +485,7 @@ public class JCRSessionWrapper implements Session {
 
     protected void validate(final int operationType) throws ConstraintViolationException, RepositoryException {
         if (!skipValidation) {
-            CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null, operationType);
-            exception = validateNodes(changedNodes.values(), exception, operationType);
+            CompositeConstraintViolationException exception = validateNodes(getChangedNodes(), null, operationType);
             if (exception != null) {
                 refresh(true);
                 throw exception;
@@ -658,15 +605,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     @Override
-    public void refresh(boolean b) throws RepositoryException {
+    public void refresh(boolean keepChanges) throws RepositoryException {
         for (Session session : sessions.values()) {
-            session.refresh(b);
+            session.refresh(keepChanges);
         }
-        if (!b) {
-            newNodes.clear();
-            changedNodes.clear();
-            flushCaches();
-        }
+        nodeWrapperCache.flush(keepChanges);
     }
 
     @Override
@@ -818,9 +761,7 @@ public class JCRSessionWrapper implements Session {
         sessions.clear();
 
         // Flush internal caches
-        newNodes.clear();
-        changedNodes.clear();
-        flushCaches();
+        nodeWrapperCache.flush(false);
 
         // Remove credential token
         if (credentials instanceof SimpleCredentials) {
@@ -1152,34 +1093,10 @@ public class JCRSessionWrapper implements Session {
             throws VersionException, LockException, ConstraintViolationException, AccessDeniedException,
             RepositoryException {
         JCRItemWrapper item = getItem(absPath);
-        boolean flushNeeded = false;
         if (item.isNode()) {
-            JCRNodeWrapper node = (JCRNodeWrapper) item;
-            unregisterNewNode(node);
-            if (node.hasNodes()) {
-                flushNeeded = true;
-            }
+            nodeWrapperCache.removeNode(item.getPath());
         }
         item.remove();
-        if (flushNeeded) {
-            flushCaches();
-        } else {
-            removeFromCache(item);
-        }
-    }
-
-    void removeFromCache(JCRItemWrapper item) throws RepositoryException {
-        sessionCacheByPath.remove(item.getPath());
-        if (item instanceof JCRNodeWrapper) {
-            sessionCacheByIdentifier.remove(((JCRNodeWrapper) item).getIdentifier());
-        }
-    }
-
-    void removeFromCache(String path) throws RepositoryException {
-        JCRNodeWrapper node = sessionCacheByPath.remove(path);
-        if (node != null) {
-            sessionCacheByIdentifier.remove(node.getIdentifier());
-        }
     }
 
     @Override
@@ -1347,16 +1264,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     protected void flushCaches() {
-        sessionCacheByIdentifier.clear();
-        sessionCacheByPath.clear();
-    }
-
-    protected JCRNodeWrapper getCachedNode(String uuid) {
-        return sessionCacheByIdentifier.get(uuid);
+        nodeWrapperCache.flush(true);
     }
 
     public int getCacheSize() {
-        return sessionCacheByIdentifier.size() + sessionCacheByPath.size();
+        return nodeWrapperCache.getCacheSize(false);
     }
 
     public boolean isCurrentUserSession() {
@@ -1404,6 +1316,43 @@ public class JCRSessionWrapper implements Session {
 
     public String getIdentifier() {
         return uuid.toString();
+    }
+
+    /**
+     * Returns the status of the internal session cache
+     *
+     * @return true if the cache is active, false otherwise
+     */
+    public boolean isSessionCacheEnabled() {
+        return nodeWrapperCache.isEnabled();
+    }
+
+    /**
+     * Enable the internal node session cache on the JCRSessionWrapper instance. The methods return the JCRSessionWrapper instance to allow chaining.
+     * The cache size is determined by the configuration file /etc/config/jahia.properties (default to 100)
+     * By default the cache is already activated on each session.
+     *
+     * @return the JCRSessionWrapper instance
+     */
+    public synchronized JCRSessionWrapper enableSessionCache() {
+        nodeWrapperCache.enable();
+        return this;
+    }
+
+    /**
+     * Disable the internal node session cache on the JCRSessionWrapper instance. The methods return the JCRSessionWrapper instance to allow chaining.
+     * Disabling the cache can avoid excessive memory usage in some specific processes (crawling node tree, import, export, ...)
+     * It should be used only in specific cases when you are sure there is no benefits in caching nodes ; when each node is accessed only once for example.
+     * <code>JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).disableSessionCache();</code>
+     * You can also reactivate the cache in any time during the session life.
+     * Calling that methods multiple times will have no effect.
+     * By default, cache is activated on all sessions.
+     *
+     * @return the JCRSessionWrapper instance
+     */
+    public synchronized JCRSessionWrapper disableSessionCache() {
+        nodeWrapperCache.disable();
+        return this;
     }
 
     public boolean isReadOnlyCacheEnabled() {

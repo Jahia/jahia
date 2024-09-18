@@ -606,6 +606,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             }
         }
 
+        session.disableSessionCache();
         String workspaceName = session.getWorkspace().getName();
         List<String> paths = new ArrayList<>();
         for (String uuid : uuids) {

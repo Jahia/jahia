@@ -66,7 +66,7 @@ import java.util.*;
  */
 public class JCRGroupNode extends JCRNodeDecorator {
 
-    protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroupNode.class);
+    protected static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroupNode.class);
 
     public static final String J_HIDDEN = "j:hidden";
 

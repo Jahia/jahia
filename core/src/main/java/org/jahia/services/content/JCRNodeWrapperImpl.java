@@ -241,7 +241,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     @Override
     public JCRUserNode getUser() {
         try {
-            return (JCRUserNode) session.getUserNode();
+            return session.getUserNode();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -781,7 +781,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         JCRLockUtils.checkLock(this, false, true);
         Node n = objectNode.addNode(name, type);
         JCRNodeWrapper newNode = provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
-        session.registerNewNode(newNode);
+        session.getCache().putNode(newNode.getPath(), newNode, true);
         return newNode;
     }
 
@@ -2478,12 +2478,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             JCRLockUtils.checkLock(parent, false, true);
         }
 
-        getSession().unregisterNewNode(this);
-        if (!this.hasNodes()) {
-            getSession().removeFromCache(this);
-        } else {
-            getSession().flushCaches();
-        }
+        getSession().getCache().removeNode(this.getPath());
         item.remove();
     }
 

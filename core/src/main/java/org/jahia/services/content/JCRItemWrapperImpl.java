@@ -207,7 +207,6 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
      * {@inheritDoc}
      */
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        getSession().removeFromCache(this);
         item.remove();
     }
 

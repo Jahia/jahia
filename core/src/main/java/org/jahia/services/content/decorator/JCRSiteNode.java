@@ -143,6 +143,8 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     private Set<String> installedModulesWithDependencies;
 
+    private String lastModified;
+
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
     }
@@ -152,7 +154,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      */
     @Override
     public Set<String> getInactiveLiveLanguages() {
-        if (inactiveLiveLanguages == null) {
+        if (inactiveLiveLanguages == null || isStaled()) {
             inactiveLiveLanguages = getLanguagesInProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES);
         }
         return inactiveLiveLanguages;
@@ -163,7 +165,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      */
     @Override
     public Set<String> getInactiveLanguages() {
-        if (inactiveLanguages == null) {
+        if (inactiveLanguages == null || isStaled()) {
             inactiveLanguages = getLanguagesInProperty(SitesSettings.INACTIVE_LANGUAGES);
         }
         return inactiveLanguages;
@@ -191,7 +193,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return a set of active site languages
      */
     public Set<String> getActiveLiveLanguages() {
-        if (activeLiveLanguages == null) {
+        if (activeLiveLanguages == null || isStaled()) {
             Set<String> langs = new HashSet<>(getLanguages());
             langs.removeAll(getInactiveLiveLanguages());
             activeLiveLanguages = langs;
@@ -205,7 +207,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return a List of Locale elements
      */
     public List<Locale> getActiveLiveLanguagesAsLocales() {
-        if (activeLiveLanguagesAsLocales == null) {
+        if (activeLiveLanguagesAsLocales == null || isStaled()) {
             activeLiveLanguagesAsLocales = getLanguagesAsLocales(getActiveLiveLanguages());
         }
         return activeLiveLanguagesAsLocales;
@@ -217,7 +219,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return a List of Locale elements
      */
     public List<Locale> getInactiveLanguagesAsLocales() {
-        if (inactiveLanguagesAsLocales == null) {
+        if (inactiveLanguagesAsLocales == null || isStaled()) {
             inactiveLanguagesAsLocales = getLanguagesAsLocales(getInactiveLiveLanguages());
         }
         return inactiveLanguagesAsLocales;
@@ -236,7 +238,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public String getDefaultLanguage() {
-        if (defaultLanguage == null) {
+        if (defaultLanguage == null || isStaled()) {
             try {
                 if (hasProperty(SitesSettings.DEFAULT_LANGUAGE)) {
                     defaultLanguage = getProperty(SitesSettings.DEFAULT_LANGUAGE).getString();
@@ -253,7 +255,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     }
 
     public JCRNodeWrapper getHome() throws RepositoryException {
-        if (home == null) {
+        if (home == null || isStaled()) {
             NodeIterator ni = getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
@@ -282,7 +284,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public Set<String> getLanguages() {
-        if (languages == null) {
+        if (languages == null || isStaled()) {
             languages = getLanguagesInProperty(SitesSettings.LANGUAGES);
         }
         return languages;
@@ -294,7 +296,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      */
     @Override
     public List<Locale> getLanguagesAsLocales() {
-        if (languagesAsLocales == null) {
+        if (languagesAsLocales == null || isStaled()) {
             languagesAsLocales = getLanguagesAsLocales(getLanguages());
         }
         return languagesAsLocales;
@@ -302,7 +304,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public Set<String> getMandatoryLanguages() {
-        if (mandatoryLanguages == null) {
+        if (mandatoryLanguages == null || isStaled()) {
             mandatoryLanguages = getLanguagesInProperty(SitesSettings.MANDATORY_LANGUAGES);
         }
         return mandatoryLanguages;
@@ -331,7 +333,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public String getServerName() {
-        if (serverName == null) {
+        if (serverName == null || isStaled()) {
             try {
                 if (hasProperty(SitesSettings.SERVER_NAME)) {
                     serverName = getProperty(SitesSettings.SERVER_NAME).getString();
@@ -347,7 +349,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public List<String> getServerNameAliases() {
-        if (serverAliases == null) {
+        if (serverAliases == null || isStaled()) {
             try {
                 if (hasProperty(SitesSettings.SERVER_NAME_ALIASES)) {
                     List<String> result = new ArrayList<>();
@@ -370,7 +372,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public List<String> getAllServerNames() {
-        if (allServerNames == null) {
+        if (allServerNames == null || isStaled()) {
             allServerNames = getAllServerNamesInternal();
         }
         return allServerNames;
@@ -386,6 +388,23 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         return Collections.unmodifiableList(result);
     }
 
+    private List<String> getAllServerNamesInternal(String serverName) {
+        List<String> result = new ArrayList<>();
+        result.add(serverName);
+        result.addAll(getServerNameAliases());
+        return Collections.unmodifiableList(result);
+    }
+
+    private List<String> getAllServerNamesInternal(List<String> serverAliases) {
+        List<String> result = new ArrayList<>();
+        String name = getServerName();
+        if (name != null) {
+            result.add(name);
+        }
+        result.addAll(serverAliases);
+        return Collections.unmodifiableList(result);
+    }
+
     @Override
     public String getSiteKey() {
         return getName();
@@ -393,7 +412,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public String getTemplateFolder() {
-        if (templateFolder == null) {
+        if (templateFolder == null || isStaled()) {
             String retrievedTemplateFolder = null;
             if (getPath().startsWith("/modules")) {
                 retrievedTemplateFolder = getName();
@@ -429,7 +448,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public List<String> getInstalledModules() {
-        if (installedModules == null) {
+        if (installedModules == null || isStaled()) {
             List<String> modules;
             if (getPath().startsWith("/modules")) {
                 modules = new ArrayList<>();
@@ -464,7 +483,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return a set of all installed modules for this site, their direct and transitive dependencies (the whole dependency tree)
      */
     public Set<String> getInstalledModulesWithAllDependencies() {
-        if (installedModulesWithDependencies == null) {
+        if (installedModulesWithDependencies == null || isStaled()) {
             Set<String> modules = new LinkedHashSet<>(getInstalledModules());
             List<String> keys = new ArrayList<>(modules);
             TemplatePackageRegistry reg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry();
@@ -527,7 +546,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return the corresponding template set of this virtual site
      */
     public JahiaTemplatesPackage getTemplatePackage() {
-        if (templatePackage == null) {
+        if (templatePackage == null || isStaled()) {
             templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                     .getTemplatePackageById(getTemplateFolder());
         }
@@ -558,7 +577,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public boolean isMixLanguagesActive() {
-        if (mixLanguagesActive == null) {
+        if (mixLanguagesActive == null || isStaled()) {
             mixLanguagesActive = false;
             try {
                 if (hasProperty(SitesSettings.MIX_LANGUAGES_ACTIVE)) {
@@ -573,7 +592,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     @Override
     public boolean isAllowsUnlistedLanguages() {
-        if (allowsUnlistedLanguages == null) {
+        if (allowsUnlistedLanguages == null || isStaled()) {
             allowsUnlistedLanguages = false;
             try {
                 if (hasProperty(SitesSettings.ALLOWS_UNLISTED_LANGUAGES)) {
@@ -631,6 +650,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                 }
             }
             setProperty(SitesSettings.LANGUAGES, l.toArray(new Value[l.size()]));
+            //This should no more be necessary has isStalled() will handle the updates correctly even on multiple instances
             this.languages = null;
             this.languagesAsLocales = null;
             this.inactiveLanguages = null;
@@ -843,7 +863,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             templateFolder = null;
         } else if (SitesSettings.SERVER_NAME.equals(s)) {
             serverName = value;
-            allServerNames = getAllServerNamesInternal();
+            allServerNames = getAllServerNamesInternal(serverName);
         }
 
         return super.setProperty(s, value);
@@ -883,9 +903,46 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             installedModulesWithDependencies = null;
         } else if (SitesSettings.SERVER_NAME_ALIASES.equals(s)) {
             serverAliases = toUnmodifiableList(values);
-            allServerNames = getAllServerNamesInternal();
+            allServerNames = getAllServerNamesInternal(serverAliases);
         }
 
         return super.setProperty(s, values);
+    }
+
+    private boolean isStaled() {
+        try {
+            String currentLastModified = getProperty(Constants.JCR_LASTMODIFIED).getString();
+            if (lastModified == null || !lastModified.equals(currentLastModified)) {
+                lastModified = currentLastModified;
+                flush();
+                return true;
+            }
+            return false;
+        } catch (RepositoryException e) {
+            logger.warn("Cannot get last modified property", e);
+        }
+        return false;
+    }
+
+    private void flush() {
+        this.inactiveLiveLanguages = null;
+        this.inactiveLanguages = null;
+        this.inactiveLanguagesAsLocales = null;
+        this.activeLiveLanguages = null;
+        this.activeLiveLanguagesAsLocales = null;
+        this.defaultLanguage = null;
+        this.home = null;
+        this.languages = null;
+        this.languagesAsLocales = null;
+        this.mandatoryLanguages = null;
+        this.serverName = null;
+        this.serverAliases = null;
+        this.allServerNames = null;
+        this.templateFolder = null;
+        this.installedModules = null;
+        this.installedModulesWithDependencies = null;
+        this.templatePackage = null;
+        this.mixLanguagesActive = null;
+        this.allowsUnlistedLanguages = null;
     }
 }

@@ -159,11 +159,23 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         return getCurrentSession(workspace, locale, fallbackLocale, false);
     }
 
+    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale, Locale fallbackLocale, boolean enableCaching) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, false, enableCaching);
+    }
+
     public JCRSessionWrapper getCurrentSystemSession(String workspace, Locale locale, Locale fallbackLocale) throws RepositoryException {
         return getCurrentSession(workspace, locale, fallbackLocale, true);
     }
 
+    public JCRSessionWrapper getCurrentSystemSession(String workspace, Locale locale, Locale fallbackLocale, boolean enableCaching) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, true, enableCaching);
+    }
+
     public JCRSessionWrapper getCurrentSession(String workspace, Locale locale, Locale fallbackLocale, boolean system) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, system, true);
+    }
+
+    public JCRSessionWrapper getCurrentSession(String workspace, Locale locale, Locale fallbackLocale, boolean system, boolean enableCaching) throws RepositoryException {
         // thread user session might be initialized/closed in an HTTP filter, instead of keeping it
         ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> sessionThreadLocal = system ? systemSession : userSession;
 
@@ -217,7 +229,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                 wsMap.put(key, s);
             }
         }
+
+        if (!enableCaching) {
+            // Enabled by default, only need to check for disabling
+            s.disableSessionCache();
+        }
         s.setReadOnlyCacheEnabled(getReadOnlyCacheEnabled());
+
         return s;
     }
 
@@ -395,7 +413,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         synchronized (this) {
             for (JCRSessionWrapper wrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
                 try {
-                    wrapper.removeFromCache(mountPoint);
+                    wrapper.getCache().removeNode(mountPoint);
                 } catch (RepositoryException e) {
                     logger.warn("Cannot flush cache", e);
                 }
@@ -444,7 +462,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         synchronized (this) {
             for (JCRSessionWrapper wrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
                 try {
-                    wrapper.removeFromCache(p.getMountPoint());
+                    wrapper.getCache().removeNode(p.getMountPoint());
                 } catch (RepositoryException e) {
                     logger.warn("Cannot flush cache", e);
                 }

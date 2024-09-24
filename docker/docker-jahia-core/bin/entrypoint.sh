@@ -4,9 +4,15 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "Initial container startup, configuring Jahia..."
 
     if [ -f "${DATA_FOLDER}/info/version.properties" ] || [ -d "${DATA_FOLDER}/bundles-deployed" ]; then
-        echo "Previous installation detected. Do not override db and existing data."
+        echo "Previous installation detected. Do not override db and existing data. Checking write permissions..."
         PREVIOUS_INSTALL="true"
         OVERWRITEDB="false"
+        if [ ! -w "${DATA_FOLDER}" ] || [ ! -w "$LOGS_FOLDER" ]; then
+            [ ! -w "$DATA_FOLDER" ] && echo "Error! No write permission for DATA_FOLDER: $DATA_FOLDER"
+            [ ! -w "$LOGS_FOLDER" ] && echo "Error! No write permission for LOGS_FOLDER: $LOGS_FOLDER"
+            echo "This could be caused by a docker image upgrade. Please follow the migration steps at the academy: https://academy.jahia.com/documentation/jahia/jahia-8/dev-ops/docker/migrations-with-docker-images"
+            exit 1
+        fi
     else
         PREVIOUS_INSTALL="false"
     fi

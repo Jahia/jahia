@@ -12,20 +12,8 @@
        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean name="org.jahia.modules.default.ModuleRegistry"
-          class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
-        <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
-        <property name="choiceListRendererService" ref="choiceListRenderers"/>
-        <property name="choiceListInitializers" ref="choiceListInitializers"/>
-        <property name="renderService" ref="RenderService"/>
-        <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>
-        <property name="workflowService" ref="workflowService"/>
-        <property name="visibilityService" ref="visibilityService"/>
-        <property name="jcrStoreService" ref="JCRStoreService"/>
-        <property name="compositeFilter" ref="CompositeFilter"/>
-        <property name="searchService" ref="SearchService"/>
-        <property name="gwtResourceConfig" ref="GWTResourceConfig"/>
-        <property name="passwordService" ref="PasswordService"/>
-        <property name="publicationService" ref="jcrPublicationService"/>
+          class="org.jahia.services.templates.TemplatePackageRegistry$SpringModuleRegistry">
+        <property name="registry" ref="JahiaExtensionsRegistry"/>
     </bean>
 
     <bean id="modulePlaceholderConfig"

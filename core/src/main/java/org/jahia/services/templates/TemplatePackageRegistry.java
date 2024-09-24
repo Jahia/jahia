@@ -694,8 +694,12 @@ public class TemplatePackageRegistry {
     }
 
 // -------------------------- INNER CLASSES --------------------------
+    /**
+     * Generic registry.
+     * Used to register various services to extends Jahia core functionalities.
+     */
+    public static class JahiaExtensionsRegistry {
 
-    static class ModuleRegistry implements DestructionAwareBeanPostProcessor, ApplicationListener<ApplicationContextEvent> {
         private TemplatePackageRegistry templatePackageRegistry;
 
         private ChoiceListInitializerService choiceListInitializers;
@@ -718,21 +722,11 @@ public class TemplatePackageRegistry {
 
         private GWTResourceConfig gwtResourceConfig;
 
-        private boolean flushCaches;
-
         private PasswordService passwordService;
 
         private JCRPublicationService publicationService;
 
-        @Override
-        public void onApplicationEvent(ApplicationContextEvent event) {
-            if ((event instanceof ContextClosedEvent || event instanceof ContextRefreshedEvent) && flushCaches) {
-                CacheHelper.flushOutputCaches();
-            }
-        }
-
-        @Override
-        public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
+        public void unregister(Object bean, String beanName) throws BeansException {
             if (!JahiaContextLoaderListener.isRunning()) {
                 return;
             }
@@ -843,7 +837,6 @@ public class TemplatePackageRegistry {
             if (bean instanceof CacheKeyPartGenerator) {
                 final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
                 cacheKeyGenerator.unregisterPartGenerator((CacheKeyPartGenerator) bean);
-                flushCaches = true;
             }
 
             if (bean instanceof HandlerMapping) {
@@ -902,9 +895,7 @@ public class TemplatePackageRegistry {
             }
         }
 
-        @Override
-        @SuppressWarnings("unchecked")
-        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        public Object register(Object bean, String beanName) throws BeansException {
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(renderService);
             }
@@ -1033,8 +1024,6 @@ public class TemplatePackageRegistry {
             if (bean instanceof CacheKeyPartGenerator) {
                 final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
                 cacheKeyGenerator.registerPartGenerator((CacheKeyPartGenerator) bean);
-                // flush the cache only once by module
-                flushCaches = true;
             }
 
             if (bean instanceof HandlerMapping) {
@@ -1115,11 +1104,6 @@ public class TemplatePackageRegistry {
             return bean;
         }
 
-        @Override
-        public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-            return bean;
-        }
-
         public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
             this.templatePackageRegistry = templatePackageRegistry;
         }
@@ -1177,18 +1161,55 @@ public class TemplatePackageRegistry {
         public void setPublicationService(JCRPublicationService publicationService) {
             this.publicationService = publicationService;
         }
+    }
 
-        public void osgiBind(Object bean) throws BeansException {
-            if (bean != null) {
-                postProcessAfterInitialization(bean, "osgi service " + bean.getClass().getName());
+    /**
+     * Spring module registry.
+     * One instance will be created per module Spring context see: modules-applicationcontext-registry.xml
+     */
+    static class SpringModuleRegistry implements DestructionAwareBeanPostProcessor, ApplicationListener<ApplicationContextEvent> {
+
+        JahiaExtensionsRegistry registry;
+
+        private boolean flushCaches;
+
+        @Override
+        public void onApplicationEvent(ApplicationContextEvent event) {
+            if ((event instanceof ContextClosedEvent || event instanceof ContextRefreshedEvent) && flushCaches) {
+                CacheHelper.flushOutputCaches();
             }
         }
 
-        public void osgiUnbind(Object bean) throws BeansException {
-            if (bean != null) {
-                postProcessBeforeDestruction(bean, "osgi service " + bean.getClass().getName());
+        @Override
+        public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
+            if (!JahiaContextLoaderListener.isRunning()) {
+                return;
+            }
+
+            registry.register(bean, beanName);
+            if (bean instanceof CacheKeyPartGenerator) {
+                flushCaches = true;
             }
         }
 
+        @Override
+        @SuppressWarnings("unchecked")
+        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            registry.register(bean, beanName);
+            if (bean instanceof CacheKeyPartGenerator) {
+                // flush the cache only once by module
+                flushCaches = true;
+            }
+            return bean;
+        }
+
+        @Override
+        public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+            return bean;
+        }
+
+        public void setRegistry(JahiaExtensionsRegistry registry) {
+            this.registry = registry;
+        }
     }
 }

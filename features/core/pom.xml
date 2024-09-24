@@ -105,6 +105,12 @@
 
         <dependency>
             <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.extends.osgi.registry</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
             <version>${project.version}</version>
         </dependency>

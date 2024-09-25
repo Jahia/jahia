@@ -1110,21 +1110,16 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
-    private static void buildPurgeJob() {
-        JobDetail jobDetail = BackgroundJob.createJahiaJob("Purge staled files of the generated-resources folder", PurgeStaledGeneratedResourcesFolder.class);
+    private synchronized static void buildPurgeJob() {
+        JobDetail job = BackgroundJob.createJahiaJob("Purge staled files of the generated-resources folder", PurgeStaledGeneratedResourcesFolder.class);
+        job.setName("purgeStaledGeneratedResources_job");
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MINUTE, 30);
-            JobDetail existingJob = ServicesRegistry.getInstance().getSchedulerService().getAllRAMJobs().stream().filter(job -> job.getGroup().equals(jobDetail.getGroup())).findFirst().orElse(null);
-            if (existingJob != null) {
-                logger.info("Generated resources purge job already scheduled, rescheduling it...");
-                Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", existingJob.getGroup(), existingJob.getName(), existingJob.getGroup(), calendar.getTime(), null, 0, 0 );
-                ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().rescheduleJob(trigger.getName(), trigger.getGroup(), trigger);
-            } else {
-                logger.info("Scheduling generated resources purge job...");
-                Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", jobDetail.getGroup(), calendar.getTime());
-                ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().scheduleJob(jobDetail, trigger);
-            }
+            ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().deleteJob(job.getName(), job.getGroup());
+            Trigger trigger = new SimpleTrigger("purgeStaledGeneratedResources_trigger", job.getGroup(), calendar.getTime());
+            Date date = ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().scheduleJob(job, trigger);
+            logger.info("Generated resources purge job scheduled at: {}", date);
         } catch (SchedulerException e) {
             logger.error("Unable to schedule background job for generated resources purge", e);
         }
@@ -1133,7 +1128,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private static boolean purgeStaledFiles() {
         File marker = getStaledMarkerFile();
         if (marker.exists()) {
-            long validityTime = marker.lastModified() - (15 * 60 * 1000); //consider files older than stale date plus 15 minutes
+            long validityTime = marker.lastModified() - (5 * 60 * 1000); //consider files older than stale date plus 5 minutes
             logger.info("Cleaning existing generated resources files older than {}", validityTime);
             File generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
             Iterator<File> staleFiles = FileUtils.iterateFiles(generatedResourcesFolder, new AgeFileFilter(validityTime), null);

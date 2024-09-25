@@ -1186,7 +1186,7 @@ public class TemplatePackageRegistry {
                 return;
             }
 
-            registry.register(bean, beanName);
+            registry.unregister(bean, beanName);
             if (bean instanceof CacheKeyPartGenerator) {
                 flushCaches = true;
             }

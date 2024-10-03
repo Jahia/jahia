@@ -7,9 +7,12 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
         echo "Previous installation detected. Do not override db and existing data. Checking write permissions..."
         PREVIOUS_INSTALL="true"
         OVERWRITEDB="false"
-        if [ ! -w "${DATA_FOLDER}" ] || [ ! -w "$LOGS_FOLDER" ]; then
-            [ ! -w "$DATA_FOLDER" ] && echo "Error! No write permission for DATA_FOLDER: $DATA_FOLDER"
-            [ ! -w "$LOGS_FOLDER" ] && echo "Error! No write permission for LOGS_FOLDER: $LOGS_FOLDER"
+
+        if ! find "$DATA_FOLDER" "$LOGS_FOLDER" -type f -not -writable | grep -q .; then
+            echo "All files are writable."
+        else
+            echo "Error: Some files are not writable." >&2
+            find "$DATA_FOLDER" "$LOGS_FOLDER" -type f -not -writable -print
             echo "This could be caused by a docker image upgrade. Please follow the migration steps at the academy: https://academy.jahia.com/documentation/jahia/jahia-8/dev-ops/docker/migrations-with-docker-images"
             exit 1
         fi

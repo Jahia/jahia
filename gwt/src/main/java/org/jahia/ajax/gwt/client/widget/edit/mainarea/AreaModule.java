@@ -227,7 +227,7 @@ public class AreaModule extends SimpleModule {
     public void createNode(final AsyncCallback<GWTJahiaNode> callback) {
         if (node == null) {
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
-                    areaType, Collections.singletonList("jmix:systemNameReadonly"),null,null,null, null, null, true, new AsyncCallback<GWTJahiaNode>() {
+                    areaType, Collections.singletonList("jmix:isAreaList"),null,null,null, null, null, true, new AsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     node = result;
                     callback.onSuccess(result);

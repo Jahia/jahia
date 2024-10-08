@@ -239,7 +239,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         } catch (PathNotFoundException e) {
             try {
                 areaNode = areaParentNode.addNode(areaName, areaType);
-                areaNode.addMixin("jmix:systemNameReadonly");
+                areaNode.addMixin("jmix:isAreaList");
                 session.save();
             } catch (Exception e1) {
                 // possible race condition when page is accessed concurrently in edit mode

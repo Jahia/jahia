@@ -670,6 +670,8 @@
 
 [jmix:systemNameReadonly] mixin
 
+[jmix:isAreaList] > jmix:systemNameReadonly mixin
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

@@ -670,7 +670,9 @@
 
 [jmix:systemNameReadonly] mixin
 
-[jmix:isAreaList] > jmix:systemNameReadonly mixin
+[jmix:blockMove] mixin
+
+[jmix:isAreaList] > jmix:systemNameReadonly, jmix:blockMove mixin
 
 //---------------------------------------------------------
 // References and links

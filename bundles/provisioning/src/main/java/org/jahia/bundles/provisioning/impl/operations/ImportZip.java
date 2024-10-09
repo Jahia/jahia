@@ -92,12 +92,13 @@ public class ImportZip implements Operation {
             jcrTemplate.doExecuteWithSystemSession(session -> {
                 List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, IMPORT, "url");
                 for (Map<String, Object> subEntry : entries) {
+                    String url = (String) subEntry.get(IMPORT);
+                    String rootPath = (String) subEntry.get(ROOT_PATH);
                     try {
-                        String url = (String) subEntry.get(IMPORT);
-                        String rootPath = (String) subEntry.get(ROOT_PATH);
                         importExportService.importZip(rootPath != null ? rootPath : "/", ProvisioningScriptUtil.getResource(url, executionContext), ROOT_BEHAVIOUR_IGNORE, session);
                     } catch (IOException e) {
-                        throw new RepositoryException(e);
+                        // hide full details of the IOException that may contain sensitive information
+                        throw new RepositoryException(String.format("An IOException occurred, unable to import site from %s (rootPath: %s)", url, rootPath));
                     }
                 }
                 return null;

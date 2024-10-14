@@ -47,9 +47,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.commons.Version;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -313,7 +316,12 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
         watchdog.schedule(new TimerTask() {
             @Override
             public void run() {
-                perform();
+                try {
+                    JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
+                    perform();
+                } finally {
+                    JcrSessionFilter.endRequest();
+                }
             }
         }, 0, interval);
     }

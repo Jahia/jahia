@@ -670,8 +670,10 @@
 
 [jmix:systemNameReadonly] mixin
 
+// @since Jahia 8.2.1.0
 [jmix:blockMove] mixin
 
+// @since Jahia 8.2.1.0
 [jmix:isAreaList] > jmix:systemNameReadonly, jmix:blockMove mixin
 
 //---------------------------------------------------------

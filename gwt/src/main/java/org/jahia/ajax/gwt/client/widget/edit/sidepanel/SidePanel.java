@@ -166,7 +166,14 @@ public class SidePanel extends ContentPanel {
                 if (tabs.size() == 1) {
                     tabs.get(0).refresh(data);
                 } else {
-                    ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(data);
+                    SidePanelTabItem tabItem = tabPanel.getSelectedItem().getData("tabItem");
+                    boolean manualRefresh = tabItem.isNeedManualRefresh();
+                    tabItem.refresh(data);
+                    // Refresh main area if manual refresh is required
+                    if (manualRefresh)  {
+                        editLinker.getMainModule().refresh(data);
+                    }
+
                 }
                 updateRefreshButton();
                 SiteSwitcherActionItem.reloadAndRefreshAllSitesList(config.getSitesLocation(), editLinker);

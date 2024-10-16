@@ -47,16 +47,21 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.poller.Poller;
+import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class PublicationStatusActionItem extends BaseActionItem {
+public class PublicationStatusActionItem extends BaseActionItem  implements Poller.PollListener<ProcessPollingEvent> {
 
     private transient HorizontalPanel panel;
 
@@ -93,6 +98,8 @@ public class PublicationStatusActionItem extends BaseActionItem {
         panel = new HorizontalPanel();
         panel.addStyleName(getGwtToolbarItem().getClassName());
         panel.addStyleName("action-bar-menu-item");
+
+        Poller.getInstance().registerListener(this, ProcessPollingEvent.class);
     }
 
     @Override
@@ -100,4 +107,39 @@ public class PublicationStatusActionItem extends BaseActionItem {
         return panel;
     }
 
+    @Override
+    public void handlePollingResult(ProcessPollingEvent result) {
+        List<GWTJahiaJobDetail> lastEndedJobs = result.getEndedJob();
+        boolean checkPublicationStatus = false;
+        if (!lastEndedJobs.isEmpty()) {
+            for (GWTJahiaJobDetail endedJob : lastEndedJobs) {
+                if (endedJob.getSite() == null || endedJob.getSite().equals(JahiaGWTParameters.getSiteKey())) {
+                    if (endedJob.getGroup().equals("PublicationJob")) {
+                        checkPublicationStatus = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (checkPublicationStatus && linker instanceof EditLinker) {
+            JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(((EditLinker) linker).getMainModule().getPath()), Arrays.asList(GWTJahiaNode.PUBLICATION_INFO), new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                public void onSuccess(List<GWTJahiaNode> result) {
+                    final GWTJahiaPublicationInfo info = result.get(0).getAggregatedPublicationInfo();
+                    if (info != null) {
+                        displayInfo(info);
+                        // Trigger anthracite refresh
+                        refreshAnthracite();
+                    }
+                }
+            });
+        }
+    }
+
+    private native void refreshAnthracite() /*-{
+        try {
+            $wnd.Anthracite.edit.topbar.build();
+        } catch (e) {
+            console.warn("Unable to refresh anthracite topbar", e.message);
+        }
+    }-*/;
 }

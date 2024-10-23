@@ -36,8 +36,20 @@
         <notes><![CDATA[
         file name: bcprov-jdk15on-+.jar
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcprov\-jdk15on@.*$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bc.*@.*$</packageUrl>
         <vulnerabilityName>CVE-2023-33201</vulnerabilityName>
+        <vulnerabilityName>CVE-2023-33202</vulnerabilityName>
+        <vulnerabilityName>CVE-2024-30171</vulnerabilityName>
+        <vulnerabilityName>CVE-2024-30172</vulnerabilityName>
+        <vulnerabilityName>CVE-2024-29857</vulnerabilityName>
+        <vulnerabilityName>CVE-2024-34447</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: braces:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/braces@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -66,11 +78,12 @@
         file name: commons-io-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/commons\-io/commons\-io@.*$</packageUrl>
-        <cve>CVE-2021-29425</cve>
+        <vulnerabilityName>CVE-2021-29425</vulnerabilityName>
+        <vulnerabilityName>CVE-2024-47554</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: commons-net-2.2.jar
+        file name: commons-net-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/commons\-net/commons\-net@.*$</packageUrl>
         <cve>CVE-2021-37533</cve>
@@ -91,7 +104,7 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: derby-10.14.2.0.jar
+        file name: derby-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.derby/derby@.*$</packageUrl>
         <cve>CVE-2022-46337</cve>
@@ -131,6 +144,13 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: es5-ext:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/es5-ext@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: external-provider-users-groups-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/external\-provider\-users\-groups@.*$</packageUrl>
@@ -144,6 +164,7 @@
         file name: graal-sdk-22.3.3.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-20932</vulnerabilityName>
         <vulnerabilityName>CVE-2023-22006</vulnerabilityName>
     </suppress>
     <suppress>
@@ -177,6 +198,13 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: jackrabbit-jcr-server-*
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.jackrabbit/jackrabbit-jcr-server@.*$</packageUrl>
+        <cve>CVE-2023-37895</cve>
+     </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: jackson-*-2.10.0.jar - we package jackson >= 2.10.5.1
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-.*@2\.10\.0$</packageUrl>
@@ -186,7 +214,7 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: jackson-databind-2.15.2.jar
+        file name: jackson-databind-*
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
         <cve>CVE-2023-35116</cve>
@@ -242,6 +270,9 @@
         file name: org.apache.karaf.*jar
         ]]></notes>
        <packageUrl regex="true">^pkg:maven/org\.apache\.karaf.*/org\.apache\.karaf\..*@.*$</packageUrl>
+       <cve>CVE-2020-11980</cve>
+       <cve>CVE-2021-41766</cve>
+       <cve>CVE-2022-22932</cve>
        <cve>CVE-2022-40145</cve>
     </suppress>
     <suppress>
@@ -282,7 +313,14 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: minimist:*
+        file name: micromatch:* - not packaged at runtime
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/micromatch@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: minimist:* - not packaged at runtime
         ]]></notes>
         <packageUrl regex="true">^pkg:npm/minimist@.*$</packageUrl>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
@@ -386,6 +424,32 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: solr-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.solr/solr\-.*@.*$</packageUrl>
+        <cve>CVE-2012-6612</cve>
+        <cve>CVE-2013-6397</cve>
+        <cve>CVE-2013-6407</cve>
+        <cve>CVE-2013-6408</cve>
+        <cve>CVE-2015-8795</cve>
+        <cve>CVE-2015-8796</cve>
+        <cve>CVE-2015-8797</cve>
+        <cve>CVE-2017-3163</cve>
+        <cve>CVE-2017-3164</cve>
+        <cve>CVE-2018-11802</cve>
+        <cve>CVE-2018-1308</cve>
+        <cve>CVE-2019-0193</cve>
+        <cve>CVE-2020-13941</cve>
+        <cve>CVE-2021-27905</cve>
+        <cve>CVE-2021-29262</cve>
+        <cve>CVE-2021-29943</cve>
+        <cve>CVE-2021-44548</cve>
+        <cve>CVE-2023-44487</cve>
+        <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
+        <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: spring-*-3.1.1.RELEASE.jar - we package newer spring 
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*@3\.1\.1.RELEASE$</packageUrl>
@@ -412,32 +476,6 @@
         <cve>CVE-2022-22968</cve>
         <cve>CVE-2022-22970</cve>
         <cve>CVE-2023-20861</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-        file name: solr-*.jar
-        ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.apache\.solr/solr\-.*@.*$</packageUrl>
-        <cve>CVE-2012-6612</cve>
-        <cve>CVE-2013-6397</cve>
-        <cve>CVE-2013-6407</cve>
-        <cve>CVE-2013-6408</cve>
-        <cve>CVE-2015-8795</cve>
-        <cve>CVE-2015-8796</cve>
-        <cve>CVE-2015-8797</cve>
-        <cve>CVE-2017-3163</cve>
-        <cve>CVE-2017-3164</cve>
-        <cve>CVE-2018-11802</cve>
-        <cve>CVE-2018-1308</cve>
-        <cve>CVE-2019-0193</cve>
-        <cve>CVE-2020-13941</cve>
-        <cve>CVE-2021-27905</cve>
-        <cve>CVE-2021-29262</cve>
-        <cve>CVE-2021-29943</cve>
-        <cve>CVE-2021-44548</cve>
-        <cve>CVE-2023-44487</cve>
-        <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
-        <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -574,5 +612,12 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:npm/xlsx@.*$</packageUrl>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: xmlunit-core-2.8.2.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.xmlunit/xmlunit-core@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-31573</vulnerabilityName>
     </suppress>
 </suppressions>

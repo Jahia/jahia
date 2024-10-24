@@ -173,6 +173,7 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/com\.graphql\-java/graphql\-.*@.*$</packageUrl>
         <cve>CVE-2022-37734</cve>
+        <cve>CVE-2023-28867</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -198,9 +199,9 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        file name: jackrabbit-jcr-server-*
+        file name: jackrabbit-*
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.apache\.jackrabbit/jackrabbit-jcr-server@.*$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.jackrabbit/jackrabbit-.*@.*$</packageUrl>
         <cve>CVE-2023-37895</cve>
      </suppress>
     <suppress>

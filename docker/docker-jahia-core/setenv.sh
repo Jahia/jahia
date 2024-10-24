@@ -32,3 +32,6 @@ export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/java.nio=ALL-UNNAME
 export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/sun.nio.ch=ALL-UNNAMED"
 export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.management/sun.management=ALL-UNNAMED"
 export CATALINA_OPTS="${CATALINA_OPTS} --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+
+# Disable recycling of facade objects (Tomcat will create new facade object for each request.)
+export CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.connector.RECYCLE_FACADES=false"

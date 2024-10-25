@@ -25,3 +25,6 @@ export CATALINA_OPTS="${CATALINA_OPTS} -Djavax.xml.validation.SchemaFactory:http
 
 # Prevent Karaf from intercepting sigterm
 export CATALINA_OPTS="${CATALINA_OPTS} -Dkaraf.handle.sigterm=false"
+
+# Disable recycling of facade objects (Tomcat will create new facade object for each request.)
+export CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.connector.RECYCLE_FACADES=false"

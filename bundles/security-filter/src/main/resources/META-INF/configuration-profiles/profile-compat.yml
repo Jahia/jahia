@@ -80,13 +80,14 @@ api_access_permission:
     - node:
         withPermission: api-access
 
-deploy_modules:
-  description: Can manage modules deployment
+provisioning:
+  description: Can use provisioning
   metadata:
     visible: true
+  auto_apply:
+    - always: true
   constraints:
-    - user_permission: adminTemplates
+    - user_permission: provisioningAccess
       path: /
   grants:
     - api: provisioning
-    - api: module_manager

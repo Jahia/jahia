@@ -311,10 +311,11 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         data.put(JOB_STATUS, STATUS_ADDED);
         logger.debug("schedule job {} volatile({}) @ {}", jobDetail.getName(), jobDetail.isVolatile(),
                 new Date(System.currentTimeMillis()));
-        if (useRamScheduler) {
-            ramScheduler.scheduleJob(jobDetail, trigger);
+        Scheduler theScheduler = getScheduler(useRamScheduler);
+        if (theScheduler != null) {
+            theScheduler.scheduleJob(jobDetail, trigger);
         } else {
-            scheduler.scheduleJob(jobDetail, trigger);
+            logger.warn("Job {} will not be scheduled, Scheduler is not available due to service shutting down", jobDetail.getName());
         }
     }
 
@@ -502,6 +503,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     private int getRunningJobsCount() throws SchedulerException {
-        return (scheduler.getCurrentlyExecutingJobs().size() + ramScheduler.getCurrentlyExecutingJobs().size());
+        return ((scheduler != null ? scheduler.getCurrentlyExecutingJobs().size() : 0) +
+                (ramScheduler != null ? ramScheduler.getCurrentlyExecutingJobs().size() : 0));
     }
 }

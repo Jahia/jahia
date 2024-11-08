@@ -216,9 +216,9 @@
  - j:extractedText (binary) protected hidden
  - j:lastExtractionDate (date) protected nofulltext hidden
 
-[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:list, jmix:searchable
+[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:list, jmix:searchable, jmix:listedInRestrictions
 
-[jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication, jmix:observable, mix:title, jmix:searchable
+[jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication, jmix:observable, mix:title, jmix:searchable, jmix:listedInRestrictions
  - j:filename (string) protected
 
 [jmix:image] mixin
@@ -574,7 +574,7 @@
 // Definition Content
 //---------------------------------------------------------
 
-[jmix:editorialContent] mixin
+[jmix:editorialContent] > jmix:listedInRestrictions mixin
 
 // @since 7.3.1.0
 [jmix:browsableInEditorialPicker] mixin
@@ -630,6 +630,9 @@
 
 // @since Jahia 6.6
 [jnt:simpleComponent] > jnt:component
+
+// @since Jahia 8.2.1.0
+[jmix:listedInRestrictions] mixin
 
 //---------------------------------------------------------
 // Other mixins
@@ -776,7 +779,7 @@
  - thirdDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
 
 
-[jnt:contentFolder] > jnt:content, mix:title, jmix:list, jmix:publication
+[jnt:contentFolder] > jnt:content, mix:title, jmix:list, jmix:publication, jmix:listedInRestrictions
  + * (jmix:droppableContent) = jmix:droppableContent version
  + * (jnt:contentFolder) = jnt:contentFolder version
 
@@ -833,7 +836,7 @@
  - j:editableInContribution (boolean) = true autocreated
  - j:canOrderInContribution (boolean) hidden
  - j:canDeleteInContribution (boolean) hidden
- - j:contributeTypes (string, choicelist[componenttypes='jmix:editorialContent,jnt:file,jnt:folder,jnt:contentFolder']) multiple nofulltext
+ - j:contributeTypes (string, choicelist[componenttypes='jmix:listedInRestrictions']) multiple nofulltext
 
 [jmix:listRestrictions] mixin
  - j:allowedTypes (string, choicelist[componenttypes='notRestrictedToDependencies;jmix:droppableContent,jnt:file,jnt:folder']) multiple nofulltext

@@ -1,4 +1,4 @@
-name: Delivery: Grab Jahia Repositories
+name: Delivery - Grab Jahia Repositories
 
 on:
   schedule:

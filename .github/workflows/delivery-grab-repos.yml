@@ -1,0 +1,50 @@
+name: Delivery: Grab Jahia Repositories
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  get-org-repos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Get Org Repositories
+        id: get-repos
+        uses: fgerthoffert/actions-get-org-repos@v1.0.0
+        with:
+          org: jahia
+          token: ${{ secrets.GH_JAHIACI_TOKEN }}
+          fetch_custom_properties: true
+          filter_topics: product
+          filter_operator: AND
+          filter_ignore_archived: true
+
+      - name: Convert the NDJSON to CSV
+        shell: bash
+        run: |
+          npx @json2csv/cli -i ${{ steps.get-repos.outputs.artifact_filepath }} --ndjson --config ${{ github.workspace }}/.github/config/delivery-grab-repos-cfg.js -o repositories.csv
+
+      - name: Archive CSV artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repositories.csv
+          path: |
+            repositories.csv
+          retention-days: 2
+
+      - name: Push the CSV file to Google Sheets
+        uses: fgerthoffert/actions-csv-to-gsheet@v1.0.0
+        with:
+          csv_filepath: repositories.csv
+          gsheet_auth_email: ${{ secrets.INCIDENT_GOOGLE_CLIENT_EMAIL }}
+          gsheet_auth_pkey: ${{ secrets.INCIDENT_GOOGLE_PRIVATE_KEY_BASE64 }}
+          gsheet_id: ${{ secrets.INCIDENT_GOOGLE_SPREADSHEET_ID }}
+          gsheet_worksheet_title: Repositories
+          gsheet_header_row: 5
+          gsheet_title_key: Name

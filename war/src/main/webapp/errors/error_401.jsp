@@ -94,9 +94,9 @@
                     <button type="submit"><fmt:message key='label.login'/></button>
 
                 </ui:loginArea>
+                </div>
             </div>
-            </div>
-            <div class="login-footer">Jahia - Copyrights © 2002-2024 All Rights Reserved by Jahia Solutions Group SA.</div>
+            <div class="login-footer">Jahia - Copyrights © 2002-2025 All Rights Reserved by Jahia Solutions Group SA.</div>
         </div>
     </div>
 </section>

@@ -50,6 +50,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.apache.hc.core5.http.io.entity.PathEntity;
+import org.apache.jackrabbit.spi.commons.conversion.NameException;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -761,7 +762,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     throw new PathNotFoundException("'" + urlResolver.getPath() + "' not found");
                 }
             } catch (RepositoryException e) {
-                if (e.getCause() instanceof MalformedPathException) {
+                if (e instanceof NamespaceException || e.getCause() instanceof NameException) {
                     // Stop execution but wrap in PathNotFoundException to prevent
                     // generating stack trace in jahia-errors; log 404 instead
                     logger.debug(e.getMessage());

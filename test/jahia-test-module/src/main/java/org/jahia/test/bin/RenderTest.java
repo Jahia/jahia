@@ -283,4 +283,13 @@ public class RenderTest extends JahiaTestCase {
             assertEquals("Error in response, code=" + resp.getCode(), 404, resp.getCode());
         }
     }
+
+    @Test
+    public void testPathWithColon() throws IOException {
+        String url = getBaseServerURL() + Jahia.getContextPath() + "/cms/render/default/en"
+                + SITECONTENT_ROOT_NODE + "/home/list.me%3Acolon";
+        try (CloseableHttpResponse resp = getHttpClient().execute(new HttpGet(url))) {
+            assertEquals("Error in response, code=" + resp.getCode(), 404, resp.getCode());
+        }
+    }
 }

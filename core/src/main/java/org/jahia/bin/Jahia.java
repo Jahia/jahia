@@ -99,7 +99,7 @@ import java.util.Properties;
  */
 public final class Jahia {
 
-    public static final String YEAR = "2023";
+    public static final String YEAR = "2025";
     public static final String CODE_NAME = "Kimchi";
     public static final String PRODUCT_NAME = "Jahia";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";

@@ -58,7 +58,7 @@ import static org.junit.Assert.*;
  * JAHIA'S ENTERPRISE DISTRIBUTIONS LICENSING - IMPORTANT INFORMATION
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group. All rights reserved.
+ *     Copyright (C) 2002-2025 Jahia Solutions Group. All rights reserved.
  *
  *     This file is part of a Jahia's Enterprise Distribution.
  *

@@ -427,6 +427,10 @@ public class Export extends JahiaController implements ServletContextAware {
         params.put(ImportExportService.VIEW_METADATA, Boolean.valueOf(request.getParameter("viewMetadata")));
         params.put(ImportExportService.VIEW_JAHIALINKS, Boolean.valueOf(request.getParameter("viewLinks")));
         params.put(ImportExportService.VIEW_WORKFLOW, Boolean.valueOf(request.getParameter("viewWorkflow")));
+        String[] paths = request.getParameterValues("path");
+        if (paths != null) {
+            params.put(ImportExportService.INCLUDE_PATHS, paths);
+        }
 
         String exportPath = request.getParameter("exportPath");
         if (StringUtils.isNotBlank(exportPath)) {

@@ -80,6 +80,7 @@ public interface ImportExportService {
     String INCLUDE_DEFINITIONS = "definitions";
     String INCLUDE_LIVE_EXPORT = "includeLive";
     String INCLUDE_USERS = "includeUsers";
+    String INCLUDE_PATHS = "includePaths";
     String INCLUDE_ROLES = "includeRoles";
     String INCLUDE_MOUNTS = "includeMounts";
     String VIEW_CONTENT = "content";

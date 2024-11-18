@@ -169,6 +169,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private static final FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
     private static final HashSet<String> siteExportNodeTypesToIgnore = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask", "jmix:noImportExport");
     private static final HashSet<String> defaultExportNodeTypesToIgnore = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask", "jmix:noImportExport");
+    private static final Pattern ALLOWED_INCLUDED_PATHS = Pattern.compile("^/(groups|settings)(/.*)?$");
     private static final Path EXPORT_PATH;
     static {
         Path exportsPath = null;
@@ -479,6 +480,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             exportUsers(params, serverDirectory, zout, externalReferences, session);
             exportRoles(params, serverDirectory, zout, externalReferences, session);
             exportMounts(params, zout, externalReferences, session);
+            exportCustomPath(params, serverDirectory, zout, externalReferences, session);
             exportReferences(params, serverDirectory, zout, externalReferences, session);
         }
 
@@ -547,6 +549,47 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 }
                 zzout.finish();
             }
+        }
+    }
+
+    private void exportCustomPath(Map<String, Object> params, String serverDirectory, ZipOutputStream zout, Set<String> externalReferences,
+                             JCRSessionWrapper session) throws IOException {
+        if (params.containsKey(INCLUDE_PATHS)) {
+            // build list of paths to export
+            Set<JCRNodeWrapper> nodes = new HashSet<>();
+            for (String path : (String[]) params.get(INCLUDE_PATHS)) {
+                if (path == null || !ALLOWED_INCLUDED_PATHS.matcher(path).matches()) {
+                    logger.warn("Custom additional path: {} is not allowed to be exported, it will be ignored", path);
+                    continue;
+                }
+                try {
+                    nodes.add(session.getNode(path));
+                } catch (RepositoryException e) {
+                    // log warning
+                    logger.warn("Cannot find node at path {}, it won't be part of the export", path);
+                }
+            }
+            if (nodes.isEmpty()) {
+                logger.info("No nodes to export for custom additional paths");
+                return;
+            }
+
+            ZipOutputStream zzout;
+            if (serverDirectory == null) {
+                zout.putNextEntry(new ZipEntry("customPath.zip"));
+                zzout = getZipOutputStream(zout, null);
+            } else {
+                zzout = getZipOutputStream(zout, String.format("%s/%s", serverDirectory, "customPath"));
+            }
+
+            try {
+                logger.info("Exporting custom path started");
+                exportNodesWithBinaries(session.getRootNode(), nodes, zzout, defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                logger.info("Exporting custom path Ended");
+            } catch (Exception e) {
+                logger.error("Cannot export custom path", e);
+            }
+            zzout.finish();
         }
     }
 

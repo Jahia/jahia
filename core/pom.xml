@@ -15,7 +15,7 @@
         1/ Apache2
         ==================================================================================
 
-        Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+        Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@
     <artifactId>jahia-impl</artifactId>
     <name>Jahia Server Implementation</name>
     <packaging>jar</packaging>
-    
+
     <dependencies>
         <!--Cross project dependencies-->
         <dependency>
@@ -76,14 +76,14 @@
             <artifactId>jahia-commons</artifactId>
             <version>${jahia.commons.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>core-test-framework</artifactId>
             <version>8.1.8.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Commons dependencies-->
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -181,7 +181,7 @@
             <artifactId>commons-vfs2-sandbox</artifactId>
             <version>2.4.1</version>
         </dependency>
-        
+
         <!--javax dependencies-->
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -209,41 +209,41 @@
             <artifactId>jboss-jstl-api_1.2_spec</artifactId>
             <version>1.1.4.Final</version>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.websocket</groupId>
             <artifactId>javax.websocket-api</artifactId>
             <version>1.1</version>
             <scope>provided</scope>
         </dependency>
-        
-        
+
+
         <dependency>
             <groupId>antlr</groupId>
             <artifactId>antlr</artifactId>
             <version>2.7.7</version>
         </dependency>
-        
+
         <!-- Drools dependencies -->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <version>${protobuf.java.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
             <version>2.1.7.Jahia1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
@@ -380,7 +380,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <!--Hibernate dependencies-->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -413,7 +413,7 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -424,13 +424,13 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.15</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
             <version>5.1.3</version>
         </dependency>
-        
+
         <!-- Jackrabbit dependencies -->
         <dependency>
             <groupId>javax.jcr</groupId>
@@ -571,7 +571,7 @@
             <artifactId>jlibdiff</artifactId>
             <version>1.01</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -582,26 +582,26 @@
             <artifactId>log4j-web</artifactId>
             <version>${log4j.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>1.8.6</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-oracle</artifactId>
             <version>1.8.6</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-impl</artifactId>
             <version>1.2.5</version>
         </dependency>
-        
+
         <!-- Spring framework dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -664,64 +664,64 @@
             <artifactId>ognl</artifactId>
             <version>3.2.21</version>
         </dependency>
-        
+
         <!-- Spring framework optional dependencies-->
-        
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.core.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-databind.core.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.core.version}</version>
         </dependency>
-        
+
         <dependency>
             <!-- Transitive dependency in jackrabbit-aws-ext -->
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-cbor</artifactId>
             <version>${jackson.core.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
             <version>${groovy.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jsr223</artifactId>
             <version>${groovy.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
             <version>${groovy.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-json</artifactId>
             <version>${groovy.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-dateutil</artifactId>
             <version>${groovy.version}</version>
         </dependency>
-        
+
         <!-- Maven dependencies -->
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -734,13 +734,13 @@
             <version>3.5.4</version>
         </dependency>
         <!-- end of Maven dependencies -->
-        
+
         <dependency>
             <groupId>com.googlecode.java-diff-utils</groupId>
             <artifactId>diffutils</artifactId>
             <version>1.3.0-20120702</version>
         </dependency>
-        
+
         <!-- Scripting engines  -->
         <dependency>
             <groupId>com.sun.script.velocity</groupId>
@@ -749,7 +749,7 @@
             <scope>runtime</scope>
         </dependency>
         <!-- end of Scripting engines  -->
-        
+
         <!-- Xml dependencies-->
         <dependency>
             <groupId>xerces</groupId>
@@ -892,25 +892,25 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>de.l3s.boilerpipe</groupId>
             <artifactId>boilerpipe</artifactId>
             <version>1.1.0-jahia1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>pl.touk</groupId>
             <artifactId>throwing-function</artifactId>
             <version>1.3</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>1.3.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
@@ -937,7 +937,7 @@
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-rt-rs-client</artifactId>
                 </exclusion>
-                
+
                 <!-- We exclude support for the following formats, which we do not parse -->
                 <exclusion>
                     <!-- Matlab -->
@@ -1064,7 +1064,7 @@
                     <artifactId>dd-plist</artifactId>
                 </exclusion>
                 <!-- end of excluded dependencies for various formats -->
-                
+
                 <!-- Exclude further dependencies from Tika -->
                 <exclusion>
                     <groupId>org.glassfish.jaxb</groupId>
@@ -1124,19 +1124,19 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>2.8.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>concurrent</groupId>
             <artifactId>concurrent</artifactId>
             <version>1.3.4-jahia6</version>
         </dependency>
-        
+
         <!-- gwt -->
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -1166,7 +1166,7 @@
             <artifactId>json</artifactId>
             <version>20070829-jahia2</version>
         </dependency>
-        
+
         <!-- Chemistry dependencies -->
         <!--
                 <dependency>
@@ -1186,13 +1186,13 @@
                 </dependency>
         -->
         <!-- End of Chemistry dependencies -->
-        
+
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
             <version>67.1</version>
         </dependency>
-        
+
         <!-- Velocity engine -->
         <dependency>
             <groupId>org.apache.velocity</groupId>
@@ -1222,7 +1222,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <!-- jBPM dependencies -->
         <dependency>
             <groupId>org.jbpm</groupId>
@@ -1525,13 +1525,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <artifactId>cdi-api</artifactId>
             <groupId>javax.enterprise</groupId>
             <version>1.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.outerj.daisy</groupId>
             <artifactId>daisydiff</artifactId>
@@ -1550,38 +1550,38 @@
             <artifactId>nekohtml</artifactId>
             <version>1.9.22.noko2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.google.code.kaptcha</groupId>
             <artifactId>kaptcha</artifactId>
             <version>2.3</version>
         </dependency>
-        
+
         <dependency>
             <!-- jodconverter transitive dependency, upgraded due to vulnerability -->
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.9</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-core</artifactId>
             <version>${jodconverter.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-local</artifactId>
             <version>${jodconverter.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-remote</artifactId>
             <version>${jodconverter.version}</version>
         </dependency>
-        
+
         <!-- Apache Shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -1599,7 +1599,7 @@
             <version>${shiro.version}</version>
         </dependency>
         <!-- end of Apache Shiro -->
-        
+
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -1610,7 +1610,7 @@
             <artifactId>opencsv</artifactId>
             <version>2.3</version>
         </dependency>
-        
+
         <!-- Apache Camel dependencies -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -1709,7 +1709,7 @@
             <version>2.0.6.1</version>
         </dependency>
         <!-- End Apache Camel dependencies -->
-        
+
         <!-- OSGi dependencies -->
         <dependency>
             <groupId>org.osgi</groupId>
@@ -1738,7 +1738,7 @@
             <version>${pax.swissbox.version}</version>
         </dependency>
         <!-- End of OSGi dependencies -->
-        
+
         <dependency>
             <!-- We use it for bi-directional encryption of passwords for remote publication -->
             <groupId>org.jasypt</groupId>
@@ -1746,27 +1746,27 @@
             <version>1.9.3</version>
             <classifier>lite</classifier>
         </dependency>
-        
+
         <dependency>
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewritefilter</artifactId>
             <version>3.2.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.yahoo.platform.yui</groupId>
             <artifactId>yuicompressor</artifactId>
             <version>2.4.9-20161014</version>
             <classifier>standalone</classifier>
         </dependency>
-        
+
         <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-runtime</artifactId>
             <version>${atmosphere.version}</version>
             <scope>compile</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.atmosphere.extensions</groupId>
             <artifactId>atmosphere-gwt20-client</artifactId>
@@ -1803,7 +1803,7 @@
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.karaf</groupId>
             <artifactId>org.apache.karaf.main</artifactId>
@@ -1814,13 +1814,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
             <version>${felix.configadmin.version}</version>
         </dependency>
-        
+
         <!-- Dependencies for jdk 11 -->
         <dependency>
             <groupId>com.sun.istack</groupId>
@@ -1828,35 +1828,35 @@
             <version>3.0.7</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.1</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>pl.pragmatists</groupId>
             <artifactId>JUnitParams</artifactId>
             <version>1.1.1</version>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Cluster -->
         <dependency>
             <groupId>org.jgroups</groupId>
@@ -1883,7 +1883,7 @@
             </exclusions>
         </dependency>
         <!-- end of Cluster dependencies -->
-        
+
         <!-- OWASP dependencies -->
         <dependency>
             <groupId>org.owasp.encoder</groupId>
@@ -1892,7 +1892,7 @@
         </dependency>
     </dependencies>
     <build>
-        
+
         <plugins>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
@@ -1955,7 +1955,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -1986,7 +1986,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -2047,7 +2047,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        
+
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -2094,7 +2094,7 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
     <profiles>
         <profile>
             <id>unit-tests</id>

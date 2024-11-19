@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -68,9 +68,9 @@ import org.springframework.context.ApplicationContext;
 /**
  * Jahia module application context creator implementation that sets core Jahia Spring context as a parent and also uses
  * <code>modules-applicationcontext-registry.xml</code> resource in the configuration locations to load common bean definitions for module.
- * 
+ *
  * If the bundle is not detected as a Jahia module bundle or any other kind of Jahia bundle, than default context creation scheme is used.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContextCreator {

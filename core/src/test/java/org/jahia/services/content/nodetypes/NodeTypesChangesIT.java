@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(NodeTypesChangesIT.class);
     String testNodeIdentifier;
     private static List<Result> overallResults = new ArrayList<>();
-    
+
     public enum Operation {
         GET_NODE, GET_CHILD_NODES, EXPORT_NODE, COPY_NODE, CHECK_COPIED_CHILD_NODES, READ_PROPERTIES, READ_STABLE_PROPERTY_VALUE,
         READ_STRING_PROPERTY_VALUE, READ_MULTIPLE_PROPERTY_VALUE, READ_I18N_PROPERTY_VALUE, READ_DECIMAL_PROPERTY_VALUE,
@@ -129,10 +129,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("remove nodetype from definition", null), expectedResults);  
+
+        checkOperations(versionInfo, new ModificationInfo("remove nodetype from definition", null), expectedResults);
     }
-    
+
     /**
      * Test hiding a previous mandatory property
      */
@@ -155,10 +155,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_NODE, true).put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true)
                 .put(Operation.READ_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("hide previous mandatory property", "test_mandatory"), expectedResults);  
+
+        checkOperations(versionInfo, new ModificationInfo("hide previous mandatory property", "test_mandatory"), expectedResults);
     }
-    
+
     /**
      * Test removing properties from a nodetype definition
      */
@@ -182,7 +182,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
 
         checkOperations(versionInfo, new ModificationInfo("remove property from nodetype", "test"), expectedResults);
     }
-    
+
 
     /**
      * Test switching a property definition from non-i18n to i18n
@@ -205,7 +205,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
-        checkOperations(versionInfo, new ModificationInfo("switch a property from non-i18n to i18n", "test"), expectedResults);  
+        checkOperations(versionInfo, new ModificationInfo("switch a property from non-i18n to i18n", "test"), expectedResults);
     }
 
     /**
@@ -227,7 +227,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
-                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
         checkOperations(versionInfo, new ModificationInfo("switch a property from i18n to non-i18n", "test_i18n"), expectedResults);
     }
@@ -251,11 +251,11 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
-                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
         checkOperations(versionInfo, new ModificationInfo("switch a property from single to multiple", "test"), expectedResults);
-    }       
-    
+    }
+
     /**
      * Test switching a property definition from multiple to single values
      */
@@ -275,14 +275,14 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
-                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
         checkOperations(versionInfo, new ModificationInfo("switch a property from multiple to single", "test_multiple"), expectedResults);
     }
-    
+
     /**
      * Test switching a property definition from type long to string
-     */    
+     */
     @Test
     public void shouldFailWriteAndRestoredReadOperationsOnPropertySwitchedToString() throws Exception {
         //given
@@ -299,11 +299,11 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
-                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
         checkOperations(versionInfo, new ModificationInfo("switch a property from long to string", "integer"), expectedResults);
     }
-    
+
     /**
      * Test switching a property definition from type string to long
      */
@@ -323,11 +323,11 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
-                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
         checkOperations(versionInfo, new ModificationInfo("switch a property from string to long", "integerAsString"), expectedResults);
     }
-    
+
     /**
      * Test switching a property definition from type double to decimal
      */
@@ -347,10 +347,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
-                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
         checkOperations(versionInfo, new ModificationInfo("switch a property from double to decimal", "decimalNumber"), expectedResults);
-    }     
+    }
 
     /**
      * Test switching a property definition from type long to decimal
@@ -371,11 +371,11 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
-                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
 
         checkOperations(versionInfo, new ModificationInfo("switch a property from long to decimal", "integer"), expectedResults);
-    }     
-    
+    }
+
     /**
      * Test adding a new property definition with mandatory constraint
      */
@@ -394,13 +394,13 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.EDIT_PROPERTY, false).put(Operation.REMOVE_PROPERTY, false).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, false)
                 .build();
-        
+
         checkOperations(versionInfo, new ModificationInfo("add new property definition with mandatory constraint", null), expectedResults);
-    }    
-    
+    }
+
     /**
      * Test changing a range constraint
-     */    
+     */
     @Test
     public void shouldFailImportAndRestoredReadOperationsIfConstraintIsNoLongerValid() throws Exception {
         //given
@@ -417,13 +417,13 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.RESTORE_VERSION, true)
                 .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false)
                 .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, false).build();
-        
+
         checkOperations(versionInfo, new ModificationInfo("add range constraint to existing property definition", "integer"), expectedResults);
-    }        
-    
+    }
+
     /**
      * Test moving definitions to a new supertype
-     */    
+     */
     @Test
     public void shouldAllowAllOperationsAfterMovingDefinitionsToSupertype() throws Exception {
         //given
@@ -443,10 +443,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.REMOVE_NODE, true).put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true)
                 .put(Operation.READ_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("move definitions to supertype", "test"), expectedResults);  
+
+        checkOperations(versionInfo, new ModificationInfo("move definitions to supertype", "test"), expectedResults);
     }
-    
+
     /**
      * Test changing the allowed child node type
      */
@@ -469,10 +469,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, false).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("change allowed child node type", "test:bigText", null, null), expectedResults);  
+
+        checkOperations(versionInfo, new ModificationInfo("change allowed child node type", "test:bigText", null, null), expectedResults);
     }
-    
+
     /**
      * Test adding a new yet unrelated allowed child node type
      */
@@ -495,10 +495,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, false).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("add allowed child node type", "test:bigText", null, null), expectedResults);  
-    }    
-    
+
+        checkOperations(versionInfo, new ModificationInfo("add allowed child node type", "test:bigText", null, null), expectedResults);
+    }
+
     /**
      * Test removing an allowed child node type
      */
@@ -521,10 +521,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("remove allowed child node type", "test:text", null, null), expectedResults);  
-    }       
-    
+
+        checkOperations(versionInfo, new ModificationInfo("remove allowed child node type", "test:text", null, null), expectedResults);
+    }
+
     /**
      * Test changing the allowed child node type using the previous one as supertype of the new one
      */
@@ -547,10 +547,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, false).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("change allowed child node type using previous as supertype", "test:bigText", null, null), expectedResults);  
+
+        checkOperations(versionInfo, new ModificationInfo("change allowed child node type using previous as supertype", "test:bigText", null, null), expectedResults);
     }
-    
+
     /**
      * Test changing the allowed child node type to the supertype of the previous allowed node type
      */
@@ -573,10 +573,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("change allowed child node type using supertype", "test:superText", null, null), expectedResults);  
+
+        checkOperations(versionInfo, new ModificationInfo("change allowed child node type using supertype", "test:superText", null, null), expectedResults);
     }
-    
+
     /**
      * Test changing a node type definition to orderable
      */
@@ -599,8 +599,8 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("make allowed child node type orderable", "test:ultimativeText", null, null), expectedResults);  
+
+        checkOperations(versionInfo, new ModificationInfo("make allowed child node type orderable", "test:ultimativeText", null, null), expectedResults);
     }
 
     /**
@@ -625,10 +625,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("change allowed reference type", "reference"), expectedResults);  
-    }    
-    
+
+        checkOperations(versionInfo, new ModificationInfo("change allowed reference type", "reference"), expectedResults);
+    }
+
     /**
      * Test adding a new mixin to a nodetype with existing nodes
      */
@@ -651,10 +651,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).put(Operation.READ_IMPORTED_CHILD_NODES, true).put(Operation.CHECK_MIXIN, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("add new mixin to existing nodetype", "test:ultimativeText", "test:mixin"), expectedResults);  
-    }       
-    
+
+        checkOperations(versionInfo, new ModificationInfo("add new mixin to existing nodetype", "test:ultimativeText", "test:mixin"), expectedResults);
+    }
+
     /**
      * Test adding a new mixin with a default valued property to a nodetype with existing nodes
      */
@@ -676,32 +676,32 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
                 .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
                 .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
-        
-        checkOperations(versionInfo, new ModificationInfo("add new mixin with default valued property to existing nodetype", "test:ultimativeText", "autocreatedProperty", "test"), expectedResults);  
-    }      
-    
+
+        checkOperations(versionInfo, new ModificationInfo("add new mixin with default valued property to existing nodetype", "test:ultimativeText", "autocreatedProperty", "test"), expectedResults);
+    }
+
     private VersionInfo init() throws IOException, ParseException, RepositoryException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, null);        
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, null);
         // create definition file
         File file = Files.newTemporaryFile();
         String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
-                "[test:text] > test:superText\n" +        
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +                
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
-                " - stable (string)\n" +                
+                " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
                 " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
-                " - integerAsString (string)\n" +                
+                " - integerAsString (string)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)";
-        
+
         // namespace
         FileUtils.writeStringToFile(file, definition);
 
@@ -715,14 +715,14 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         node.setProperty("test", "test");
         node.setProperty("test_multiple",new String[]{"test", "test", "test"});
         node.setProperty("test_i18n", "test");
-        node.setProperty("test_mandatory", "test");        
-        node.setProperty("stable", "test");        
+        node.setProperty("test_mandatory", "test");
+        node.setProperty("stable", "test");
         node.setProperty("decimalNumber", (double)2.5);
         node.setProperty("integer", 10);
-        node.setProperty("integerAsString", "10");        
-        node.setProperty("reference", testNode);        
+        node.setProperty("integerAsString", "10");
+        node.setProperty("reference", testNode);
         session.save();
-        
+
         JCRNodeWrapper subNode = node.addNode("text1", "test:ultimativeText");
         subNode.setProperty("text", "text1");
         session.save();
@@ -731,8 +731,8 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         session.save();
         subNode = node.addNode("text3", "test:ultimativeText");
         subNode.setProperty("text", "text3");
-        session.save();        
-        
+        session.save();
+
         // create a version
         Version v = session.getWorkspace().getVersionManager().checkin(node.getPath());
         session.getWorkspace().getVersionManager().checkout(node.getPath());
@@ -740,11 +740,11 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         node.setProperty("test_multiple",new String[]{"new value", "new value", "new value"});
         node.setProperty("test_i18n", "new value");
         node.setProperty("test_mandatory", "new value");
-        node.setProperty("stable", "new value");       
+        node.setProperty("stable", "new value");
         node.setProperty("decimalNumber", (double)12.5);
-        node.setProperty("integer", 20);        
+        node.setProperty("integer", 20);
         node.setProperty("integerAsString", "20");
-        node.setProperty("reference", subNode);        
+        node.setProperty("reference", subNode);
         session.save();
         v = session.getWorkspace().getVersionManager().checkin(node.getPath());
         String versionName = v.getName();
@@ -754,10 +754,10 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         node.setProperty("test", "test");
         node.setProperty("test_multiple",new String[]{"test", "test", "test"});
         node.setProperty("test_i18n", "test");
-        node.setProperty("stable", "test");        
+        node.setProperty("stable", "test");
         node.setProperty("test_mandatory", "test");
         node.setProperty("decimalNumber", (double)2.5);
-        node.setProperty("integer", 10);        
+        node.setProperty("integer", 10);
         node.setProperty("integerAsString", "10");
         node.setProperty("reference", testNode);
         session.save();
@@ -773,11 +773,11 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
-                "[test:text] > test:superText\n" + 
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
-                " - stable (string)\n" +   
-                " - test_mandatory (string) mandatory" +                
+                " - stable (string)\n" +
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
@@ -788,20 +788,20 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n");
     }
-    
+
     private void hidePreviousMandatoryProperty() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
-                "[test:text] > test:superText\n" +       
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
-                " - stable (string)\n" +              
+                " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
-                " - test_i18n (string) i18n\n" +        
-                " - test_mandatory (string) hidden" +                
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) hidden" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
@@ -813,14 +813,14 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
-                "[test:text] > test:superText\n" +       
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string) i18n\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
@@ -832,93 +832,93 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
-                "[test:text] > test:superText\n" +       
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string) multiple\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +              
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)");
     }
-    
+
     private void switchToString() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (string)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)");
     }
-    
+
     private void switchDoubleToDecimal() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (decimal)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)");
     }
-    
+
     private void switchLongToDecimal() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (decimal)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)");
-    }    
-    
+    }
+
     private void switchFromString() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
-                " - integerAsString (long)\n" +                
+                " - integerAsString (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)");
     }
@@ -929,13 +929,13 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string)\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
@@ -948,13 +948,13 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string)\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
@@ -967,33 +967,33 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string) mandatory\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
-                " - newTestMandatory (string) mandatory\n" +                
+                " - test_mandatory (string) mandatory" +
+                " - newTestMandatory (string) mandatory\n" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)");
     }
-    
+
     private void addRangeConstraintToNumericProperty() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long) < '[100,500]'\n" +
                 " - reference (reference) < nt:unstructured\n" +
@@ -1006,7 +1006,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:supertype] > nt:base, mix:versionable\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
@@ -1018,49 +1018,49 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 "[test:test] > test:supertype\n" +
                 " - stable (string)\n");
     }
-    
+
     private void changeToUnrelatedAllowedChildNodeType() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:bigText] > test:superText\n" +
-                " - text (string, richtext) i18n\n" +                
+                " - text (string, richtext) i18n\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:bigText)");
     }
-    
+
     private void addUnrelatedAllowedChildNodeType() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:bigText] > test:ultimativeText\n" +
-                " - text (string, richtext) i18n\n" +                
+                " - text (string, richtext) i18n\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText,test:bigText)");
-    }    
-    
+    }
+
     private void removeAllowedChildNodeType() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
@@ -1072,134 +1072,134 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text)");
-    }       
-    
+    }
+
     private void changeAllowedChildNodeTypeUsingPreviousAsSupertype() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:bigText] > test:ultimativeText\n" +
-                " - text (string, richtext) i18n\n" +                
+                " - text (string, richtext) i18n\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:bigText,test:ultimativeText)");
-    }    
-    
+    }
+
     private void changeAllowedChildNodeTypeUsingSupertype() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:bigText] > test:text\n" +
-                " - text (string, richtext) i18n\n" +                
+                " - text (string, richtext) i18n\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:superText)");
-    }        
-    
+    }
+
     private void makeChildNodeTypeOrderable() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text orderable\n" +                
+                "[test:ultimativeText] > test:text orderable\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (reference) < nt:unstructured\n" +
                 " + * (test:text,test:ultimativeText)");
-    }       
-    
+    }
+
     private void changeReferenceType() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (weakreference) < test:ultimativeText\n" +
                 " + * (test:text,test:ultimativeText)");
-    }        
-    
+    }
+
     private void addMixinToNodetype() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
-                "[test:mixin] mixin\n" +           
+                "[test:mixin] mixin\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured, test:mixin\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured, test:mixin\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (weakreference) < test:ultimativeText\n" +
                 " + * (test:text,test:ultimativeText)");
-    }      
-    
+    }
+
     private void addMixinWithDefaultValuedPropertyToNodetype() throws IOException, ParseException, RepositoryException {
         changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
-                "[test:mixin] mixin\n" +           
-                " - autocreatedProperty (string) = 'test'\n" +                
+                "[test:mixin] mixin\n" +
+                " - autocreatedProperty (string) = 'test'\n" +
                 "[test:superText] > nt:base, mix:versionable\n" +
                 " - text (string) primary i18n\n" +
                 "[test:text] > test:superText\n" +
-                "[test:ultimativeText] > test:text, nt:unstructured, test:mixin\n" +           
+                "[test:ultimativeText] > test:text, nt:unstructured, test:mixin\n" +
                 "[test:test] > nt:base, mix:versionable\n" +
                 " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test_mandatory (string) mandatory" +                
+                " - test_mandatory (string) mandatory" +
                 " - decimalNumber (double)\n" +
                 " - integer (long)\n" +
                 " - reference (weakreference) < test:ultimativeText\n" +
                 " + * (test:text,test:ultimativeText)");
-    }      
-    
+    }
+
     private void changeDefinition(String definition) throws IOException, ParseException, RepositoryException {
         File file = Files.newTemporaryFile();
 
@@ -1218,7 +1218,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         final String unchangedProperty = "stable";
         final String nodePath = versionInfo.getTestNodePath();
         final String versionName = versionInfo.getVersionName();
-        
+
         List<Result> resultsForModification = new ArrayList<>();
         // get node
         resultsForModification.addAll(doOperation(Operation.GET_NODE, modificationInfo, nodePath, new CallBack() {
@@ -1228,7 +1228,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 return Collections.emptyList();
             }
         }));
-        
+
         if (modificationInfo.getChildNodeType() != null) {
             // get child nodes
             resultsForModification.addAll(doOperation(Operation.GET_CHILD_NODES, modificationInfo, nodePath, new CallBack() {
@@ -1247,7 +1247,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 }
             }));
         }
-        
+
         //export
         final OutputStream exportOutputStream = new StringOutputStream();
         final List<Result> exportNodeResults = doOperation(Operation.EXPORT_NODE, modificationInfo, nodePath, new CallBack() {
@@ -1255,7 +1255,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
             public List<Result> execute(final JCRSessionWrapper session) throws Exception {
                 HashMap<String, Object> params = new HashMap<>();
                 ImportExportBaseService.getInstance().exportNode(session.getNode(nodePath), session.getNode("/"), exportOutputStream, params);
-                return Collections.emptyList();                
+                return Collections.emptyList();
             }
         });
         resultsForModification.addAll(exportNodeResults);
@@ -1304,7 +1304,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                     results.add(new Result(Operation.READ_STABLE_PROPERTY_VALUE, modificationInfo, "test".equals(s)));
                 } catch (RepositoryException ex) {
                     results.add(new Result(Operation.READ_STABLE_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
-                    logger.info("unable to perform " + Operation.READ_STABLE_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex); 
+                    logger.info("unable to perform " + Operation.READ_STABLE_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
                 }
                 try {
                     String s = nread.getProperty("test").getValue().getString();
@@ -1358,7 +1358,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 } catch (RepositoryException ex) {
                     results.add(new Result(Operation.READ_REFERENCE_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
                     logger.info("unable to perform " + Operation.READ_REFERENCE_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
-                }                
+                }
                 if (modificationInfo.getChildNodeType() != null) {
                     try {
                         JCRNodeIteratorWrapper it = nread.getNodes();
@@ -1379,7 +1379,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                     } catch (RepositoryException ex) {
                         results.add(new Result(Operation.READ_CHILD_PROPERTIES, modificationInfo, false, ex.toString()));
                         logger.info("unable to perform " + Operation.READ_CHILD_PROPERTIES + " after " +  modificationInfo.getModificationDescription(), ex);
-                    }    
+                    }
                 }
                 return results;
             }
@@ -1405,7 +1405,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                     } catch (RepositoryException ex) {
                         results.add(new Result(Operation.EDIT_CHANGED_PROPERTY, modificationInfo, false, ex.toString()));
                         session.refresh(false);
-                        logger.info("unable to perform " + Operation.EDIT_CHANGED_PROPERTY + " after " +  modificationInfo.getModificationDescription(), ex);                        
+                        logger.info("unable to perform " + Operation.EDIT_CHANGED_PROPERTY + " after " +  modificationInfo.getModificationDescription(), ex);
                     }
                 }
                 return results;
@@ -1417,7 +1417,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 if (isMultiple) {
                     nread.setProperty(propertyToTest, new String[] {"100"});
                 } else if ("reference".equals(propertyToTest)) {
-                    nread.setProperty(propertyToTest, nread.getNodes().iterator().next());                    
+                    nread.setProperty(propertyToTest, nread.getNodes().iterator().next());
                 } else  {
                     nread.setProperty(propertyToTest, "100");
                 }
@@ -1430,12 +1430,12 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
             @Override
             public List<Result> execute(final JCRSessionWrapper session) throws Exception {
                 List<Result> results = new ArrayList<>();
-            
+
                 JCRNodeWrapper nread = session.getNode(nodePath);
                 try {
                     nread.getProperty(unchangedProperty).remove();
                     session.save();
-                    results.add(new Result(Operation.REMOVE_PROPERTY, modificationInfo, true));                    
+                    results.add(new Result(Operation.REMOVE_PROPERTY, modificationInfo, true));
                 } catch (RepositoryException ex) {
                     results.add(new Result(Operation.REMOVE_PROPERTY, modificationInfo, false, ex.toString()));
                     session.refresh(false);
@@ -1467,8 +1467,8 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                     session.save();
                     return Collections.emptyList();
                 }
-            })); 
-            
+            }));
+
             if (expectedResults.containsKey(Operation.CHECK_MIXIN)) {
                 resultsForModification.addAll(doOperation(Operation.CHECK_MIXIN, modificationInfo, nodePath, new CallBack() {
                     @Override
@@ -1480,19 +1480,19 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                         while (it.hasNext()) {
                             Node childNode = it.nextNode();
                             expectedMixinFound = expectedMixinFound && childNode.isNodeType(modificationInfo.getChildNodeMixin());
-                        }                        
+                        }
                         results.add(new Result(Operation.CHECK_MIXIN, modificationInfo, expectedMixinFound));
                         return Collections.emptyList();
                     }
-                }));                 
+                }));
             }
         }
-        
+
         //restore version
         resultsForModification.addAll(doOperation(Operation.RESTORE_VERSION, modificationInfo, nodePath, new CallBack() {
             @Override
             public List<Result> execute(final JCRSessionWrapper session) throws Exception {
-                List<Result> results = new ArrayList<>();                
+                List<Result> results = new ArrayList<>();
                 session.getWorkspace().getVersionManager().checkout(nodePath);
                 session.getWorkspace().getVersionManager().restore(nodePath, versionName, true);
                 session.save();
@@ -1512,7 +1512,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                     try {
                         JCRPropertyWrapper property = nread.getProperty(modificationInfo.getChangedProperty());
                         if ("reference".equals(modificationInfo.getChangedProperty())) {
-                            results.add(new Result(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, modificationInfo, testNodeIdentifier.equals(property.getNode().getIdentifier())));                            
+                            results.add(new Result(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, modificationInfo, testNodeIdentifier.equals(property.getNode().getIdentifier())));
                         } else {
                             String s = property.getDefinition().isMultiple() ? property.getValues()[0].getString()
                                     : property.getValue().getString();
@@ -1540,8 +1540,8 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                     return Collections.emptyList();
                 }
             }));
-        }        
-        
+        }
+
         // remove node
         resultsForModification.addAll(doOperation(Operation.REMOVE_NODE, modificationInfo, nodePath, new CallBack() {
             @Override
@@ -1552,7 +1552,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 return Collections.emptyList();
             }
         }));
-        
+
         // import node
         if (exportNodeResults.get(0).result) {
             resultsForModification.addAll(doOperation(Operation.IMPORT_NODE, modificationInfo, nodePath, new CallBack() {
@@ -1564,7 +1564,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                     session.save();
                     ImportExportBaseService.getInstance().importXML(importFolder.getPath(), stream,
                             DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
-                    JCRNodeWrapper nread = importFolder.getNode("nodeTypeChanges/test");                    
+                    JCRNodeWrapper nread = importFolder.getNode("nodeTypeChanges/test");
                     results.add(new Result(Operation.IMPORT_NODE, modificationInfo, true));
                     try {
                         String s = nread.getProperty(unchangedProperty).getValue().getString();
@@ -1665,7 +1665,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
     private interface CallBack {
         List<Result> execute(JCRSessionWrapper session) throws Exception;
     }
-   
+
     @AfterClass
     public static void showTable() throws Exception {
         String mod = null;
@@ -1680,7 +1680,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
             mod = r.modificationInfo.getModificationDescription();
         }
     }
-    
+
     private static class VersionInfo {
 
         private String testNodePath;
@@ -1699,16 +1699,16 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
             return versionName;
         }
     }
-    
+
     private static class ModificationInfo {
 
         private String modificationDescription;
         private String changedProperty;
 
         private String childNodeType;
-        private String childNodeMixin;        
-        private String childNodeProperty;        
-        private String childNodePropertyValue;        
+        private String childNodeMixin;
+        private String childNodeProperty;
+        private String childNodePropertyValue;
 
         public ModificationInfo(String modificationDescription, String changedProperty) {
             this.modificationDescription = modificationDescription;
@@ -1718,16 +1718,16 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         public ModificationInfo(String modificationDescription, String childNodeType, String childNodeMixin) {
             this.modificationDescription = modificationDescription;
             this.childNodeType = childNodeType;
-            this.childNodeMixin = childNodeMixin;            
-        }         
-        
+            this.childNodeMixin = childNodeMixin;
+        }
+
         public ModificationInfo(String modificationDescription, String childNodeType, String childNodeProperty, String childNodePropertyValue) {
             this.modificationDescription = modificationDescription;
             this.childNodeType = childNodeType;
-            this.childNodeProperty = childNodeProperty;            
-            this.childNodePropertyValue = childNodePropertyValue;            
-        }        
-        
+            this.childNodeProperty = childNodeProperty;
+            this.childNodePropertyValue = childNodePropertyValue;
+        }
+
         public String getModificationDescription() {
             return modificationDescription;
         }
@@ -1735,21 +1735,21 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         public String getChangedProperty() {
             return changedProperty;
         }
-        
+
         public String getChildNodeType() {
             return childNodeType;
         }
-        
+
         public String getChildNodeMixin() {
             return childNodeMixin;
-        }        
-        
+        }
+
         public String getChildNodeProperty() {
             return childNodeProperty;
         }
-        
+
         public String getChildNodePropertyValue() {
             return childNodePropertyValue;
-        }         
+        }
     }
 }

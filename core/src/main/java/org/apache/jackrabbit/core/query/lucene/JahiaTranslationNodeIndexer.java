@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
      * The logger instance for this class.
      */
     private static final Logger logger = LoggerFactory.getLogger(JahiaTranslationNodeIndexer.class);
-    
+
     private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "mixinTypes");
     private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
@@ -184,7 +184,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
 
         return doc;
     }
-    
+
     private void addProperties(Document doc, NodeState parentNodeState) throws RepositoryException {
         // copy properties from parent into translation node, including node types
         final Set<Name> parentNodePropertyNames = new HashSet<>(parentNodeState.getPropertyNames());

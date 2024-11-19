@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ import org.apache.lucene.util.Version;
 
 /**
  * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link LowerCaseFilter}, {@link StopFilter} and {@link ASCIIFoldingFilter}.
- * 
+ *
  */
 public class StandardAnalyzer extends StopwordAnalyzerBase {
     /** Default maximum allowed token length */
@@ -69,7 +69,7 @@ public class StandardAnalyzer extends StopwordAnalyzerBase {
 
     /** An unmodifiable set containing some common English words that are usually not
     useful for searching. */
-    public static final Set<?> STOP_WORDS_SET = StopAnalyzer.ENGLISH_STOP_WORDS_SET; 
+    public static final Set<?> STOP_WORDS_SET = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
 
     /** Builds an analyzer with the given stop words.
      * @param matchVersion Lucene version to match See {@link
@@ -87,7 +87,7 @@ public class StandardAnalyzer extends StopwordAnalyzerBase {
     public StandardAnalyzer(Version matchVersion) {
       this(matchVersion, STOP_WORDS_SET);
     }
-    
+
     /** Builds an analyzer with the stop words from the given reader.
      * @see WordlistLoader#getWordSet(Reader, Version)
      * @param matchVersion Lucene version to match See {@link
@@ -106,7 +106,7 @@ public class StandardAnalyzer extends StopwordAnalyzerBase {
     public void setMaxTokenLength(int length) {
       maxTokenLength = length;
     }
-      
+
     /**
      * @see #setMaxTokenLength
      */
@@ -121,7 +121,7 @@ public class StandardAnalyzer extends StopwordAnalyzerBase {
       TokenStream tok = new StandardFilter(matchVersion, src);
       tok = new LowerCaseFilter(matchVersion, tok);
       tok = new StopFilter(matchVersion, tok, stopwords);
-      tok = new ASCIIFoldingFilter(tok);      
+      tok = new ASCIIFoldingFilter(tok);
       return new TokenStreamComponents(src, tok) {
         @Override
         protected boolean reset(final Reader reader) throws IOException {

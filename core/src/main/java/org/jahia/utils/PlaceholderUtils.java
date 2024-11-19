@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ import org.springframework.util.SystemPropertyUtils;
 
 /**
  * Helper class for resolving placeholders in texts with values of DX settings.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class PlaceholderUtils {
@@ -92,7 +92,7 @@ public class PlaceholderUtils {
      * Resolve {@code ${...}} placeholders in the given configuration resource stream, replacing them with corresponding values from DX
      * settings ({@link SettingsBean}) with a fallback to Java system properties. Unresolvable placeholders with no default value are
      * ignored and passed through unchanged if the flag is set to {@code true}.
-     * 
+     *
      * @param configInputStream the configuration resource input stream to relpace plpaceholders in
      * @param settingsBean the DX settings bean instance
      * @param ignoreUnresolvablePlaceholders whether unresolved placeholders are to be ignored
@@ -111,7 +111,7 @@ public class PlaceholderUtils {
      * Resolve {@code ${...}} placeholders in the given text, replacing them with corresponding values from DX settings
      * ({@link SettingsBean}) with a fallback to Java system properties. Unresolvable placeholders with no default value are ignored and
      * passed through unchanged if the flag is set to {@code true}.
-     * 
+     *
      * @param text the String to resolve
      * @param settingsBean the DX settings bean instance
      * @param ignoreUnresolvablePlaceholders whether unresolved placeholders are to be ignored

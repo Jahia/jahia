@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -70,9 +70,9 @@ import java.util.List;
  * perform high-quality image manipulation for a wide variety of image formats.
  */
 public class ImageMagickImageService extends AbstractImageService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ImageMagickImageService.class);
-    
+
     private static ImageMagickImageService instance = new ImageMagickImageService();
 
     private String imageMagickPath;
@@ -149,9 +149,9 @@ public class ImageMagickImageService extends AbstractImageService {
         if (img.getHeight() != null) {
             return img.getHeight();
         }
-        
+
         readDimensions(img);
-        
+
         return img.getHeight();
     }
 
@@ -160,9 +160,9 @@ public class ImageMagickImageService extends AbstractImageService {
         if (img.getWidth() != null) {
             return img.getWidth();
         }
-        
+
         readDimensions(img);
-        
+
         return img.getWidth();
     }
 

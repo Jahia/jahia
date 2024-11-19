@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class FileWatcher extends Observable implements Serializable {
     private String triggerName;
 
     private String jobName;
-    
+
     private int maxJobNameLength = 50;
 
     /** Both file and directory or only file **/
@@ -127,7 +127,7 @@ public class FileWatcher extends Observable implements Serializable {
 
     /**
      * Constructor
-     * 
+     *
      * @param jobName
      *            the name of the background job to use
      * @param fullFolderPath
@@ -145,7 +145,7 @@ public class FileWatcher extends Observable implements Serializable {
 
         this(jobName, fullFolderPath, checkDate, interval, fileOnly, true, null);
     }
-    
+
     /**
      * Constructor
      *
@@ -246,8 +246,8 @@ public class FileWatcher extends Observable implements Serializable {
                 m_Interval);
         // not persisted Job and trigger
         trigger.setVolatility(true);
-        triggerName = trigger.getName(); 
-        
+        triggerName = trigger.getName();
+
         jobDetail.setRequestsRecovery(false);
         jobDetail.setDurability(false);
         jobDetail.setVolatility(true);

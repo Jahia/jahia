@@ -14,7 +14,7 @@
         1/ Apache2
         ==================================================================================
 
-        Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+        Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -50,9 +50,9 @@
     </parent>
     <artifactId>docker-distribution-parent</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <packaging>pom</packaging>
-    
+
     <properties>
         <parent.tag>${project.version}</parent.tag>
         <image.repo.classifier>-dev</image.repo.classifier>
@@ -60,7 +60,7 @@
         <image.tag>${project.version}</image.tag>
         <image.alias />
     </properties>
-    
+
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -75,7 +75,7 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -121,7 +121,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>

@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -395,7 +395,7 @@ public class JahiaSitesService extends JahiaService {
 
     /**
      * Creates the site using the specified data.
-     * 
+     *
      * @param info the site creation information
      * @return the created site object
      * @throws JahiaException in case of site creation issues
@@ -443,7 +443,7 @@ public class JahiaSitesService extends JahiaService {
 
     /**
      * Creates the site using the specified data.
-     * 
+     *
      * @param info the site creation information
      * @param session the current JCR session to use for site creation
      * @return the created site object
@@ -453,9 +453,9 @@ public class JahiaSitesService extends JahiaService {
     public JahiaSite addSite(SiteCreationInfo info, JCRSessionWrapper session) throws JahiaException, IOException {
         long startTime = System.currentTimeMillis();
         logger.info("Start creation of a site using data: {}", info);
-        
+
         String siteKey = info.getSiteKey();
-        
+
         if (!isSiteKeyValid(siteKey, true)) {
             String msg = "Site key is not valid. Allowed characters are: " + validSiteKeyCharacters;
             throw new JahiaException(msg, msg, JahiaException.DATA_ERROR, JahiaException.ERROR_SEVERITY);
@@ -616,7 +616,7 @@ public class JahiaSitesService extends JahiaService {
         }
         return pack;
     }
-    
+
     private String getTargetString(String siteKey) {
         return "/sites/" + siteKey;
     }

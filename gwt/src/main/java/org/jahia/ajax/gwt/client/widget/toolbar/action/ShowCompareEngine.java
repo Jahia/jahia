@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -49,11 +49,11 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 10:12:21 AM
- * 
+ *
  */
 public class ShowCompareEngine extends BaseActionItem {
 

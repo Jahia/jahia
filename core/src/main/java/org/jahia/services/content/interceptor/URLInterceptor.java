@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -120,7 +120,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-    	
+
         if (node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
             NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             if (definition.isInternationalized()) {
@@ -160,7 +160,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      */
     public Value beforeSetValue(final JCRNodeWrapper node, String name, final ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
-        
+
         // if the node is a translated node, then take the parent to have the references
         JCRNodeWrapper nodeWithReferences = node.isNodeType(Constants.JAHIANT_TRANSLATION) ? node.getParent() : node;
 

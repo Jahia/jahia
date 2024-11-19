@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -49,14 +49,14 @@ import org.apache.commons.collections.ComparatorUtils;
 
 /**
  * Represents a history entry for the user password (encrypted).
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class PasswordHistoryEntry implements Comparable<PasswordHistoryEntry>, Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param password
      * @param modificationDate
      */

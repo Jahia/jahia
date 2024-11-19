@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -60,9 +60,9 @@ import org.slf4j.LoggerFactory;
  * {@link SourceControlManagement} helpers for SCM operations on module's sources.
  */
 public class SourceControlFactory {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(SourceControlFactory.class);
-    
+
     private Map<String, String> sourceControlExecutables;
 
     private List<String> ignoredFiles;
@@ -79,7 +79,7 @@ public class SourceControlFactory {
 
     /**
      * Performs checkout of the remote SCM content into the provided working directory.
-     * 
+     *
      * @param workingDir
      *            working directory to perform checkout into
      * @param scmURI
@@ -173,7 +173,7 @@ public class SourceControlFactory {
 
     /**
      * Returns a registry of executables (paths to the SCM executables) by SCM type.
-     * 
+     *
      * @return a registry of executables (paths to the SCM executables) by SCM type
      */
     public Map<String, String> getSourceControlExecutables() {
@@ -182,7 +182,7 @@ public class SourceControlFactory {
 
     /**
      * Returns an instance of the {@link SourceControlManagement} helper for the specified working directory.
-     * 
+     *
      * @param workingDir
      *            the working directory to get SCM helper for
      * @return an instance of the {@link SourceControlManagement} helper for the specified working directory
@@ -218,7 +218,7 @@ public class SourceControlFactory {
 
     /**
      * Returns a set of supported SCM types.
-     * 
+     *
      * @return a set of supported SCM types
      */
     public Set<String> getSupportedSourceControls() {
@@ -227,7 +227,7 @@ public class SourceControlFactory {
 
     /**
      * Sets the executables for various SCM providers.
-     * 
+     *
      * @param sourceControlExecutables
      *            a map with paths to SCM executables by SCM type
      */

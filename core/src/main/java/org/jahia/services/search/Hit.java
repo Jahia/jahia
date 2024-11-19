@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -47,84 +47,84 @@ import java.util.List;
 
 /**
  * Describes basic properties of a search hit item.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface Hit<T> {
 
     /**
      * Returns the MIME type of the hit content, if applicable.
-     * 
+     *
      * @return the MIME type of the hit content, if applicable
      */
     String getContentType();
 
     /**
      * Returns the content creation date.
-     * 
+     *
      * @return the content creation date
      */
     Date getCreated();
 
     /**
      * Returns the resource author (creator).
-     * 
+     *
      * @return the resource author (creator)
      */
     String getCreatedBy();
 
     /**
      * Returns the short description, abstract or excerpt of the hit's content.
-     * 
+     *
      * @return the short description, abstract or excerpt of the hit's content
      */
     String getExcerpt();
 
     /**
      * Returns the last modification date.
-     * 
+     *
      * @return the last modification date
      */
     Date getLastModified();
 
     /**
      * Returns the last contributor.
-     * 
+     *
      * @return the last contributor
      */
     String getLastModifiedBy();
 
     /**
      * Returns the URL to the hit page.
-     * 
+     *
      * @return the URL to the hit page
      */
     String getLink();
 
     /**
      * Returns the raw hit object.
-     * 
+     *
      * @return the raw hit object
      */
     T getRawHit();
 
     /**
      * Returns the hit score.
-     * 
+     *
      * @return the hit score
      */
     float getScore();
 
     /**
      * Returns the title text.
-     * 
+     *
      * @return the title text
      */
     String getTitle();
 
     /**
      * Returns the hit type.
-     * 
+     *
      * @return the hit type
      */
     String getType();

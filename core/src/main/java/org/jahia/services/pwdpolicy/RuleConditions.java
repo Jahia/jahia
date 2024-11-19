@@ -13,7 +13,7 @@
  *     1/ Apache2
  *     ==================================================================================
  *
- *     Copyright (C) 2002-2023 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2024 Jahia Solutions Group SA. All rights reserved.
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public final class RuleConditions {
 
     /**
      * Check if the expiration period for the password is reached.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class ExpirationPeriodReached implements
@@ -91,7 +91,7 @@ public final class RuleConditions {
     /**
      * Check if the specified number of days are left to the password
      * expiration.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class ExpiresSoon implements PasswordPolicyRuleCondition {
@@ -123,7 +123,7 @@ public final class RuleConditions {
 
     /**
      * Check if this is a first user login into the system.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class FirstLoginEvaluator implements
@@ -144,7 +144,7 @@ public final class RuleConditions {
 
     /**
      * Checks the maximum length of the password.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class MaximumLength implements PasswordPolicyRuleCondition {
@@ -156,7 +156,7 @@ public final class RuleConditions {
 
     /**
      * Checks the minimum length of the password.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class MinimumLength implements PasswordPolicyRuleCondition {
@@ -168,7 +168,7 @@ public final class RuleConditions {
 
     /**
      * Checks the minimum occurence of the specified characters in the password.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class MinOccurrence implements PasswordPolicyRuleCondition {
@@ -203,7 +203,7 @@ public final class RuleConditions {
 
     /**
      * Checks the minimum occurrence of the digit characters in the password.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class MinOccurrenceDigits implements
@@ -231,7 +231,7 @@ public final class RuleConditions {
 
     /**
      * Check password history in order to prevent password reuse.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class PasswordHistory implements PasswordPolicyRuleCondition {
@@ -263,7 +263,7 @@ public final class RuleConditions {
     /**
      * Prevents the user-initiated password change operation, to only allow the
      * administrator to change passwords.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class PreventUserInitiatedPasswordChange implements
@@ -284,7 +284,7 @@ public final class RuleConditions {
     /**
      * Check if the provided password is similar to the user name, i.e. the
      * username is a part of the password.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class SimilarToUsername implements

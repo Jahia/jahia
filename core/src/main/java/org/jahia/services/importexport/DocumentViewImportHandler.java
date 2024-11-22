@@ -80,7 +80,10 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+
+import static org.jahia.services.importexport.ImportExportBaseService.DEFAULT_PROPERTIES_TO_IGNORE;
 
 /**
  * SAX handler that performs import of the JCR content, provided in a document format.
@@ -131,14 +134,13 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private Map<String, String> placeHoldersMap = new HashMap<String, String>();
 
-    private boolean replaceMultipleValues = false;
     private boolean importUserGeneratedContent = false;
     private int ugcLevel = 0;
-
-    private boolean enforceUuid = false;
+    private boolean cleanPreviousLiveImport = false;
 
     private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
-    private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder", "jnt:user");
+    // List of node types that should not be updated if they already exist during import.
+    private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder", "jnt:user", "jnt:group");
 
     private Set<String> uuidsSet = new LinkedHashSet<String>();
 
@@ -146,8 +148,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private String expandedFolder;
 
     private Set<String> missingDependencies = new HashSet<String>();
-
-    private boolean removeMixins = false;
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath) throws IOException {
         this(session, rootPath, null, null);
@@ -338,15 +338,17 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
 
             if (!importUserGeneratedContent || ugcLevel > 0) {
+                // UUID handling, in case a live repository was imported first in the default workspace
+                // We need to enforce the UUIDs of the nodes
                 String originalUuid = atts.getValue("jcr:uuid");
                 String uuid = originalUuid;
                 if (uuid != null && uuidMapping.containsKey(uuid)) {
                     uuid = uuidMapping.get(uuid);
-                } else if (enforceUuid) {
+                } else if (cleanPreviousLiveImport) {
                     uuid = null;
                 }
 
-                if (isValid && enforceUuid && uuid != null) {
+                if (isValid && cleanPreviousLiveImport && uuid != null) {
                     if (!child.getIdentifier().equals(uuid)) {
                         child.remove();
                         isValid = false;
@@ -376,18 +378,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             lastModifiedBy = atts.getValue("jcr:lastModifiedBy");
                         }
 
-//                    String share = atts.getValue("j:share");
-//                    if (!StringUtils.isEmpty(uuid) && uuidMapping.containsKey(uuid)) {
-//                        child = nodes.peek().clone(session.getNodeByUUID(uuidMapping.get(uuid)), decodedQName);
-//                    } else if (!StringUtils.isEmpty(share)) {
-//                        for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
-//                            if (share.startsWith(entry.getKey())) {
-//                                share = entry.getValue() + StringUtils.substringAfter(share, entry.getKey());
-//                                break;
-//                            }
-//                        }
-//                        child = nodes.peek().clone(session.getNode(share), decodedQName);
-//                    } else {
                         if (!StringUtils.isEmpty(uuid)) {
                             switch (uuidBehavior) {
                                 case IMPORT_UUID_COLLISION_THROW:
@@ -462,9 +452,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         }
 
                         addMixins(child, atts);
+                        setAttributes(child, atts);
                         uploadFile(atts, decodedQName, path, child);
 
-                        setAttributes(child, atts);
                         uuidsSet.add(child.getIdentifier());
                         if (child.isFile() && currentFilePath == null) {
                             currentFilePath = child.getPath();
@@ -472,17 +462,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (child.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
                             session.save(JCRObservationManager.IMPORT);
                         }
-//                    }
                     } else {
                         throw new AccessDeniedException("Missing jcr:addChildNodes permission for user " + session.getUser().getName());
                     }
                 } else {
-                    if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {
-                        if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName()) && atts.getValue("jcr:primaryType") != null) {
-                            addMixins(child, atts);
-                            setAttributes(child, atts);
-                            uploadFile(atts, decodedQName, path, child);
-                        }
+                    if (updatesAllowedOnExistingChild(child, atts)) {
+                        addMixins(child, atts);
+                        setAttributes(child, atts);
+                        uploadFile(atts, decodedQName, path, child);
                     }
                     uuidsSet.add(child.getIdentifier());
                 }
@@ -521,6 +508,36 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         } catch (Exception re) {
             throw new SAXException(re);
         }
+    }
+
+    private boolean updatesAllowedOnExistingChild(JCRNodeWrapper nodeToCheck, Attributes atts) throws RepositoryException {
+        // initial check
+        if (!nodeToCheck.hasPermission("jcr:modifyProperties") ||
+                !nodeToCheck.isCheckedOut() ||
+                atts.getValue("jcr:primaryType") == null) {
+            return false;
+        }
+
+        /*
+            Edge case handling:
+            Intermediate nodes contained in the import file only have the jcr:primaryType attribute, example:
+
+            <contentFolderTest jcr:primaryType="jnt:contentFolder">
+                <richTexttest jcr:primaryType="jnt:contentFolder" j:text="My rich text content"/>
+            </contentFolderTest>
+
+             contentFolderTest node is not really part of the import, it's just here for keeping the parenting structure.
+             Such nodes should never be updated during a import, that have the option: cleanPreviousLiveImport=true.
+             Because it could have bad effect, like existing mixins/properties loss.
+        */
+        if (cleanPreviousLiveImport && atts.getLength() == 1 && "jcr:primaryType".equals(atts.getQName(0))) {
+            return false;
+        }
+
+        // Check noUpdateTypes list for node types that should not be updated if they already exist during import.
+        String primaryNodeTypeName = nodeToCheck.getPrimaryNodeTypeName();
+        return !noUpdateTypes.contains(Constants.JAHIANT_TRANSLATION.equals(primaryNodeTypeName) ?
+                nodeToCheck.getParent().getPrimaryNodeTypeName() : primaryNodeTypeName);
     }
 
     private void uploadFile(Attributes atts, String decodedQName, String path, JCRNodeWrapper child) throws IOException, RepositoryException {
@@ -606,43 +623,54 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     }
 
     private void addMixins(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
-        ExtendedNodeType[] existingMixinNodeTypes = child.getMixinNodeTypes();
-        String m = atts.getValue(Constants.JCR_MIXINTYPES);
-        if (m != null) {
-            Set<String> addedMixins = new LinkedHashSet<String>(Arrays.asList(StringUtils.split(m, " ,")));
-            if (removeMixins) {
-                // first we remove existing mixins that are no longer present in added mixins
-                for (ExtendedNodeType existingMixin : existingMixinNodeTypes) {
-                    String existingMixinName = existingMixin.getName();
-                    if (!addedMixins.contains(existingMixinName)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Removing mixin {} from node {}", existingMixinName, child.getPath());
-                        }
-                        child.removeMixin(existingMixinName);
-                    }
-                }
+        // Always unmark for deletion during import !
+        // This could happen in case the node already exists and have been marked for deletion but not published yet.
+        // - If deletion mark is part of the import, it will just be re-applied.
+        // - If deletion mark is not part of the import (have been done after the export), it will not be re-applied.
+        // (Anyway we need to remove the mark first, since live import will be imported in default, then published)
+        // But that sounds logical.
+        if (child.isMarkedForDeletion()) {
+            child.unmarkForDeletion();
+        }
+
+        // Read mixins to add from the attribute.
+        String mixinTypesAttributeValue = atts.getValue(Constants.JCR_MIXINTYPES);
+        Set<String> mixinsToAdd = mixinTypesAttributeValue != null ?
+                new LinkedHashSet<>(Arrays.asList(StringUtils.split(mixinTypesAttributeValue, " ,"))) :
+                Collections.emptySet();
+
+
+        // Due to live version being imported first, it's possible that default version contains removed mixins not published yet.
+        // (Does not make sense to clean up live/default differences in case of jmix:autoPublish nodes, or new nodes only existing in default)
+        if (cleanPreviousLiveImport &&
+                !child.isNew() &&
+                !child.isNodeType("jmix:autoPublish")) {
+            Set<ExtendedNodeType> mixinsToRemove =
+                    Arrays.stream(child.getMixinNodeTypes())
+                            .filter(mixin -> !mixinsToAdd.contains(mixin))
+                            .collect(Collectors.toSet());
+            for (ExtendedNodeType mixinToRemove : mixinsToRemove) {
+                child.removeMixin(mixinToRemove.getName());
             }
-            // and now we add the mixins
-            for (String addedMixin : addedMixins) {
-                try {
-                    child.addMixin(addedMixin);
-                } catch (NoSuchNodeTypeException e) {
-                    logger.warn("Cannot add node type " + e.getMessage());
-                }
-            }
-        } else if (removeMixins) {
-            // remove all mixins as none is set on the node
-            for (ExtendedNodeType mixin : child.getMixinNodeTypes()) {
-                child.removeMixin(mixin.getName());
+        }
+
+        // Add mixins from attributes
+        for (String mixinToAdd : mixinsToAdd) {
+            try {
+                child.addMixin(mixinToAdd);
+            } catch (NoSuchNodeTypeException e) {
+                logger.warn("Cannot add node type " + e.getMessage());
             }
         }
     }
 
     private void setAttributes(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
-        String lang = null;
+        Set<String> processedProperties = new HashSet<String>();
+        String lang;
         if (child.getPrimaryNodeTypeName().equals(Constants.JAHIANT_TRANSLATION)) {
             lang = atts.getValue(Constants.JCR_LANGUAGE);
             child.setProperty(Constants.JCR_LANGUAGE, lang);
+            processedProperties.add(Constants.JCR_LANGUAGE);
         }
 
         for (int i = 0; i < atts.getLength(); i++) {
@@ -657,6 +685,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             for (AttributeProcessor processor : attributeProcessors) {
                 if (processor.process(child, attrName, attrValue)) {
                     processed = true;
+                    processedProperties.addAll(processor.getPropertyNamesProcessed());
                     break;
                 }
             }
@@ -702,6 +731,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     logger.error("Couldn't find definition for property " + attrName + " in " + child.getPrimaryNodeTypeName() + getLocation());
                     continue;
                 }
+                processedProperties.add(attrName);
 
                 if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
@@ -734,7 +764,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             }
                         }
 
-                        if (replaceMultipleValues) {
+                        // in case of previous Live import we need to override the values completely.
+                        // As original values may come from the live version, and the default version could be different.
+                        if (cleanPreviousLiveImport) {
                             List<Value> values = new ArrayList<Value>();
                             for (int j = 0; j < s.length; j++) {
                                 values.add(child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]), propDef.getRequiredType()));
@@ -767,6 +799,25 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // (Does not make sense to cleanup live/default difference in case of jmix:autoPublish nodes, or new nodes only existing in default)
+        if (cleanPreviousLiveImport &&
+                !child.isNew() &&
+                !child.isNodeType("jmix:autoPublish")) {
+            // Since live is imported first in the default workspace, it's possible that the default version of the node contains
+            // removed properties compare to the live version. In this case, we need to remove the properties from the default version.
+            PropertyIterator propertyIterator = child.getRealNode().getProperties();
+            while (propertyIterator.hasNext()) {
+                Property property = propertyIterator.nextProperty();
+                if (!propertiesToSkip.contains(property.getName()) && // Exclude skipped properties
+                        !DEFAULT_PROPERTIES_TO_IGNORE.contains(property.getName()) && // Exclude default properties ignored by export
+                        !processedProperties.contains(property.getName())) { // Exclude properties that have been processed during import
+                    // This property is most likely a property that has been removed from the default version of the node
+                    // but imported from the live version.
+                    child.getRealNode().setProperty(property.getName(), (Value) null);
                 }
             }
         }
@@ -958,20 +1009,40 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         this.importUserGeneratedContent = importUserGeneratedContent;
     }
 
+    /**
+     * @deprecated Use {@link #isCleanPreviousLiveImport()} instead.
+     */
+    @Deprecated
     public boolean isReplaceMultipleValues() {
-        return replaceMultipleValues;
+        return isCleanPreviousLiveImport();
     }
 
+    /**
+     * @deprecated Use {@link #cleanPreviousLiveImport()} instead.
+     */
+    @Deprecated
     public void setReplaceMultipleValues(boolean replaceMultipleValues) {
-        this.replaceMultipleValues = replaceMultipleValues;
+        if (replaceMultipleValues) {
+            cleanPreviousLiveImport();
+        }
     }
 
+    /**
+     * @deprecated Use {@link #isCleanPreviousLiveImport()} instead.
+     */
+    @Deprecated
     public boolean isEnforceUuid() {
-        return enforceUuid;
+        return isCleanPreviousLiveImport();
     }
 
+    /**
+     * @deprecated Use {@link #cleanPreviousLiveImport()} instead.
+     */
+    @Deprecated
     public void setEnforceUuid(boolean enforceUuid) {
-        this.enforceUuid = enforceUuid;
+        if (enforceUuid) {
+            cleanPreviousLiveImport();
+        }
     }
 
     public void setReplacements(Map<String, String> replacements) {
@@ -1032,11 +1103,45 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         this.documentLocator = documentLocator;
     }
 
+    /**
+     * @deprecated Use {@link #isCleanPreviousLiveImport()} instead.
+     */
+    @Deprecated
     public boolean isRemoveMixins() {
-        return removeMixins;
+        return isCleanPreviousLiveImport();
     }
 
+    /**
+     * @deprecated Use {@link #cleanPreviousLiveImport()} instead.
+     */
+    @Deprecated
     public void setRemoveMixins(boolean removeMixins) {
-        this.removeMixins = removeMixins;
+        if (removeMixins) {
+            cleanPreviousLiveImport();
+        }
+    }
+
+    /**
+     * configuration in order to restore publication statuses related properties.
+     */
+    public void configureToRestorePublicationStatuses() {
+        this.propertiesToSkip.remove(Constants.LASTPUBLISHED);
+        this.propertiesToSkip.remove(Constants.LASTPUBLISHEDBY);
+        this.propertiesToSkip.remove(Constants.PUBLISHED);
+    }
+
+    /**
+     * In case a live repository was imported first in the default workspace,
+     * this method allows to configure the default import that follows in order to have correct behavior against existing
+     * nodes from the live workspace that would still be present in the default workspace.
+     */
+    public void cleanPreviousLiveImport() {
+        this.cleanPreviousLiveImport = true;
+        configureToRestorePublicationStatuses();
+        setUuidBehavior(IMPORT_UUID_COLLISION_MOVE_EXISTING);
+    }
+
+    public boolean isCleanPreviousLiveImport() {
+        return cleanPreviousLiveImport;
     }
 }

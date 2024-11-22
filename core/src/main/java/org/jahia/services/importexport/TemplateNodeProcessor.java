@@ -46,6 +46,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Attribute processor that handles <code>j:templateNode</code> attributes to use just the referenced template (view) name instead of a
@@ -62,5 +64,10 @@ public class TemplateNodeProcessor implements AttributeProcessor {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Collection<String> getPropertyNamesProcessed() {
+        return Collections.singleton("j:templateName");
     }
 }

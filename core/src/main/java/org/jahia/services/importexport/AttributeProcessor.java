@@ -46,6 +46,9 @@ import javax.jcr.RepositoryException;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * Instances implementing this interface are used during JCR import to process attributes of each element in the imported XML content, thus
  * providing special handling for particular attributes.
@@ -68,4 +71,12 @@ public interface AttributeProcessor {
      *             in case of any JCR or processing error
      */
     boolean process(JCRNodeWrapper node, String name, String value) throws RepositoryException;
+
+    /**
+     * @return Returns the list of property names that have been processed by this processor.
+     *      * Returns only the property names that have been added to the node.
+     */
+    default Collection<String> getPropertyNamesProcessed() {
+        return Collections.emptyList();
+    };
 }

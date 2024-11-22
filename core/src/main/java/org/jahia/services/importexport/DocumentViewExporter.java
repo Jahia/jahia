@@ -70,6 +70,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.jahia.services.importexport.ImportExportBaseService.DEFAULT_PROPERTIES_TO_IGNORE;
+
 /**
  * Handler for export in a document view format.
  * User: toto
@@ -98,7 +100,7 @@ public class DocumentViewExporter {
     private List<JCRNodeWrapper> nodesList;
     private Stack<String> stack;
 
-    private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid", "jcr:mergeFailed");
+    private List<String> propertiesToIgnore = new ArrayList<>(DEFAULT_PROPERTIES_TO_IGNORE);
     private ExportContext exportContext;
     private PropertyChangeSupport pcs;
 
@@ -263,7 +265,8 @@ public class DocumentViewExporter {
                 for (String prop : sortedProps) {
                     try {
                         Property property = node.getRealNode().getProperty(prop);
-                        if (node.hasProperty(prop) && (property.getType() != PropertyType.BINARY || !skipBinary) && !propertiestoIgnore.contains(property.getName())) {
+                        if (node.hasProperty(prop) && (property.getType() != PropertyType.BINARY || !skipBinary) &&
+                                !propertiesToIgnore.contains(property.getName())) {
                             String key = property.getName();
                             String prefix = null;
                             String localname = key;
@@ -276,7 +279,8 @@ public class DocumentViewExporter {
 
                             String value;
                             if (!property.isMultiple()) {
-                                if (property.getDefinition().getRequiredType() == PropertyType.REFERENCE || property.getDefinition().getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                                if (property.getDefinition().getRequiredType() == PropertyType.REFERENCE ||
+                                        property.getDefinition().getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                                     value = JCRMultipleValueUtils.encode(getValue(property.getValue()));
                                 } else {
                                     value = getValue(property.getValue());
@@ -309,6 +313,7 @@ public class DocumentViewExporter {
                     }
                 }
                 if (publicationStatusSession != null && node.isNodeType("jmix:publication")) {
+                    // TODO: I don't think this exported: j:publicationStatus is ever used somewhere
                     String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
                     atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
                 }
@@ -448,11 +453,11 @@ public class DocumentViewExporter {
     }
 
     public List<String> getPropertiestoIgnore() {
-        return propertiestoIgnore;
+        return propertiesToIgnore;
     }
 
     public void setPropertiestoIgnore(List<String> propertiestoIgnore) {
-        this.propertiestoIgnore = propertiestoIgnore;
+        this.propertiesToIgnore = propertiestoIgnore;
     }
 
     public Set<String> getExternalReferences() {
@@ -477,5 +482,16 @@ public class DocumentViewExporter {
 
     public void addObserver(PropertyChangeListener propertyChangeListener) {
         pcs.addPropertyChangeListener("exportContext", propertyChangeListener);
+    }
+
+    /**
+     * Configure the exporter for a live repository export.
+     * - keep jcr:uuid properties
+     * - export j:publicationStatus TODO: see if this is really needed, used ?
+     * @param publicationStatusSession the session used to calculate publication statuses
+     */
+    public void configureForLiveExport(JCRSessionWrapper publicationStatusSession) {
+        setPublicationStatusSession(publicationStatusSession);
+        this.propertiesToIgnore.remove("jcr:uuid");
     }
 }

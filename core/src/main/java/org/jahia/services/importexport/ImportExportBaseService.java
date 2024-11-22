@@ -167,8 +167,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
     private static final FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
-    private static final HashSet<String> siteExportNodeTypesToIgnore = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask", "jmix:noImportExport");
-    private static final HashSet<String> defaultExportNodeTypesToIgnore = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask", "jmix:noImportExport");
+    private static final HashSet<String> SITE_EXPORT_NODE_TYPES_TO_IGNORE = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask", "jmix:noImportExport");
+    private static final HashSet<String> DEFAULT_EXPORT_NODE_TYPES_TO_IGNORE = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask", "jmix:noImportExport");
+    static final HashSet<String> DEFAULT_PROPERTIES_TO_IGNORE = Sets.newHashSet("j:fullpath", "jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid", "jcr:mergeFailed");
     private static final Pattern ALLOWED_INCLUDED_PATHS = Pattern.compile("^/(groups|settings)(/.*)?$");
     private static final Path EXPORT_PATH;
     static {
@@ -510,7 +511,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         Set<JCRNodeWrapper> refs = new HashSet<>();
         for (String reference : externalReferences) {
             JCRNodeWrapper node = session.getNodeByUUID(reference);
-            if (!defaultExportNodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+            if (!DEFAULT_EXPORT_NODE_TYPES_TO_IGNORE.contains(node.getPrimaryNodeTypeName())) {
                 refs.add(node);
             }
         }
@@ -519,7 +520,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/" + REFERENCES_ZIP);
             try {
                 logger.info("Exporting References Started");
-                exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params,
+                exportNodesWithBinaries(session.getRootNode(), refs, zzout, DEFAULT_EXPORT_NODE_TYPES_TO_IGNORE, externalReferences, params,
                         true);
                 logger.info("Exporting References Ended");
             } catch (Exception e) {
@@ -541,7 +542,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
                 try {
                     logger.info("Exporting Mount points Started");
-                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, defaultExportNodeTypesToIgnore,
+                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, DEFAULT_EXPORT_NODE_TYPES_TO_IGNORE,
                             externalReferences, params, true);
                     logger.info("Exporting Mount points Ended");
                 } catch (Exception e) {
@@ -584,7 +585,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
             try {
                 logger.info("Exporting custom path started");
-                exportNodesWithBinaries(session.getRootNode(), nodes, zzout, defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                exportNodesWithBinaries(session.getRootNode(), nodes, zzout, DEFAULT_EXPORT_NODE_TYPES_TO_IGNORE, externalReferences, params, true);
                 logger.info("Exporting custom path Ended");
             } catch (Exception e) {
                 logger.error("Cannot export custom path", e);
@@ -609,7 +610,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             try {
                 logger.info("Exporting Roles Started");
                 exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode(String.format("/%s", rolesPath))), zzout,
-                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                        DEFAULT_EXPORT_NODE_TYPES_TO_IGNORE, externalReferences, params, true);
                 logger.info("Exporting Roles Ended");
             } catch (Exception e) {
                 logger.error("Cannot export roles", e);
@@ -634,7 +635,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             try {
                 logger.info("Exporting Users Started");
                 exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode(String.format("/%s", usersPath))), zzout,
-                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
+                        DEFAULT_EXPORT_NODE_TYPES_TO_IGNORE, externalReferences, params, true);
                 logger.info("Exporting Users Ended");
             } catch (IOException e) {
                 logger.warn("Cannot export due to some IO exception :{}", e.getMessage());
@@ -668,7 +669,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession().disableSessionCache();
         JCRNodeWrapper node = session.getNode(String.format("/sites/%s", site.getSiteKey()));
         Set<JCRNodeWrapper> nodes = Collections.singleton(node);
-        exportNodesWithBinaries(session.getRootNode(), nodes, zout, siteExportNodeTypesToIgnore,
+        exportNodesWithBinaries(session.getRootNode(), nodes, zout, SITE_EXPORT_NODE_TYPES_TO_IGNORE,
                 externalReferences, params, true);
         zout.finish();
     }
@@ -884,12 +885,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
         typesToIgnore.add("rep:system");
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
-            List<String> l = new ArrayList<>(exporter.getPropertiestoIgnore());
-            l.remove("jcr:uuid");
-            exporter.setPropertiestoIgnore(l);
-            if (rootNode.getSession().getWorkspace().getName().equals(Constants.EDIT_WORKSPACE)) {
-                exporter.setPublicationStatusSession(jcrStoreService.getSessionFactory().getCurrentUserSession("live"));
-            }
+            exporter.configureForLiveExport(rootNode.getSession().getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) ?
+                    jcrStoreService.getSessionFactory().getCurrentUserSession("live") : null);
         }
         exporter.setTypesToIgnore(typesToIgnore);
         exporter.export(rootNode, sortedNodes);
@@ -2252,7 +2249,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @SuppressWarnings({"java:S107", "java:S3776"})
-    private void importRepositoryContent(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore, List<String> fileList, Map<String, List<String>> references, boolean importLive, List<String> liveUuids) throws IOException, RepositoryException {
+    private void importRepositoryContent(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session,
+                                         Set<String> filesToIgnore, List<String> fileList, Map<String, List<String>> references,
+                                         boolean livePreviouslyImported, List<String> liveUuids) throws IOException, RepositoryException {
         // Import repository content
         ZipInputStream zis = getZipInputStream(file);
         try {
@@ -2260,7 +2259,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             while ((zipentry = zis.getNextEntry()) != null) {
                 String name = zipentry.getName();
                 if (name.equals(REPOSITORY_XML) && !filesToIgnore.contains(name)) {
-                    importRepositoryXMLFile(parentNodePath, file, rootBehaviour, session, fileList, references, zis, importLive, liveUuids);
+                    importRepositoryXMLFile(parentNodePath, file, rootBehaviour, session, fileList, references, zis, livePreviouslyImported, liveUuids);
                 } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name) && !name.contains("/")) {
                     long timerOther = System.currentTimeMillis();
                     logger.info("Start importing {}", name);
@@ -2292,28 +2291,21 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @SuppressWarnings("java:S107")
-    private void importRepositoryXMLFile(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, List<String> fileList, Map<String, List<String>> references, ZipInputStream zis, boolean importLive, List<String> liveUuids) throws IOException, RepositoryException {
+    private void importRepositoryXMLFile(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session,
+                                         List<String> fileList, Map<String, List<String>> references, ZipInputStream zis,
+                                         boolean livePreviouslyImported, List<String> liveUuids) throws IOException, RepositoryException {
         long timerDefault = System.currentTimeMillis();
         logger.info("Start importing " + REPOSITORY_XML);
         DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
-        if (importLive) {
-            // Restore publication status
-            Set<String> props = new HashSet<>(documentViewImportHandler.getPropertiesToSkip());
-            props.remove(Constants.LASTPUBLISHED);
-            props.remove(Constants.LASTPUBLISHEDBY);
-            props.remove(Constants.PUBLISHED);
-            documentViewImportHandler.setPropertiesToSkip(props);
-            documentViewImportHandler.setEnforceUuid(true);
-            documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);
-            documentViewImportHandler.setReplaceMultipleValues(true);
-            documentViewImportHandler.setRemoveMixins(true);
+        if (livePreviouslyImported) {
+            documentViewImportHandler.cleanPreviousLiveImport();
         }
         documentViewImportHandler.setReferences(references);
         documentViewImportHandler.setRootBehavior(rootBehaviour);
         documentViewImportHandler.setAttributeProcessors(attributeProcessors);
         handleImport(zis, documentViewImportHandler, REPOSITORY_XML);
 
-        if (importLive && liveUuids != null) {
+        if (livePreviouslyImported && liveUuids != null) {
             // Using an hashset to remove the UUIDs (optimization)
             if (logger.isDebugEnabled()) {
                 logger.debug(String.format("Removing %s uuids from %s uuids", documentViewImportHandler.getUuidsSet().size(), liveUuids.size()));
@@ -2356,12 +2348,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         documentViewImportHandler.setRootBehavior(rootBehaviour);
         documentViewImportHandler.setBaseFilesPath("/live-content");
         documentViewImportHandler.setAttributeProcessors(attributeProcessors);
-
-        Set<String> props = new HashSet<>(documentViewImportHandler.getPropertiesToSkip());
-        props.remove(Constants.LASTPUBLISHED);
-        props.remove(Constants.LASTPUBLISHEDBY);
-        props.remove(Constants.PUBLISHED);
-        documentViewImportHandler.setPropertiesToSkip(props);
+        documentViewImportHandler.configureToRestorePublicationStatuses();
         handleImport(zis, documentViewImportHandler, LIVE_REPOSITORY_XML);
 
         logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);

@@ -48,13 +48,15 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.tags.TaggingService;
 
 import javax.jcr.RepositoryException;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Attribute processor that handles <code>j:tags</code> attributes
  *
  * @author kevan
  */
-public class TagsProcessor implements AttributeProcessor{
+public class TagsProcessor implements AttributeProcessor {
     private TaggingService taggingService;
 
     @Override
@@ -66,6 +68,11 @@ public class TagsProcessor implements AttributeProcessor{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Collection<String> getPropertyNamesProcessed() {
+        return Collections.singleton("j:tags");
     }
 
     public void setTaggingService(TaggingService taggingService) {

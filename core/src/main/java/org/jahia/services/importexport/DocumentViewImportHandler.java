@@ -181,7 +181,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         }
 
         this.fileList = fileList;
-        setPropertiesToSkip((Set<String>) SpringContextSingleton.getBean("DocumentViewImportHandler.propertiesToSkip"));
+        setPropertiesToSkip(new HashSet<>((Set<String>) SpringContextSingleton.getBean("DocumentViewImportHandler.propertiesToSkip")));
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {

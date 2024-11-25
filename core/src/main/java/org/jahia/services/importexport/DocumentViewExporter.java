@@ -49,7 +49,6 @@ import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRMultipleValueUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
@@ -88,7 +87,6 @@ public class DocumentViewExporter {
 
 
     private JCRSessionWrapper session;
-    private JCRSessionWrapper publicationStatusSession;
     private ContentHandler ch;
     private boolean noRecurse;
     private boolean skipBinary;
@@ -137,8 +135,9 @@ public class DocumentViewExporter {
         this.typesToIgnore = typesToIgnore;
     }
 
+    @Deprecated
     public void setPublicationStatusSession(JCRSessionWrapper publicationStatusSession) {
-        this.publicationStatusSession = publicationStatusSession;
+        // Do nothing, since 8.2.1.0 export does not contain publication status (j:publicationStatus) anymore
     }
 
     public void export(JCRNodeWrapper node) throws SAXException, RepositoryException {
@@ -312,11 +311,6 @@ public class DocumentViewExporter {
                         logger.error("Cannot export property", e);
                     }
                 }
-                if (publicationStatusSession != null && node.isNodeType("jmix:publication")) {
-                    // TODO: I don't think this exported: j:publicationStatus is ever used somewhere
-                    String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
-                    atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
-                }
                 setProviderRootAttribute(node, atts);
 
                 String encodedName = ISO9075.encode(node.getName());
@@ -487,11 +481,8 @@ public class DocumentViewExporter {
     /**
      * Configure the exporter for a live repository export.
      * - keep jcr:uuid properties
-     * - export j:publicationStatus TODO: see if this is really needed, used ?
-     * @param publicationStatusSession the session used to calculate publication statuses
      */
-    public void configureForLiveExport(JCRSessionWrapper publicationStatusSession) {
-        setPublicationStatusSession(publicationStatusSession);
+    public void configureForLiveExport() {
         this.propertiesToIgnore.remove("jcr:uuid");
     }
 }

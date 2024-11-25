@@ -885,8 +885,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
         typesToIgnore.add("rep:system");
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
-            exporter.configureForLiveExport(rootNode.getSession().getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) ?
-                    jcrStoreService.getSessionFactory().getCurrentUserSession("live") : null);
+            exporter.configureForLiveExport();
         }
         exporter.setTypesToIgnore(typesToIgnore);
         exporter.export(rootNode, sortedNodes);

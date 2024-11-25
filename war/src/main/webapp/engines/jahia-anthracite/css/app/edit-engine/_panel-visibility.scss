@@ -380,6 +380,10 @@ div.engine-window {
                         padding: 43px 10px 20px 19px !important;
                         background: transparent !important;
 
+                        .x-form-label-left div:first-child label {
+                            display: inline-block !important;
+                        }
+
                         legend {
                             .x-fieldset-header-text {
                                 left: 19px;

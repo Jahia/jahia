@@ -72,7 +72,7 @@ public class TagsProcessor implements AttributeProcessor {
 
     @Override
     public Collection<String> getPropertyNamesProcessed() {
-        return Collections.singleton("j:tags");
+        return Collections.singleton("j:tagList");
     }
 
     public void setTaggingService(TaggingService taggingService) {

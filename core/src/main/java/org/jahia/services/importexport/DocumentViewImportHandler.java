@@ -817,7 +817,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         !processedProperties.contains(property.getName())) { // Exclude properties that have been processed during import
                     // This property is most likely a property that has been removed from the default version of the node
                     // but imported from the live version.
-                    child.getRealNode().setProperty(property.getName(), (Value) null);
+                    property.remove();
                 }
             }
         }

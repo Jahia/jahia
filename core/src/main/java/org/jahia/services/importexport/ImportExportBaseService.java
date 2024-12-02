@@ -189,8 +189,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private JCRStoreService jcrStoreService;
     private CategoryService categoryService;
     private SchedulerService schedulerService;
-    private boolean expandImportedFilesOnDisk;
-    private String expandImportedFilesOnDiskPath;
     private List<AttributeProcessor> attributeProcessors;
     private TemplatePackageRegistry templatePackageRegistry;
     private List<XMLContentTransformer> xmlContentTransformers;
@@ -303,12 +301,18 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
+    /**
+     * @deprecated use {@link SettingsBean#isExpandImportedFilesOnDisk()}
+     */
     public void setExpandImportedFilesOnDisk(boolean expandImportedFilesOnDisk) {
-        this.expandImportedFilesOnDisk = expandImportedFilesOnDisk;
+        // do nothing
     }
 
+    /**
+     * @deprecated use {@link SettingsBean#getExpandImportedFilesOnDiskPath()}
+     */
     public void setExpandImportedFilesOnDiskPath(String expandImportedFilesOnDiskPath) {
-        this.expandImportedFilesOnDiskPath = expandImportedFilesOnDiskPath;
+        // do nothing
     }
 
     /**
@@ -1169,49 +1173,44 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
         boolean legacyImport = false;
         List<String[]> catProps = null;
-        List<String[]> userProps = null;
 
-        Map<String, Long> sizes = new HashMap<>();
-        List<String> fileList = new ArrayList<>();
-
-        logger.info("Start analyzing import file {}", file);
-        long timer = System.currentTimeMillis();
-        File expandedFolder = getFileList(file, sizes, fileList, false);
-        try {
-            if (logger.isInfoEnabled()) {
-                logger.info("Done analyzing import file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
-            }
-
+        try (ImportZipContext importZipContext = new ImportZipContext(file)) {
             Map<String, String> pathMapping = getRegisteredModulesPathMapping(session);
 
-
-            userProps = importUsersIfPresentInArchive(file, usersImportHandler, userProps, sizes);
-
-            // Check if it is an 5.x or 6.1 import :
-            for (Map.Entry<String, Long> entry : sizes.entrySet()) {
-                if (entry.getKey().startsWith("export_")) {
-                    legacyImport = true;
-                    break;
-                }
+            // Import users first
+            if (importZipContext.getLoadedImportDescriptorNames().contains(USERS_XML)) {
+                importZipContext.executeWithImportDescriptors(Collections.singleton(USERS_XML),
+                        (inputStream, name) -> importUsers(inputStream, usersImportHandler, USERS_XML));
             }
 
-            importSitePropertiesIfPresentInArchive(file, site, session, sizes);
+            // Check if it is an 5.x or 6.1 import :
+            if (importZipContext.getLoadedImportDescriptorNames().stream().anyMatch(s -> s.startsWith("export_"))) {
+                legacyImport = true;
+            }
 
-            if (sizes.containsKey(REPOSITORY_XML)) {
-                importRepositoryDescriptorIfPresentInArchive(file, site, session, pathMapping);
+            // import site properties
+            if (importZipContext.getLoadedImportDescriptorNames().contains(SITE_PROPERTIES)) {
+                importZipContext.executeWithImportDescriptors(Collections.singleton(SITE_PROPERTIES), (inputStream, name) -> {
+                    importSiteProperties(inputStream, site, session);
+                    return null;
+                });
+            }
+
+            if (importZipContext.getLoadedImportDescriptorNames().contains(REPOSITORY_XML)) {
+                checkSiteKeyMapping(importZipContext, site.getSiteKey(), session, pathMapping);
+                importZip(null, importZipContext, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session,
+                        Sets.newHashSet(USERS_XML, CATEGORIES_XML), true);
             } else {
                 // No repository descriptor - prepare to import files directly
                 pathMapping.put("/", "/sites/" + site.getSiteKey() + "/files/");
             }
 
-            catProps = importAdditionalFilesIfPresentInArchiveOrPerformLegacyImportIfNeeded(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, session, timerSite, categoriesImportHandler, legacyImport, catProps, sizes, fileList, pathMapping);
+            catProps = importAdditionalFilesIfPresentInArchiveOrPerformLegacyImportIfNeeded(importZipContext, site, infos, legacyMappingFilePath,
+                    legacyDefinitionsFilePath, session, timerSite, categoriesImportHandler, legacyImport, catProps, pathMapping);
 
             categoriesImportHandler.setUuidProps(catProps);
-            usersImportHandler.setUuidProps(userProps);
 
             session.save(JCRObservationManager.IMPORT);
-        } finally {
-            cleanFilesList(expandedFolder);
         }
 
         if (legacyImport && this.postImportPatcher != null) {
@@ -1228,15 +1227,19 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @SuppressWarnings("java:S107")
-    private List<String[]> importAdditionalFilesIfPresentInArchiveOrPerformLegacyImportIfNeeded(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session, long timerSite, CategoriesImportHandler categoriesImportHandler, boolean legacyImport, List<String[]> catProps, Map<String, Long> sizes, List<String> fileList, Map<String, String> pathMapping) throws IOException, RepositoryException {
+    private List<String[]> importAdditionalFilesIfPresentInArchiveOrPerformLegacyImportIfNeeded(ImportZipContext importZipContext, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session, long timerSite, CategoriesImportHandler categoriesImportHandler, boolean legacyImport, List<String[]> catProps, Map<String, String> pathMapping) throws IOException, RepositoryException {
         NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
         DefinitionsMapping mapping = null;
 
         // Import additional files - site.properties, old cateogries.xml , sitepermissions.xml
         // and eventual plain file from 5.x imports
-        if (!sizes.containsKey(REPOSITORY_XML) || sizes.containsKey(SITE_PROPERTIES) || sizes.containsKey(CATEGORIES_XML)
-                || sizes.containsKey(SITE_PERMISSIONS_XML) || sizes.containsKey(DEFINITIONS_CND) || sizes.containsKey(DEFINITIONS_MAP)) {
-            ZipInputStream zis = getZipInputStream(file);
+        if (!importZipContext.getLoadedImportDescriptorNames().contains(REPOSITORY_XML) ||
+                importZipContext.getLoadedImportDescriptorNames().contains(SITE_PROPERTIES) ||
+                importZipContext.getLoadedImportDescriptorNames().contains(CATEGORIES_XML) ||
+                importZipContext.getLoadedImportDescriptorNames().contains(SITE_PERMISSIONS_XML) ||
+                importZipContext.getLoadedImportDescriptorNames().contains(DEFINITIONS_CND) ||
+                importZipContext.getLoadedImportDescriptorNames().contains(DEFINITIONS_MAP)) {
+            ZipInputStream zis = getZipInputStream(importZipContext.getArchive());
             try {
                 ZipEntry zipentry;
                 while ((zipentry = zis.getNextEntry()) != null) {
@@ -1245,11 +1248,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                         name = name.replace('\\', '/');
                     }
                     if (name.indexOf('/') > -1) {
-                        importBinaryFileFromOldSiteArchiveFormat(site, session, sizes, pathMapping, zis, zipentry, name);
+                        importBinaryFileFromOldSiteArchiveFormat(site, session, importZipContext.getLoadedImportDescriptorNames(), pathMapping, zis, zipentry, name);
                     } else if (name.equals(CATEGORIES_XML)) {
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
                     } else if (name.equals(DEFINITIONS_CND)) {
-                        reg = getSafeNodeTypeRegistryFromLegacyArchive(file, legacyImport, zis, zipentry);
+                        reg = getSafeNodeTypeRegistryFromLegacyArchive(importZipContext.getArchive(), legacyImport, zis, zipentry);
                     } else if (name.equals(DEFINITIONS_MAP)) {
                         mapping = new DefinitionsMapping();
                         mapping.load(zis);
@@ -1264,7 +1267,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
         // Import legacy content from 5.x and 6.x
         if (legacyImport) {
-            performLegacyImport(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, session, timerSite, fileList, reg, mapping);
+            performLegacyImport(importZipContext.getArchive(), site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, session, timerSite, importZipContext.getLoadedContentFilePaths(), reg, mapping);
         }
         return catProps;
     }
@@ -1289,8 +1292,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         return reg;
     }
 
-    private void importBinaryFileFromOldSiteArchiveFormat(JahiaSite site, JCRSessionWrapper session, Map<String, Long> sizes, Map<String, String> pathMapping, ZipInputStream zis, ZipEntry zipentry, String name) throws RepositoryException {
-        if (!sizes.containsKey(REPOSITORY_XML) && !sizes.containsKey(FILESACL_XML)) {
+    private void importBinaryFileFromOldSiteArchiveFormat(JahiaSite site, JCRSessionWrapper session, Collection<String> importDescriptors, Map<String, String> pathMapping, ZipInputStream zis, ZipEntry zipentry, String name) throws RepositoryException {
+        if (!importDescriptors.contains(REPOSITORY_XML) && !importDescriptors.contains(FILESACL_XML)) {
             // No repository descriptor - Old import format only
             name = convertOldEntryName(pathMapping, name);
             if (!zipentry.isDirectory()) {
@@ -1331,88 +1334,39 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         return name;
     }
 
-    private void importRepositoryDescriptorIfPresentInArchive(Resource file, JahiaSite site, JCRSessionWrapper session, Map<String, String> pathMapping) throws IOException, RepositoryException {
-        long timer;
-        // Parse import file to detect sites
-        ZipInputStream zis = getZipInputStream(file);
-        try {
-            ZipEntry zipentry;
-            while ((zipentry = zis.getNextEntry()) != null) {
-                String name = zipentry.getName();
-                if (name.equals(REPOSITORY_XML)) {
-                    timer = System.currentTimeMillis();
-                    logger.info("Start importing {}", REPOSITORY_XML);
+    private void checkSiteKeyMapping(ImportZipContext importZipContext, String siteKey,
+                                     JCRSessionWrapper session, Map<String, String> pathMapping)
+            throws IOException, RepositoryException {
 
-                    DocumentViewValidationHandler h = new DocumentViewValidationHandler();
-                    h.setSession(session);
-                    List<ImportValidator> validators = new ArrayList<>();
-                    SitesValidator sitesValidator = new SitesValidator();
-                    validators.add(sitesValidator);
-                    h.setValidators(validators);
-                    handleImport(zis, h, name);
+        logger.info("Check if site node: {} need mapping with siteKey in repository.xml", siteKey);
+        long timer = System.currentTimeMillis();
 
-                    Map<String, Properties> sites = ((SitesValidatorResult) sitesValidator.getResult()).getSitesProperties();
-                    for (String s : sites.keySet()) {
-                        // Only the first site returned is mapped (if its not the systemsite, which is always the same key)
-                        if (!s.equals("systemsite") && !site.getSiteKey().equals("systemsite")) {
-                            // Map to the new sitekey
-                            if (!s.equals(site.getSiteKey())) {
-                                pathMapping.put("/sites/" + s + "/", "/sites/" + site.getSiteKey() + "/");
-                            }
-                            break;
-                        }
-                    }
+        importZipContext.executeWithImportDescriptors(Collections.singleton(REPOSITORY_XML), (inputStream, name) -> {
+            DocumentViewValidationHandler h = new DocumentViewValidationHandler();
+            h.setSession(session);
+            SitesValidator sitesValidator = new SitesValidator();
+            h.setValidators(Collections.singletonList(sitesValidator));
+            handleImport(inputStream, h, REPOSITORY_XML);
 
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Done importing " + REPOSITORY_XML + " in {}",
-                                DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+            Map<String, Properties> sites = ((SitesValidatorResult) sitesValidator.getResult()).getSitesProperties();
+            for (String siteKeyInImport : sites.keySet()) {
+                // Only the first site returned is mapped (if its not the systemsite, which is always the same key)
+                if (!"systemsite".equals(siteKeyInImport) && !"systemsite".equals(siteKey)) {
+                    // Map to the new sitekey
+                    if (!siteKeyInImport.equals(siteKey)) {
+                        logger.info("Mapping siteKey from import XML: {} to site node: {}", siteKeyInImport, siteKey);
+                        pathMapping.put("/sites/" + siteKeyInImport + "/", "/sites/" + siteKey + "/");
                     }
                     break;
                 }
-                zis.closeEntry();
             }
-        } finally {
-            closeInputStream(zis);
-        }
 
-        importZip(null, file, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, Sets.newHashSet(USERS_XML, CATEGORIES_XML), true);
-    }
-
-    private void importSitePropertiesIfPresentInArchive(Resource file, JahiaSite site, JCRSessionWrapper session, Map<String, Long> sizes) throws IOException {
-        if (sizes.containsKey(SITE_PROPERTIES)) {
-            ZipInputStream zis = getZipInputStream(file);
-            try {
-                ZipEntry zipentry;
-                while ((zipentry = zis.getNextEntry()) != null) {
-                    if (zipentry.getName().equals(SITE_PROPERTIES)) {
-                        importSiteProperties(zis, site, session);
-                        break;
-                    }
-                    zis.closeEntry();
-                }
-            } finally {
-                closeInputStream(zis);
+            if (logger.isInfoEnabled()) {
+                logger.info("Done checking siteKey mapping in {}",
+                        DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
             }
-        }
-    }
-
-    private List<String[]> importUsersIfPresentInArchive(Resource file, UsersImportHandler usersImportHandler, List<String[]> userProps, Map<String, Long> sizes) throws IOException {
-        if (sizes.containsKey(USERS_XML)) {
-            // Import users first
-            ZipInputStream zis = getZipInputStream(file);
-            try {
-                ZipEntry zipentry;
-                while ((zipentry = zis.getNextEntry()) != null) {
-                    if (zipentry.getName().equals(USERS_XML)) {
-                        userProps = importUsers(zis, usersImportHandler);
-                        break;
-                    }
-                }
-            } finally {
-                closeInputStream(zis);
-            }
-        }
-        return userProps;
+            return null;
+        });
     }
 
     private Map<String, String> getRegisteredModulesPathMapping(JCRSessionWrapper session) {
@@ -1565,7 +1519,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * Remove the list of files temporarily expanded to the given folder.
      *
      * @param expandedFolder path to the expanded folder on disk - if null, do nothing
+     * @deprecated use {@link ImportZipContext#close()} instead
      */
+    @Deprecated(forRemoval = true)
     public void cleanFilesList(File expandedFolder) {
         if (expandedFolder == null) {
             return;
@@ -1869,10 +1825,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    private List<String[]> importUsers(InputStream is, UsersImportHandler importHandler) {
-        return importUsers(is, importHandler, USERS_XML);
-    }
-
     private List<String[]> importUsers(InputStream is, UsersImportHandler importHandler, String fileName) {
         long timer = System.currentTimeMillis();
         logger.info("Start importing users");
@@ -2110,175 +2062,199 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      */
     @Override
     @SuppressWarnings("java:S3776")
-    public void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper)
-            throws IOException, RepositoryException {
-        long timer = System.currentTimeMillis();
-        if (filesToIgnore == null) {
-            filesToIgnore = Collections.<String>emptySet();
-        }
-        logger.info("Start importing file {} into path {} ", file, parentNodePath != null ? parentNodePath : "/");
-
-        Map<String, Long> sizes = new HashMap<>();
-        List<String> fileList = new ArrayList<>();
-
-        Map<String, List<String>> references = new HashMap<>();
-
-        File expandedFolder = getFileList(file, sizes, fileList, false);
-        try {
-            Map<String, String> pathMapping = getRegisteredModulesPathMapping(session);
-
-            boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
-
-            List<String> liveUuids = null;
-            if (importLive) {
-                // Import live content
-                ZipInputStream zis = getZipInputStream(file);
-                try {
-                    ZipEntry zipentry;
-                    while ((zipentry = zis.getNextEntry()) != null) {
-                        String name = zipentry.getName();
-                        if (name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name)) {
-                            long timerLive = System.currentTimeMillis();
-                            logger.info("Start importing " + LIVE_REPOSITORY_XML);
-
-                            final DocumentViewImportHandler documentViewImportHandler = getDocumentViewImportHandlerForLiveWorkspace(parentNodePath, file, rootBehaviour, session, fileList, references, zis);
-
-                            if (rootBehaviour == DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME) {
-                                // Use path mapping to get new name
-                                rootBehaviour = DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE;
-                            }
-
-                            logger.debug("Resolving cross-references for " + LIVE_REPOSITORY_XML);
-
-                            ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper, true);
-
-                            logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
-
-                            session.save(JCRObservationManager.IMPORT);
-
-                            liveUuids = documentViewImportHandler.getUuids();
-
-                            logger.debug("Publishing...");
-
-                            final JCRPublicationService publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
-                            final List<String> toPublish = documentViewImportHandler.getUuids();
-
-                            JCRObservationManager.doWithOperationType(null, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
-                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                    publicationService.publish(toPublish, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, false, null);
-                                    return null;
-                                }
-                            });
-
-                            logger.debug("publishing done");
-
-                            String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
-                            JCRVersionService.getInstance().addVersionLabel(toPublish, label, Constants.LIVE_WORKSPACE);
-
-                            logger.info("Done importing " + LIVE_REPOSITORY_XML + " in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerLive));
-
-                            break;
-                        }
-                        zis.closeEntry();
-
-                    }
-                } catch (RepositoryException e) {
-                    throw e;
-                } catch (Exception e) {
-                    logger.error("Cannot import", e);
-                } finally {
-                    closeInputStream(zis);
-                }
-            }
-
-            importRepositoryContent(parentNodePath, file, rootBehaviour, session, filesToIgnore, fileList, references, importLive, liveUuids);
-
-            // during import/export, never try to resolve the references between templates and site.
-            resolveReferences(session, useReferenceKeeper, references);
-
-            if (importLive) {
-                importUserGeneratedContent(parentNodePath, file, rootBehaviour, fileList, pathMapping);
-            }
-        } finally {
-            cleanFilesList(expandedFolder);
-        }
-        if (logger.isInfoEnabled()) {
-            logger.info("Done importing file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+    public void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session,
+                          Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException {
+        try (ImportZipContext importZipContext = new ImportZipContext(file)) {
+            importZip(parentNodePath, importZipContext, rootBehaviour, session, filesToIgnore, useReferenceKeeper);
         }
     }
 
-    private void importUserGeneratedContent(String parentNodePath, Resource file, int rootBehaviour, List<String> fileList, Map<String, String> pathMapping) throws IOException {
-        // Import user generated content
-        ZipInputStream zis = getZipInputStream(file);
-        try {
-            ZipEntry zipentry;
-            while ((zipentry = zis.getNextEntry()) != null) {
-                String name = zipentry.getName();
-                if (name.equals(LIVE_REPOSITORY_XML) && jcrStoreService.getSessionFactory().getCurrentUser() != null) {
-                    long timerUGC = System.currentTimeMillis();
-                    logger.info("Start importing user generated content");
-                    JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live").disableSessionCache();
-                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(
-                            liveSession, parentNodePath, file, fileList);
-
-                    documentViewImportHandler.setImportUserGeneratedContent(true);
-                    documentViewImportHandler.setRootBehavior(rootBehaviour);
-                    documentViewImportHandler.setBaseFilesPath("/live-content");
-                    documentViewImportHandler.setAttributeProcessors(attributeProcessors);
-                    liveSession.getPathMapping().putAll(pathMapping);
-                    handleImport(zis, documentViewImportHandler, LIVE_REPOSITORY_XML);
-
-                    logger.debug("Saving JCR session for UGC");
-
-                    liveSession.save(JCRObservationManager.IMPORT);
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Done importing user generated content in {}",
-                                DateUtils.formatDurationWords(System.currentTimeMillis() - timerUGC));
-                    }
-                    break;
-                }
-                zis.closeEntry();
-
-            }
-        } catch (Exception e) {
-            logger.error("Cannot import", e);
-        } finally {
-            closeInputStream(zis);
+    /**
+     * Imports the content of the specified import context.
+     * Convenient as it let you run multiple import on the same resource with only one already built zip context.
+     * (Don't forget to call {@link ImportExportBaseService.ImportZipContext#close()} after you are done with the import)
+     *
+     * In order to initialize the import context, you can use {@link ImportZipContext#ImportZipContext(Resource)}
+     *
+     * @param parentNodePath the node to use as a parent for the import
+     * @param importZipContext the context for the import
+     * @param rootBehaviour  the root behaviour (see {@link DocumentViewImportHandler})
+     * @param session        current JCR session
+     * @param filesToIgnore  set of files to be skipped
+     * @throws IOException         in case of an I/O operation error
+     * @throws RepositoryException in case of a JCR-related error
+     */
+    @SuppressWarnings("java:S3776")
+    public void importZip(String parentNodePath, ImportZipContext importZipContext, int rootBehaviour, final JCRSessionWrapper session,
+                           Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException {
+        long timer = System.currentTimeMillis();
+        if (filesToIgnore == null) {
+            filesToIgnore = Collections.emptySet();
         }
+        logger.info("Start importing file {} into path {} ", importZipContext.getArchive(), parentNodePath != null ? parentNodePath : "/");
+
+        Map<String, List<String>> references = new HashMap<>();
+        Map<String, String> pathMapping = getRegisteredModulesPathMapping(session);
+
+        boolean importLive = !filesToIgnore.contains(LIVE_REPOSITORY_XML) &&
+                importZipContext.getLoadedImportDescriptorNames().contains(LIVE_REPOSITORY_XML);
+        List<String> liveUuids = null;
+        if (importLive) {
+            // Import live content
+            int finalRootBehaviour = rootBehaviour;
+            liveUuids = importZipContext.executeWithImportDescriptors(Collections.singleton(LIVE_REPOSITORY_XML), (inputStream, name) -> {
+                long timerLive = System.currentTimeMillis();
+
+                logger.info("Start importing " + LIVE_REPOSITORY_XML);
+                final List<String> importedLiveUUIDs = importLiveRepository(parentNodePath, importZipContext, finalRootBehaviour,
+                        session, references, inputStream);
+
+                logger.debug("Resolving cross-references for " + LIVE_REPOSITORY_XML);
+                ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper, true);
+
+                logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
+                session.save(JCRObservationManager.IMPORT);
+
+                logger.debug("Publishing...");
+                final JCRPublicationService publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
+                JCRObservationManager.doWithOperationType(null, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        publicationService.publish(importedLiveUUIDs, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, false, null);
+                        return null;
+                    }
+                });
+
+                logger.debug("publishing done, adding version labels...");
+                String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(Calendar.getInstance().getTime());
+                JCRVersionService.getInstance().addVersionLabel(importedLiveUUIDs, label, Constants.LIVE_WORKSPACE);
+
+                logger.info("Done importing " + LIVE_REPOSITORY_XML + " in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerLive));
+                return importedLiveUUIDs;
+            });
+        }
+
+        if (importLive) {
+            if (rootBehaviour == DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME) {
+                // Use path mapping to get new name
+                rootBehaviour = DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE;
+            }
+        }
+
+        importDefaultRepository(parentNodePath, importZipContext, rootBehaviour, session, filesToIgnore, references, importLive, liveUuids);
+
+        // during import/export, never try to resolve the references between templates and site.
+        resolveReferences(session, useReferenceKeeper, references);
+
+        if (importLive) {
+            importUserGeneratedContent(parentNodePath, importZipContext, rootBehaviour, pathMapping);
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("Done importing file {} in {}", importZipContext.getArchive(), DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+        }
+    }
+
+    private void importUserGeneratedContent(String parentNodePath, ImportZipContext importZipContext, int rootBehaviour, Map<String, String> pathMapping) throws IOException, RepositoryException {
+        if (jcrStoreService.getSessionFactory().getCurrentUser() == null) {
+            // No user session, cannot import UGC
+            return;
+        }
+
+        // Import user generated content
+        importZipContext.executeWithImportDescriptors(Collections.singleton(LIVE_REPOSITORY_XML), (inputStream, name) -> {
+            long timerUGC = System.currentTimeMillis();
+            logger.info("Start importing user generated content");
+            JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live").disableSessionCache();
+            DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(
+                    liveSession, parentNodePath, importZipContext.getArchive(), importZipContext.getLoadedContentFilePaths());
+
+            documentViewImportHandler.setImportUserGeneratedContent(true);
+            documentViewImportHandler.setRootBehavior(rootBehaviour);
+            documentViewImportHandler.setBaseFilesPath("/live-content");
+            documentViewImportHandler.setAttributeProcessors(attributeProcessors);
+            liveSession.getPathMapping().putAll(pathMapping);
+            handleImport(inputStream, documentViewImportHandler, LIVE_REPOSITORY_XML);
+
+            logger.debug("Saving JCR session for UGC");
+            liveSession.save(JCRObservationManager.IMPORT);
+            if (logger.isInfoEnabled()) {
+                logger.info("Done importing user generated content in {}",
+                        DateUtils.formatDurationWords(System.currentTimeMillis() - timerUGC));
+            }
+            return null;
+        });
     }
 
     @SuppressWarnings({"java:S107", "java:S3776"})
-    private void importRepositoryContent(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session,
-                                         Set<String> filesToIgnore, List<String> fileList, Map<String, List<String>> references,
+    private void importDefaultRepository(String parentNodePath, ImportZipContext importZipContext, int rootBehaviour, JCRSessionWrapper session,
+                                         Set<String> filesToIgnore, Map<String, List<String>> references,
                                          boolean livePreviouslyImported, List<String> liveUuids) throws IOException, RepositoryException {
-        // Import repository content
-        ZipInputStream zis = getZipInputStream(file);
-        try {
-            ZipEntry zipentry;
-            while ((zipentry = zis.getNextEntry()) != null) {
-                String name = zipentry.getName();
-                if (name.equals(REPOSITORY_XML) && !filesToIgnore.contains(name)) {
-                    importRepositoryXMLFile(parentNodePath, file, rootBehaviour, session, fileList, references, zis, livePreviouslyImported, liveUuids);
-                } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name) && !name.contains("/")) {
-                    long timerOther = System.currentTimeMillis();
-                    logger.info("Start importing {}", name);
-                    String thisPath = (parentNodePath != null ? getParentNodePath(parentNodePath) : "") + StringUtils.substringBefore(name, ".xml");
-                    importXML(thisPath, zis, rootBehaviour, references, session);
-                    logger.debug("Saving JCR session for {}", name);
-                    session.save(JCRObservationManager.IMPORT);
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Done importing {} in {}", name, DateUtils.formatDurationWords(System.currentTimeMillis() - timerOther));
+
+        importZipContext.executeWithImportDescriptors(importZipContext.getLoadedImportDescriptorNames(), (inputStream, name) -> {
+            if (name.equals(REPOSITORY_XML) && !filesToIgnore.contains(name)) {
+                long timerDefault = System.currentTimeMillis();
+                logger.info("Start importing " + REPOSITORY_XML);
+                DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath,
+                        importZipContext.getArchive(), importZipContext.getLoadedContentFilePaths());
+                if (livePreviouslyImported) {
+                    documentViewImportHandler.cleanPreviousLiveImport();
+                }
+                documentViewImportHandler.setReferences(references);
+                documentViewImportHandler.setRootBehavior(rootBehaviour);
+                documentViewImportHandler.setAttributeProcessors(attributeProcessors);
+                handleImport(inputStream, documentViewImportHandler, REPOSITORY_XML);
+
+                if (livePreviouslyImported && liveUuids != null) {
+                    // Using an hashset to remove the UUIDs (optimization)
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(String.format("Removing %s uuids from %s uuids", documentViewImportHandler.getUuidsSet().size(), liveUuids.size()));
+                    }
+                    liveUuids.removeAll(documentViewImportHandler.getUuidsSet());
+                    for (int i = liveUuids.size() - 1; i >= 0; i--) {
+                        // Uuids have been imported in live but not in default : need to be removed
+                        final String uuid = liveUuids.get(i);
+                        try {
+                            JCRNodeWrapper nodeToRemove = session.getNodeByIdentifier(uuid);
+                            nodeToRemove.remove();
+                        } catch (ItemNotFoundException | InvalidItemStateException ex) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Node to remove has already been removed", ex);
+                            }
+                        }
+
+                        // Refreshing the session to prevent an high Jahia Node Cache Load
+                        if (i % maxBatch == 0) {
+                            session.save(JCRObservationManager.IMPORT);
+                            session.refresh(false);
+                        }
                     }
                 }
-                zis.closeEntry();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Saving JCR session for {}", REPOSITORY_XML);
+                }
+                session.save(JCRObservationManager.IMPORT);
+                // Refreshing the session to prevent an high Jahia Node Cache Load
+                session.refresh(false);
+                if (logger.isInfoEnabled()) {
+                    logger.info("Done importing {} in {}", REPOSITORY_XML, DateUtils.formatDurationWords(System.currentTimeMillis() - timerDefault));
+                }
+            } else if (name.endsWith(".xml") &&
+                    !name.equals(REPOSITORY_XML) &&
+                    !name.equals(LIVE_REPOSITORY_XML) &&
+                    !filesToIgnore.contains(name)) {
+                // For any other descriptors
+                long timerOther = System.currentTimeMillis();
+                logger.info("Start importing {}", name);
+                String thisPath = (parentNodePath != null ? getParentNodePath(parentNodePath) : "") + StringUtils.substringBefore(name, ".xml");
+                importXML(thisPath, inputStream, rootBehaviour, references, session);
+                logger.debug("Saving JCR session for {}", name);
+                session.save(JCRObservationManager.IMPORT);
+                session.refresh(false);
+                if (logger.isInfoEnabled()) {
+                    logger.info("Done importing {} in {}", name, DateUtils.formatDurationWords(System.currentTimeMillis() - timerOther));
+                }
             }
-        } catch (RepositoryException e) {
-            throw e;
-        } catch (Exception e) {
-            logger.error("Cannot import", e);
-        } finally {
-            closeInputStream(zis);
-        }
+            return null;
+        });
     }
 
     private void resolveReferences(JCRSessionWrapper session, boolean useReferenceKeeper, Map<String, List<String>> references) throws RepositoryException {
@@ -2289,71 +2265,24 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         session.save(JCRObservationManager.IMPORT);
     }
 
-    @SuppressWarnings("java:S107")
-    private void importRepositoryXMLFile(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session,
-                                         List<String> fileList, Map<String, List<String>> references, ZipInputStream zis,
-                                         boolean livePreviouslyImported, List<String> liveUuids) throws IOException, RepositoryException {
-        long timerDefault = System.currentTimeMillis();
-        logger.info("Start importing " + REPOSITORY_XML);
-        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
-        if (livePreviouslyImported) {
-            documentViewImportHandler.cleanPreviousLiveImport();
-        }
-        documentViewImportHandler.setReferences(references);
-        documentViewImportHandler.setRootBehavior(rootBehaviour);
-        documentViewImportHandler.setAttributeProcessors(attributeProcessors);
-        handleImport(zis, documentViewImportHandler, REPOSITORY_XML);
+    private List<String> importLiveRepository(String parentNodePath, ImportZipContext importZipContext,
+                                              int rootBehaviour, JCRSessionWrapper session, Map<String,
+            List<String>> references, InputStream is) throws IOException, RepositoryException {
 
-        if (livePreviouslyImported && liveUuids != null) {
-            // Using an hashset to remove the UUIDs (optimization)
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.format("Removing %s uuids from %s uuids", documentViewImportHandler.getUuidsSet().size(), liveUuids.size()));
-            }
-            liveUuids.removeAll(documentViewImportHandler.getUuidsSet());
-            for (int i = liveUuids.size() - 1; i >= 0; i--) {
-                // Uuids have been imported in live but not in default : need to be removed
-                final String uuid = liveUuids.get(i);
-                try {
-                    JCRNodeWrapper nodeToRemove = session.getNodeByIdentifier(uuid);
-                    nodeToRemove.remove();
-                } catch (ItemNotFoundException | InvalidItemStateException ex) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Node to remove has already been removed", ex);
-                    }
-                }
-
-                // Refreshing the session to prevent an high Jahia Node Cache Load
-                if (i % maxBatch == 0) {
-                    session.save(JCRObservationManager.IMPORT);
-                    session.refresh(false);
-                }
-            }
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Saving JCR session for {}", REPOSITORY_XML);
-        }
-        session.save(JCRObservationManager.IMPORT);
-        // Refreshing the session to prevent an high Jahia Node Cache Load
-        session.refresh(false);
-        if (logger.isInfoEnabled()) {
-            logger.info("Done importing {} in {}", REPOSITORY_XML, DateUtils.formatDurationWords(System.currentTimeMillis() - timerDefault));
-        }
-    }
-
-    private DocumentViewImportHandler getDocumentViewImportHandlerForLiveWorkspace(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, List<String> fileList, Map<String, List<String>> references, ZipInputStream zis) throws IOException, RepositoryException {
-        final DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
+        final DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath,
+                importZipContext.getArchive(), importZipContext.getLoadedContentFilePaths());
 
         documentViewImportHandler.setReferences(references);
         documentViewImportHandler.setRootBehavior(rootBehaviour);
         documentViewImportHandler.setBaseFilesPath("/live-content");
         documentViewImportHandler.setAttributeProcessors(attributeProcessors);
         documentViewImportHandler.configureToRestorePublicationStatuses();
-        handleImport(zis, documentViewImportHandler, LIVE_REPOSITORY_XML);
+        handleImport(is, documentViewImportHandler, LIVE_REPOSITORY_XML);
 
         logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
-
         session.save(JCRObservationManager.IMPORT);
-        return documentViewImportHandler;
+
+        return documentViewImportHandler.getUuids();
     }
 
     private String getParentNodePath(String parentNodePath) {
@@ -2369,12 +2298,26 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @param file       ZIP file with content to be imported
      * @param sizes      collection holding sizes of uncompressed file elements
      * @param fileList   collection into which the files from ZIP file will be added
-     * @param forceClean
      * @return null if files were not expanded to disk (it is just optional), otherwise path to temporary local folder
      * @throws IOException
+     *
+     * @deprecated use {@link ImportZipContext#ImportZipContext(Resource)} instead
+     *          It used to calculate the size of uncompressed files in the zip file, but this information was never really used.
+     *          This method risk to be removed in the next major release.
      */
+    @Deprecated(forRemoval = true)
     public File getFileList(Resource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {
-        File expandedFolder = getExpandedFolder(file, forceClean);
+        File newlyExpandedFolder = null;
+        if (settingsBean.isExpandImportedFilesOnDisk()) {
+            final File expandFolder = getExpandFolder(file, settingsBean.getExpandImportedFilesOnDiskPath());
+            if (forceClean) {
+                FileUtils.deleteDirectory(expandFolder);
+            }
+            if (!expandFolder.exists()) {
+                FileUtils.forceMkdir(expandFolder);
+                newlyExpandedFolder = expandFolder;
+            }
+        }
         ZipInputStream zis = getZipInputStream(file);
         try {
             while (true) {
@@ -2383,10 +2326,20 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     break;
                 }
                 String name = zipentry.getName().replace('\\', '/');
-                if (expandedFolder != null) {
-                    expandZipEntryInExpandedFolderTarget(expandedFolder, zis, zipentry, name);
+                if (newlyExpandedFolder != null) {
+                    expandZipEntryInExpandedFolderTarget(newlyExpandedFolder, zis, zipentry, name);
                 }
-                storeFileSizeInSizesMap(sizes, zis, zipentry, name);
+                if (name.endsWith(".xml")) {
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(zis))) {
+                        long i = 0;
+                        while (br.readLine() != null) {
+                            i++;
+                        }
+                        sizes.put(name, i);
+                    }
+                } else {
+                    sizes.put(name, zipentry.getSize());
+                }
                 if (name.contains("/")) {
                     fileList.add("/" + name);
                 }
@@ -2395,39 +2348,10 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         } finally {
             closeInputStream(zis);
         }
-        return expandedFolder;
+        return newlyExpandedFolder;
     }
 
-    private void storeFileSizeInSizesMap(Map<String, Long> sizes, ZipInputStream zis, ZipEntry zipentry, String name) throws IOException {
-        if (name.endsWith(".xml")) {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(zis))) {
-                long i = 0;
-                while (br.readLine() != null) {
-                    i++;
-                }
-                sizes.put(name, i);
-            }
-        } else {
-            sizes.put(name, zipentry.getSize());
-        }
-    }
-
-    private File getExpandedFolder(Resource file, boolean forceClean) throws IOException {
-        File expandedFolder = null;
-        if (expandImportedFilesOnDisk) {
-            final File expandFolder = getExpandFolder(file, expandImportedFilesOnDiskPath);
-            if (forceClean) {
-                FileUtils.deleteDirectory(expandFolder);
-            }
-            if (!expandFolder.exists()) {
-                FileUtils.forceMkdir(expandFolder);
-                expandedFolder = expandFolder;
-            }
-        }
-        return expandedFolder;
-    }
-
-    private void expandZipEntryInExpandedFolderTarget(File expandedFolder, ZipInputStream zis, ZipEntry zipentry, String name) throws IOException {
+    private static void expandZipEntryInExpandedFolderTarget(File expandedFolder, ZipInputStream zis, ZipEntry zipentry, String name) throws IOException {
         final File importedFile = new File(expandedFolder + File.separator + name);
         if (!importedFile.getCanonicalPath().startsWith(expandedFolder.getCanonicalPath() + File.separator)) {
             throw new IOException("Zip entry is outside of the 'expandedFolder' directory. Potential Zip file attack averted.");
@@ -2453,7 +2377,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         return new File(expandImportedFilesOnDiskPath + File.separator + "import-" + Base64.getEncoder().encodeToString(file.getURL().toString().getBytes(StandardCharsets.UTF_8)));
     }
 
-    private void closeInputStream(ZipInputStream zis) throws IOException {
+    private static void closeInputStream(ZipInputStream zis) throws IOException {
         if (zis instanceof NoCloseZipInputStream) {
             ((NoCloseZipInputStream) zis).reallyClose();
         } else {
@@ -2461,7 +2385,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    private ZipInputStream getZipInputStream(Resource file) throws IOException {
+    private static ZipInputStream getZipInputStream(Resource file) throws IOException {
         ZipInputStream zis;
         if (!file.isReadable() && file instanceof FileSystemResource) {
             zis = new DirectoryZipInputStream(file.getFile());
@@ -2635,6 +2559,153 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         @Override
         public synchronized int hashCode() {
             return Objects.hash(super.hashCode(), keys);
+        }
+    }
+
+    private interface ImportDescriptorCallback<T> {
+        T doWithDescriptor(InputStream is, String name) throws RepositoryException, IOException, JahiaException;
+    }
+
+    /**
+     * At the very beginning of the import process, we initialize the import ZIP context.
+     * It's very useful to get the list of files and import descriptors in the ZIP.
+     * And do not calculate things twice.
+     */
+    public static class ImportZipContext implements Closeable {
+        private final List<String> loadedContentFilePaths = new ArrayList<>();
+        private final List<String> loadedImportDescriptorNames = new ArrayList<>();
+        private File expandedFolder = null;
+        private final Resource archive;
+
+        public ImportZipContext(Resource archive) throws IOException {
+            this.archive = archive;
+            logger.info("Building import context, by analyzing file {}", archive);
+            long timer = System.currentTimeMillis();
+            init();
+            if (logger.isInfoEnabled()) {
+                logger.info("Done building and analyzing import file {} in {}", archive, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+            }
+        }
+
+        private void init() throws IOException {
+            if (SettingsBean.getInstance().isExpandImportedFilesOnDisk()) {
+                this.expandedFolder = getExpandFolder(archive, SettingsBean.getInstance().getExpandImportedFilesOnDiskPath());
+                FileUtils.deleteDirectory(expandedFolder);
+                FileUtils.forceMkdir(expandedFolder);
+                logger.info("Expanding zip to file system folder: {}", expandedFolder);
+            }
+
+            ZipInputStream zis = getZipInputStream(archive);
+            try {
+                while (true) {
+                    ZipEntry zipentry = zis.getNextEntry();
+                    if (zipentry == null) {
+                        break;
+                    }
+                    String name = zipentry.getName().replace('\\', '/');
+                    if (expandedFolder != null) {
+                        expandZipEntryInExpandedFolderTarget(expandedFolder, zis, zipentry, name);
+                    }
+                    if (name.contains("/")) {
+                        // it's either a /content/... or /live-content/... file
+                        loadedContentFilePaths.add("/" + name);
+                    } else {
+                        // it's a root file (e.g. repository.xml, live-repository.xml, etc.)
+                        loadedImportDescriptorNames.add(name);
+                    }
+                    zis.closeEntry();
+                }
+            } finally {
+                closeInputStream(zis);
+            }
+        }
+
+        /**
+         * Gets the list of files in the ZIP file.
+         * Likely to include /content/... and /live-content/... files.
+         * Will not include root files. (e.g. repository.xml, live-repository.xml, etc.) (use getRootFiles() for that)
+         * @return the list of files
+         */
+        public List<String> getLoadedContentFilePaths() {
+            return loadedContentFilePaths;
+        }
+
+        /**
+         * Gets the list of import descriptors in the ZIP file.
+         * Likely to include repository.xml, live-repository.xml, etc.
+         * Will not include /content/... and /live-content/... files. (use getFiles() for that)
+         * @return the list of root files
+         */
+        public List<String> getLoadedImportDescriptorNames() {
+            return loadedImportDescriptorNames;
+        }
+
+        /**
+         * Gets the ZIP file resource.
+         * @return the ZIP file resource
+         */
+        public Resource getArchive() {
+            return archive;
+        }
+
+        /**
+         * Cleans the resources.
+         * Likely to be called at the end of the import process.
+         */
+        public void close() {
+            if (expandedFolder != null) {
+                long timer = System.currentTimeMillis();
+                logger.info("Start cleaning files expanded to {}", expandedFolder);
+                try {
+                    FileUtils.deleteDirectory(expandedFolder);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+                if (logger.isInfoEnabled()) {
+                    logger.info("Done file cleanup in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+                }
+            }
+        }
+
+        private <X> X executeWithImportDescriptors(Collection<String> descriptors, ImportDescriptorCallback<X> callback) throws RepositoryException, IOException {
+            if (descriptors == null || descriptors.isEmpty() || callback == null ||
+                    descriptors.stream().noneMatch(loadedImportDescriptorNames::contains)) {
+                // Skip if no descriptors or no matching descriptors contained in the ZIP
+                return null;
+            }
+
+            // if the files is already expanded to disk, we can directly access it
+            if (expandedFolder != null) {
+                for (String descriptor : descriptors) {
+                    if (loadedImportDescriptorNames.contains(descriptor)) {
+                        try (InputStream is = FileUtils.openInputStream(new File(expandedFolder.getPath() + File.separator + descriptor))) {
+                            return callback.doWithDescriptor(is, descriptor);
+                        } catch (Exception e) {
+                            logger.error("Error while trying to process resource: " + descriptor + ", from expanded file system", e);
+                        }
+                    }
+                }
+            } else {
+                // otherwise, we need to read the files from the zip input stream
+                ZipInputStream zis = getZipInputStream(archive);
+                try {
+                    ZipEntry zipentry;
+                    while ((zipentry = zis.getNextEntry()) != null) {
+                        String name = zipentry.getName();
+                        if (descriptors.contains(name)) {
+                            return callback.doWithDescriptor(zis, name);
+                        }
+                        zis.closeEntry();
+                    }
+                } catch (RepositoryException e) {
+                    throw e;
+                } catch (Exception e) {
+                    logger.error("Error while trying to process resources: " + StringUtils.join(descriptors, ", ") + ", from zip input stream", e);
+                } finally {
+                    closeInputStream(zis);
+                }
+            }
+            return null;
         }
     }
 }

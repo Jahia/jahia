@@ -217,12 +217,28 @@ public interface ImportExportService {
      * @param rootBehaviour Ignore root xml element - can be used to import multiple nodes in the same node, using one single
      *          import
      * @param filesToIgnore Files to ignore
-     * @param references References map
      * @throws IOException
      * @throws RepositoryException in case of JCR-related errors
      * @throws JahiaException
      */
     void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
+
+    /**
+     * Imports the content of the specified import context.
+     * Convenient as it let you run multiple import on the same resource with only one already built zip context.
+     * (Don't forget to call {@link ImportExportBaseService.ImportZipContext#close()} after you are done with the import)
+     *
+     * In order to initialize the import context, you can use {@link ImportExportBaseService.ImportZipContext#ImportZipContext(Resource)}
+     *
+     * @param parentNodePath the node to use as a parent for the import
+     * @param importZipContext the context for the import
+     * @param rootBehaviour  the root behaviour (see {@link DocumentViewImportHandler})
+     * @param session        current JCR session
+     * @param filesToIgnore  set of files to be skipped
+     * @throws IOException         in case of an I/O operation error
+     * @throws RepositoryException in case of a JCR-related error
+     */
+    void importZip(String parentNodePath, ImportExportBaseService.ImportZipContext importZipContext, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
 
     /**
      * Validates a JCR content import file in document format and returns expected failures.

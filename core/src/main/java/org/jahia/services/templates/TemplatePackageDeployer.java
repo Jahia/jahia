@@ -135,33 +135,28 @@ public class TemplatePackageDeployer {
                 } else if (imp.toLowerCase().contains("/importsite")) {
                     importExportService.importSiteZip(importFile, session);
                 } else {
-                    List<String> fileList = new ArrayList<>();
-                    Map<String, Long> sizes = new HashMap<>();
-                    File expandedFolder = importExportService.getFileList(importFile, sizes, fileList, true);
-                    try {
-                        importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session,
+                    try (ImportExportBaseService.ImportZipContext importZipContext = new ImportExportBaseService.ImportZipContext(importFile)) {
+                        importExportService.importZip(targetPath, importZipContext, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session,
                                 new HashSet<>(Arrays.asList(PERMISSIONS_XML, ROLES_XML)), false);
                         if (targetPath.equals("/")) {
-                            if (sizes.containsKey(PERMISSIONS_XML)) {
-                                Set<String> s = new HashSet<>(sizes.keySet());
-                                s.remove(PERMISSIONS_XML);
+                            if (importZipContext.getLoadedImportDescriptorNames().contains(PERMISSIONS_XML)) {
+                                Set<String> ignoreAllButNotPermissions = new HashSet<>(importZipContext.getLoadedImportDescriptorNames());
+                                ignoreAllButNotPermissions.remove(PERMISSIONS_XML);
                                 if (!session.itemExists(MODULES + "/" + aPackage.getIdWithVersion() + "/permissions")) {
                                     session.getNode(MODULES + "/" + aPackage.getIdWithVersion()).addNode("permissions", "jnt:permission");
                                 }
-                                importExportService.importZip(MODULES + "/" + aPackage.getIdWithVersion(), importFile,
-                                        DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
+                                importExportService.importZip(MODULES + "/" + aPackage.getIdWithVersion(), importZipContext,
+                                        DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, ignoreAllButNotPermissions, false);
                             }
-                            if (sizes.containsKey(ROLES_XML)) {
-                                Set<String> s = new HashSet<>(sizes.keySet());
-                                s.remove(ROLES_XML);
+                            if (importZipContext.getLoadedImportDescriptorNames().contains(ROLES_XML)) {
+                                Set<String> ignoreAllButNotRoles = new HashSet<>(importZipContext.getLoadedImportDescriptorNames());
+                                ignoreAllButNotRoles.remove(ROLES_XML);
                                 session.getPathMapping().put("/permissions", MODULES + "/" + aPackage.getIdWithVersion() + "/permissions");
-                                importExportService.importZip("/", importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s,
-                                        false);
+                                importExportService.importZip("/", importZipContext, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE,
+                                        session, ignoreAllButNotRoles, false);
                                 session.getPathMapping().remove("/permissions");
                             }
                         }
-                    } finally {
-                        importExportService.cleanFilesList(expandedFolder);
                     }
                 }
             } catch (IOException e) {

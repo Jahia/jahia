@@ -124,7 +124,7 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
         if (validators != null) {
             this.validators = validators;
         } else {
-            validators = Collections.emptyList();
+            this.validators = Collections.emptyList();
         }
         initValidators();
     }

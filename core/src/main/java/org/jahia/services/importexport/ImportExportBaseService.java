@@ -1180,7 +1180,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             // Import users first
             if (importZipContext.getLoadedImportDescriptorNames().contains(USERS_XML)) {
                 importZipContext.executeWithImportDescriptors(Collections.singleton(USERS_XML),
-                        (inputStream, name) -> importUsers(inputStream, usersImportHandler, USERS_XML));
+                        (inputStream, name, previousDescriptorResult) -> importUsers(inputStream, usersImportHandler, USERS_XML));
             }
 
             // Check if it is an 5.x or 6.1 import :
@@ -1190,7 +1190,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
             // import site properties
             if (importZipContext.getLoadedImportDescriptorNames().contains(SITE_PROPERTIES)) {
-                importZipContext.executeWithImportDescriptors(Collections.singleton(SITE_PROPERTIES), (inputStream, name) -> {
+                importZipContext.executeWithImportDescriptors(Collections.singleton(SITE_PROPERTIES), (inputStream, name, previousDescriptorResult) -> {
                     importSiteProperties(inputStream, site, session);
                     return null;
                 });
@@ -1341,7 +1341,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         logger.info("Check if site node: {} need mapping with siteKey in repository.xml", siteKey);
         long timer = System.currentTimeMillis();
 
-        importZipContext.executeWithImportDescriptors(Collections.singleton(REPOSITORY_XML), (inputStream, name) -> {
+        importZipContext.executeWithImportDescriptors(Collections.singleton(REPOSITORY_XML), (inputStream, name, previousDescriptorResult) -> {
             DocumentViewValidationHandler h = new DocumentViewValidationHandler();
             h.setSession(session);
             SitesValidator sitesValidator = new SitesValidator();
@@ -2102,7 +2102,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         if (importLive) {
             // Import live content
             int finalRootBehaviour = rootBehaviour;
-            liveUuids = importZipContext.executeWithImportDescriptors(Collections.singleton(LIVE_REPOSITORY_XML), (inputStream, name) -> {
+            liveUuids = importZipContext.executeWithImportDescriptors(Collections.singleton(LIVE_REPOSITORY_XML), (inputStream, name, previousDescriptorResult) -> {
                 long timerLive = System.currentTimeMillis();
 
                 logger.info("Start importing " + LIVE_REPOSITORY_XML);
@@ -2131,9 +2131,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 logger.info("Done importing " + LIVE_REPOSITORY_XML + " in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerLive));
                 return importedLiveUUIDs;
             });
-        }
 
-        if (importLive) {
+            // Override root behaviour for next import operations.
             if (rootBehaviour == DocumentViewImportHandler.ROOT_BEHAVIOUR_RENAME) {
                 // Use path mapping to get new name
                 rootBehaviour = DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE;
@@ -2160,7 +2159,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
 
         // Import user generated content
-        importZipContext.executeWithImportDescriptors(Collections.singleton(LIVE_REPOSITORY_XML), (inputStream, name) -> {
+        importZipContext.executeWithImportDescriptors(Collections.singleton(LIVE_REPOSITORY_XML), (inputStream, name, previousDescriptorResult) -> {
             long timerUGC = System.currentTimeMillis();
             logger.info("Start importing user generated content");
             JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live").disableSessionCache();
@@ -2189,7 +2188,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                                          Set<String> filesToIgnore, Map<String, List<String>> references,
                                          boolean livePreviouslyImported, List<String> liveUuids) throws IOException, RepositoryException {
 
-        importZipContext.executeWithImportDescriptors(importZipContext.getLoadedImportDescriptorNames(), (inputStream, name) -> {
+        importZipContext.executeWithImportDescriptors(importZipContext.getLoadedImportDescriptorNames(), (inputStream, name, previousDescriptorResult) -> {
             if (name.equals(REPOSITORY_XML) && !filesToIgnore.contains(name)) {
                 long timerDefault = System.currentTimeMillis();
                 logger.info("Start importing " + REPOSITORY_XML);
@@ -2563,7 +2562,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     private interface ImportDescriptorCallback<T> {
-        T doWithDescriptor(InputStream is, String name) throws RepositoryException, IOException, JahiaException;
+        T doWithDescriptor(InputStream is, String name, T previousDescriptorResult) throws RepositoryException, IOException, JahiaException;
     }
 
     /**
@@ -2675,11 +2674,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             }
 
             // if the files is already expanded to disk, we can directly access it
+            X result = null;
             if (expandedFolder != null) {
                 for (String descriptor : descriptors) {
                     if (loadedImportDescriptorNames.contains(descriptor)) {
                         try (InputStream is = FileUtils.openInputStream(new File(expandedFolder.getPath() + File.separator + descriptor))) {
-                            return callback.doWithDescriptor(is, descriptor);
+                            result = callback.doWithDescriptor(is, descriptor, result);
                         } catch (Exception e) {
                             logger.error("Error while trying to process resource: " + descriptor + ", from expanded file system", e);
                         }
@@ -2693,7 +2693,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     while ((zipentry = zis.getNextEntry()) != null) {
                         String name = zipentry.getName();
                         if (descriptors.contains(name)) {
-                            return callback.doWithDescriptor(zis, name);
+                            result = callback.doWithDescriptor(zis, name, result);
                         }
                         zis.closeEntry();
                     }
@@ -2705,7 +2705,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     closeInputStream(zis);
                 }
             }
-            return null;
+
+            return result;
         }
     }
 }

@@ -38,7 +38,7 @@ RUN set -ux; \
     if [ -z ${GRAALVM_ARCH+x} ]; then \
         GRAALVM_DL_ARCH="$(uname -m)" && \
         if [ "$GRAALVM_DL_ARCH" = "x86_64" ]; then \
-            GRAALVM_DL_ARCH="amd64" ;\
+            GRAALVM_DL_ARCH="x64" ;\
         else  \
             GRAALVM_DL_ARCH="aarch64" ; \
         fi ; \
@@ -46,7 +46,7 @@ RUN set -ux; \
         GRAALVM_DL_ARCH=$GRAALVM_ARCH ; \
     fi; \
     if [ -z ${GRAALVM_URL+x} ]; then \
-        GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java17-linux-${GRAALVM_DL_ARCH}-${GRAALVM_VERSION}.tar.gz ; \
+        GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAALVM_VERSION}/graalvm-community-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
     else  \
         GRAALVM_DL_URL = $GRAALVM_URL ; \
     fi ; \

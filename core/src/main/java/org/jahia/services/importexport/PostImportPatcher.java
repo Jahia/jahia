@@ -46,7 +46,9 @@ import org.jahia.services.sites.JahiaSite;
 
 /**
  * Wrapper on some patch(es) to be processed at the end of the import of a website exported in a legacy version.
+ * @deprecated never been used
  */
+@Deprecated(forRemoval = true)
 public interface PostImportPatcher {
 
     /**

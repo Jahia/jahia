@@ -194,7 +194,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     private List<XMLContentTransformer> xmlContentTransformers;
     private Map<String, Templates> xsltTemplates = new ConcurrentHashMap<>(2);
     private LegacyPidMappingTool legacyPidMappingTool = null;
-    private PostImportPatcher postImportPatcher = null;
 
     private ImportExportBaseService() {
     }
@@ -1156,6 +1155,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      *
      * @param file                      Zip file
      * @param site                      The new site where to import
+     *                                  (careful, site can be null OR using systemSite for example users.zip import)
      * @param infos                     site infos
      * @param legacyMappingFilePath     path to the legacy mappings
      * @param legacyDefinitionsFilePath path for the legacy definitions
@@ -1189,7 +1189,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             }
 
             // import site properties
-            if (importZipContext.getLoadedImportDescriptorNames().contains(SITE_PROPERTIES)) {
+            if (importZipContext.getLoadedImportDescriptorNames().contains(SITE_PROPERTIES) && site != null &&
+                    !site.getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
                 importZipContext.executeWithImportDescriptors(Collections.singleton(SITE_PROPERTIES), (inputStream, name, previousDescriptorResult) -> {
                     importSiteProperties(inputStream, site, session);
                     return null;
@@ -1197,12 +1198,18 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             }
 
             if (importZipContext.getLoadedImportDescriptorNames().contains(REPOSITORY_XML)) {
-                checkSiteKeyMapping(importZipContext, site.getSiteKey(), session, pathMapping);
+                // Check for site key mapping in case of site key changed between export and import
+                if (site != null && !JahiaSitesService.SYSTEM_SITE_KEY.equals(site.getSiteKey())) {
+                    checkSiteKeyMapping(importZipContext, site, session, pathMapping);
+                }
+                // perform import
                 importZip(null, importZipContext, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session,
                         Sets.newHashSet(USERS_XML, CATEGORIES_XML), true);
             } else {
                 // No repository descriptor - prepare to import files directly
-                pathMapping.put("/", "/sites/" + site.getSiteKey() + "/files/");
+                if (site != null) {
+                    pathMapping.put("/", "/sites/" + site.getSiteKey() + "/files/");
+                }
             }
 
             catProps = importAdditionalFilesIfPresentInArchiveOrPerformLegacyImportIfNeeded(importZipContext, site, infos, legacyMappingFilePath,
@@ -1213,14 +1220,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             session.save(JCRObservationManager.IMPORT);
         }
 
-        if (legacyImport && this.postImportPatcher != null) {
-            final long timerPIP = System.currentTimeMillis();
-            logger.info("Executing post import patches");
-            this.postImportPatcher.executePatches(site);
-            if (logger.isInfoEnabled()) {
-                logger.info("Executed post import patches in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerPIP));
-            }
-        }
         if (logger.isInfoEnabled()) {
             logger.info("Done importing site {} in {}", site != null ? site.getSiteKey() : "", DateUtils.formatDurationWords(System.currentTimeMillis() - timerSite));
         }
@@ -1334,11 +1333,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         return name;
     }
 
-    private void checkSiteKeyMapping(ImportZipContext importZipContext, String siteKey,
+    private void checkSiteKeyMapping(ImportZipContext importZipContext, JahiaSite site,
                                      JCRSessionWrapper session, Map<String, String> pathMapping)
             throws IOException, RepositoryException {
 
-        logger.info("Check if site node: {} need mapping with siteKey in repository.xml", siteKey);
+        logger.info("Check if site node: {} need mapping with siteKey in repository.xml", site.getSiteKey());
         long timer = System.currentTimeMillis();
 
         importZipContext.executeWithImportDescriptors(Collections.singleton(REPOSITORY_XML), (inputStream, name, previousDescriptorResult) -> {
@@ -1351,11 +1350,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             Map<String, Properties> sites = ((SitesValidatorResult) sitesValidator.getResult()).getSitesProperties();
             for (String siteKeyInImport : sites.keySet()) {
                 // Only the first site returned is mapped (if its not the systemsite, which is always the same key)
-                if (!"systemsite".equals(siteKeyInImport) && !"systemsite".equals(siteKey)) {
+                if (!JahiaSitesService.SYSTEM_SITE_KEY.equals(siteKeyInImport)) {
                     // Map to the new sitekey
-                    if (!siteKeyInImport.equals(siteKey)) {
-                        logger.info("Mapping siteKey from import XML: {} to site node: {}", siteKeyInImport, siteKey);
-                        pathMapping.put("/sites/" + siteKeyInImport + "/", "/sites/" + siteKey + "/");
+                    if (!siteKeyInImport.equals(site.getSiteKey())) {
+                        logger.info("Mapping siteKey from import XML: {} to site node: {}", siteKeyInImport, site.getSiteKey());
+                        pathMapping.put("/sites/" + siteKeyInImport + "/", "/sites/" + site.getSiteKey() + "/");
                     }
                     break;
                 }
@@ -1626,9 +1625,6 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     private void importSiteProperties(final InputStream is, final JahiaSite site, JCRSessionWrapper session) throws IOException {
-        if (site.getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
-            return;
-        }
         logger.info("Loading properties for site {}", site.getSiteKey());
         long timer = System.currentTimeMillis();
 
@@ -2411,8 +2407,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         this.legacyPidMappingTool = legacyPidMappingTool;
     }
 
-    public void setPostImportPatcher(PostImportPatcher postImportPatcher) {
-        this.postImportPatcher = postImportPatcher;
+    /**
+     * @deprecated never been used
+     */
+    @Deprecated(forRemoval = true)
+    public void setPostImportPatcher(Object postImportPatcher) {
+        //
     }
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {

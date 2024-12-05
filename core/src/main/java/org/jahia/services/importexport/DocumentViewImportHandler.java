@@ -138,7 +138,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private int ugcLevel = 0;
     private boolean cleanPreviousLiveImport = false;
 
-    private List<String> noSubNodesImport = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
+    private static final List<String> NO_SUB_NODES_IMPORT = Arrays.asList("jnt:importDropBox", "jnt:referencesKeeper");
+    private static final List<String> NO_LIVE_CLEANUP_FOR_PROPS = Arrays.asList("jcr:lastModified", "jcr:lastModifiedBy");
     // List of node types that should not be updated if they already exist during import.
     private List<String> noUpdateTypes = Arrays.asList("jnt:virtualsitesFolder", "jnt:usersFolder", "jnt:groupsFolder", "jnt:user", "jnt:group");
 
@@ -322,7 +323,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 decodedQName = StringUtils.substringAfter(path, "/");
             }
 
-            if (noSubNodesImport.contains(pt)) {
+            if (NO_SUB_NODES_IMPORT.contains(pt)) {
                 ignorePath = path;
             }
             JCRNodeWrapper child = null;
@@ -803,7 +804,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
-        // (Does not make sense to cleanup live/default difference in case of jmix:autoPublish nodes, or new nodes only existing in default)
+        // (Does not make sense to clean up live/default difference in case of jmix:autoPublish nodes, or new nodes only existing in default)
         if (cleanPreviousLiveImport &&
                 !child.isNew() &&
                 !child.isNodeType("jmix:autoPublish")) {
@@ -812,11 +813,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             PropertyIterator propertyIterator = child.getRealNode().getProperties();
             while (propertyIterator.hasNext()) {
                 Property property = propertyIterator.nextProperty();
-                if (!propertiesToSkip.contains(property.getName()) && // Exclude skipped properties
-                        !DEFAULT_PROPERTIES_TO_IGNORE.contains(property.getName()) && // Exclude default properties ignored by export
+                if (!NO_LIVE_CLEANUP_FOR_PROPS.contains(property.getName()) && // Additional properties to be skipped during cleanup
+                        !propertiesToSkip.contains(property.getName()) && // Properties skipped to be imported
+                        !DEFAULT_PROPERTIES_TO_IGNORE.contains(property.getName()) && // Properties skipped by export
                         !processedProperties.contains(property.getName())) { // Exclude properties that have been processed during import
-                    // This property is most likely a property that has been removed from the default version of the node
-                    // but imported from the live version.
+                    // This property is most likely a property that has been removed from the default version of the node, but imported from the live version.
                     property.remove();
                 }
             }

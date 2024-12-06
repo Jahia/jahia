@@ -747,6 +747,25 @@ public class JahiaSearchIndex extends SearchIndex {
         return null;
     }
 
+    private JahiaSecondaryIndex createSecondaryIndex() {
+        JahiaSecondaryIndex index = new JahiaSecondaryIndex(this);
+        // use the same indexingConfig for the secondary index as the current one
+        Field indexingConfigField = null;
+        try {
+            indexingConfigField = this.getClass().getSuperclass().getDeclaredField("indexingConfig");
+            indexingConfigField.setAccessible(true);
+            indexingConfigField.set(index, this.getIndexingConfig());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new JahiaRuntimeException("Unable to create a secondary index", e);
+        } finally {
+            // revert the accessibility of the field
+            if (indexingConfigField != null) {
+                indexingConfigField.setAccessible(false);
+            }
+        }
+        return index;
+    }
+
     /**
      * Prepares for a re-indexing of the repository content, creating a secondary index instance.
      * @deprecated use {@link #prepareReindexing(boolean)} instead
@@ -768,7 +787,7 @@ public class JahiaSearchIndex extends SearchIndex {
             return false;
         }
 
-        newIndex = new JahiaSecondaryIndex(this);
+        newIndex = createSecondaryIndex();
         newIndex.setForceConsistencyCheck(forceConsistencyCheck);
         log.info("New index forced consistency check {}", (forceConsistencyCheck ? "enabled" : "disabled"));
 

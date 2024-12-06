@@ -92,7 +92,7 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
      * @param mainIndex
      *            the main search index instance
      */
-    public JahiaSecondaryIndex(JahiaSearchIndex mainIndex) {
+    JahiaSecondaryIndex(JahiaSearchIndex mainIndex) {
         super();
         this.mainIndex = mainIndex;
     }

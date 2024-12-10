@@ -74,8 +74,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     private static final String REQUIRED_PERMISSION = "admin";
 
-    private static final String REQUIRED_ROLE = "toolManager";
-
     @Context
     HttpServletRequest httpServletRequest;
 
@@ -85,49 +83,42 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         AuthValveContext ctx = (AuthValveContext) httpServletRequest.getAttribute(AuthValveContext.class.getName());
 
         String username = JahiaUserManagerService.GUEST_USERNAME;
-        if (JahiaUserManagerService.isGuest(user)) {
-            if (WebUtils.authenticatedSubjectHasRole(httpServletRequest, REQUIRED_ROLE)) {
-                // user has the required role: allow access
+        try {
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+            final JahiaUser jahiaUser = currentUserSession.getUser();
+            username = jahiaUser.getUserKey();
+            if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION) && ctx != null && !ctx.isAuthRetrievedFromSession()) {
+                requestContext.setSecurityContext(new SecurityContext() {
+
+                    @Override
+                    public String getAuthenticationScheme() {
+                        return httpServletRequest.getScheme();
+                    }
+
+                    @Override
+                    public Principal getUserPrincipal() {
+                        return jahiaUser;
+                    }
+
+                    @Override
+                    public boolean isSecure() {
+                        return httpServletRequest.isSecure();
+                    }
+
+                    @Override
+                    public boolean isUserInRole(String role) {
+                        return httpServletRequest.isUserInRole(role);
+                    }
+                });
+
                 return;
             }
-        } else {
-            try {
-                JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-                final JahiaUser jahiaUser = currentUserSession.getUser();
-                username = jahiaUser.getUserKey();
-                if (currentUserSession.getRootNode().hasPermission(REQUIRED_PERMISSION) && ctx != null && !ctx.isAuthRetrievedFromSession()) {
-                    requestContext.setSecurityContext(new SecurityContext() {
-
-                        @Override
-                        public String getAuthenticationScheme() {
-                            return httpServletRequest.getScheme();
-                        }
-
-                        @Override
-                        public Principal getUserPrincipal() {
-                            return jahiaUser;
-                        }
-
-                        @Override
-                        public boolean isSecure() {
-                            return httpServletRequest.isSecure();
-                        }
-
-                        @Override
-                        public boolean isUserInRole(String role) {
-                            return httpServletRequest.isUserInRole(role);
-                        }
-                    });
-
-                    return;
-                }
-            } catch (RepositoryException e) {
-                log.error("An error occurs while accessing a resource", e);
-                requestContext.abortWith(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                        .entity(String.format("an error occured %s (see server log for more detail)",
-                                e.getMessage() != null ? e.getMessage() : e))
-                        .build());
-            }
+        } catch (RepositoryException e) {
+            log.error("An error occurs while accessing a resource", e);
+            requestContext.abortWith(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(String.format("an error occured %s (see server log for more detail)",
+                            e.getMessage() != null ? e.getMessage() : e))
+                    .build());
         }
 
         log.warn("Unauthorized access to the resource by user {}", username);

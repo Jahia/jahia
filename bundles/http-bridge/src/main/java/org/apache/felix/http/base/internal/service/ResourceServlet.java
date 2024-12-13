@@ -42,6 +42,7 @@
  */
 package org.apache.felix.http.base.internal.service;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.felix.http.base.internal.context.ServletContextImpl;
 import org.osgi.framework.Bundle;
 
@@ -49,9 +50,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -60,9 +60,7 @@ import java.net.URLConnection;
 /**
  * Forked version of org.apache.felix.http.base
  */
-public final class ResourceServlet
-        extends HttpServlet
-{
+public final class ResourceServlet extends HttpServlet {
     private final String path;
 
     public ResourceServlet(String path)
@@ -71,9 +69,7 @@ public final class ResourceServlet
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException
-    {
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String target = req.getPathInfo();
         if (target == null) {
             target = "";
@@ -93,28 +89,28 @@ public final class ResourceServlet
         }
     }
 
-    private void handle(HttpServletRequest req, HttpServletResponse res, URL url, String resName)
-            throws IOException
-    {
+    private void handle(HttpServletRequest req, HttpServletResponse res, URL url, String resName) throws IOException {
         String contentType = getServletContext().getMimeType(resName);
         if (contentType != null) {
             res.setContentType(contentType);
         }
 
         long lastModified  = getLastModified(url);
+        String eTag = DigestUtils.md5Hex(url.toString()).concat(".").concat(Long.toHexString(lastModified));
         if (lastModified != 0) {
             res.setDateHeader("Last-Modified", lastModified);
+            res.setHeader("ETag", eTag);
         }
 
-        if (!resourceModified(lastModified, req.getDateHeader("If-Modified-Since"))) {
+        if (!resourceModified(eTag, req.getHeader("If-None-Match")) ||
+                !resourceModified(lastModified, req.getDateHeader("If-Modified-Since"))) {
             res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {
             copyResource(url, res);
         }
     }
 
-    private long getLastModified(URL url)
-    {
+    private long getLastModified(URL url) {
         long lastModified = 0;
         if("bundle".equals(url.getProtocol())) {
             Long lastModifiedLong = getLastModifiedFromBundleHeaders();
@@ -123,9 +119,7 @@ public final class ResourceServlet
         try {
             URLConnection conn = url.openConnection();
             lastModified = conn.getLastModified();
-        } catch (Exception e)
-        {
-            // Do nothing
+        } catch (Exception e) { // Do nothing
         }
 
         if (lastModified == 0) {
@@ -157,20 +151,18 @@ public final class ResourceServlet
         return null;
     }
 
-    private boolean resourceModified(long resTimestamp, long modSince)
-    {
+    private boolean resourceModified(String localEtag, String reqETag) {
+        return localEtag == null || !localEtag.equals(reqETag);
+    }
+
+    private boolean resourceModified(long resTimestamp, long modSince) {
         modSince /= 1000;
         resTimestamp /= 1000;
-
         return resTimestamp == 0 || modSince == -1 || resTimestamp > modSince;
     }
 
-    private void copyResource(URL url, HttpServletResponse res)
-            throws IOException
-    {
-
+    private void copyResource(URL url, HttpServletResponse res) throws IOException {
         try (OutputStream os = res.getOutputStream(); InputStream is = url.openStream()) {
-
             int len = 0;
             byte[] buf = new byte[1024];
             int n;
@@ -179,7 +171,6 @@ public final class ResourceServlet
                 os.write(buf, 0, n);
                 len += n;
             }
-
             res.setContentLength(len);
         }
     }

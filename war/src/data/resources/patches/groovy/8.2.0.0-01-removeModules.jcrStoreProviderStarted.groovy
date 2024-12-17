@@ -10,7 +10,8 @@ BundleInfoJcrHelper.storePersistentStates(
                             "content-editor",
                             "jahia-category-manager",
                             "clustering-tools",
-                            "sdl-generator-tools"
+                            "sdl-generator-tools",
+                            "npm-modules-engine"
                     ])
                 }
                 .collect(Collectors.toList())

@@ -30,6 +30,9 @@ jobs:
       image_tag: ${{ steps.tags.outputs.image_tag }}
       current_branch: ${{ steps.tags.outputs.current_branch }}
     steps:
+      - name: Set JDK 11
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
       - name: Cache local Maven repository
         uses: actions/cache@v4

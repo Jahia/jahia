@@ -7,10 +7,7 @@ BundleInfoJcrHelper.storePersistentStates(
                 .stream()
                 .filter { bpi ->
                     !(bpi.getSymbolicName() in [
-                            "content-editor",
-                            "jahia-category-manager",
-                            "clustering-tools",
-                            "sdl-generator-tools"
+                            "npm-modules-engine"
                     ])
                 }
                 .collect(Collectors.toList())

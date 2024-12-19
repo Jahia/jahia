@@ -92,6 +92,7 @@
                 <value>org.jahia.test.services.workflow.WorkflowPermissionsTest</value>
                 <value>org.jahia.test.services.workflow.WorkflowServiceTest</value>
                 <value>org.jahia.test.services.modules.ModulesAdministrationTest</value>
+                <value>org.jahia.test.services.modules.ModulesStaticResourcesTest</value>
                 <value>org.jahia.test.services.content.publication.PublicationInfoAggregationTest</value>
                 <value>org.jahia.test.osgi.ConfigTest</value>
                 <value>org.jahia.test.osgi.ConfigJspTest</value>

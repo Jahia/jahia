@@ -1,0 +1,1 @@
+This is a static test file for testing headers of module's static resources.

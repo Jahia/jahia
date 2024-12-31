@@ -1,0 +1,23 @@
+# After a period of inactivity (3 months), GitHub disables workflows in
+# these repositories.
+# This is problematics for scheduled operations, such as integration tests
+# of Sonar analysis.
+# This workflows automatically re-enabled disabled workflows.
+name: Delivery - Workflows Keepaline
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  reenable-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Re-enable workflows
+        uses: Fgerthoffert/actions-workflow-keepalive@v1.0.1
+        with:
+          token: ${{ secrets.GH_ISSUES_PRS_CHORES }}        
+          org: Jahia
+          filter_topics: product, community
+          filter_operator: OR

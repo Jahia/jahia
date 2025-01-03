@@ -58,12 +58,14 @@ import org.slf4j.LoggerFactory;
  */
 public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
     private static Logger logger = LoggerFactory.getLogger(UrlRewriteVisitor.class);
+    private static final String REQUEST_ATTRIBUTE_TAG_NAME = UrlRewriteVisitor.class.getName() + ".tagName";
+    private static final String REQUEST_ATTRIBUTE_TAG_ATTRIBUTE_NAME = UrlRewriteVisitor.class.getName() + ".tagAttributeName";
 
     private String[] applyOnModes;
 
     private UrlRewriteService urlRewriteService;
 
-    private boolean preconditionsMatch(String attrValue, RenderContext context, Resource resource) {
+    private boolean preconditionsMatch(String attrValue, RenderContext context) {
         if (StringUtils.isEmpty(attrValue)) {
             return false;
         }
@@ -91,9 +93,11 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
      */
     public String visit(final String attrValue, RenderContext context, String tagName, String attrName, Resource resource) {
         String value = attrValue;
-        if (preconditionsMatch(attrValue, context, resource)) {
+        if (preconditionsMatch(attrValue, context)) {
             long timer = System.currentTimeMillis();
             try {
+                context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_NAME, tagName);
+                context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_ATTRIBUTE_NAME, attrName);
                 if (StringUtils.equals(SrcSetURLReplacer.IMG, tagName.toLowerCase()) && StringUtils.endsWith(attrName.toLowerCase(), SrcSetURLReplacer.IMG_SRCSET_ATTR)) {
                     String[] urls = SrcSetURLReplacer.getURLsFromSrcSet(value);
                     for (String url : urls) {
@@ -108,8 +112,8 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
                 logger.error("Error rewriting URL value " + attrValue + " Skipped rewriting.", e);
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Rewriting URL {} into {} took {} ms", new Object[] { attrValue,
-                        value, System.currentTimeMillis() - timer });
+                logger.debug("Rewriting URL {} into {} took {} ms", attrValue,
+                        value, System.currentTimeMillis() - timer);
             }
         }
         return value;

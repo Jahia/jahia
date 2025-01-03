@@ -209,14 +209,14 @@ public class DefinitionsBundleChecker implements BundleChecker {
              * If so, use that prop diff instead
              */
             Map<String,ExtendedPropertyDefinition> propDefsMap = Arrays.stream(newDef.getPropertyDefinitions())
-                    .collect(Collectors.toMap(ExtendedPropertyDefinition::getName, p->p));
+                    .collect(Collectors.toMap(NodeTypeDefDiff::getPropertyName, p->p));
             List<PropDefDiff> childItemDefDiffs = propDefDiffBuilder.getChildItemDefDiffs().stream()
                     .map(propDefDiff -> {
                         if (!propDefDiff.isRemoved()) {
                             return propDefDiff;
                         }
                         ExtendedPropertyDefinition oldProp = propDefDiff.getOldDef();
-                        ExtendedPropertyDefinition movedProp = propDefsMap.get(oldProp.getName());
+                        ExtendedPropertyDefinition movedProp = propDefsMap.get(getPropertyName(oldProp));
                         return (movedProp != null) ?
                                 // we found oldProp defined somewhere else; verify if it's still the same
                                 new PropDefDiff(oldProp, movedProp) :
@@ -239,6 +239,16 @@ public class DefinitionsBundleChecker implements BundleChecker {
             if (tmpType.compareTo(type) > 0) {
                 type = tmpType;
             }
+        }
+
+        /**
+         * Generates a unique identifier for a property definition, considering its name, type, and multiplicity.
+         * This method is based on the {@link ExtendedPropertyDefinition#equals(Object)} implementation.
+         * @param p : the property definition
+         * @return the unique identifier
+         */
+        private static String getPropertyName(ExtendedPropertyDefinition p) {
+            return "*".equals(p.getName()) ? p.getName() + p.getRequiredType() + p.isMultiple() : p.getName();
         }
 
         /**

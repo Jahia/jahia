@@ -3,7 +3,7 @@
 # This is problematics for scheduled operations, such as integration tests
 # of Sonar analysis.
 # This workflows automatically re-enabled disabled workflows.
-name: Delivery - Workflows Keepaline
+name: Delivery - Workflows Keepalive
 
 on:
   schedule:

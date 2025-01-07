@@ -1,0 +1,40 @@
+# WARNING: This template file is coming from the .github repository
+# Only edit the file there
+
+# Documentation: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
+# Syntax: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+
+name: Support Request
+description: File a support request.
+title: "<title>"
+labels: ["support-request"]
+type: Sup
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this support request!
+        Every two weeks a developer looks at the prioritized requests and answers as many as possible.
+        Note that this can lead to the creation of bugs or stories.
+  - type: textarea
+    attributes:
+      label: Context / Problem
+      description: A description of the problem for which you need assistance.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Versions used
+      description: The list of the versions used (Jahia, modules, jCustomer, Elasticsearch, ...).
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: A description of the current behavior, including logs (server-side, browser) & stack trace, screenshots/videos, link to CI execution
+    validations:
+      required: true
+      placeholder: |
+        1. environment used (docker, installer, browser version)
+        2. logs (server-side, browser) & stack trace
+        3. screenshots/videos

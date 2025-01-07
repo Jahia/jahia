@@ -1,0 +1,45 @@
+# WARNING: This template file is coming from the .github repository
+# Only edit the file there
+# Documentation: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
+# Syntax: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+
+name: Bug Report
+description: File a bug report.
+title: "[BUG] <title>"
+labels: ["need-triage"]
+type: Bug
+projects: ["Jahia/13"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    attributes:
+      label: Environment and versions used
+      description: In a list, detail all of the software components and versions needed to reproduce the issue (Jira Version, Modules installed, modules version, ...). If using a SNAPSHOT, please provide the Commit hash.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: In a list, details the steps needed to reproduce the issue. Please provide, as far as possible, a minimal reproducible scenario.
+      placeholder: |
+        1. In this environment...
+        2. With this config...
+        3. Run '...'
+        14. See error...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Current Behavior
+      description: A description of the current behavior, including logs (server-side, browser) & stack trace, screenshots/videos, link to CI execution
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Desired Behavior
+      description: Describe the expected behavior and how it differs from current behavior.
+    validations:
+      required: true

@@ -1,0 +1,12 @@
+# DO NOT EDIT
+# This file is managed globally at https://github.com/Jahia/.github
+name: Delivery - Issue Chores
+
+on:
+  issues:
+  issue_comment:
+
+jobs:
+  WF:
+    uses: Jahia/jahia-modules-action/.github/workflows/delivery-issue-chores.yml@v2
+    secrets: inherit

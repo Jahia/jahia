@@ -1,0 +1,8 @@
+# WARNING: This template file is coming from the .github repository
+# Only edit the file there
+
+blank_issues_enabled: false
+contact_links:
+  - name: Jahia Customer Support
+    url: https://support.jahia.com
+    about: For customer support inquiries, please visit our support portal. Our support team is not monitoring GitHub issues.

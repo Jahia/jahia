@@ -1,5 +1,3 @@
-<!-- WARNING: This template file is coming from the .github repository -->
-<!-- Only edit the file there -->
 ---
 name: Tech Day
 about: Create a tech day ticket

@@ -1,6 +1,3 @@
-<!-- WARNING: This template file is coming from the .github repository -->
-<!-- Only edit the file there -->
-
 ---
 name: Spike
 about: Create a spike

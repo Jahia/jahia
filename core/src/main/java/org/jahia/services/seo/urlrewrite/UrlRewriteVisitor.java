@@ -96,9 +96,11 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
         if (preconditionsMatch(attrValue, context)) {
             long timer = System.currentTimeMillis();
             try {
-                context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_NAME, tagName);
-                context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_ATTRIBUTE_NAME, attrName);
-                if (StringUtils.equals(SrcSetURLReplacer.IMG, tagName.toLowerCase()) && StringUtils.endsWith(attrName.toLowerCase(), SrcSetURLReplacer.IMG_SRCSET_ATTR)) {
+                String tagNameLowerCase = tagName == null ? null : tagName.toLowerCase();
+                String attrNameLowerCase = attrName == null ? null : attrName.toLowerCase();
+                context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_NAME, tagNameLowerCase);
+                context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_ATTRIBUTE_NAME, attrNameLowerCase);
+                if (StringUtils.equals(SrcSetURLReplacer.IMG, tagNameLowerCase) && StringUtils.endsWith(attrNameLowerCase, SrcSetURLReplacer.IMG_SRCSET_ATTR)) {
                     String[] urls = SrcSetURLReplacer.getURLsFromSrcSet(value);
                     for (String url : urls) {
                         value = StringUtils.replace(value, url, urlRewriteService.rewriteOutbound(url,

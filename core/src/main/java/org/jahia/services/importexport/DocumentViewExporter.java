@@ -47,9 +47,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRMultipleValueUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -62,9 +60,7 @@ import org.xml.sax.helpers.AttributesImpl;
 import pl.touk.throwing.ThrowingPredicate;
 
 import javax.jcr.*;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,23 +80,21 @@ public class DocumentViewExporter {
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
 
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/sites/[^/]*/templates/(.*)");
-
-
+    
     private JCRSessionWrapper session;
-    private ContentHandler ch;
-    private boolean noRecurse;
-    private boolean skipBinary;
+    private final ContentHandler ch;
+    private final boolean noRecurse;
+    private final boolean skipBinary;
     private Set<String> typesToIgnore = new HashSet<String>();
     private Set<String> externalReferences = new HashSet<String>();
-    private Map<String, String> prefixes;
-    private HashMap<String, String> exportedShareable;
+    private final Map<String, String> prefixes;
+    private final HashMap<String, String> exportedShareable;
     private JCRNodeWrapper rootNode;
     private List<JCRNodeWrapper> nodesList;
-    private Stack<String> stack;
+    private final Stack<String> stack;
 
     private List<String> propertiesToIgnore = new ArrayList<>(DEFAULT_PROPERTIES_TO_IGNORE);
     private ExportContext exportContext;
-    private PropertyChangeSupport pcs;
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
         this.session = session;
@@ -108,7 +102,6 @@ public class DocumentViewExporter {
         this.noRecurse = noRecurse;
         this.skipBinary = skipBinary;
         this.stack = new Stack<String>();
-        this.pcs = new PropertyChangeSupport(this);
         prefixes = new HashMap<String, String>();
         try {
             Map<String, String> map = NodeTypeRegistry.getInstance().getNamespaces();
@@ -247,7 +240,9 @@ public class DocumentViewExporter {
                         String encodedName = ISO9075.encode(node.getName());
                         startElement(encodedName, atts);
                         endElement(encodedName);
-                        notifyListObservers(node.getPath());
+                        if (exportContext != null) {
+                            exportContext.logExportXmlDocumentElementProcessed(node.getPath());
+                        }
                         return;
                     } else {
                         exportedShareable.put(node.getIdentifier(), node.getPath());
@@ -255,17 +250,31 @@ public class DocumentViewExporter {
                 }
                 PropertyIterator propsIterator = node.getRealNode().getProperties();
                 SortedSet<String> sortedProps = new TreeSet<String>();
+                boolean isResource = node.isNodeType("nt:resource");
                 while (propsIterator.hasNext()) {
                     Property property = propsIterator.nextProperty();
-                    if (node.getProvider().canExportProperty(property)) {
-                        sortedProps.add(property.getName());
+                    if (node.getProvider().canExportProperty(property) && !propertiesToIgnore.contains(property.getName())) {
+                        boolean isBinaryPropertyType = property.getType() == PropertyType.BINARY;
+                        // collect binaries for later export.
+                        if (exportContext != null && isResource && isBinaryPropertyType && property.getName().equals("jcr:data")) {
+                            String binaryPathInZip = buildBinaryPathInZip(node);
+                            Binary binary = property.getBinary();
+                            if (exportContext.getLiveExportContext() != null && exportContext.getLiveExportContext().isBinaryAlreadyCollected(binaryPathInZip, binary)) {
+                                // Binary is the same between live and default, no need to export it again, instead we will add a marker to the exported xml entry
+                                atts.addAttribute(prefixes.get("j"), "isSameAsLiveBinary", "j:isSameAsLiveBinary", CDATA, "1");
+                            } else {
+                                exportContext.collectBinaryToExport(binaryPathInZip, binary);
+                            }
+                        }
+                        if (!isBinaryPropertyType || !skipBinary) {
+                            sortedProps.add(property.getName());
+                        }
                     }
                 }
                 for (String prop : sortedProps) {
                     try {
                         Property property = node.getRealNode().getProperty(prop);
-                        if (node.hasProperty(prop) && (property.getType() != PropertyType.BINARY || !skipBinary) &&
-                                !propertiesToIgnore.contains(property.getName())) {
+                        if (node.hasProperty(prop)) {
                             String key = property.getName();
                             String prefix = null;
                             String localname = key;
@@ -344,7 +353,9 @@ public class DocumentViewExporter {
                         }
                     }
                 }
-                notifyListObservers(node.getPath());
+                if (exportContext != null) {
+                    exportContext.logExportXmlDocumentElementProcessed(path);
+                }
             }
         } catch (Exception e) {
             logger.warn("Unable to export node with path {}, it won't be part of the export. Set class in DEBUG to get full error", node.getPath());
@@ -352,16 +363,18 @@ public class DocumentViewExporter {
         }
     }
 
-    /**
-     * Notify the list of observers about a node path being exported
-     *
-     * @param path the node path
-     */
-    private void notifyListObservers(String path) {
-        if (exportContext != null) {
-            exportContext.setActualPath(path);
-            pcs.firePropertyChange(new PropertyChangeEvent(this, "exportContext", null, exportContext));
-        }
+    private String buildBinaryPathInZip(JCRNodeWrapper ntResourceNode) throws RepositoryException {
+        JCRNodeWrapper node = ntResourceNode.getParent();
+
+        String path = rootNode.getPath().equals("/") ?
+                node.getPath() :
+                node.getPath().substring(rootNode.getParent().getPath().length());
+
+        String name = ntResourceNode.getName().equals("jcr:content") ?
+                node.getName() :
+                JCRContentUtils.replaceColon(ntResourceNode.getName());
+
+        return path + "/" + name;
     }
 
     private void setProviderRootAttribute(JCRNodeWrapper node, AttributesImpl atts) throws RepositoryException {
@@ -474,8 +487,9 @@ public class DocumentViewExporter {
         return exportContext;
     }
 
+    @Deprecated
     public void addObserver(PropertyChangeListener propertyChangeListener) {
-        pcs.addPropertyChangeListener("exportContext", propertyChangeListener);
+        // not supported anymore, do nothing
     }
 
     /**

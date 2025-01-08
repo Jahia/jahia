@@ -149,6 +149,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private String expandedFolder;
 
     private Set<String> missingDependencies = new HashSet<String>();
+    private JCRSessionWrapper liveSession = null;
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath) throws IOException {
         this(session, rootPath, null, null);
@@ -454,7 +455,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
                         addMixins(child, atts);
                         setAttributes(child, atts);
-                        uploadFile(atts, decodedQName, path, child);
+                        handleBinary(atts, decodedQName, path, child);
 
                         uuidsSet.add(child.getIdentifier());
                         if (child.isFile() && currentFilePath == null) {
@@ -470,7 +471,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     if (updatesAllowedOnExistingChild(child, atts)) {
                         addMixins(child, atts);
                         setAttributes(child, atts);
-                        uploadFile(atts, decodedQName, path, child);
+                        handleBinary(atts, decodedQName, path, child);
                     }
                     uuidsSet.add(child.getIdentifier());
                 }
@@ -541,15 +542,41 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 nodeToCheck.getParent().getPrimaryNodeTypeName() : primaryNodeTypeName);
     }
 
-    private void uploadFile(Attributes atts, String decodedQName, String path, JCRNodeWrapper child) throws IOException, RepositoryException {
+    private void handleBinary(Attributes atts, String decodedQName, String path, JCRNodeWrapper child) throws IOException, RepositoryException {
+        // Introduce support of j:isSameAsLiveBinary attribute to reuse the binary from live node
+        if (liveSession != null && cleanPreviousLiveImport && atts.getValue("j:isSameAsLiveBinary") != null) {
+            // try first to get the binary instance from live node
+            try {
+                String livePath = child.getCorrespondingNodePath("live");
+                JCRNodeWrapper liveNode = liveSession.getNode(livePath);
+                if (liveNode.hasProperty("jcr:data")) {
+                    // Reuse existing binary !
+                    setJCRDataBinary(child, liveNode.getProperty("jcr:data").getBinary(), atts.getValue(Constants.JCR_MIMETYPE));
+                } else {
+                    // This ensures to trigger catch block
+                    throw new RepositoryException("No binary correspondence found in existing live node.");
+                }
+            } catch (RepositoryException e) {
+                // not found in existing live nodes, or in case of any JCR error ?
+                // then use the binary from the zip, but will only exist under /live-content
+                uploadFile(atts, decodedQName, path, child, "/live-content");
+            }
+            return;
+        }
+
+        // Standard binary import
+        uploadFile(atts, decodedQName, path, child, baseFilesPath);
+    }
+
+    private void uploadFile(Attributes atts, String decodedQName, String path, JCRNodeWrapper child, String basePath) throws IOException, RepositoryException {
         if (!expandImportedFilesOnDisk) {
-            boolean contentFound = findContent();
+            boolean contentFound = findContent(basePath);
             if (contentFound) {
                 uploadFile(atts, decodedQName, path, child, zis);
                 zis.close();
             }
         } else {
-            String contentInExpandedPath = findContentInExpandedPath();
+            String contentInExpandedPath = findContentInExpandedPath(basePath);
             if (contentInExpandedPath != null) {
                 final InputStream is = FileUtils.openInputStream(new File(expandedFolder + contentInExpandedPath));
                 uploadFile(atts, decodedQName, path, child, is);
@@ -576,10 +603,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
             child.getFileContent().uploadFile(is, mime);
         } else {
-            child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(is));
-            child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
-            child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+            setJCRDataBinary(child, session.getValueFactory().createBinary(is), atts.getValue(Constants.JCR_MIMETYPE));
         }
+    }
+
+    private void setJCRDataBinary(JCRNodeWrapper node, Binary binary, String mimeType) throws RepositoryException {
+        node.setProperty(Constants.JCR_DATA, binary);
+        node.setProperty(Constants.JCR_MIMETYPE, mimeType);
+        node.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
     }
 
     private void checkDependencies(String path, String pt, Attributes atts) throws RepositoryException {
@@ -837,7 +868,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         return value;
     }
 
-    private boolean findContent() throws IOException {
+    private boolean findContent(String basePath) throws IOException {
         if (archive == null) {
             return false;
         }
@@ -848,11 +879,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         } else {
             path = JCRContentUtils.replaceColon(path);
         }
-        int fileIndex = fileList.indexOf(baseFilesPath + path);
+        int fileIndex = fileList.indexOf(basePath + path);
         if (fileIndex == -1 && path.startsWith("/content")) {
             // Case of root node export - root node has been renamed to "content" during export
             path = path.substring("/content".length());
-            fileIndex = fileList.indexOf(baseFilesPath + path);
+            fileIndex = fileList.indexOf(basePath + path);
         }
         if (fileIndex != -1) {
             if (nextEntry == null || fileList.indexOf("/" + nextEntry.getName().replace('\\', '/')) > fileIndex) {
@@ -863,14 +894,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
             do {
                 nextEntry = zis.getNextEntry();
-            } while (!("/" + nextEntry.getName().replace('\\', '/')).equals(baseFilesPath + path));
+            } while (!("/" + nextEntry.getName().replace('\\', '/')).equals(basePath + path));
 
             return true;
         }
         return false;
     }
 
-    private String findContentInExpandedPath() throws IOException {
+    private String findContentInExpandedPath(String basePath) throws IOException {
         if (archive == null) {
             return null;
         }
@@ -881,14 +912,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         } else {
             path = JCRContentUtils.replaceColon(path);
         }
-        int fileIndex = fileList.indexOf(baseFilesPath + path);
+        int fileIndex = fileList.indexOf(basePath + path);
         if (fileIndex == -1 && path.startsWith("/content")) {
             // Case of root node export - root node has been renamed to "content" during export
             path = path.substring("/content".length());
-            fileIndex = fileList.indexOf(baseFilesPath + path);
+            fileIndex = fileList.indexOf(basePath + path);
         }
         if (fileIndex != -1) {
-            return baseFilesPath + path;
+            return basePath + path;
         }
         return null;
     }
@@ -1024,7 +1055,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     @Deprecated
     public void setReplaceMultipleValues(boolean replaceMultipleValues) {
         if (replaceMultipleValues) {
-            cleanPreviousLiveImport();
+            try {
+                cleanPreviousLiveImport();
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -1042,7 +1077,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     @Deprecated
     public void setEnforceUuid(boolean enforceUuid) {
         if (enforceUuid) {
-            cleanPreviousLiveImport();
+            try {
+                cleanPreviousLiveImport();
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -1118,7 +1157,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     @Deprecated
     public void setRemoveMixins(boolean removeMixins) {
         if (removeMixins) {
-            cleanPreviousLiveImport();
+            try {
+                cleanPreviousLiveImport();
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -1136,8 +1179,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
      * this method allows to configure the default import that follows in order to have correct behavior against existing
      * nodes from the live workspace that would still be present in the default workspace.
      */
-    public void cleanPreviousLiveImport() {
+    public void cleanPreviousLiveImport() throws RepositoryException {
         this.cleanPreviousLiveImport = true;
+        this.liveSession = JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null);
         configureToRestorePublicationStatuses();
         setUuidBehavior(IMPORT_UUID_COLLISION_MOVE_EXISTING);
     }

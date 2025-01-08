@@ -633,6 +633,11 @@
         <value>j:processId</value>
         <value>j:staticMountPointProviderKey</value>
         <value>j:dynamicMountPointProviderPath</value>
+        <!--
+            j:isSameAsLiveBinary: is used to store the information if the binary is the same as the live one,
+            it's not a real jcr property, search for usages in code to see how it's used
+         -->
+        <value>j:isSameAsLiveBinary</value>
     </util:set>
 
     <util:map id="ImportDefinitionsMappingMetadata">

@@ -8,5 +8,5 @@ on:
 
 jobs:
   WF:
-    uses: Jahia/jahia-modules-action/.github/workflows/delivery-issue-chores.yml@v2
+    uses: Jahia/jahia-modules-action/.github/workflows/reusable-delivery-issue-chores.yml@v2
     secrets: inherit

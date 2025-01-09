@@ -601,12 +601,37 @@ public class JBPMMailProducer {
                     displayableName = String.format("%s...", displayableName.substring(0, 100));
                 }
                 node.put("displayableName", displayableName);
-                node.put("displayablePath", publicationInfo.getMainPath());
+                node.put("displayablePath", calculateDisplayablePath(nodeByUUID));
                 //Place node in the related publication status list
                 publications.get(getPublicationLabelI18N(publicationInfo.getStatus(), locale)).add(node);
             }
         }
         return publications;
+    }
+
+    /**
+     * Calculate the displayable path in jContent for a node
+     * @param node the node
+     * @return the displayable path
+     */
+    private String calculateDisplayablePath(JCRNodeWrapper node) throws RepositoryException {
+        String nodePath = node.getPath();
+        String sitePath = node.getResolveSite().getPath();
+        String filePath = sitePath + "/files/";
+        String contentPath = sitePath + "/contents/";
+        String prefix;
+        String targetPath = node.getParent().getPath();
+        if (nodePath.startsWith(filePath)) {
+            prefix= "/media";
+        } else if (nodePath.startsWith(contentPath)) {
+            prefix= "/content-folders";
+        } else {
+            if (node.isNodeType("jnt:page")) {
+                targetPath = node.getPath();
+            }
+            prefix = "/pages";
+        }
+        return prefix + targetPath.substring(sitePath.length());
     }
 
     private void processWorkflowComments(Workflow workflow, final Bindings bindings) {

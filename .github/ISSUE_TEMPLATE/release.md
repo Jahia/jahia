@@ -2,11 +2,20 @@
 name: Release
 about: Create a release
 title: ''
-type: Task
+type: Release
+projects: ["Jahia/29"]
 
 ---
 
-## Minimum Jahia Version
+## :white_check_mark: Summary
+
+1. [Minimum Jahia version](#user-content-minimum-jahia-version)
+2. [Testing matrix](#user-content-testing-matrix)
+3. [Prepare checklist](#user-content-prepare-checklist)
+4. [Tests checklist](#user-content-test-checklist)
+5. [Publication checklist](#user-content-publication-checklist)
+
+<h2 id="minimum-jahia-version">Minimum Jahia version</h2>
 
 > We aim at reducing the possible deployment matrices by regularly bumping up the minimum Jahia version when releasing new versions of our modules.
 When creating a Release ticket for a module, consult with your PM to identify the new minimum Jahia version this module must be associated with.
@@ -15,7 +24,7 @@ The default guideline is for a new module release to be compatible with the 2 pr
 Current Jahia Version: 8.X.X.X (version currently in the POM)
 Desired Jahia Version: 8.X.X.X
 
-## Testing matrix
+<h2 id="testing-matrix">:scroll: Testing matrix</h2>
 
 > We aim at clearly documenting the possible deployment scenarios in a matrix and specify which ones are expected to be tested or not.
 In the testing matrix, always use the latest patch version of a particular release
@@ -27,14 +36,15 @@ In the testing matrix, always use the latest patch version of a particular relea
 
 :information_source: If you are releasing for the main branch of a module, make sure to complete the checklist below when working on the ticket.
 
-## Prepare Checklist
+<h2 id="prepare-checklist">:pencil2: Prepare checklist</h2>
 
 - [ ] All other tickets with that fixVersion are closed
 - [ ] Testing matrix and Minimum Jahia version are detailed
 - [ ] Jahia-parent (minimum Jahia version) was updated if requested in the ticket
 - [ ] The release workflow will [publish](https://github.com/Jahia/sandbox/commit/9a6ab10c8fbe5e11eb7fe3c6b391be2be776319b) a slack notification
+- [ ] Release creation has been triggered from the Github Release UI (https://github.com/Jahia/[module-repo]/releases/new)
 
-## Tests Checklist
+<h2 id="tests-checklist">:vertical_traffic_light: Tests checklist</h2>
 
 General
 - [ ] Manual tests detailing testing steps for validating the release of this module are present on Testrail
@@ -54,7 +64,7 @@ After Testing
 - [ ] Tested scenarios not detailed in Testrail are listed in this release ticket
 - [ ] The version was updated in the [Selenium integration tests](https://github.com/Jahia/jahia-qa/blob/f4f788d56fd624174302231e3d64878cd343e515/pom.xml#L75)
 
-## Publication Checklist
+<h2 id="publication-checklist">:rocket: Publication checklist</h2>
 
 - [ ] The release changelog was prepared
 - [ ] In case of a major release, a **Breaking Changes** section is present in the Changelog

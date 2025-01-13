@@ -62,7 +62,7 @@ RUN set -ux; \
 FROM scratch
 COPY --from=base / /
 
-ARG MAVEN_VER="3.8.7"
+ARG MAVEN_VER="3.9.9"
 ARG MAVEN_BASE_URL="https://archive.apache.org/dist/maven/maven-3"
 ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/org/jahia/modules"
 ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/archive/binaries/magick"

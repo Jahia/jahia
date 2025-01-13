@@ -42,7 +42,6 @@
  */
 package org.jahia.services.scheduler;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
 import org.quartz.*;
@@ -62,7 +61,7 @@ import java.util.*;
  */
 public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobSchedulingBean.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobSchedulingBean.class);
 
     private boolean disabled;
 
@@ -88,23 +87,25 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
         }
 
         if (jobDetail == null) {
-            logger.info("No JobDetail data was specified. Skip scheduling job.");
+            LOGGER.info("No JobDetail data was specified. Skip scheduling job.");
             return;
         }
 
         JobDetail existingJobDetail = getScheduler().getJobDetail(jobDetail.getName(), jobDetail.getGroup());
         if (overwriteExisting || existingJobDetail == null) {
+            LOGGER.info("Overwrite existing job: {} or job detail does not exists: {}", overwriteExisting, existingJobDetail == null);
             deleteJob();
             createJob(true);
             scheduleJob(true);
-        } else if (needToRescheduleTheJob()) {
-            // job data exists -> check if the triggers have changed
-            scheduleJob(true);
+        } else {
+            LOGGER.info("Job {} already exists. Syncing triggers.", jobDetail.getFullName());
+            syncJobTriggers();
         }
     }
 
     @Override
     public void destroy() throws Exception {
+        LOGGER.info("Destroying job scheduling bean{}", jobDetail.getFullName());
         if (!isEligibleToManageJob()) {
             return;
         }
@@ -127,38 +128,43 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
                 : trigger.toString();
     }
 
-    @SuppressWarnings("unchecked")
-    protected boolean needToRescheduleTheJob() throws SchedulerException {
-        Map<String, Trigger> existingTriggers = mapByName(getScheduler().getTriggersOfJob(
-                jobDetail.getName(), jobDetail.getGroup()));
-
-        // we have different number of triggers
-        if (existingTriggers.size() != triggers.size()) {
-            return true;
+    protected void syncJobTriggers() throws SchedulerException {
+        LOGGER.info("Syncing triggers for job {}", jobDetail.getFullName());
+        if (isRamJob) {
+            JobDetail detail = schedulerService.getScheduler().getJobDetail(jobDetail.getName(), jobDetail.getGroup());
+            if (detail != null) {
+                LOGGER.debug("Job {} was found in the persistent scheduler but is RAM now. Deleting it.", jobDetail.getFullName());
+                schedulerService.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
+            }
         }
 
+        Map<String, Trigger> existingTriggers = mapByName(getScheduler().getTriggersOfJob(jobDetail.getName(), jobDetail.getGroup()));
         Map<String, Trigger> newTriggers = mapByName(triggers.toArray(new Trigger[0]));
 
-        // the name of the triggers do not match
-        if (!CollectionUtils.disjunction(existingTriggers.keySet(), newTriggers.keySet()).isEmpty()) {
-            return true;
-        }
-
-        // compare triggers one by one
-        for (Map.Entry<String, Trigger> existing : existingTriggers.entrySet()) {
-            Trigger newTrigger = newTriggers.get(existing.getKey());
-            Trigger existingTrigger = existing.getValue();
-            if (!existingTrigger.getClass().getName().equals(newTrigger.getClass().getName())) {
-                return true;
-            }
-
-            if (existingTrigger instanceof CronTrigger
-                    && (((CronTrigger) existingTrigger).getCronExpression().compareTo(((CronTrigger) newTrigger).getCronExpression())) != 0) {
-                return true;
+        for (Map.Entry<String, Trigger> newTrigger : newTriggers.entrySet()) {
+            if (!existingTriggers.containsKey(newTrigger.getKey())) {
+                createTrigger(newTrigger.getValue());
             }
         }
-
-        return false;
+        for (Map.Entry<String, Trigger> existingTrigger : existingTriggers.entrySet()) {
+            Trigger newTrigger = newTriggers.get(existingTrigger.getKey());
+            if (newTrigger != null) {
+                LOGGER.debug("Trigger {} already exists. Checking if it needs to be updated.", existingTrigger.getKey());
+                if (newTrigger instanceof CronTrigger) {
+                    String newCron = ((CronTrigger) newTrigger).getCronExpression();
+                    String existingCron = ((CronTrigger) existingTrigger.getValue()).getCronExpression();
+                    if (!newCron.equals(existingCron)) {
+                        newTrigger.setJobName(existingTrigger.getValue().getJobName());
+                        newTrigger.setJobGroup(existingTrigger.getValue().getJobGroup());
+                        updateTrigger(newTrigger);
+                    }
+                } else {
+                    updateTrigger(newTrigger);
+                }
+            } else {
+                removeTrigger(existingTrigger.getValue());
+            }
+        }
     }
 
     protected void createJob(boolean deleteFirst)  throws SchedulerException {
@@ -169,30 +175,48 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
         if (deleteFirst) {
             unscheduleJob();
         }
-        if (triggers.size() == 0) {
-            logger.info("Job has no triggers configured. Only the JobDetail data will be stored.");
+        if (triggers.isEmpty()) {
+            LOGGER.info("Job has no triggers configured. Only the JobDetail data will be stored.");
         }
         for (Trigger trigger : triggers) {
-            trigger.setJobName(jobDetail.getName());
-            trigger.setJobGroup(jobDetail.getGroup());
-            logger.info("Scheduling {} job {} using {}", new String[] {
-                    isRamJob ? "RAM" : "persistent", jobDetail.getFullName(),
-                    getTriggerInfo(trigger) });
-            getScheduler().scheduleJob(trigger);
+            this.createTrigger(trigger);
         }
     }
 
     protected void deleteJob() throws SchedulerException {
-        logger.info("Deleting job {}", jobDetail.getFullName());
+        LOGGER.info("Deleting job {}", jobDetail.getFullName());
         getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
     }
 
     protected void unscheduleJob() throws SchedulerException {
-        logger.info("Unscheduling job {}", jobDetail.getFullName());
+        LOGGER.info("Unscheduling job {}", jobDetail.getFullName());
         Trigger[] triggers = getScheduler().getTriggersOfJob(jobDetail.getName(), jobDetail.getGroup());
         for (Trigger trigger : triggers) {
-            getScheduler().unscheduleJob(trigger.getName(), trigger.getGroup());
+            removeTrigger(trigger);
         }
+    }
+
+    private void createTrigger(Trigger trigger) throws SchedulerException {
+        trigger.setJobName(jobDetail.getName());
+        trigger.setJobGroup(jobDetail.getGroup());
+        LOGGER.info("Create trigger for {} job {} using {}", new String[] {
+                isRamJob ? "RAM" : "persistent", jobDetail.getFullName(),
+                getTriggerInfo(trigger) });
+        getScheduler().scheduleJob(trigger);
+    }
+
+    private void removeTrigger(Trigger trigger) throws SchedulerException {
+        LOGGER.info("Remove trigger for {} job {} using {}", new String[] {
+                isRamJob ? "RAM" : "persistent", jobDetail.getFullName(),
+                getTriggerInfo(trigger) });
+        getScheduler().unscheduleJob(trigger.getName(), trigger.getGroup());
+    }
+
+    private void updateTrigger(Trigger trigger) throws SchedulerException {
+        LOGGER.info("Update trigger for {} job {} using {}", new String[] {
+                isRamJob ? "RAM" : "persistent", jobDetail.getFullName(),
+                getTriggerInfo(trigger) });
+        getScheduler().rescheduleJob(trigger.getName(), trigger.getGroup(), trigger);
     }
 
     /**

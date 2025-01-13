@@ -273,6 +273,10 @@
         <servlet-name>AtmosphereServlet</servlet-name>
         <servlet-class>org.jahia.services.atmosphere.AtmosphereServlet</servlet-class>
         <init-param>
+            <param-name>org.atmosphere.cpr.AtmosphereFramework.analytics</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
             <param-name>org.atmosphere.cpr.packages</param-name>
             <param-value>org.jahia.ajax.gwt.commons.server</param-value>
         </init-param>

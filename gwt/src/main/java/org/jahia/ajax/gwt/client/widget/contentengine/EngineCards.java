@@ -89,8 +89,12 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
 
         final ListStore<BaseModelData> store = new ListStore<BaseModelData>();
         ColumnConfig lang = new ColumnConfig("lang", 50);
-        ColumnConfig title = new ColumnConfig("header", 800);
-        ColumnConfig actions = new ColumnConfig("action", 200);
+        ColumnConfig title = new ColumnConfig();
+        title.setId("header");
+        title.setStyle("width: unset !important;");
+        ColumnConfig actions = new ColumnConfig();
+        actions.setId("actions");
+        actions.setStyle("width: unset !important;");
         actions.setRenderer(new GridCellRenderer<ModelData>() {
             @Override
             public Object render(final ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {
@@ -100,9 +104,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         ColumnModel header = new ColumnModel(Arrays.asList(lang, title, actions));
 
         list = new Grid<BaseModelData>(store, header);
-        list.setAutoExpandColumn("header");
         list.setHideHeaders(true);
-        list.setAutoExpandMax(1200);
         list.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BaseModelData>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<BaseModelData> se) {

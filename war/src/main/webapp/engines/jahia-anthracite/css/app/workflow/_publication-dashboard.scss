@@ -202,10 +202,10 @@ div.publicationstatuswindow-card.engine-window {
 
         .x-grid3 {
           .x-grid3-row {
-            height: 48px !important;
+            height: min-content !important;
+            min-height: 48px !important;
             width: auto !important;
             padding: 0 !important;
-            max-width: 1500px !important;
 
             &.x-grid3-row-selected {
               background-color: _color("quinary", d) !important;
@@ -234,9 +234,12 @@ div.publicationstatuswindow-card.engine-window {
           > tbody > tr {
             width: 100% !important;
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
             flex-direction: row;
-            height: 48px !important;
-            line-height: 48px !important;
+            justify-content: space-between;
+            min-height: 48px !important;
+            // line-height: 48px !important;
 
             > td:first-child {
               flex-basis: 48px !important;
@@ -267,6 +270,7 @@ div.publicationstatuswindow-card.engine-window {
               font-size: _size("medium");
               font-weight: _weight("light");
               display: flex;
+              flex-grow: 1;
               justify-content: center;
               align-content: center;
               align-items: center;

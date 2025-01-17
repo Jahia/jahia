@@ -192,8 +192,10 @@ Anthracite.addModule("edit", {
             jGet.getCached('body').prepend(publicationStatus);
         }
 
-        jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
-        jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
+        if (jGet('.mainmodule > div:nth-child(2)').exists()) {
+            jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
+            jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
+        }
 
         jGet('.window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer').addClass('side-panel-pin');
 
@@ -964,7 +966,7 @@ Anthracite.addModule("edit", {
                 // Page Titles need centering
                 Anthracite.edit.topbar.reposition();
 
-                if (jGet.class('x-border-panel').exists()) {
+                if (jGet.class('x-border-panel').exists() && jGet.id('JahiaGxtSidePanelTabs').exists()) {
                     var pos = Number(jGet.id('JahiaGxtSidePanelTabs').nodes[0].style.width.substring(0, 3));
                     jGet.class('x-border-panel').nodes[3].style.setProperty('left', (pos + 6) + 'px', 'important');
                     jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - ' + pos + 'px)', 'important');
@@ -1535,9 +1537,11 @@ Anthracite.addModule("edit", {
                 mainFrameWidth = xPos - 48;
                 mainFrameLeft = xPos + 21;
 
-                jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('width', 'calc(100% - ' + mainFrameWidth + 'px)',
-                    'important');
-                jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
+                if (jGet('.mainmodule > div:nth-child(2)').exists()) {
+                    jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('width', 'calc(100% - ' + mainFrameWidth + 'px)',
+                        'important');
+                    jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('left', mainFrameLeft + 'px', 'important');
+                }
 
             } else if (Anthracite.edit.sidepanel.data.pinned) {
                 // Edit Mode pinned
@@ -1585,7 +1589,7 @@ Anthracite.addModule("edit", {
                 });
             }
 
-            if (jGet.id('JahiaGxtRefreshSidePanelButton')) {
+            if (jGet.id('JahiaGxtRefreshSidePanelButton').exists()) {
                 jGet.id('JahiaGxtRefreshSidePanelButton').css({
                     left: (xPos - 85) + 'px'
                 });
@@ -1631,7 +1635,7 @@ Anthracite.addModule("edit", {
                  jGet.class('action-bar-container').nodes[0].style.setProperty('left', xPos + 'px', 'important');
              }
 
-             if (jGet.class('x-border-panel').exists()) {
+             if (jGet.class('x-border-panel').exists() && jGet.class('x-border-panel').nodes.length > 3) {
                  jGet.class('x-border-panel').nodes[3].style.setProperty('left', (xPos + 6) + 'px', 'important');
                  jGet.class('x-border-panel').nodes[3].style.setProperty('width', 'calc(100% - ' + xPos + ')', 'important');
              }
@@ -2006,14 +2010,16 @@ Anthracite.addModule("edit", {
             jGet.getCached('body').setAttribute('data-INDIGO-SIDEPANEL-PINNED', Anthracite.edit.sidepanel.data.pinned);
             jGet.iframe('.window-iframe').filter('body').nodes[0].style.pointerEvents = 'all';
 
-            if (Anthracite.edit.sidepanel.data.pinned && jGet.id('indigoSplitter').exists()) {
-                var xPos = parseInt(jGet.id('indigoSplitter').nodes[0].style.getPropertyValue('left'));
-                jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('width', 'calc(100% - ' + (xPos + 5) + 'px)',
-                    'important');
-                jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('left', (xPos + 10) + 'px', 'important');
-            } else {
-                jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
-                jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
+            if (jGet('.mainmodule > div:nth-child(2)').exists()) {
+                if (Anthracite.edit.sidepanel.data.pinned && jGet.id('indigoSplitter').exists()) {
+                    var xPos = parseInt(jGet.id('indigoSplitter').nodes[0].style.getPropertyValue('left'));
+                    jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('width', 'calc(100% - ' + (xPos + 5) + 'px)',
+                        'important');
+                    jGet('.mainmodule > div:nth-child(2)').nodes[0].style.setProperty('left', (xPos + 10) + 'px', 'important');
+                } else {
+                    jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('width');
+                    jGet('.mainmodule > div:nth-child(2)').nodes[0].style.removeProperty('left');
+                }
             }
 
             Anthracite.edit.topbar.reposition();
@@ -2127,15 +2133,14 @@ Anthracite.addModule("edit", {
             Anthracite.dev.log('::: APP ::: EDIT ::: SIDEPANEL ::: CLIPPAGETITLE');
 
             if (Anthracite.data.currentApp === 'edit') {
-                var sidepanelWidth = parseInt(document.getElementById('JahiaGxtSidePanelTabs').style.width) - 78;
+                var sidepanelWidth = document.getElementById('JahiaGxtSidePanelTabs') ? parseInt(document.getElementById('JahiaGxtSidePanelTabs').style.width) - 78 : 0;
                 var pageTitleClip = null;
                 var wideSidepanels = ['JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab', 'JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab', 'JahiaGxtSidePanelTabs__JahiaGxtSearchTab', 'JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab'];
                 var isWide = wideSidepanels.indexOf(Anthracite.edit.sidepanel.data.currentTab) > -1;
                 var isMinimised = isWide && jGet.getCached('body').hasClass('minimise-results');
                 var isPinned = Anthracite.edit.sidepanel.data.pinned;
                 var topRightMenuClip = null;
-                var topRightMenuWidth = parseInt(window.getComputedStyle(jGet.class('edit-menu-topright').nodes[0])['width']);
-
+                var topRightMenuWidth = jGet.class('edit-menu-topright').exists() ? parseInt(window.getComputedStyle(jGet.class('edit-menu-topright').nodes[0])['width']) : 0;
                 if (Anthracite.edit.sidepanel.data.firstRun) {
                     sidepanelWidth += 60;
                     Anthracite.edit.sidepanel.data.firstRun = false;
@@ -2169,17 +2174,20 @@ Anthracite.addModule("edit", {
                     }
                 }
 
-                if (pageTitleClip === null) {
-                    jGet.class('x-current-page-path').nodes[0].style.removeProperty('clip');
-                    jGet.class('edit-menu-topright').nodes[0].style.removeProperty('clip');
-                } else {
-                    jGet.class('x-current-page-path').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + pageTitleClip + 'px)', 'important');
+                if (jGet.class('x-current-page-path').exists()) {
+                    if (pageTitleClip === null) {
+                        jGet.class('x-current-page-path').nodes[0].style.removeProperty('clip');
+                    } else {
+                        jGet.class('x-current-page-path').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + pageTitleClip + 'px)', 'important');
+                    }
                 }
 
-                if (topRightMenuClip === null) {
-                    jGet.class('edit-menu-topright').nodes[0].style.removeProperty('clip');
-                } else {
-                    jGet.class('edit-menu-topright').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + topRightMenuClip + 'px)', 'important');
+                if (jGet.class('edit-menu-topright').exists()) {
+                    if (topRightMenuClip === null) {
+                        jGet.class('edit-menu-topright').nodes[0].style.removeProperty('clip');
+                    } else {
+                        jGet.class('edit-menu-topright').nodes[0].style.setProperty('clip', 'rect(0px, 100vw, 30px, ' + topRightMenuClip + 'px)', 'important');
+                    }
                 }
             }
         },

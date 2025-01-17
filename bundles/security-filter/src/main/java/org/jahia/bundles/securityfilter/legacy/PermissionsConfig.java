@@ -44,15 +44,18 @@ package org.jahia.bundles.securityfilter.legacy;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.bundles.securityfilter.jwt.JWTFilter;
 import org.jahia.bundles.securityfilter.jwt.TokenVerificationResult;
 import org.jahia.bundles.securityfilter.legacy.Permission.AccessType;
 import org.jahia.services.content.*;
+import org.osgi.framework.Constants;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -65,9 +68,31 @@ import java.util.regex.Pattern;
  * <p>
  * Bound to org.jahia.modules.api.permissions.cfg
  */
-public class PermissionsConfig implements ManagedServiceFactory, InitializingBean {
+@Component(
+        service = {PermissionsConfig.class, ManagedServiceFactory.class},
+        immediate = true,
+        property = {
+                Constants.SERVICE_PID + "=org.jahia.modules.api.permissions",
+                Constants.SERVICE_DESCRIPTION + "=Security filter: Legacy service",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
+public class PermissionsConfig implements ManagedServiceFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(PermissionsConfig.class);
+
+    @Activate
+    public void activate() {
+        setRestrictedAccessPermissionFallbackName("addChildNodes_default");
+        setRestrictedAccessPermissionName("api-access");
+
+        if (!restrictedAccessPermissionFallbackName.equals(restrictedAccessPermissionName)
+                && !checkPermissionExists(restrictedAccessPermissionName)) {
+            restrictedAccessPermissionName = restrictedAccessPermissionFallbackName;
+        }
+
+        logger.info("Using {} permission for restricted access", this.restrictedAccessPermissionName);
+    }
 
     private static final Comparator<Permission> PERMISSION_COMPARATOR = new Comparator<Permission>() {
         @Override
@@ -187,10 +212,6 @@ public class PermissionsConfig implements ManagedServiceFactory, InitializingBea
     private String restrictedAccessPermissionFallbackName;
 
     private String restrictedAccessPermissionName;
-
-    private PermissionsConfig() {
-        super();
-    }
 
     @Override
     public String getName() {
@@ -318,15 +339,5 @@ public class PermissionsConfig implements ManagedServiceFactory, InitializingBea
 
     public void setRestrictedAccessPermissionName(String restrictedAccessPermissionName) {
         this.restrictedAccessPermissionName = restrictedAccessPermissionName;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        if (!restrictedAccessPermissionFallbackName.equals(restrictedAccessPermissionName)
-                && !checkPermissionExists(restrictedAccessPermissionName)) {
-            restrictedAccessPermissionName = restrictedAccessPermissionFallbackName;
-        }
-
-        logger.info("Using {} permission for restricted access", this.restrictedAccessPermissionName);
     }
 }

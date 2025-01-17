@@ -42,6 +42,7 @@
  */
 package org.jahia.bundles.securityfilter.core;
 
+import org.jahia.bin.Jahia;
 import org.jahia.bundles.securityfilter.core.apply.AlwaysAutoApply;
 import org.jahia.bundles.securityfilter.core.apply.AutoApply;
 import org.jahia.bundles.securityfilter.core.apply.AutoApplyByOrigin;
@@ -54,7 +55,9 @@ import org.jahia.bundles.securityfilter.core.grant.NodeGrant;
 import org.jahia.services.modulemanager.util.PropertiesList;
 import org.jahia.services.modulemanager.util.PropertiesManager;
 import org.jahia.services.modulemanager.util.PropertiesValues;
+import org.osgi.framework.Constants;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +65,15 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Component(
+        service = {AuthorizationConfig.class, ManagedServiceFactory.class},
+        immediate = true,
+        property = {
+                Constants.SERVICE_PID + "=org.jahia.bundles.api.authorization",
+                Constants.SERVICE_DESCRIPTION + "=Security filter: API authorization configuration service",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
 public class AuthorizationConfig implements ManagedServiceFactory {
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationConfig.class);
 

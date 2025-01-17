@@ -64,7 +64,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Category>jahia-bundle</Bundle-Category>
                         <Export-Package>
                             org.jahia.bundles.config
                         </Export-Package>

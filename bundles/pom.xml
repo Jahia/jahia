@@ -61,6 +61,7 @@
         <module>jahia-extends-OSGI-registry</module>
         <module>jahiamodule-extender</module>
         <module>webconsole-config</module>
+        <module>webconsole-extender</module>
         <module>jspapiusage-repackaging</module>
         <module>bridging-log4j-appender</module>
         <module>jaas-module</module>

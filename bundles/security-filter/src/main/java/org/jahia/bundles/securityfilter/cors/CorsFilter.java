@@ -60,11 +60,17 @@ package org.jahia.bundles.securityfilter.cors;
  */
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.AbstractServletFilter;
 import org.jahia.bundles.securityfilter.core.AuthorizationConfig;
 import org.jahia.bundles.securityfilter.core.ConfigUtil;
+import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,8 +119,33 @@ import static org.jahia.bundles.securityfilter.core.ParserHelper.isSameOrigin;
  *
  * @see <a href="http://www.w3.org/TR/cors/">CORS specification</a>
  */
+@Component(
+        service = {AbstractServletFilter.class, ManagedService.class},
+        immediate = true,
+        property = {
+                Constants.SERVICE_PID + "=org.jahia.bundles.api.security",
+                Constants.SERVICE_DESCRIPTION + "=Security filter: CORS filter for graphQL",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
 public final class CorsFilter extends AbstractServletFilter implements ManagedService {
+
     private static final Logger logger = LoggerFactory.getLogger(CorsFilter.class);
+
+    @Activate
+    public void activate() {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("cors.preflight.maxage", "3600");
+        this.setParameters(parameters);
+        this.setUrlPatterns(new String[]{"/modules/graphql"});
+    }
+
+    private AuthorizationConfig authorizationConfig;
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    public void setAuthorizationConfig(AuthorizationConfig authorizationConfig) {
+        this.authorizationConfig = authorizationConfig;
+    }
 
     // -------------------------------------------------- CORS Response Headers
     /**
@@ -373,8 +404,6 @@ public final class CorsFilter extends AbstractServletFilter implements ManagedSe
      * Determines if the request should be decorated or not.
      */
     private boolean decorateRequest;
-
-    private AuthorizationConfig authorizationConfig;
 
     public CorsFilter() {
         this.allowedOrigins = new HashSet<>();
@@ -962,9 +991,6 @@ public final class CorsFilter extends AbstractServletFilter implements ManagedSe
         return allowedHttpHeaders;
     }
 
-    public void setAuthorizationConfig(AuthorizationConfig authorizationConfig) {
-        this.authorizationConfig = authorizationConfig;
-    }
 
     /**
      * Enumerates varies types of CORS requests. Also, provides utility methods

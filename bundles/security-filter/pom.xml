@@ -64,10 +64,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Require-Capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</Require-Capability>
-                        <Import-Package>!org.osgi.service.blueprint,*</Import-Package>
                         <Export-Package>org.jahia.bundles.securityfilter,com.auth0.jwt.interfaces</Export-Package>
                         <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
+                        <_dsannotations>org.jahia.bundles.securityfilter.*</_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>
@@ -122,5 +121,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

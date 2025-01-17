@@ -42,14 +42,40 @@
  */
 package org.jahia.bundles.securityfilter.views;
 
+import org.jahia.bin.Jahia;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.filter.RenderFilter;
+import org.jahia.services.securityfilter.PermissionService;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 /**
  * Filter that checks permission configuration specifically for an AJAX request before rendering a view.
  */
+@Component(
+        service = RenderFilter.class,
+        immediate = true,
+        property = {
+                Constants.SERVICE_DESCRIPTION + "=Security filter: Render filter that checks permission configuration specifically for an AJAX request before rendering a view",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
 public class AjaxPermissionFilter extends PermissionFilter {
+
+    public AjaxPermissionFilter() {
+        super();
+        setDescription("Filter that checks permission configuration specifically for an AJAX request before rendering a view.");
+    }
+
+    @Override
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    public void setPermissionService(PermissionService permissionService) {
+        super.setPermissionService(permissionService);
+    }
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {

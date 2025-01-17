@@ -273,11 +273,10 @@ public final class BundleUtils {
     }
 
     /**
-     * Returns <code>true</code> if the provided bundle represents Jahia-related bundle (either a module or a service).
-     *
-     * @param bundle the OSGi bundle to check
-     * @return <code>true</code> if the provided bundle represents Jahia-related bundle (either a module or a service)
+     * @deprecated used for detecting if a bundle was a Jahia bundle, in order to handle specific blueprint/spring related logic.
+     *            This is no longer needed as blueprint/spring is not used in our internal bundles.
      */
+    @Deprecated
     public static boolean isJahiaBundle(Bundle bundle) {
         return isJahiaModuleBundle(bundle)
                 || StringUtils.defaultString(bundle.getHeaders().get("Bundle-Category")).toLowerCase()

@@ -42,35 +42,41 @@
  */
 package org.jahia.bundles.securityfilter.views;
 
+import org.jahia.bin.Jahia;
+import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.render.scripting.Script;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 /**
  * Filter that checks permission configuration before rendering a view.
  */
-public class PermissionFilter extends AbstractFilter {
+@Component(
+        service = RenderFilter.class,
+        immediate = true,
+        property = {
+                Constants.SERVICE_DESCRIPTION + "=Security filter: Render filter that checks permission configuration before rendering a view",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
+public class PermissionFilter extends BasePermissionFilter {
 
-    protected static final String VIEW = "view";
+    public PermissionFilter() {
+        super();
+        setDescription("Filter that checks permission configuration before rendering a view");
+        setApplyOnTemplateTypes("json,html");
+    }
 
     protected PermissionService permissionService;
 
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
-    }
-
-    @Override
-    public boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
-        return super.areConditionsMatched(renderContext, resource) || (resource.getModuleParams().get("forcePermissionFilterCheck") != null);
-    }
-
-    public void setApplyOnAjaxRequest(Boolean apply) {
-        if (apply) {
-            addCondition(new AjaxRequestCondition());
-        }
     }
 
     @Override
@@ -86,11 +92,5 @@ public class PermissionFilter extends AbstractFilter {
             throw new PermissionSecurityAccessDeniedException(api, resource.getPath());
         }
         return null;
-    }
-
-    protected boolean hasViewRequirePermissions(RenderContext renderContext) {
-        Script script = (Script) renderContext.getRequest().getAttribute("script");
-        return script != null && (script.getView().getProperties().getProperty("requirePermissions") != null
-                || script.getView().getDefaultProperties().getProperty("requirePermissions") != null);
     }
 }

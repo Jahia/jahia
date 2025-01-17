@@ -44,13 +44,19 @@ package org.jahia.bundles.securityfilter.core;
 
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.settings.SettingsBean;
+import org.jahia.bin.Jahia;
 import org.jahia.bundles.securityfilter.legacy.PermissionsConfig;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.services.securityfilter.ScopeDefinition;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,17 +75,46 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component(
+        service = {PermissionService.class, ManagedService.class},
+        immediate = true,
+        property = {
+                Constants.SERVICE_PID + "=org.jahia.bundles.api.security",
+                Constants.SERVICE_DESCRIPTION + "=Security filter: core service",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
 public class PermissionServiceImpl implements PermissionService, ManagedService {
     private static final Logger logger = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
     private AuthorizationConfig authorizationConfig;
     private PermissionsConfig permissionsConfig;
-    private ThreadLocal<Set<ScopeDefinition>> currentScopesLocal = new ThreadLocal<>();
+    private final ThreadLocal<Set<ScopeDefinition>> currentScopesLocal = new ThreadLocal<>();
     private BundleContext context;
-    private SettingsBean settingsBean = org.jahia.settings.SettingsBean.getInstance();
+    private SettingsBean settingsBean;
 
     private boolean legacyMode = false;
     private boolean migrationReporting = false;
+
+    @Activate
+    public void activate(BundleContext context) {
+        this.context = context;
+    }
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    public void setPermissionsConfig(PermissionsConfig permissionsConfig) {
+        this.permissionsConfig = permissionsConfig;
+    }
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    public void setAuthorizationConfig(AuthorizationConfig authorizationConfig) {
+        this.authorizationConfig = authorizationConfig;
+    }
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
+    }
 
     public Collection<ScopeDefinition> getCurrentScopes() {
         return currentScopesLocal.get() != null ? Collections.unmodifiableSet(currentScopesLocal.get()) : null;
@@ -257,17 +292,5 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
 
     private String debugResult(boolean value) {
         return value ? "GRANTED" : "DENIED";
-    }
-
-    public void setContext(BundleContext context) {
-        this.context = context;
-    }
-
-    public void setPermissionsConfig(PermissionsConfig permissionsConfig) {
-        this.permissionsConfig = permissionsConfig;
-    }
-
-    public void setAuthorizationConfig(AuthorizationConfig authorizationConfig) {
-        this.authorizationConfig = authorizationConfig;
     }
 }

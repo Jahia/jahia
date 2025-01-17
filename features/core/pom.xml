@@ -135,6 +135,12 @@
 
         <dependency>
             <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.webconsole.extender</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.jaas</artifactId>
             <version>${project.version}</version>
         </dependency>

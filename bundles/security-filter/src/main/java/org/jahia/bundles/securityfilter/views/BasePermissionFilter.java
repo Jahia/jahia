@@ -40,18 +40,34 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.spring.bridge;
+package org.jahia.bundles.securityfilter.views;
 
-import org.jahia.osgi.FrameworkService;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.scripting.Script;
 
 /**
- * Send event to framework when started
+ * Base filter for security permission checks
  */
-public class StartListener {
-    /**
-     * Send event to framework when started
-     */
-    public void start() {
-        FrameworkService.getInstance().notifySpringBridgeStarted();
+public class BasePermissionFilter extends AbstractFilter {
+
+    protected static final String VIEW = "view";
+
+    public BasePermissionFilter() {
+        super();
+        setPriority(26);
+        setApplyOnConfigurations("page");
+    }
+
+    @Override
+    public boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
+        return super.areConditionsMatched(renderContext, resource) || (resource.getModuleParams().get("forcePermissionFilterCheck") != null);
+    }
+
+    protected boolean hasViewRequirePermissions(RenderContext renderContext) {
+        Script script = (Script) renderContext.getRequest().getAttribute("script");
+        return script != null && (script.getView().getProperties().getProperty("requirePermissions") != null
+                || script.getView().getDefaultProperties().getProperty("requirePermissions") != null);
     }
 }

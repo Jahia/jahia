@@ -79,7 +79,7 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiApplicationContextCreator.class);
 
-    private ConfigurationScanner configurationScanner = new DefaultConfigurationScanner() {
+    private final ConfigurationScanner configurationScanner = new DefaultConfigurationScanner() {
         @Override
         public String[] getConfigurations(Bundle bundle) {
             String[] cfgArray = super.getConfigurations(bundle);
@@ -93,7 +93,7 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
 
     };
 
-    private ConfigurationScanner defaultConfigurationScanner = new DefaultConfigurationScanner();
+    private final ConfigurationScanner defaultConfigurationScanner = new DefaultConfigurationScanner();
 
     @Override
     public DelegatedExecutionOsgiBundleApplicationContext createApplicationContext(BundleContext bundleContext) throws Exception {
@@ -103,12 +103,13 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
         }
 
         Bundle bundle = bundleContext.getBundle();
-
         boolean isJahiaModuleBundle = BundleUtils.isJahiaModuleBundle(bundle);
-        boolean isJahiaBundle = isJahiaModuleBundle || BundleUtils.isJahiaBundle(bundle);
 
+        // TODO: Once https://jira.jahia.org/browse/TECH-2045 is resolved,
+        //  we can totally forbid blueprint/spring context creation for pure bundles,
+        //  and only keep support for Jahia modules.
         ApplicationContextConfiguration config = new ApplicationContextConfiguration(bundle,
-                isJahiaBundle ? configurationScanner : defaultConfigurationScanner);
+                isJahiaModuleBundle ? configurationScanner : defaultConfigurationScanner);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Created configuration {} for bundle {}", config, OsgiStringUtils.nullSafeNameAndSymName(bundle));
@@ -120,18 +121,13 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
         }
 
         OsgiBundleXmlApplicationContext ctx = new JahiaOsgiBundleXmlApplicationContext(config.getConfigurationLocations());
-        ApplicationContext parentContext = SpringContextSingleton.getInstance().getContext();
         ctx.setBundleContext(bundleContext);
         ctx.setPublishContextAsService(config.isPublishContextAsService());
-        if (isJahiaBundle) {
-            ctx.setParent(parentContext);
-            if (isJahiaModuleBundle) {
-                JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
-                if (module != null) {
-                    ctx.setClassLoader(module.getClassLoader());
-                }
-            } else {
-                ctx.setClassLoader(BundleUtils.createBundleClassLoader(bundle));
+        if (isJahiaModuleBundle) {
+            ctx.setParent(SpringContextSingleton.getInstance().getContext());
+            JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
+            if (module != null) {
+                ctx.setClassLoader(module.getClassLoader());
             }
         }
 

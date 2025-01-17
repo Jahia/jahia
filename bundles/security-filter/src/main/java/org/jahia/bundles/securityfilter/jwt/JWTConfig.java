@@ -51,17 +51,28 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Verification;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
+import org.jahia.bin.Jahia;
 import org.jahia.bundles.securityfilter.JWTService;
+import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.RepositoryException;
 import java.util.*;
 
-public class JWTConfig implements JWTService, ManagedService, InitializingBean {
+@Component(
+        service = {JWTService.class, ManagedService.class},
+        immediate = true,
+        property = {
+                Constants.SERVICE_PID + "=org.jahia.bundles.jwt.token",
+                Constants.SERVICE_DESCRIPTION + "=Security filter: JWT token configuration service",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
+public class JWTConfig implements JWTService, ManagedService {
     private static final Logger logger = LoggerFactory.getLogger(JWTConfig.class);
 
     //Configuration as defined by the config file. Includes secret, algorithm etc.
@@ -111,11 +122,6 @@ public class JWTConfig implements JWTService, ManagedService, InitializingBean {
             }
             logger.info("JWT configuration reloaded");
         }
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-
     }
 
     private void addConfigToToken(JWTCreator.Builder builder, Date now) {

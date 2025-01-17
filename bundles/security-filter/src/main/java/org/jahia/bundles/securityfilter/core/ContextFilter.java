@@ -42,19 +42,40 @@
  */
 package org.jahia.bundles.securityfilter.core;
 
+import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.AbstractServletFilter;
 import org.jahia.services.securityfilter.PermissionService;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Component(
+        service = AbstractServletFilter.class,
+        immediate = true,
+        property = {
+                Constants.SERVICE_DESCRIPTION + "=Security filter: servlet filter that sets up the permission scopes for the current request",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
 public class ContextFilter extends AbstractServletFilter {
 
     private PermissionService permissionService;
 
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
+    }
+
+    @Activate
+    public void activate() {
+        this.setOrder(-1);
+        this.setUrlPatterns(new String[]{"/*"});
     }
 
     @Override

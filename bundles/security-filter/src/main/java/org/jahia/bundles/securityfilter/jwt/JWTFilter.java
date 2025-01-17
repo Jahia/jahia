@@ -44,8 +44,15 @@ package org.jahia.bundles.securityfilter.jwt;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.AbstractServletFilter;
+import org.jahia.bundles.securityfilter.JWTService;
 import org.jahia.services.securityfilter.PermissionService;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,13 +61,21 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
+@Component(
+        service = AbstractServletFilter.class,
+        immediate = true,
+        property = {
+                Constants.SERVICE_DESCRIPTION + "=Security filter: servlet filter used for JWT token verification",
+                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
+        }
+)
 public class JWTFilter extends AbstractServletFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
 
     private static final String BEARER = "Bearer";
     private static final ThreadLocal<TokenVerificationResult> THREAD_LOCAL = new ThreadLocal<TokenVerificationResult>();
-    private JWTConfig jwtConfig;
+    private JWTService jwtService;
 
     public static TokenVerificationResult getJWTTokenVerificationStatus() {
         return THREAD_LOCAL.get();
@@ -68,12 +83,19 @@ public class JWTFilter extends AbstractServletFilter {
 
     private PermissionService permissionService;
 
+    @Activate
+    public void activate() {
+        this.setUrlPatterns(new String[]{"/*"});
+    }
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
     }
 
-    public void setJwtConfig(JWTConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    public void setJwtConfig(JWTService jwtService) {
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -94,7 +116,7 @@ public class JWTFilter extends AbstractServletFilter {
             String token = StringUtils.substringAfter(authorization, BEARER).trim();
             if (!StringUtils.isEmpty(token)) {
                 try {
-                    DecodedJWT decodedToken = jwtConfig.verifyToken(token);
+                    DecodedJWT decodedToken = jwtService.verifyToken(token);
 
                     verifyToken(httpRequest, tvr, decodedToken);
 

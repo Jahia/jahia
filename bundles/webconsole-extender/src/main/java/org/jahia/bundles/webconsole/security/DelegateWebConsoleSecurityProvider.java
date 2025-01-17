@@ -42,9 +42,11 @@
  */
 package org.jahia.bundles.webconsole.security;
 
+import org.apache.felix.webconsole.WebConsoleSecurityProvider;
 import org.apache.felix.webconsole.WebConsoleSecurityProvider2;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,19 +56,19 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Jahia security provider for the Felix OSGi Web console that delegates the authentication to the Web container and checks that the user
- * has the condigured required role.
+ * has the configured required role.
  *
  * @author Sergiy Shyrkov
  */
+@Component(service = WebConsoleSecurityProvider.class, immediate = true)
 public class DelegateWebConsoleSecurityProvider implements WebConsoleSecurityProvider2 {
     public static final Logger logger = LoggerFactory.getLogger(DelegateWebConsoleSecurityProvider.class);
-
-    private String requiredPermission;
 
     @Override
     public boolean authenticate(HttpServletRequest request, HttpServletResponse response) {
         try {
-            return JCRTemplate.getInstance().doExecute((JahiaUser) request.getUserPrincipal(), null, null, session -> session.getNode("/tools").hasPermission(requiredPermission));
+            return JCRTemplate.getInstance().doExecute((JahiaUser) request.getUserPrincipal(), null, null,
+                    session -> session.getNode("/tools").hasPermission("systemToolsAccess"));
         } catch (RepositoryException e) {
             logger.error("Cannot check permission", e);
         }
@@ -81,9 +83,5 @@ public class DelegateWebConsoleSecurityProvider implements WebConsoleSecurityPro
     @Override
     public boolean authorize(Object user, String role) {
         return false;
-    }
-
-    public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
     }
 }

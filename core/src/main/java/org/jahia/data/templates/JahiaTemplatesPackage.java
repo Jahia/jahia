@@ -1260,7 +1260,7 @@ public class JahiaTemplatesPackage {
             List<BundleWire> requiredWires = bundleWiring.getRequiredWires(null);
             for (BundleWire wire : requiredWires) {
                 Bundle wiredBundle = wire.getProvider().getBundle();
-                if (BundleUtils.isJahiaBundle(wiredBundle) && wiredBundle.getState() >= Bundle.RESOLVED) {
+                if (BundleUtils.isJahiaModuleBundle(wiredBundle) && wiredBundle.getState() >= Bundle.RESOLVED) {
                     deps.add(BundleUtils.getModule(wiredBundle));
                 }
             }
@@ -1276,7 +1276,7 @@ public class JahiaTemplatesPackage {
             List<BundleWire> providedWires = bundleWiring.getProvidedWires(null);
             for (BundleWire wire : providedWires) {
                 Bundle bundle = wire.getRequirer().getBundle();
-                if (BundleUtils.isJahiaBundle(bundle) && BundleUtils.isJahiaModuleBundle(bundle)) {
+                if (BundleUtils.isJahiaModuleBundle(bundle)) {
                     deps.add(BundleUtils.getModule(bundle));
                 }
             }

@@ -529,7 +529,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             });
         }
-       return new BasePagingLoadResult<GWTJahiaNode>(gwtJahiaNodes, offset, total);
+        return new BasePagingLoadResult<GWTJahiaNode>(gwtJahiaNodes, offset, total);
     }
 
     @Override
@@ -556,7 +556,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public void storePasswordForProvider(String providerKey, String username, String password) throws GWTJahiaServiceException  {
+    public void storePasswordForProvider(String providerKey, String username, String password) throws GWTJahiaServiceException {
         try {
             final JCRSessionWrapper session = retrieveCurrentSession();
             contentHub.storePasswordForProvider(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(getUser().getLocalPath(), session), providerKey, username, password);
@@ -911,7 +911,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             // save shared properties
             properties.saveProperties(Arrays.asList(node), sharedProperties, removedTypes, session, getUILocale(), getSession().getId());
-            if (removedTypes!= null && !removedTypes.isEmpty()) {
+            if (removedTypes != null && !removedTypes.isEmpty()) {
                 for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
                     removedTypes.remove(mixin.getName());
                 }
@@ -1525,7 +1525,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * Check is done against the current session locale.
      *
      * @param uuids                 uuids to get publication info from
-     * @param allSubTree check on the whole subtree or no.
+     * @param allSubTree            check on the whole subtree or no.
      * @param checkForUnpublication allow to check for element which have been unpublished
      * @return a List of GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
@@ -1546,9 +1546,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * Check is done against the set of languages provided.
      *
      * @param uuids                 uuids to get publication info from
-     * @param allSubTree check on the whole subtree or no.
+     * @param allSubTree            check on the whole subtree or no.
      * @param checkForUnpublication allow to check for element which have been unpublished
-     * @param languages Set of languages from which we want information
+     * @param languages             Set of languages from which we want information
      * @return a List of GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
@@ -1634,6 +1634,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException {
+        checkStudioAccess();
         logger.info("Deploying templates {} to the target {}", templatesPath, sitePath);
         moduleHelper.deployModule(templatesPath, sitePath, retrieveCurrentSession());
         logger.info("...template deployment done.");
@@ -1641,6 +1642,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, String siteType, String sources) throws GWTJahiaServiceException {
+        checkStudioAccess();
         try {
             return moduleHelper.createModule(moduleName, artifactId, groupId, siteType, sources, retrieveCurrentSession(null));
         } catch (Exception e) {
@@ -1651,6 +1653,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public GWTJahiaNode checkoutModule(String moduleId, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException {
+        checkStudioAccess();
         try {
             return moduleHelper.checkoutModule(moduleId, scmURI, scmType, branchOrTag, sources, retrieveCurrentSession(null));
         } catch (Exception e) {
@@ -1676,6 +1679,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     public void saveModule(String moduleId, String message) throws GWTJahiaServiceException {
         boolean noChanges;
+        checkStudioAccess();
         try {
             noChanges = !moduleHelper.saveAndCommitModule(moduleId, message, retrieveCurrentSession(null));
         } catch (Exception e) {
@@ -1689,6 +1693,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public String updateModule(String moduleId) throws GWTJahiaServiceException {
+        checkStudioAccess();
         try {
             return moduleHelper.updateModule(moduleId, retrieveCurrentSession(null));
         } catch (Exception e) {
@@ -1706,6 +1711,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     @Override
     public void addToSourceControl(String moduleId, GWTJahiaNode node) throws GWTJahiaServiceException {
+        checkStudioAccess();
         try {
             moduleHelper.addToSourceControl(moduleId, node, retrieveCurrentSession(null));
         } catch (Exception e) {
@@ -1739,6 +1745,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     @Override
     public void compileAndDeploy(String moduleId) throws GWTJahiaServiceException {
+        checkStudioAccess();
         try {
             moduleHelper.compileAndDeploy(moduleId, retrieveCurrentSession(null));
         } catch (Exception e) {
@@ -1758,6 +1765,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     @Override
     public GWTJahiaNode generateWar(String moduleId) throws GWTJahiaServiceException {
+        checkStudioAccess();
         try {
             return moduleHelper.releaseModule(moduleId, null, retrieveCurrentSession(null));
         } catch (Exception e) {
@@ -1777,6 +1785,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     @Override
     public RpcMap releaseModule(String moduleId, GWTModuleReleaseInfo releaseInfo) throws GWTJahiaServiceException {
+        checkStudioAccess();
         try {
             GWTJahiaNode node = moduleHelper.releaseModule(moduleId, releaseInfo, retrieveCurrentSession(null));
             RpcMap r = new RpcMap();
@@ -2008,7 +2017,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (gwtMixin != null) {
             List<GWTJahiaNodeType> gwtMixinCopy = new ArrayList<>(gwtMixin);
             for (GWTJahiaNodeType type : gwtMixinCopy) {
-                if(type.getSuperTypes().contains("jmix:templateMixin")) {
+                if (type.getSuperTypes().contains("jmix:templateMixin")) {
                     for (String superType : type.getSuperTypes()) {
                         GWTJahiaNodeType nodeType = contentDefinition
                                 .getGWTJahiaNodeType(NodeTypeRegistry.getInstance().getNodeType(superType), getUILocale());
@@ -2100,7 +2109,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             JCRNodeWrapper nodeWrapper = null;
             for (String path : paths) {
-                if(!sessionWrapper.nodeExists(path)) {
+                if (!sessionWrapper.nodeExists(path)) {
                     // the node doesn't exist anymore
                     logger.warn("Cannot initialize edit engine because the node [" + path + "] doesnt exist");
                     return null;
@@ -2703,12 +2712,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public String getToolbarWarnings() throws GWTJahiaServiceException{
+    public String getToolbarWarnings() throws GWTJahiaServiceException {
         return toolbarWarningsService.getMessagesValueAsString(getUILocale());
     }
 
     @Override
     public GWTModuleReleaseInfo getInfoForModuleRelease(String moduleId) throws GWTJahiaServiceException {
+        checkStudioAccess();
         GWTModuleReleaseInfo result = null;
         try {
             result = moduleHelper.getModuleDistributionInfo(moduleId, retrieveCurrentSession());
@@ -2726,6 +2736,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     public GWTModuleReleaseInfo setDistributionServerForModule(String module, GWTModuleReleaseInfo info)
             throws GWTJahiaServiceException {
+        checkStudioAccess();
         GWTModuleReleaseInfo result = null;
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
@@ -2776,6 +2787,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     private void enableJcrSessionReadOnlyCache() {
         JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+    }
+
+    private void checkStudioAccess() throws GWTJahiaServiceException {
+        try {
+            if (!SettingsBean.getInstance().isDevelopmentMode() || !retrieveCurrentSession().getNode("/modules").hasPermission("studioModeAccess")) {
+                throw new RepositoryException("Studio Access denied");
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.access.denied", getUILocale()));
+        }
     }
 
 }

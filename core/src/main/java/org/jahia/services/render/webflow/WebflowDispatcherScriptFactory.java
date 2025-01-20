@@ -56,7 +56,7 @@ public class WebflowDispatcherScriptFactory implements ScriptFactory {
     }
 
     public void initView(View view) {
-        view.getProperties().put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, "0");
+        view.getProperties().put(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION, "0");
     }
 
     public void setXssFilteringEnabled(boolean xssFilteringEnabled) {

@@ -107,4 +107,9 @@ public class QueryStringCacheKeyPartGenerator implements CacheKeyPartGenerator {
         }
         return "{}";
     }
+
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
 }

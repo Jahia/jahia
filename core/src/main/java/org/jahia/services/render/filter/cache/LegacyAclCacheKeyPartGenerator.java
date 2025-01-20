@@ -140,7 +140,7 @@ class LegacyAclCacheKeyPartGenerator extends AclCacheKeyPartGenerator implements
 
             final Set<String> aclsKeys = new TreeSet<String>();
 
-            if ("true".equals(properties.get(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER))) {
+            if ("true".equals(properties.get(CacheUtils.FRAGMENT_PROPERTY_CACHE_PER_USER))) {
                 aclsKeys.add(PER_USER);
             }
 

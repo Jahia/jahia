@@ -74,5 +74,4 @@ public class CustomCacheKeyPartGenerator implements CacheKeyPartGenerator {
         return toBeEncoded != null ? StringUtils.replace(toBeEncoded, "@@", "##") : toBeEncoded;
     }
 
-
 }

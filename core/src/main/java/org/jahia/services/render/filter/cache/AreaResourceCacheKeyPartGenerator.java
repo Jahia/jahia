@@ -110,6 +110,11 @@ public class AreaResourceCacheKeyPartGenerator implements CacheKeyPartGenerator,
         }
     }
 
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
+
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
     }

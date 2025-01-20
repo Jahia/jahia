@@ -369,6 +369,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         String cachedContent = (String) cacheEntry.getObject();
 
         restorePropertiesFromCacheEntry(cacheEntry, renderContext);
+        restoreClientCacheFragmentPolicy(cacheEntry, renderContext);
 
         // Calls aggregation on the fragment content
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
@@ -462,10 +463,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (debugEnabled) {
                     logger.debug("Caching content for final key : {}", finalKey);
                 }
-                doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
+                ClientCachePolicy fragmentClientCachePolicy = getClientCacheFragmentPolicy(finalKey, resource, renderContext, properties);
+                doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, fragmentClientCachePolicy, bypassDependencies);
+                logger.debug("Update render context client cache policy to '{}' for key: {}", fragmentClientCachePolicy, finalKey);
+                renderContext.computeClientCachePolicy(fragmentClientCachePolicy);
+            } else {
+                logger.debug("Update render context client cache policy to 'private' due to bypass cache active for key: {}", finalKey);
+                renderContext.computeClientCachePolicy(ClientCachePolicy.PRIVATE);
             }
         } else {
             notCacheableFragment.put(key, Boolean.TRUE);
+            logger.debug("Update render context client cache policy to 'private' due to not cacheable fragment for key: {}", finalKey);
+            renderContext.computeClientCachePolicy(ClientCachePolicy.PRIVATE);
         }
 
         // Append debug information
@@ -495,12 +504,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @throws ParseException
      */
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
-                           Cache cache, String key, String finalKey) throws RepositoryException, ParseException {
-        doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, false);
+                           Cache cache, String key, String finalKey, ClientCachePolicy fragmentPolicy) throws RepositoryException, ParseException {
+        doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, fragmentPolicy, false);
     }
 
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
-                           Cache cache, String key, String finalKey, boolean bypassDependencies) throws RepositoryException, ParseException {
+                           Cache cache, String key, String finalKey, ClientCachePolicy fragmentPolicy, boolean bypassDependencies) throws RepositoryException, ParseException {
         Long expiration = Long.parseLong(properties.getProperty(CACHE_EXPIRATION));
         Set<String> depNodeWrappers = Collections.emptySet();
 
@@ -509,6 +518,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
         // Store some properties that may have been set during fragment execution (todo : handle this another way)
         addPropertiesToCacheEntry(resource, cacheEntry, renderContext);
+
+        // Store ClientCacheFragmentPolicy
+        cacheEntry.setProperty(ClientCachePolicy.CLIENT_CACHE_FRAGMENT_POLICY_PROPERTY_NAME, fragmentPolicy);
 
         Element cachedElement = new Element(finalKey, cacheEntry);
 
@@ -610,6 +622,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * by cache.requestParameters property in script properties. ec,v,cacheinfo and moduleinfo are automatically added.
      * <p/>
      * cache.expiration : the expiration time of the cache entry. Can be set by the "expiration" request attribute,
+     * <p/>
+     * cache.private : the privacy of the cache entry. Ensure that content won't be flagged as public when requested.
      * j:expiration node property or the cache.expiration property in script properties.
      *
      * @param renderContext
@@ -731,8 +745,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 "jnt:mainResourceDisplay")) {
             cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
         }
-        TreeSet<String> allPaths = new TreeSet<String>();
-        allPaths.addAll(renderContext.getRenderedPaths());
+        TreeSet<String> allPaths = new TreeSet<String>(renderContext.getRenderedPaths());
         //Add current resource too as is as been removed by the TemplatesScriptFilter already
 //        if (renderContext.getRequest().getAttribute("lastResourceRenderedByScript") != null && renderContext.getRequest().getAttribute("lastResourceRenderedByScript").equals(resource)) {
 //            allPaths.add(resource.getNode().getPath());
@@ -848,6 +861,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                 if (!cachedContent.equals(content)) {
                                     try {
                                         restorePropertiesFromCacheEntry(cacheEntry, renderContext);
+                                        restoreClientCacheFragmentPolicy(cacheEntry, renderContext);
 
                                         esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
                                                 aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths")));
@@ -900,11 +914,22 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     @SuppressWarnings("unchecked")
     private void restorePropertiesFromCacheEntry(CacheEntry<?> cacheEntry, RenderContext renderContext) {
-        if (cacheEntry.getProperty("requestAttributes") != null) {
+        if (cacheEntry.containsKey("requestAttributes")) {
             Map<String,Serializable> requestAttributesToCache = (Map<String, Serializable>) cacheEntry.getProperty("requestAttributes");
             for (Map.Entry<String, Serializable> entry : requestAttributesToCache.entrySet()) {
                 renderContext.getRequest().setAttribute(entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    /**
+     * Restore the client cache fragment policy from the cache entry and update the render context accordingly.
+     */
+    private void restoreClientCacheFragmentPolicy(CacheEntry<?> cacheEntry, RenderContext renderContext) {
+        if (cacheEntry.containsKey(ClientCachePolicy.CLIENT_CACHE_FRAGMENT_POLICY_PROPERTY_NAME)) {
+            ClientCachePolicy restoredClientCachePolicy = (ClientCachePolicy) cacheEntry.getProperty(ClientCachePolicy.CLIENT_CACHE_FRAGMENT_POLICY_PROPERTY_NAME);
+            logger.debug("Restoring client cache fragment policy: {}", restoredClientCachePolicy);
+            renderContext.computeClientCachePolicy(restoredClientCachePolicy);
         }
     }
 
@@ -932,15 +957,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY));
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Node {} is no longer available." + " Replacing output with empty content.",
-                            keyAttrbs.get("path"));
+                    logger.debug("Node {} is no longer available." + " Replacing output with empty content.", keyAttrbs.get("path"));
                 }
                 // Node is not found, return empty content
                 return StringUtils.EMPTY;
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
-                        " areaIdentifier " + areaIdentifier);
+                logger.debug("Calling render service for generating content for key {} with attributes :  areaIdentifier {}", cacheKey,
+                        areaIdentifier);
             }
 
             // Prepare to dispatch to the render service - restore all area/templates atributes
@@ -987,9 +1011,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (StringUtils.isNotEmpty(params)) {
                 try {
                     JSONObject map = new JSONObject(ModuleParamsCacheKeyPartGenerator.decodeString(params));
-                    Iterator keys = map.keys();
+                    Iterator<String> keys = map.keys();
                     while (keys.hasNext()) {
-                        String next = (String) keys.next();
+                        String next = keys.next();
                         resource.getModuleParams().put(next, (Serializable) map.get(next));
                     }
                 } catch (JSONException e) {
@@ -1180,6 +1204,38 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    /**
+     * Determine the client cache policy for the fragment based on the properties set in the script.
+     * It may be increased with any information relevant in the current context that could impact the client cache level or
+     * expiration time.
+     *
+     * @param key, the final cache key
+     * @param resource, the resource
+     * @param ctx, the render context
+     * @param properties, the node properties
+     * @return the client cache policy for that fragment
+     */
+    private ClientCachePolicy getClientCacheFragmentPolicy(String key, Resource resource, RenderContext ctx, Properties properties) {
+        logger.debug("Determining client cache policy for fragment with key {}", key);
+        if (properties.containsKey(CacheUtils.FRAGMENT_PROPERTY_CACHE_PRIVATE) &&
+                properties.getProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_PRIVATE).equals("true")) {
+            logger.debug("Fragment with key {} requires 'private' client cache policy (cache.private)", key);
+            return ClientCachePolicy.PRIVATE;
+        }
+        if (properties.containsKey(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION) &&
+                Long.parseLong(properties.getProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION)) >= 0) {
+            logger.debug("Fragment with key {} requires 'custom' client cache policy (cache.expiration)", key);
+            return new ClientCachePolicy(ClientCachePolicy.Level.CUSTOM, Integer.parseInt(properties.getProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION)));
+        }
+        //For all other cases, we need to check if the fragment has a contributor that can provide a client cache policy
+        ClientCachePolicy computedPolicy = cacheProvider.getKeyGenerator().parse(key).entrySet().stream()
+                .filter(entry -> StringUtils.isNotEmpty(entry.getValue()))
+                .map(e -> cacheProvider.getKeyGenerator().getPartGenerator(e.getKey()).getClientCachePolicy(resource, ctx, properties, e.getValue()))
+                .reduce(ClientCachePolicy.DEFAULT, ClientCachePolicy::strongest);
+        logger.debug("Fragment with key {} requires '{}' client cache policy (computed)", key, computedPolicy.getLevel().getValue());
+        return computedPolicy;
+    }
+
     protected CountDownLatch avoidParallelProcessingOfSameModule(String key, RenderContext renderContext,
                                                                  Resource resource, Properties properties) throws RepositoryException {
         final HttpServletRequest request = renderContext.getRequest();
@@ -1206,12 +1262,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             try {
                 if (!latch.await(generatorQueue.getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                     manageThreadDump();
-                    StringBuilder errorMsgBuilder = new StringBuilder(512);
-                    errorMsgBuilder.append("Module generation takes too long due to module not generated fast enough (>")
-                            .append(generatorQueue.getModuleGenerationWaitTime()).append(" ms)- ").append(key).append(" - ")
-                            .append(request.getRequestURI());
+                    String errorMsgBuilder = "Module generation takes too long due to module not generated fast enough (>"
+                            + generatorQueue.getModuleGenerationWaitTime() + " ms)- " + key + " - " + request.getRequestURI();
                     renderContext.getRenderedPaths().remove(resource.getNode().getPath());
-                    throw new JahiaServiceUnavailableException(errorMsgBuilder.toString());
+                    throw new JahiaServiceUnavailableException(errorMsgBuilder);
                 }
                 latch = null;
             } catch (InterruptedException ie) {
@@ -1224,7 +1278,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     private boolean shouldUseLatch(Resource resource, Properties properties) throws RepositoryException {
         if (!StringUtils.isEmpty(properties.getProperty("cache.latch"))) {
-            return Boolean.valueOf(properties.getProperty("cache.latch"));
+            return Boolean.parseBoolean(properties.getProperty("cache.latch"));
         }
         if (skipLatchForConfigurations != null && skipLatchForConfigurations.contains(resource.getContextConfiguration())) {
             return false;

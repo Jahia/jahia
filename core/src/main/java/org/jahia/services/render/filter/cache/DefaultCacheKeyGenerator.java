@@ -245,7 +245,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         }
 
         if (node.hasProperty(CacheUtils.NODE_PROPERTY_CACHE_PER_USER)) {
-            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER, node.getProperty(CacheUtils.NODE_PROPERTY_CACHE_PER_USER).getString());
+            properties.put(CacheUtils.FRAGMENT_PROPERTY_CACHE_PER_USER, node.getProperty(CacheUtils.NODE_PROPERTY_CACHE_PER_USER).getString());
         }
         if (isBound) {
             // TODO check this, if the component is a bound component don't mean that it's always bound to the main resource
@@ -266,17 +266,17 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         properties.put("cache.requestParameters", updatedRequestParameters.toString());
 
         // cache expiration lookup by order : request attribute -> node -> view -> -1 (forever in cache realm, 4 hours)
-        String viewExpiration = properties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
+        String viewExpiration = properties.getProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION);
         final Object requestExpiration = request.getAttribute("expiration");
         if (requestExpiration != null) {
             // TODO BACKLOG-6561: we should avoid that, the day we remove AggregateCacheFilter, we can remove this one
-            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, requestExpiration);
+            properties.put(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION, requestExpiration);
         } else if (node.hasProperty("j:expiration")) {
-            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, node.getProperty("j:expiration").getString());
+            properties.put(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION, node.getProperty("j:expiration").getString());
         } else if (viewExpiration != null) {
-            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, viewExpiration);
+            properties.put(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION, viewExpiration);
         } else {
-            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, "-1");
+            properties.put(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION, "-1");
         }
 
         String propertiesScript = properties.getProperty("cache.propertiesScript");

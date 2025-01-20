@@ -87,4 +87,9 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, Rende
             renderContext.getRequest().removeAttribute("inArea");
         }
     }
+
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
 }

@@ -131,7 +131,7 @@ public class ModulesProviderTest {
         // write properties
         String testString = System.currentTimeMillis() + "\n";
         viewNode.setProperty("sourceCode", sourceCode + testString);
-        viewNode.setProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER, true);
+        viewNode.setProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_PER_USER, true);
         viewNode.setProperty("cache.requestParameters", "dummyParam");
         s.save();
 
@@ -142,7 +142,7 @@ public class ModulesProviderTest {
         root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources");
         viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
         assertThat(viewNode.getProperty("sourceCode").getString()).endsWith(testString);
-        assertThat(viewNode.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER).getBoolean()).isTrue();
+        assertThat(viewNode.getProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_PER_USER).getBoolean()).isTrue();
         assertThat(viewNode.getProperty("cache.requestParameters").getString()).isEqualTo("dummyParam");
 
         viewNode.setProperty("sourceCode", sourceCode);

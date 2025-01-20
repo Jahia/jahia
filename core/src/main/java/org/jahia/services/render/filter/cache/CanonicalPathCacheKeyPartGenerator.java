@@ -68,4 +68,9 @@ public class CanonicalPathCacheKeyPartGenerator implements CacheKeyPartGenerator
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         return getKey();
     }
+
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
 }

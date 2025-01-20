@@ -118,6 +118,11 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
     }
 
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
+
     private static class OrderedJsonObject extends JSONObject {
 
         public OrderedJsonObject(Map<?, ?> map) {

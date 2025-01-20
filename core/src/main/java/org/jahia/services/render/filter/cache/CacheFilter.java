@@ -220,7 +220,7 @@ public class CacheFilter extends AbstractFilter {
                     logger.debug("Caching fragment {} for final key: {}", resource.getPath(), finalKey);
 
                     doCache(previousOut, renderContext, resource,
-                            isAnError ? errorCacheExpiration : Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)),
+                            isAnError ? errorCacheExpiration : Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION)),
                             cacheProvider.getCache(), finalKey, isAnError);
                     // content is in cache and available, release latch for other threads waiting for this fragment
                     generatorQueue.releaseLatch(finalKey);
@@ -428,7 +428,7 @@ public class CacheFilter extends AbstractFilter {
         }
 
         // check if we have a valid cache expiration
-        final String cacheExpiration = fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
+        final String cacheExpiration = fragmentProperties.getProperty(CacheUtils.FRAGMENT_PROPERTY_CACHE_EXPIRATION);
         Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
         return expiration != 0L;
     }

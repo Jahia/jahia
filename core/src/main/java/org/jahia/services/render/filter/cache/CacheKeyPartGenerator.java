@@ -54,7 +54,7 @@ import java.util.Properties;
  * Date: 11/20/12
  * Time: 12:20 PM
  */
-public interface CacheKeyPartGenerator {
+public interface CacheKeyPartGenerator extends ClientCachePolicyContributor {
 
     /**
      * @return The key to identify the part generator
@@ -81,4 +81,5 @@ public interface CacheKeyPartGenerator {
      * @return the final key where plecaholders replaced with actual values
      */
     String replacePlaceholders(RenderContext renderContext, String keyPart);
+
 }

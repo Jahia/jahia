@@ -63,4 +63,8 @@ public class LanguageCacheKeyPartGenerator implements CacheKeyPartGenerator {
         return keyPart;
     }
 
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
 }

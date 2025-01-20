@@ -74,4 +74,9 @@ public class PathCacheKeyPartGenerator implements CacheKeyPartGenerator {
         return StringUtils.replace(keyPart, MAIN_RESOURCE_KEY,
                 renderContext.getMainResource().getNode().getCanonicalPath() + renderContext.getMainResource().getResolvedTemplate());
     }
+
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
 }

@@ -196,7 +196,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         try {
             final Set<String> aclsKeys = new TreeSet<>();
 
-            if (usePerUser || "true".equals(properties.get(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER))) {
+            if (usePerUser || "true".equals(properties.get(CacheUtils.FRAGMENT_PROPERTY_CACHE_PER_USER))) {
                 return PER_USER;
             }
 
@@ -342,6 +342,13 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         String replacedKeyPart = StringUtils.replace(r.toString(), "@@", "%0");
         logger.debug("ACL keypart : {} = {}", keyPart, replacedKeyPart);
         return replacedKeyPart;
+    }
+
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        //The only optimization possible is to determine if a loggedUser have the same view that the guest user, and in that case only
+        //return a default client cache policy (the same that the guest user)
+        return renderContext.isLoggedIn() ? ClientCachePolicy.PRIVATE : ClientCachePolicy.DEFAULT;
     }
 
     /**

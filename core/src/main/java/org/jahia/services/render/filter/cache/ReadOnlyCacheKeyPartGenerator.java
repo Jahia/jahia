@@ -76,4 +76,9 @@ public class ReadOnlyCacheKeyPartGenerator implements CacheKeyPartGenerator {
         final String readOnlyStatus = ReadOnlyModeController.getInstance().getReadOnlyStatus().name();
         return StringUtils.replace(keyPart, READ_ONLY_KEY, readOnlyStatus);
     }
+
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.DEFAULT;
+    }
 }

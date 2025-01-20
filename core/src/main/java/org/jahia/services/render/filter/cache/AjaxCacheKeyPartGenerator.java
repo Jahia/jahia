@@ -72,4 +72,9 @@ public class AjaxCacheKeyPartGenerator implements CacheKeyPartGenerator {
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         return keyPart;
     }
+
+    @Override
+    public ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
+        return ClientCachePolicy.PRIVATE;
+    }
 }

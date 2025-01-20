@@ -51,6 +51,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.render.filter.cache.ClientCachePolicy;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -105,11 +106,13 @@ public class RenderContext {
     private boolean forceUILocaleForJCRSession;
 
     private boolean ugcEnabled = true;
+    private ClientCachePolicy clientCachePolicy;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
         this.response = response;
         this.user = user;
+        this.clientCachePolicy = ClientCachePolicy.DEFAULT;
     }
 
     public HttpServletRequest getRequest() {
@@ -433,5 +436,27 @@ public class RenderContext {
     public boolean isReadOnly() {
         SettingsBean settings = SettingsBean.getInstance();
         return (settings.isReadOnlyMode() || settings.isMaintenanceMode() || settings.isFullReadOnlyMode());
+    }
+
+    /**
+     * Compute the client cache policy for the current render context.
+     * It is only possible to upgrade to a stronger level :
+     * If level is public, you can update to custom(with ttl) or private.
+     * If level is custom, you can update to custom with lower ttl or private.
+     * If level is private, you can't update it.
+     * As soon as a policy is encountered in the render chain, on any fragment, stored in cache or calculated live, it will
+     * be computed in the render context to reflect the according policy level in the end.
+     *
+     *
+     * @param policy, the new policy to apply
+     */
+    public synchronized void computeClientCachePolicy(ClientCachePolicy policy) {
+        if (policy.isStronger(this.clientCachePolicy)) {
+            this.clientCachePolicy = policy;
+        }
+    }
+
+    public ClientCachePolicy getClientCachePolicy() {
+        return clientCachePolicy;
     }
 }

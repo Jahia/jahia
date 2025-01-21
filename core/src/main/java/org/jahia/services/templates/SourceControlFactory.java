@@ -51,6 +51,7 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,6 +234,11 @@ public class SourceControlFactory {
      */
     public void setSourceControlExecutables(Map<String, String> sourceControlExecutables) {
         this.sourceControlExecutables = new HashMap<String, String>();
+        // Do not register SCM executables in production mode
+        if (!SettingsBean.getInstance().isDevelopmentMode()) {
+            logger.info("Skipping SCM executables registration in non development mode.");
+            return;
+        }
         for (Map.Entry<String, String> entry : sourceControlExecutables.entrySet()) {
             try {
                 DefaultExecutor executor = new DefaultExecutor();

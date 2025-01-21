@@ -458,7 +458,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     /**
      * @deprecated use setSuppressTreePublicationInfo and/or setSuppressTablePublicationInfo
      */
-    @Deprecated
+    @Deprecated(since = "8.0.2.0", forRemoval = true)
     public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
         this.suppressTreePublicationInfo = suppressPublicationInfo;
         this.suppressTablePublicationInfo = suppressPublicationInfo;
@@ -475,7 +475,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     /**
      * @deprecated since 7.2.3.1
      */
-    @Deprecated
+    @Deprecated(since = "7.2.3.1", forRemoval = true)
     public void setShowWorkInProgress(boolean showWorkInProgress) {
     }
 

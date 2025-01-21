@@ -265,7 +265,7 @@ public class TemplatePackageDeployer {
      * @param session current JCR session instance
      * @throws RepositoryException in case of JCR-related errors
      */
-    @Deprecated
+    @Deprecated(since = "7.2.1.0", forRemoval = true)
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
         clearModuleNodes(pkg.getId(), pkg.getVersion(), session);
     }

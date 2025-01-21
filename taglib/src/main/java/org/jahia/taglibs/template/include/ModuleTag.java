@@ -687,7 +687,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         parameters.put(name, value);
     }
 
-    @Deprecated
+    @Deprecated(since = "7.3.1.0", forRemoval = true)
     public void setCheckConstraints(boolean checkConstraints) {
         // constraint are now resolved by JCRFilterTag when called by list jsp
         this.checkConstraints = checkConstraints;

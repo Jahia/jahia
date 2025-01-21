@@ -340,7 +340,7 @@ public class JCRTagUtils {
     /**
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.2.2.1", forRemoval = true)
     public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws Exception {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
 

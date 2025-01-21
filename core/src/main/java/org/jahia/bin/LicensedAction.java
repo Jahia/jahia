@@ -48,7 +48,7 @@ package org.jahia.bin;
  * @author Sergiy Shyrkov
  * @deprecated No license check is done on actions anymore
  */
-@Deprecated
+@Deprecated(since = "8.0.2.0", forRemoval = true)
 public abstract class LicensedAction extends Action {
 
     public final void setLicenseFeature(String licenseFeature) {

@@ -68,7 +68,7 @@ import javax.servlet.RequestDispatcher;
  *
  * @deprecated in favour of {@link BundleView}
  */
-@Deprecated
+@Deprecated(since = "7.1.0.0", forRemoval = true)
 public class FileSystemView implements Comparable<View>, View {
     private static final Properties EMPTY_PROPERTIES = new Properties();
     private static Logger logger = LoggerFactory.getLogger(FileSystemView.class);

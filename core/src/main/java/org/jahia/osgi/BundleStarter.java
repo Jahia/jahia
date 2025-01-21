@@ -79,10 +79,10 @@ class BundleStarter {
 
     private static final Logger logger = LoggerFactory.getLogger(BundleStarter.class);
 
-    @Deprecated
+    @Deprecated(since = "8.0.0.0", forRemoval = true)
     private static final String MARKER_INITIAL_BUNDLES = "[initial-bundles].dostart";
 
-    @Deprecated
+    @Deprecated(since = "8.0.0.0", forRemoval = true)
     private static final String MARKER_MIGRATE_BUNDLES = "[migrate-bundles].dostart";
 
     private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> modulesByBundle) {
@@ -292,10 +292,11 @@ class BundleStarter {
 
     /**
      * Used only for migrations from versions < 7.3.1.1
+     * If we dont have further migration from previous versions, this method can be removed.
      *
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "8.0.0.0", forRemoval = true)
     void startInitialBundlesIfNeeded() {
         File marker = new File(System.getProperty("org.osgi.framework.storage"), MARKER_INITIAL_BUNDLES);
         if (!marker.exists()) {
@@ -347,10 +348,11 @@ class BundleStarter {
 
     /**
      * Used only for migrations from versions < 7.3.1.1
+     * If we dont have further migration from previous versions, this method can be removed.
      *
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "8.0.0.0", forRemoval = true)
     private void startMigrateBundlesIfNeeded() {
         // as the bundles are not started automatically after a migration whe should do it manually
         File marker = new File(System.getProperty("org.osgi.framework.storage"), MARKER_MIGRATE_BUNDLES);

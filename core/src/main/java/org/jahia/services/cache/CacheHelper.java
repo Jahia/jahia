@@ -77,7 +77,7 @@ public final class CacheHelper {
     /**
      * @deprecated in favour of {@link #CMD_FLUSH_CHILDREN}
      */
-    @Deprecated
+    @Deprecated(since = "7.3.1.0")
     public static final String CMD_FLUSH_CHILDS = "FLUSH_CHILDS";
     public static final String CMD_FLUSH_MATCHINGPERMISSIONS = "FLUSH_MATCHINGPERMISSIONS";
     public static final String CMD_FLUSH_OUTPUT_CACHES = "FLUSH_OUTPUT_CACHES";

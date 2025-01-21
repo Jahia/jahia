@@ -681,7 +681,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
      * @return the database type
      * @deprecated This method is deprecated; {@link #getDatabaseType} should be used instead.
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public String getSchema() {
         return getDatabaseType();
     }
@@ -736,7 +736,7 @@ public class JahiaDatabaseJournal extends JahiaAbstractJournal implements Databa
      * @param databaseType the database type
      * @deprecated This method is deprecated; {@link #setDatabaseType} should be used instead.
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void setSchema(String databaseType) {
         setDatabaseType(databaseType);
     }

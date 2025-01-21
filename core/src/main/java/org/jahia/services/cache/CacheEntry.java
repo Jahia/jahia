@@ -186,7 +186,7 @@ public class CacheEntry<V> implements Serializable {
      *
      * @return  the entry's hits
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public int getHits () {
         return 0;
     }
@@ -194,7 +194,7 @@ public class CacheEntry<V> implements Serializable {
 
     /** <p>Resets the number of times the entry was requested.</p>
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void resetHits () {
     }
 
@@ -202,7 +202,7 @@ public class CacheEntry<V> implements Serializable {
     /** <p>Increments the number of hits by one.</p>
      *
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void incrementHits () {
         // do nothing
     }
@@ -212,7 +212,7 @@ public class CacheEntry<V> implements Serializable {
      *
      * @return  the expiration date
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public Date getExpirationDate () {
         return null;
     }
@@ -222,7 +222,7 @@ public class CacheEntry<V> implements Serializable {
      *
      * @param expirationDate    the expiration date
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void setExpirationDate (Date expirationDate) {
         // do nothing
     }
@@ -230,11 +230,11 @@ public class CacheEntry<V> implements Serializable {
 
     /** <p>Set the last accessed date to the current time.</p>
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void setLastAccessedTimeNow () {
     }
 
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public long getLastAccessedTimeMillis() {
         return 0;
     }

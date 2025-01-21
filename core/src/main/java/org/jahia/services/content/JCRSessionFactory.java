@@ -444,7 +444,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
      * @param p          the provider instance
      * @deprecated use {@link #addProvider(JCRStoreProvider)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void addProvider(String key, String mountPoint, JCRStoreProvider p) {
         addProvider(p);
     }

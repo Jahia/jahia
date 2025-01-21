@@ -1368,7 +1368,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @param expandedFolder path to the expanded folder on disk - if null, do nothing
      * @deprecated use {@link ImportZipContext#close()} instead
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void cleanFilesList(File expandedFolder) {
         if (expandedFolder == null) {
             return;
@@ -2148,7 +2148,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      *          It used to calculate the size of uncompressed files in the zip file, but this information was never really used.
      *          This method risk to be removed in the next major release.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public File getFileList(Resource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {
         File newlyExpandedFolder = null;
         if (settingsBean.isExpandImportedFilesOnDisk()) {
@@ -2258,7 +2258,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     /**
      * @deprecated never been used
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void setPostImportPatcher(Object postImportPatcher) {
         //
     }

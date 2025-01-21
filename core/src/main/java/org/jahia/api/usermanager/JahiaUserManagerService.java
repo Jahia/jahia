@@ -305,7 +305,7 @@ public interface JahiaUserManagerService {
      *
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     List<? extends JahiaUserManagerProvider> getProviderList();
 
     /**
@@ -314,7 +314,7 @@ public interface JahiaUserManagerService {
      *
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     JahiaUserManagerProvider getProvider(String key);
 
     /**
@@ -323,7 +323,7 @@ public interface JahiaUserManagerService {
      *
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
 
     /**

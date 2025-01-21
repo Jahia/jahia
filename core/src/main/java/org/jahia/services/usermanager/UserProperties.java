@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * @author Serge Huber
  * @deprecated
  */
-@Deprecated
+@Deprecated(since = "7.2.0.0", forRemoval = true)
 public class UserProperties implements Serializable {
 
     private static final long serialVersionUID = -5885566091509965795L;

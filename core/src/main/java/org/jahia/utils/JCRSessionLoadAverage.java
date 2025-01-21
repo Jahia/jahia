@@ -47,7 +47,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 /**
  * A tracker for JCR sessions load.
  */
-@Deprecated(forRemoval = true)
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class JCRSessionLoadAverage extends LoadAverage {
 
     private static transient JCRSessionLoadAverage instance = null;

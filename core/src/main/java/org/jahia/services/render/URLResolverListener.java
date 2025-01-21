@@ -137,7 +137,7 @@ public class URLResolverListener extends DefaultEventListener implements ApiEven
         }
     }
 
-    @Deprecated
+    @Deprecated(since = "7.2.3.1", forRemoval = true)
     public void setModuleCacheProvider(ModuleCacheProvider moduleCacheProvider) {
      // deprecated since 7.2.3.1 as not used
     }

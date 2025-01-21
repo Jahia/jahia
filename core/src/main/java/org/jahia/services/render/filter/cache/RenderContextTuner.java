@@ -49,9 +49,12 @@ import org.jahia.services.render.Resource;
  * This interface can be implemented by a CacheKeyPartGenerator to be able to hook before and after content generation in aggregation,
  * Sometimes we store data in the key, and we want to re-inject this data before sub-fragment generation, and clean this re-injected
  * data after the fragment generation. This interface is used for that.
- *
+ * <p>
+ * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+ * <p>
  * Created by jkevan on 08/04/2017.
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public interface RenderContextTuner {
 
     /**
@@ -64,7 +67,11 @@ public interface RenderContextTuner {
      * @param resource the current resource rendered
      * @param renderContext the current renderContext
      * @return An object that represents the original state of the key part in the render context
+     * <p>
+     * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+     * <p>
      */
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext);
 
     /**
@@ -76,6 +83,10 @@ public interface RenderContextTuner {
      * @param resource the current resource rendered
      * @param renderContext the current renderContext
      * @param original the original object previously retrieved via prepareContextForContentGeneration() invocation
+     * <p>
+     * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+     * <p>
      */
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original);
 }

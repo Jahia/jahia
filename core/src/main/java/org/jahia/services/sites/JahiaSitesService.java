@@ -313,7 +313,7 @@ public class JahiaSitesService extends JahiaService {
     /**
      * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, String firstImport, Resource fileImport, String fileImportName,
                              /* not used now */ Boolean asAJob, /* not used now */ Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
@@ -323,7 +323,7 @@ public class JahiaSitesService extends JahiaService {
     /**
      * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
@@ -345,7 +345,7 @@ public class JahiaSitesService extends JahiaService {
     /**
      * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public JahiaSite addSite(final JahiaUser currentUser, final String title, final String serverName, final String siteKey, final String descr,
                              final Locale selectedLocale, final String selectTmplSet, final String[] modulesToDeploy, final String firstImport, final Resource fileImport, final String fileImportName,
                              final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final Resource legacyMappingFilePath, final Resource legacyDefinitionsFilePath) throws JahiaException, IOException {
@@ -370,7 +370,7 @@ public class JahiaSitesService extends JahiaService {
     /**
      * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo, JCRSessionWrapper)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
@@ -845,7 +845,7 @@ public class JahiaSitesService extends JahiaService {
     /**
      * @deprecated since Jahia 8.0.0.0 use {@link #getSiteCount(boolean)} instead
      */
-    @Deprecated
+    @Deprecated(since = "8.0.0.0", forRemoval = true)
     public int getNbSites() throws JahiaException {
         return Math.toIntExact(getSiteCount(true));
     }

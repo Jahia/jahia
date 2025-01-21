@@ -105,7 +105,7 @@ public class GWTInitializer {
      * @deprecated since 7.2.3.3 / 7.3.0.1; use {@link #generateInitializerStructure(HttpServletRequest, HttpServletResponse, HttpSession, Locale, Locale)} instead
      */
     @SuppressWarnings("javadoc")
-    @Deprecated
+    @Deprecated(since = "7.3.0.1")
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         return generateInitializerStructure(request, session, null, null);
     }
@@ -114,7 +114,7 @@ public class GWTInitializer {
      * @deprecated since 7.2.3.3 / 7.3.0.1; use {@link #generateInitializerStructure(HttpServletRequest, HttpServletResponse, HttpSession, Locale, Locale)} instead
      */
     @SuppressWarnings("javadoc")
-    @Deprecated
+    @Deprecated(since = "7.3.0.1")
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session, Locale locale, Locale uilocale) {
         return generateInitializerStructure(request, null, session, locale, uilocale);
     }

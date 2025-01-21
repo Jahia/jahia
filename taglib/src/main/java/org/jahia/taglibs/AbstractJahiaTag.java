@@ -216,7 +216,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
      * @return the string, representing the JavaScript resource for GWT I18N messages
      * @deprecated since 7.2.3.3 / 7.3.0.1; use {@link #getGwtDictionnaryInclude(HttpServletRequest, HttpServletResponse, Locale)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.3.0.1", forRemoval = true)
     public static String getGwtDictionnaryInclude(HttpServletRequest request, Locale locale) {
         return getGwtDictionnaryInclude(request, null, locale);
     }

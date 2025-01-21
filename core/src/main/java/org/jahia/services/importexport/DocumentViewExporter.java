@@ -128,7 +128,7 @@ public class DocumentViewExporter {
         this.typesToIgnore = typesToIgnore;
     }
 
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void setPublicationStatusSession(JCRSessionWrapper publicationStatusSession) {
         // Do nothing, since 8.2.1.0 export does not contain publication status (j:publicationStatus) anymore
     }
@@ -487,7 +487,7 @@ public class DocumentViewExporter {
         return exportContext;
     }
 
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void addObserver(PropertyChangeListener propertyChangeListener) {
         // not supported anymore, do nothing
     }

@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit;
  * @author Jerome Blanchard
  *
  */
-@Deprecated(forRemoval = true)
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class LoadAverageExecutor {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());

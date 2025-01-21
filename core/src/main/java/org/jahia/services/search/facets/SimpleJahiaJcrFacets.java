@@ -857,7 +857,7 @@ public class SimpleJahiaJcrFacets {
      * @see FacetParams#FACET_DATE
      * @deprecated Use getFacetRangeCounts which is more generalized
      */
-  @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public NamedList<Object> getFacetDateCounts() throws JahiaException, IOException,
             RepositoryException {
 
@@ -881,7 +881,7 @@ public class SimpleJahiaJcrFacets {
   /**
    * @deprecated Use getFacetRangeCounts which is more generalized
    */
-  @Deprecated
+  @Deprecated(since = "7.1.0.0", forRemoval = true)
   public void getFacetDateCounts(String dateFacet, NamedList<Object> resOuter)
       throws IOException, ParseException, RepositoryException, JahiaException {
 
@@ -1308,7 +1308,7 @@ public class SimpleJahiaJcrFacets {
   /**
    * @deprecated Use rangeCount(SchemaField,String,String,boolean,boolean) which is more generalized
    */
-  @Deprecated
+  @Deprecated(since = "7.1.0.0", forRemoval = true)
   protected int rangeCount(SchemaField sf, Date low, Date high,
                            boolean iLow, boolean iHigh) throws IOException {
     Query rangeQ = ((DateField)(sf.getType())).getRangeQuery(null, sf,low,high,iLow,iHigh);

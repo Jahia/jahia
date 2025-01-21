@@ -1320,10 +1320,6 @@ public class SearchCriteria implements Serializable {
             .decorate(new HashMap<String, Map<String, NodeProperty>>(),
                     new NodePropertyMapFactory());
 
-    /**
-     * @deprecated Not implemented
-     */
-    @Deprecated
     private String rawQuery;
 
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
@@ -1443,7 +1439,7 @@ public class SearchCriteria implements Serializable {
     /**
      * @deprecated Not implemented
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public String getRawQuery() {
         return rawQuery;
     }
@@ -1596,7 +1592,7 @@ public class SearchCriteria implements Serializable {
     /**
      * @deprecated Not implemented
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public void setRawQuery(String rawQuery) {
         this.rawQuery = rawQuery;
     }

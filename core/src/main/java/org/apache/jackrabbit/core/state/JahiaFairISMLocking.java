@@ -48,7 +48,7 @@ package org.apache.jackrabbit.core.state;
  *
  * @deprecated Use {@link org.apache.jackrabbit.core.state.DefaultISMLocking} instead
  */
-@Deprecated
+@Deprecated(since = "8.0.0.0", forRemoval = true)
 public class JahiaFairISMLocking extends JahiaISMLocking {
 
     public JahiaFairISMLocking() {

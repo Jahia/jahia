@@ -66,7 +66,7 @@ import org.apache.jackrabbit.core.security.principal.PrincipalProviderRegistry;
  *
  * @deprecated Use {@link org.apache.jackrabbit.core.security.authentication.AuthContextProvider} instead
  */
-@Deprecated
+@Deprecated(since = "8.0.0.0", forRemoval = true)
 public class JahiaAuthContextProvider extends AuthContextProvider {
 
     public static class JahiaJAASAuthContext extends JAASAuthContext {

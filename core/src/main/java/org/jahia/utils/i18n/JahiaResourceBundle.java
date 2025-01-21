@@ -59,7 +59,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
  * @author rincevent
  * @deprecated use {@link ResourceBundles} or {@link Messages} instead
  */
-@Deprecated
+@Deprecated(since = "7.0.0.0", forRemoval = true)
 public class JahiaResourceBundle extends ResourceBundle {
     private final Locale locale;
     private final List<String> bundleLookupChain;

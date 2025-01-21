@@ -116,7 +116,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     /**
      * @deprecated Use {@link #isStartupOptionSet(String)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.2.3.2", forRemoval = true)
     public static final String JAHIA_BACKUP_RESTORE_SYSTEM_PROP = "jahia.backup-restore";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
@@ -1077,7 +1077,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @deprecated since 7.0.0.2
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "7.0.0.2", forRemoval = true)
     public String getJahiaHomeDiskPath() {
         return servletContext.getRealPath("./");
     }

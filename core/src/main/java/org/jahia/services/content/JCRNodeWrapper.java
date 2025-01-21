@@ -803,7 +803,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return the <code>JCRStoreProvider</code> for the current node
      * @deprecated use {@link #getProvider()} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0")
     JCRStoreProvider getJCRProvider();
 
     /**

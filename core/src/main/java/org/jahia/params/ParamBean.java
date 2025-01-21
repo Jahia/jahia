@@ -135,7 +135,7 @@ import org.jahia.api.Constants;
  * @author Xavier Lawrence
  * @deprecated use {@link Constants} instead
  */
-@Deprecated
+@Deprecated(since = "7.1.0.0", forRemoval = true)
 public class ParamBean extends ProcessingContext {
 
     private ParamBean() {

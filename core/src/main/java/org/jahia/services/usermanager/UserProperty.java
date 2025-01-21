@@ -47,7 +47,7 @@ import java.io.Serializable;
 /**
  * @deprecated
  */
-@Deprecated
+@Deprecated(since = "7.2.0.0", forRemoval = true)
 public class UserProperty implements Serializable {
 
     private static final long serialVersionUID = -4066934002153945776L;

@@ -84,7 +84,7 @@ import static org.jahia.services.importexport.ImportExportBaseService.REPOSITORY
 /**
  * @deprecated Since 8.1.0.0
  */
-@Deprecated
+@Deprecated(since = "8.1.0.0", forRemoval = true)
 @SuppressWarnings({"java:S2093","java:S2095","java:S3776"})
 public class ExternalUsersImportUpdater extends ImportFileUpdater {
 

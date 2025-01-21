@@ -1391,7 +1391,7 @@ public final class JCRContentUtils implements ServletContextAware {
      *         different provide, like VFS
      * @deprecated without any replacement
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static boolean isNotJcrUuid(String uuid) {
         return StringUtils.isEmpty(uuid) || uuid.contains("/");
     }
@@ -1463,7 +1463,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param iterator the item iterator to check the size
      * @return the number of elements in the provided iterator
      */
-    @Deprecated
+    @Deprecated(since = "8.2.0.0", forRemoval = true)
     public static long size(RangeIterator iterator) {
         long size = iterator.getSize();
         if (size <= 0) {

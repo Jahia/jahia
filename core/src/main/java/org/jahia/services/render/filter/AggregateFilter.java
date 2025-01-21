@@ -69,34 +69,37 @@ import java.util.Stack;
 /**
  * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments;
  * The flow of aggregation is done in multiple set
- *
+ * <p>
  * 1  - The prepare will generate a fragment A by returning null and letting the next filters do the rendering
- *
+ * <p>
  * 2  - Next filters can start new render chains, it's the case of the ModuleTag for example,
  *      so we will pass again in the prepare() for each render chains start by next filters,
  *      but this render chain are identify as sub fragment of fragment A. (identification is explain after)
- *
+ * <p>
  * 3  - When a sub fragment B is identify, the chain is stop and a placeholder is return:
  *      <jahia_esi:include src="FRAGMENT B KEY"></jahia_esi:include>
  *      Next filters are not execute.
- *
+ * <p>
  * 4  - The render of fragment A is finished when we arrive in the execute() function for fragment A.
- *
+ * <p>
  * 5  - At this state HTML of the fragment A is ready, and contain the fragment B placeholder:
  *      <jahia_esi:include src="FRAGMENT B KEY"></jahia_esi:include>
- *
+ * <p>
  * 6  - The Aggregation of the sub fragments for fragment A can start.
- *
+ * <p>
  * 7  - We iterate on each sub fragments available in fragment A and start a new render chain for each
- *
+ * <p>
  * 8  - A new render chain will be start for fragment B
- *
+ * <p>
  * 9  - During aggregation we already have fragment B key because it's contain by the jahia_esi:include tag from
  *      fragment A. So we pass it to the new render chain using moduleParams so we don't have to calculate it again.
  *      This how we can identify a new render chain coming from aggregation and we are not in case (2)
- *
+ * <p>
+ * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+ * <p>
  * Created by jkevan on 12/04/2017.
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class AggregateFilter extends AbstractFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(AggregateFilter.class);

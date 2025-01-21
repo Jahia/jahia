@@ -67,9 +67,12 @@ import static org.jahia.services.render.filter.AggregateFilter.RESOURCES_STACK;
 /**
  * Cache render filter, in charge of providing the html for a given fragment (from the cache or by generating it)
  * Then cache the result if necessary
- *
+ * <p>
+ * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+ * <p>
  * Created by jkevan on 12/04/2017.
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class CacheFilter extends AbstractFilter {
 
     // The "v" parameter is aimed to bypass the cache in order to be able to view the page at a specific date.

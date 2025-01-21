@@ -218,7 +218,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
      *      If multiple permissions were provided (using {@link #setRequiredPermissions(List)}
      *      then this method will only return the first one.
      */
-    @Deprecated
+    @Deprecated(since = "8.0.0.0", forRemoval = true)
     public String getRequiredPermission() {
         return requiredPermissions.isEmpty() ? null : requiredPermissions.get(0);
     }

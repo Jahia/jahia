@@ -50,7 +50,7 @@ import org.osgi.framework.BundleContext;
  * @author loom
  * @deprecated since 7.2
  */
-@Deprecated
+@Deprecated(since = "7.2.0.0", forRemoval = true)
 public final class ProvisionActivator {
     private static ProvisionActivator instance = new ProvisionActivator();
 

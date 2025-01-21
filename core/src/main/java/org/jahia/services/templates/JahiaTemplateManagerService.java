@@ -738,7 +738,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * repository
      * @deprecated use {@link #getTemplatePackageById(String)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public JahiaTemplatesPackage getTemplatePackageByFileName(String fileName) {
         return getTemplatePackageById(fileName);
     }
@@ -904,7 +904,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
      * @deprecated use {@link org.jahia.services.render.RenderService#hasTemplate(String, ExtendedNodeType, Set)} instead
      */
-    @Deprecated
+    @Deprecated(since = "8.2.0.0", forRemoval = true)
     public boolean isTemplatePresent(String templateName, String templateSetName) {
         return isTemplatePresent(templateName, ImmutableSet.of(templateSetName));
     }
@@ -917,7 +917,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
      * @deprecated use {@link org.jahia.services.render.RenderService#hasTemplate(String, ExtendedNodeType, Set)} instead
      */
-    @Deprecated
+    @Deprecated(since = "8.2.0.0", forRemoval = true)
     public boolean isTemplatePresent(final String templateName, final Set<String> templateSetNames) {
 
         long timer = System.currentTimeMillis();
@@ -962,7 +962,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     /**
      * @deprecated use {@link org.jahia.services.render.RenderService#hasTemplate(String, ExtendedNodeType, Set)} instead
      */
-    @Deprecated
+    @Deprecated(since = "8.2.0.0", forRemoval = true)
     private boolean isTemplatePresent(String templateName, Set<String> templateSetNames, JCRSessionWrapper session) throws RepositoryException {
 
         QueryManager queryManager = session.getWorkspace().getQueryManager();

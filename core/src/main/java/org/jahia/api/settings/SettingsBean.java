@@ -196,7 +196,7 @@ public interface SettingsBean {
     /**
      * @deprecated since 7.0.0.2
      */
-    @Deprecated
+    @Deprecated(since = "7.0.0.2")
     String getJahiaHomeDiskPath();
 
     String getJahiaImportsDiskPath();

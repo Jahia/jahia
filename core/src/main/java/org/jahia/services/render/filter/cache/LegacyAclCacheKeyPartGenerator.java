@@ -69,7 +69,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-@Deprecated
+@Deprecated(since = "7.2.0.0", forRemoval = true)
 class LegacyAclCacheKeyPartGenerator extends AclCacheKeyPartGenerator implements CacheKeyPartGenerator, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(AclCacheKeyPartGenerator.class);
 

@@ -174,7 +174,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     /**
      * @deprecated use either {@link #getActiveLiveLanguagesAsLocales} or {@link #getActiveLiveLanguages()} methods instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public List<Locale> getActiveLanguagesAsLocales() {
         return getActiveLiveLanguagesAsLocales();
     }
@@ -182,7 +182,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     /**
      * @deprecated use {@link #getActiveLiveLanguages} method instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public Set<String> getActiveLanguages() {
         return getActiveLiveLanguages();
     }

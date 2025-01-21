@@ -131,7 +131,7 @@ public final class FileUtils {
      * @throws IOException in case cleaning is unsuccessful
      * @see org.apache.commons.io.FileUtils#cleanDirectory(File)
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public static void cleanDirectory(File directory, FileFilter filter) throws IOException {
         if (!directory.exists()) {
             String message = directory + " does not exist";

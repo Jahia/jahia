@@ -310,7 +310,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     /**
      * @deprecated without no replacement
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public void setSessionKeepAliveCheckInterval(long sessionKeepAliveCheckInterval) {
         // do nothing
     }
@@ -606,7 +606,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     /**
      * @deprecated with no replacement
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public boolean isRunning() {
         return false;
     }
@@ -989,7 +989,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * @deprecated now canExportNode and canExportProperty are used
      * Indicates if the nodes, backed by this provider, are considered during export operation.
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public boolean isExportable() {
         return true;
     }

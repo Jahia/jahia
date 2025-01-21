@@ -54,7 +54,7 @@ import org.jahia.registries.ServicesRegistry;
  * @author Sergiy Shyrkov
  * @deprecated
  */
-@Deprecated
+@Deprecated(since = "7.1.0.0", forRemoval = true)
 public abstract class BaseJahiaExternalUser implements JahiaUser {
 
     private static final long serialVersionUID = 1431128187514460913L;
@@ -220,7 +220,7 @@ public abstract class BaseJahiaExternalUser implements JahiaUser {
 
     protected abstract boolean setPropertyExternal(String key, String value);
 
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     protected boolean setPropertyInternal(String key, String value) {
         return false;
     }

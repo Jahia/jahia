@@ -142,7 +142,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
 
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException, RepositoryException {
         addDefinitionsFile(Collections.singletonList(resource), systemId);
     }
@@ -151,7 +151,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         addDefinitionsFile(Collections.singletonList(resource), systemId);
     }
 
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException, RepositoryException {
         addDefinitionsFile(file == null ? Collections.<Resource>emptyList() : Collections.singletonList(new FileSystemResource(file)), systemId);
     }

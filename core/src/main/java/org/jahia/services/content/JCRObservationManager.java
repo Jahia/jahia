@@ -200,7 +200,7 @@ public class JCRObservationManager implements ObservationManager {
      * @deprecated use directly {@link #pushEventListenersAvailableDuringPublishOnly()} and
      *             {@link #popEventListenersAvailableDuringPublishOnly()} methods as they consider the number of calls to this method
      */
-    @Deprecated
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public static void setEventListenersAvailableDuringPublishOnly(Boolean eventsDisabled) {
         if (eventsDisabled != null && eventsDisabled) {
             pushEventListenersAvailableDuringPublishOnly();

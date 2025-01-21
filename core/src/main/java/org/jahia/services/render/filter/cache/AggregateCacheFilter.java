@@ -89,7 +89,6 @@ import static org.jahia.api.Constants.TO_CACHE_WITH_PARENT_FRAGMENT;
  * @since JAHIA 6.5
  * Created : 8 janv. 2010
  */
-@Deprecated
 public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent> {
     protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
 

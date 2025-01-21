@@ -722,7 +722,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * this method is used to maintain compatibility with old groups providers
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public List<? extends JahiaGroupManagerProvider> getProviderList (){
         return new ArrayList<JahiaGroupManagerProvider>(legacyGroupProviders.values());
     }
@@ -732,7 +732,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * this method is used to maintain compatibility with old groups providers
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public JahiaGroupManagerProvider getProvider(String key){
         return legacyGroupProviders.get(key);
     }
@@ -742,7 +742,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * this method is used to maintain compatibility with old groups providers
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){
         legacyGroupProviders.put(jahiaGroupManagerProvider.getKey(), jahiaGroupManagerProvider);
         BridgeEvents.sendEvent(jahiaGroupManagerProvider.getKey(), BridgeEvents.GROUP_PROVIDER_REGISTER_BRIDGE_EVENT_KEY);
@@ -753,7 +753,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * this method is used to maintain compatibility with old groups providers
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void unregisterProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){
         legacyGroupProviders.remove(jahiaGroupManagerProvider.getKey());
         BridgeEvents.sendEvent(jahiaGroupManagerProvider.getKey(), BridgeEvents.GROUP_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY);

@@ -53,7 +53,7 @@ import java.util.Set;
  *
  */
 public interface CacheImplementation<K, V> {
-    @Deprecated
+    @Deprecated(since = "7.2.0.0")
     boolean containsKey(K key);
 
     V get(K key);

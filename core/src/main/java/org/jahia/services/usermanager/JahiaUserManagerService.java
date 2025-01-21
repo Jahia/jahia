@@ -885,7 +885,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * null on any failure.
      * @deprecated since 7.1.0.1 use {@link PasswordService#digest(String)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.1", forRemoval = true)
     public static String encryptPassword(String password) {
         if (StringUtils.isEmpty(password)) {
             return null;
@@ -986,7 +986,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @deprecated
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public List<? extends JahiaUserManagerProvider> getProviderList() {
         return new ArrayList<>(legacyUserProviders.values());
     }
@@ -998,7 +998,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @deprecated
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public JahiaUserManagerProvider getProvider(String key) {
         return legacyUserProviders.get(key);
     }
@@ -1010,7 +1010,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @deprecated
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
         legacyUserProviders.put(jahiaUserManagerProvider.getKey(), jahiaUserManagerProvider);
         if (FrameworkService.getInstance().isStarted()) {
@@ -1024,7 +1024,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @deprecated
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
         legacyUserProviders.remove(jahiaUserManagerProvider.getKey());
         BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY);

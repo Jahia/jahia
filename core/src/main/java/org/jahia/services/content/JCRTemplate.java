@@ -114,7 +114,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     /**
      * @deprecated Use doExecuteWithSystemSession with JahiaUser
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithSystemSession(String username, JCRCallback<X> callback) throws RepositoryException {
         return doExecuteWithSystemSession(username, null, null, callback);
     }
@@ -122,7 +122,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     /**
      * @deprecated Use doExecuteWithSystemSession with JahiaUser
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithSystemSession(String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
         return doExecuteWithSystemSession(username, workspace, null, callback);
     }
@@ -130,7 +130,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     /**
      * @deprecated Use doExecuteWithSystemSession with JahiaUser
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithSystemSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
@@ -180,7 +180,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     /**
      * @deprecated Use doExecute with JahiaUser
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithUserSession(String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
@@ -196,7 +196,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     /**
      * @deprecated Use doExecute with JahiaUser
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithUserSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
@@ -238,7 +238,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     /**
      * @deprecated Use doExecuteWithSystemSession or doExecute with JahiaUser
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         if (useSystemSession) {
             return doExecuteWithSystemSession(username, workspace, locale, callback);
@@ -250,7 +250,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     /**
      * @deprecated Use doExecuteWithSystemSession or doExecute with JahiaUser
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
         if (useSystemSession) {
             return doExecuteWithSystemSession(username, workspace, callback);

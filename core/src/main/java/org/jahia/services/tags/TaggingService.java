@@ -130,7 +130,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return true if the tag is successfully created
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public boolean createTag(final String tag, final String siteKey) throws RepositoryException {
         return false;
     }
@@ -143,7 +143,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return true if the tag is successfully deleted
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public boolean deleteTag(final String tag, final String siteKey) throws RepositoryException {
         return false;
     }
@@ -157,7 +157,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return true if the tag exist
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public boolean exists(final String tag, final String siteKey) throws RepositoryException {
         return false;
     }
@@ -172,7 +172,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return return the tag node, null in case of tag not found
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public JCRNodeWrapper getTag(String tag, String siteKey, JCRSessionWrapper session) throws RepositoryException {
         return null;
     }
@@ -185,7 +185,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return the count
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public long getTagCount(final String tag, final String siteKey) throws RepositoryException {
         return 0;
     }
@@ -200,7 +200,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return true if the tag is correctly apply on the node
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public boolean tag(final JCRNodeWrapper node, final String tag, final String siteKey, final boolean createTagIfNotExists)
             throws RepositoryException {
         tag(node, tag);
@@ -218,7 +218,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return true if the tag is correctly apply on the node
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists,
             JCRSessionWrapper session) throws RepositoryException {
         tag(nodePath, tag, session);
@@ -235,7 +235,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @throws RepositoryException in case of errors
      * @return true if the tag is correctly apply on the node
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists)
             throws RepositoryException {
         return false;

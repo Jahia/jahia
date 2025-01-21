@@ -100,10 +100,8 @@ import java.util.regex.Pattern;
  * rendered HTML document.
  *
  * @author Sergiy Shyrkov
- * @deprecated As of release 8.2.0.0, planned for removal
  */
-@Deprecated
-public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
+public class StaticAssetsFilter extends AbstractFilter implements InitializingBean {
 
     private String jahiaContext = null;
     private boolean addLastModifiedDate = false;
@@ -1170,12 +1168,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private static File getStaledMarkerFile() {
         return new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].staled");
-    }
-
-    @Override
-    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
-        ajaxResolvedTemplate = null;
-        resolvedTemplate = null;
     }
 
     private static String urlRewriting(String s, String path) {

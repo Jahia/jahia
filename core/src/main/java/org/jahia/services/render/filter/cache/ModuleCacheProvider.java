@@ -320,6 +320,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * @param key fragment key of the fragment
      */
     public void removeNonCacheableFragmentsByEncodedPath(String key) {
+        // TODO: TECH-2046 adapt after render chain v2 is removed.
         if (aggregateCacheFilter.isDisabled()) {
             Map<String, String> keyAttrs = keyGenerator.parse(key);
             String path = keyAttrs.get("path");
@@ -342,6 +343,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * Flush the non-cacheable fragments list
      */
     public void flushNonCacheableFragments() {
+        // TODO: TECH-2046 adapt after render chain v2 is removed.
         if (aggregateCacheFilter.isDisabled()) {
             nonCacheableFragments.clear();
         } else {
@@ -363,7 +365,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         sendCacheFlushCommandToCluster(CMD_FLUSH_PATH, nodePathOrIdentifier);
     }
 
-    @Deprecated
+    @Deprecated(since = "7.2.3.1", forRemoval = true)
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         // deprecated since 7.2.3.1 as not used
     }

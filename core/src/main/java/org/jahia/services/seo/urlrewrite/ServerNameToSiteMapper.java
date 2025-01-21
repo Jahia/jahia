@@ -71,7 +71,7 @@ public class ServerNameToSiteMapper {
     /**
      * @deprecated use {@link #ATTR_NAME_SERVERNAME_FOR_LINK} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static final String ATTR_NAME_SITE_KEY_FOR_LINK = "jahiaSiteKeyForLink";
     public static final String ATTR_NAME_SERVERNAME_FOR_LINK = "jahiaSeoServernameForLink";
     public static final String ATTR_NAME_SITE_KEY_MATCHES = "jahiaSiteKeyMatchesCurrentServerName";

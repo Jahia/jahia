@@ -62,7 +62,7 @@ import static org.apache.jackrabbit.data.core.TransactionContext.isSameThreadId;
  * changes from other nodes) and the coarse grained global lock like DefaultISMLocking (for writes
  * to repository initiated on the current VM).
  */
-@Deprecated
+@Deprecated(since = "8.0.0.0", forRemoval = true)
 public class JahiaMixedISMLocking implements ISMLocking {
 
     /**

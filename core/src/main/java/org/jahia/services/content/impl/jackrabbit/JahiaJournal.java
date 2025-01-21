@@ -110,7 +110,7 @@ import java.util.*;
  * @see <a href="https://jira.jahia.org/browse/BACKLOG-4520">BACKLOG-4520</a>
  * @deprecated Use {@link JahiaDatabaseJournal} instead
  */
-@Deprecated
+@Deprecated(since = "7.1.0.0", forRemoval = true)
 public class JahiaJournal extends AbstractJournal implements DatabaseAware, NodeLevelLockableJournal {
 
     /**
@@ -668,7 +668,7 @@ public class JahiaJournal extends AbstractJournal implements DatabaseAware, Node
      * @param databaseType the database type
      * @deprecated This method is deprecated; {@link #setDatabaseType} should be used instead.
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void setSchema(String databaseType) {
         setDatabaseType(databaseType);
     }
@@ -711,7 +711,7 @@ public class JahiaJournal extends AbstractJournal implements DatabaseAware, Node
     /**
      * @deprecated Schema check is no longer supported.
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public final void setSchemaCheckEnabled(boolean enabled) {
     }
 

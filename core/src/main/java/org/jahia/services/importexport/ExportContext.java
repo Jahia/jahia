@@ -82,7 +82,7 @@ public class ExportContext {
     /**
      * @deprecated use {@link #ExportContext(boolean, boolean)} instead
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public ExportContext(long nodesToExport) {
         this.nodesToExport = nodesToExport;
     }

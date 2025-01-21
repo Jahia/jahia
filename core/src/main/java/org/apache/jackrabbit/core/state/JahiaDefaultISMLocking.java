@@ -53,7 +53,7 @@ import org.apache.jackrabbit.core.id.ItemId;
  *
  * @deprecated Use {@link org.apache.jackrabbit.core.state.DefaultISMLocking} instead
  */
-@Deprecated
+@Deprecated(since = "8.0.0.0", forRemoval = true)
 public class JahiaDefaultISMLocking implements ISMLocking {
 
     /**

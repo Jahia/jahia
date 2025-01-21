@@ -60,7 +60,7 @@ import java.util.concurrent.TimeUnit;
  * and m = time in minutes over which to perform the average
  *
  */
-@Deprecated(forRemoval = true)
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public abstract class LoadAverage implements Runnable {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());

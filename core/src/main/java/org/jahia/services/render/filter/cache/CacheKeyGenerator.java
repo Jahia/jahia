@@ -80,7 +80,7 @@ public interface CacheKeyGenerator {
     /**
      * @deprecated Not used anymore
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     String replaceField(String key, String fieldName, String newValue) ;
 
     /**
@@ -110,8 +110,11 @@ public interface CacheKeyGenerator {
      * @param keyParts The fragment key parsed, typically a map returned by the parse method
      * @param resource The current rendered resource
      * @param renderContext The current renderContext
-     * @return A map that represents the original state of the render context
+     * <p>
+     * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+     * <p>
      */
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     Map<String, Object> prepareContextForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext);
 
     /**
@@ -121,11 +124,19 @@ public interface CacheKeyGenerator {
      * @param resource The current rendered resource
      * @param renderContext The current renderContext
      * @param original The map previously retrieved via prepareContextForContentGeneration() invocation
+     * <p>
+     * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+     * <p>
      */
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> original);
 
     /**
      * Get all cache attributes that need to be applied on this fragment and that will impact key generation.
+     * <p>
+     * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
+     * <p>
      */
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException;
 }

@@ -168,7 +168,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     /**
      * @deprecated Use {@link #init(AMContext, RepositoryContext, WorkspaceConfig)} instead
      */
-    @Deprecated
+    @Deprecated(since = "8.0.0.0")
     public void init(AMContext context, AccessControlProvider acProvider, WorkspaceAccessManager wspAccessManager, RepositoryContext repositoryContext, WorkspaceConfig workspaceConfig) throws AccessDeniedException, Exception {
         init(context, repositoryContext, workspaceConfig);
     }

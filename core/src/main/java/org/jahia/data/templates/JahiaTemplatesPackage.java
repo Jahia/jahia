@@ -184,10 +184,6 @@ public class JahiaTemplatesPackage {
 
     private Map<String,URL> resourcesCache = new ConcurrentHashMap<String, URL>();
 
-    /**
-     * @deprecated with no replacement
-     */
-    @Deprecated
     private long buildNumber;
 
     private String autoDeployOnSite;
@@ -648,7 +644,7 @@ public class JahiaTemplatesPackage {
     /**
      * @deprecated with no replacement
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public long getBuildNumber() {
         return buildNumber;
     }
@@ -656,7 +652,7 @@ public class JahiaTemplatesPackage {
     /**
      * @deprecated with no replacement
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void setBuildNumber(long buildNumber) {
         this.buildNumber = buildNumber;
     }

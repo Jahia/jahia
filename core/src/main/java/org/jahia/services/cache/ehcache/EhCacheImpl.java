@@ -89,7 +89,7 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
         }
     }
 
-    @Deprecated
+    @Deprecated(since = "7.2.0.0")
     public boolean containsKey(Object key) {
         // we cannot use EHCache's isKeyInCache because the element might have expired, so we use
         // an actual retrieval to test for expiration.

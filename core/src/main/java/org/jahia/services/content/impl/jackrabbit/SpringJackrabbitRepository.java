@@ -291,7 +291,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
      * cluster sync are logged by not propagated upper by this method.
      * @deprecated Since 8.1.1.0
      */
-    @Deprecated
+    @Deprecated(since = "8.1.1.0")
     public void syncClusterNode() {
         ClusterNode clusterNode = getClusterNode();
         if (clusterNode != null) {

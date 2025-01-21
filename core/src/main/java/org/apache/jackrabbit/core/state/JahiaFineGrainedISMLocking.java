@@ -61,7 +61,7 @@ import static org.apache.jackrabbit.data.core.TransactionContext.isSameThreadId;
  *
  * @deprecated Use {@link org.apache.jackrabbit.core.state.FineGrainedISMLocking} instead
  */
-@Deprecated
+@Deprecated(since = "8.0.0.0", forRemoval = true)
 public class JahiaFineGrainedISMLocking implements ISMLocking {
 
     /**

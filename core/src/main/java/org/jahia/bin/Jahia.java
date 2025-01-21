@@ -281,7 +281,7 @@ public final class Jahia {
      * @return JahiaPrivateSettings
      * @deprecated use {@link SettingsBean#getInstance()} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0")
     public static SettingsBean getSettings () {
         return SettingsBean.getInstance();
     }

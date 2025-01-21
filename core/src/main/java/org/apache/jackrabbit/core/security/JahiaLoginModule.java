@@ -249,7 +249,7 @@ public class JahiaLoginModule implements LoginModule {
     /**
      * @deprecated Use method with realm
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static Credentials getSystemCredentials(String username) {
         logger.warn("Getting system credentials with empty realm for "+username);
         return getSystemCredentials(username, null, null);
@@ -262,7 +262,7 @@ public class JahiaLoginModule implements LoginModule {
     /**
      * @deprecated Use method with realm
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static Credentials getSystemCredentials(String username, List<String> deniedPathes) {
         logger.warn("Getting system credentials with empty realm for "+username);
         return getSystemCredentials(username, null, deniedPathes);
@@ -285,7 +285,7 @@ public class JahiaLoginModule implements LoginModule {
     /**
      * @deprecated Use method with realm
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static Credentials getCredentials(String username) {
         logger.warn("Getting credentials with empty realm for "+username);
         return getCredentials(username, null, null);
@@ -298,7 +298,7 @@ public class JahiaLoginModule implements LoginModule {
     /**
      * @deprecated Use method with realm
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static Credentials getCredentials(String username, List<String> deniedPathes) {
         logger.warn("Getting credentials with empty realm for "+username);
         return getCredentials(username, null, deniedPathes);

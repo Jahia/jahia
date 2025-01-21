@@ -153,7 +153,7 @@ public class ContentManagerHelper {
     /**
      * @deprecated : This method is used only to maintain compatibility with existing modules. Do not use it !
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0")
     public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, Locale uiLocale) throws GWTJahiaServiceException {
         return addNode(parentNode, name, nodeType, mixin, props, uiLocale, null);
     }
@@ -185,7 +185,7 @@ public class ContentManagerHelper {
     /**
      * @deprecated : This method is used only to maintain compatibility with existing modules. Do not use it !
      */
-    @Deprecated
+    @Deprecated(since = "7.2.0.0")
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, JCRSessionWrapper
             currentUserSession, Locale uiLocale, Map<String, String> parentNodesType, boolean forceCreation)  throws GWTJahiaServiceException {
         return createNode(parentPath, name, nodeType, mixin, props, currentUserSession, uiLocale, parentNodesType, forceCreation, null);

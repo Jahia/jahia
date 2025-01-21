@@ -771,7 +771,7 @@ public class JahiaSearchIndex extends SearchIndex {
      * @deprecated use {@link #prepareReindexing(boolean)} instead
      *
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0")
     public synchronized boolean prepareReindexing() {
         return this.prepareReindexing(true);
     }
@@ -799,7 +799,7 @@ public class JahiaSearchIndex extends SearchIndex {
      *
      *  @deprecated use {@link #scheduleReindexing(boolean)} instead
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0")
     public void scheduleReindexing() {
         this.scheduleReindexing(true);
     }

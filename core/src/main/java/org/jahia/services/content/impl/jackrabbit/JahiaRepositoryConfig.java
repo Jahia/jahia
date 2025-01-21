@@ -105,21 +105,21 @@ public class JahiaRepositoryConfig extends RepositoryConfig {
         return config.getFileSystem();
     }
 
-    @Deprecated
+    @Deprecated(since = "8.0.0.0")
     @Override
     @SuppressWarnings("squid:MissingDeprecatedCheck")
     public String getAppName() {
         return config.getAppName();
     }
 
-    @Deprecated
+    @Deprecated(since = "8.0.0.0")
     @Override
     @SuppressWarnings("squid:MissingDeprecatedCheck")
     public AccessManagerConfig getAccessManagerConfig() {
         return config.getAccessManagerConfig();
     }
 
-    @Deprecated
+    @Deprecated(since = "8.0.0.0")
     @Override
     @SuppressWarnings("squid:MissingDeprecatedCheck")
     public LoginModuleConfig getLoginModuleConfig() {

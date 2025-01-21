@@ -145,7 +145,7 @@ public class Functions {
      * @return the bound node
      * @deprecated use {@link #getBoundComponent(JCRNodeWrapper, RenderContext, String)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
                                                     String property) {
         return getBoundComponent(currentNode, renderContext, property);
@@ -160,7 +160,7 @@ public class Functions {
      * @return the bound node path
      * @deprecated use {@link #getBoundComponentPath(JCRNodeWrapper, RenderContext, String)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static String getBindedComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext,
                                                 String property) {
         return getBoundComponentPath(currentNode, renderContext, property);

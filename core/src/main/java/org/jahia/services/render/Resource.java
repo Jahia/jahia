@@ -318,7 +318,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
-    @Deprecated
+    @Deprecated(since = "7.0.0.0", forRemoval = true)
     public void addOption(String wrapper, ExtendedNodeType nodeType) {
         options.add(new Option(wrapper, nodeType));
     }
@@ -326,7 +326,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
-    @Deprecated
+    @Deprecated(since = "7.0.0.0", forRemoval = true)
     public List<Option> getOptions() {
         return options;
     }
@@ -334,7 +334,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
-    @Deprecated
+    @Deprecated(since = "7.0.0.0", forRemoval = true)
     public boolean hasOptions() {
         return !options.isEmpty();
     }
@@ -342,7 +342,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
-    @Deprecated
+    @Deprecated(since = "7.0.0.0", forRemoval = true)
     public void removeOption(ExtendedNodeType mixinNodeType) {
         options.remove(new Option("", mixinNodeType));
     }
@@ -440,7 +440,7 @@ public class Resource {
         return result;
     }
 
-    @Deprecated
+    @Deprecated(since = "7.0.0.0", forRemoval = true)
     public class Option implements Comparable<Option> {
 
         private final String wrapper;

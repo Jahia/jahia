@@ -415,7 +415,7 @@ public class TemplatePackageRegistry {
      * repository
      * @deprecated use {@link #lookupById(String)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public JahiaTemplatesPackage lookupByFileName(String fileName) {
         return lookupById(fileName);
     }
@@ -448,7 +448,7 @@ public class TemplatePackageRegistry {
     /**
      * @deprecated use {@link #lookupByIdAndVersion(String, ModuleVersion)} instead
      */
-    @Deprecated
+    @Deprecated(since = "7.1.0.0", forRemoval = true)
     public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, ModuleVersion moduleVersion) {
         return lookupByIdAndVersion(fileName, moduleVersion);
     }

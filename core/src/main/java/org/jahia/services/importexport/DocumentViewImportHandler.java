@@ -1044,7 +1044,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     /**
      * @deprecated Use {@link #isCleanPreviousLiveImport()} instead.
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public boolean isReplaceMultipleValues() {
         return isCleanPreviousLiveImport();
     }
@@ -1052,7 +1052,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     /**
      * @deprecated Use {@link #cleanPreviousLiveImport()} instead.
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void setReplaceMultipleValues(boolean replaceMultipleValues) {
         if (replaceMultipleValues) {
             try {
@@ -1066,7 +1066,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     /**
      * @deprecated Use {@link #isCleanPreviousLiveImport()} instead.
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public boolean isEnforceUuid() {
         return isCleanPreviousLiveImport();
     }
@@ -1074,7 +1074,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     /**
      * @deprecated Use {@link #cleanPreviousLiveImport()} instead.
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void setEnforceUuid(boolean enforceUuid) {
         if (enforceUuid) {
             try {
@@ -1146,7 +1146,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     /**
      * @deprecated Use {@link #isCleanPreviousLiveImport()} instead.
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public boolean isRemoveMixins() {
         return isCleanPreviousLiveImport();
     }
@@ -1154,7 +1154,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     /**
      * @deprecated Use {@link #cleanPreviousLiveImport()} instead.
      */
-    @Deprecated
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void setRemoveMixins(boolean removeMixins) {
         if (removeMixins) {
             try {

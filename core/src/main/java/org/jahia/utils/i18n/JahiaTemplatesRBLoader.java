@@ -68,7 +68,7 @@ import java.util.regex.Pattern;
 /**
  * @deprecated use {@link ResourceBundles} or {@link Messages} instead
  */
-@Deprecated
+@Deprecated(since = "7.0.0.0", forRemoval = true)
 public class JahiaTemplatesRBLoader extends ClassLoader {
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaTemplatesRBLoader.class);
     private static final Pattern NAME_PATTERN = Pattern.compile("\\\\.");

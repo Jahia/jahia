@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
  * @author kevan
  * @deprecated
  */
-@Deprecated
+@Deprecated(since = "7.1.0.0", forRemoval = true)
 public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean, DisposableBean {
 
     private static class PatternHolder {

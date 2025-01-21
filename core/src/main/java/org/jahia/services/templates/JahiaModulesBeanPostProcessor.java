@@ -55,6 +55,6 @@ import org.springframework.beans.factory.config.DestructionAwareBeanPostProcesso
  *
  * @deprecated since DX 7.2.0.0
  */
-@Deprecated
+@Deprecated(since = "7.2.0.0", forRemoval = true)
 public interface JahiaModulesBeanPostProcessor extends DestructionAwareBeanPostProcessor {
 }

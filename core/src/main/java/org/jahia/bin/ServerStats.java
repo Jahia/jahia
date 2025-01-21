@@ -67,7 +67,7 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
  *
  * That
  */
-@Deprecated(forRemoval = true)
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class ServerStats implements Controller {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ServerStats.class);
 

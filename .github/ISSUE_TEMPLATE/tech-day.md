@@ -2,7 +2,8 @@
 name: Tech Day
 about: Create a tech day ticket
 title: ''
-type: Tech Day
+type: Task
+labels: ['Tech Day', 'Area:Tech']
 
 ---
 

@@ -617,8 +617,8 @@ public class JBPMMailProducer {
     private String calculateDisplayablePath(JCRNodeWrapper node) throws RepositoryException {
         String nodePath = node.getPath();
         String sitePath = node.getResolveSite().getPath();
-        String filePath = sitePath + "/files/";
-        String contentPath = sitePath + "/contents/";
+        String filePath = sitePath + "/files";
+        String contentPath = sitePath + "/contents";
         String prefix;
         String targetPath = node.getParent().getPath();
         if (nodePath.startsWith(filePath)) {

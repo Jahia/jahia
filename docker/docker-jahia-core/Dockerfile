@@ -46,10 +46,12 @@ RUN set -ux; \
         GRAALVM_DL_ARCH=$GRAALVM_ARCH ; \
     fi; \
     if [ -z ${GRAALVM_URL+x} ]; then \
-        GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAALVM_VERSION}/graalvm-community-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
+         # GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAALVM_VERSION}/graalvm-community-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
+            GRAALVM_DL_URL=https://download.oracle.com/graalvm/${GRAALVM_VERSION%.*.*}/archive/graalvm-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
     else  \
         GRAALVM_DL_URL = $GRAALVM_URL ; \
     fi ; \
+    echo "GraalVM download url ${GRAALVM_DL_URL}" ; \
     cd /usr/local && \
     GRAALVM_SHA256="$(curl --no-progress-meter -L "$GRAALVM_DL_URL".sha256)" && \
     curl --no-progress-meter -L --output /tmp/graalvm.tgz "$GRAALVM_DL_URL" && \

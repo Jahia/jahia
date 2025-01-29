@@ -193,7 +193,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: jahia/jahia-modules-action/static-analysis@v2
         with:
-          node_version: 14
+          node_version: 20
           auditci_level: critical
           auditci_level_tests: critical
           module_path: war/

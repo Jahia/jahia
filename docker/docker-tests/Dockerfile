@@ -1,4 +1,4 @@
-FROM cypress/base:16.14.2
+FROM cypress/base:20.18.0
 
 RUN apt-get update && apt-get install curl jq -y
 

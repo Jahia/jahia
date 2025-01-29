@@ -25,6 +25,7 @@ package org.jahia.services.render.filter.cache;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Jerome Blanchard
@@ -105,9 +106,23 @@ public class ClientCachePolicy implements Serializable {
         @Override public String toString() {
             return "Level{" + "value='" + value + '\'' + ", index=" + index + '}';
         }
+
     }
 
     @Override public String toString() {
         return "ClientCachePolicy{" + "level=" + level + ", ttl=" + ttl + '}';
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        ClientCachePolicy that = (ClientCachePolicy) o;
+        return ttl == that.ttl && level == that.level;
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(level, ttl);
     }
 }

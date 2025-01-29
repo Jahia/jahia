@@ -121,6 +121,24 @@ public class ClientCachePolicyTest {
 
     }
 
+    @Test
+    public void testClientCachePolicyEquals() {
+        ClientCachePolicy publicPolicy = new ClientCachePolicy(ClientCachePolicy.Level.PUBLIC, 3600);
+        ClientCachePolicy privatePolicy = new ClientCachePolicy(ClientCachePolicy.Level.PRIVATE);
+        ClientCachePolicy custom1Policy = new ClientCachePolicy(ClientCachePolicy.Level.CUSTOM, 300);
+        ClientCachePolicy custom2Policy = new ClientCachePolicy(ClientCachePolicy.Level.CUSTOM, 1800);
+        ClientCachePolicy immutablePolicy = new ClientCachePolicy(ClientCachePolicy.Level.IMMUTABLE);
+
+        ClientCachePolicy publicPolicy2 = new ClientCachePolicy(ClientCachePolicy.Level.PUBLIC, 3600);
+
+        assertEquals(publicPolicy, publicPolicy2);
+        assertNotEquals(publicPolicy, privatePolicy);
+        assertNotEquals(publicPolicy, custom1Policy);
+        assertNotEquals(publicPolicy, custom2Policy);
+        assertNotEquals(publicPolicy, immutablePolicy);
+        assertNotEquals(custom1Policy, custom2Policy);
+    }
+
     private static class PolicyHolder  {
 
         private ClientCachePolicy policy;

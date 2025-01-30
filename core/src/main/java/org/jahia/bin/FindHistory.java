@@ -70,6 +70,7 @@ import org.json.JSONObject;
  *         Date: Jan 26, 2010
  *         Time: 5:55:17 PM
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class FindHistory extends BaseFindController {
 
     private static Logger logger = LoggerFactory.getLogger(FindHistory.class);

@@ -50,6 +50,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Filter that logs into the session main resources visited by the user
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class HistoryTrackerFilter extends AbstractFilter {
     private HistoryTrackerBean historyTrackerBean;
 

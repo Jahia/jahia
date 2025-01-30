@@ -48,6 +48,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpSession;
 import java.util.LinkedList;
 
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class HistoryTrackerBean implements BeanNameAware {
     private int historySize = 10;
     private String name = "historyTracker";

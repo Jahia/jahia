@@ -63,6 +63,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
@@ -102,6 +103,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -350,15 +352,34 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         this.fileWatcherService = fileWatcherService;
     }
 
+    private ImportExportService getOSGIService() {
+       ImportExportService override = BundleUtils.getOsgiService(ImportExportService.class, "(jahia.core.service.override=true)");
+       if (override != null) {
+           logger.info("Using OSGi service override for ImportExportService");
+       }
+       return override;
+    }
+
     @Override
     public void exportAll(OutputStream outputStream, Map<String, Object> params)
             throws JahiaException, RepositoryException, IOException, SAXException, TransformerException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.exportAll(outputStream, params);
+            return;
+        }
         exportSites(outputStream, params, sitesService.getSitesNodeList());
     }
 
     @Override
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException, JahiaForbiddenAccessException {
+
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.exportSites(outputStream, params, sites);
+            return;
+        }
 
         logger.info("Sites {} export started", sites);
         long startSitesExportTime = System.currentTimeMillis();
@@ -580,6 +601,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     @Override
     public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params)
             throws RepositoryException, SAXException, IOException, TransformerException, JahiaForbiddenAccessException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.exportZip(node, exportRoot, out, params);
+            return;
+        }
 
         String serverDirectory = (String) params.get(SERVER_DIRECTORY);
         if (serverDirectory != null && !ImportExportBaseService.isValidServerDirectory(serverDirectory)) {
@@ -597,10 +623,26 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     @Override
     public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params)
             throws RepositoryException, SAXException, IOException, TransformerException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.exportNode(node, exportRoot, out, params);
+            return;
+        }
 
         TreeSet<JCRNodeWrapper> nodes = new TreeSet<>(Comparator.comparing(JCRNodeWrapper::getPath));
         nodes.add(node);
         exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<>(), null, params, new ExportContext(false, false));
+    }
+
+    @Override
+    public void exportDocumentView(JCRNodeWrapper node, ContentHandler handler, boolean skipBinary, boolean noRecurse) throws RepositoryException, SAXException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.exportDocumentView(node, handler, skipBinary, noRecurse);
+            return;
+        }
+
+        new DocumentViewExporter(node.getSession(), handler, skipBinary, noRecurse).export(node);
     }
 
     private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout,
@@ -857,6 +899,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importSiteZip(JCRNodeWrapper nodeWrapper) throws RepositoryException, IOException, JahiaException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importSiteZip(nodeWrapper);
+            return;
+        }
+
         String uri = nodeWrapper.getPath();
         Node contentNode = nodeWrapper.getNode(Constants.JCR_CONTENT);
         try (ZipInputStream zis = new ZipInputStream(contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream())) {
@@ -866,6 +914,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importSiteZip(File file, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importSiteZip(file, session);
+            return;
+        }
+
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
             importSiteZip(zis, null, null, session);
         }
@@ -873,11 +927,27 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importSiteZip(Resource file) throws RepositoryException, IOException, JahiaException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importSiteZip(file);
+            return;
+        }
+
         importSiteZip(file, null);
     }
 
     @Override
     public void importSiteZip(Resource file, JCRSessionWrapper session) throws RepositoryException, IOException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            try {
+                overrideService.importSiteZip(file, session);
+            } catch (JahiaException e) {
+                throw new RepositoryException(e);
+            }
+            return;
+        }
+
         try (ZipInputStream zis = new ZipInputStream(file.getInputStream())) {
             importSiteZip(zis, null, file, session);
         }
@@ -988,11 +1058,23 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importSiteZip(final Resource file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importSiteZip(file, site, infos);
+            return;
+        }
+
         importSiteZip(file, site, infos, null, null);
     }
 
     @Override
     public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) throws RepositoryException, IOException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath);
+            return;
+        }
+
         importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null));
     }
 
@@ -1022,7 +1104,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         boolean legacyImport = false;
         List<String[]> catProps = null;
 
-        try (ImportZipContext importZipContext = new ImportZipContext(file)) {
+        try (ImportZipContext importZipContext = initImportZipContext(file)) {
             Map<String, String> pathMapping = getRegisteredModulesPathMapping(session);
 
             // Import users first
@@ -1649,6 +1731,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importCategories(Category rootCategory, InputStream is) {
+        // We don't use the service override here, as those methods are legacy and should be deprecated.
         CategoriesImportHandler importHandler = new CategoriesImportHandler();
         importHandler.setRootCategory(rootCategory);
         importCategoriesAndGetUuidProps(is, importHandler);
@@ -1656,6 +1739,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public List<String[]> importUsers(final File file) throws IOException, RepositoryException {
+        // We don't use the service override here, as those methods are legacy and should be deprecated.
         try (InputStream is = new BufferedInputStream(new FileInputStream(file));) {
             return JCRTemplate.getInstance().doExecuteWithLongSystemSession(new JCRCallback<List<String[]>>() {
 
@@ -1718,6 +1802,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importXML(final String parentNodePath, InputStream content, final int rootBehavior) throws IOException, RepositoryException, JahiaException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importXML(parentNodePath, content, rootBehavior);
+            return;
+        }
+
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession().disableSessionCache();
         final HashMap<String, List<String>> references = new HashMap<>();
         importXML(parentNodePath, content, rootBehavior, references, session);
@@ -1781,6 +1871,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
     @Override
     public void importZip(final String parentNodePath, final Resource file, final int rootBehavior) throws IOException, RepositoryException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importZip(parentNodePath, file, rootBehavior);
+            return;
+        }
+
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession().disableSessionCache();
         importZip(parentNodePath, file, rootBehavior, session);
     }
@@ -1798,6 +1894,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     @Override
     @SuppressWarnings("java:S2093")
     public ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, List<String> installedModules) {
+        ImportExportService override = getOSGIService();
+        if (override != null) {
+            return override.validateImportFile(session, is, contentType, installedModules);
+        }
+
         DocumentViewValidationHandler documentViewValidationHandler = (DocumentViewValidationHandler) SpringContextSingleton
                 .getBean("DocumentViewValidationHandler");
         if (installedModules != null && !installedModules.isEmpty()) {
@@ -1890,6 +1991,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     @Override
     public void importZip(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session)
             throws IOException, RepositoryException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importZip(parentNodePath, file, rootBehaviour, session);
+            return;
+        }
+
         importZip(parentNodePath, file, rootBehaviour, session, null, true);
     }
 
@@ -1908,7 +2015,13 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     @SuppressWarnings("java:S3776")
     public void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session,
                           Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException {
-        try (ImportZipContext importZipContext = new ImportZipContext(file)) {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importZip(parentNodePath, file, rootBehaviour, session, filesToIgnore, useReferenceKeeper);
+            return;
+        }
+
+        try (ImportZipContext importZipContext = initImportZipContext(file)) {
             importZip(parentNodePath, importZipContext, rootBehaviour, session, filesToIgnore, useReferenceKeeper);
         }
     }
@@ -1916,9 +2029,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     /**
      * Imports the content of the specified import context.
      * Convenient as it let you run multiple import on the same resource with only one already built zip context.
-     * (Don't forget to call {@link ImportExportBaseService.ImportZipContext#close()} after you are done with the import)
+     * (Don't forget to call {@link ImportZipContext#close()} after you are done with the import)
      *
-     * In order to initialize the import context, you can use {@link ImportZipContext#ImportZipContext(Resource)}
+     * In order to initialize the import context, you can use {@link #initImportZipContext(Resource)}
      *
      * @param parentNodePath the node to use as a parent for the import
      * @param importZipContext the context for the import
@@ -1931,6 +2044,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     @SuppressWarnings("java:S3776")
     public void importZip(String parentNodePath, ImportZipContext importZipContext, int rootBehaviour, final JCRSessionWrapper session,
                            Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            overrideService.importZip(parentNodePath, importZipContext, rootBehaviour, session, filesToIgnore, useReferenceKeeper);
+            return;
+        }
+
         long timer = System.currentTimeMillis();
         if (filesToIgnore == null) {
             filesToIgnore = Collections.emptySet();
@@ -2144,7 +2263,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @return null if files were not expanded to disk (it is just optional), otherwise path to temporary local folder
      * @throws IOException
      *
-     * @deprecated use {@link ImportZipContext#ImportZipContext(Resource)} instead
+     * @deprecated use {@link #initImportZipContext(Resource)} instead
      *          It used to calculate the size of uncompressed files in the zip file, but this information was never really used.
      *          This method risk to be removed in the next major release.
      */
@@ -2390,8 +2509,14 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    private interface ImportDescriptorCallback<T> {
-        T doWithDescriptor(InputStream is, String name, T previousDescriptorResult) throws RepositoryException, IOException, JahiaException;
+    @Override
+    public ImportZipContext initImportZipContext(Resource file) throws IOException {
+        ImportExportService overrideService = getOSGIService();
+        if (overrideService != null) {
+            return overrideService.initImportZipContext(file);
+        }
+
+        return new ImportZipContextImpl(file);
     }
 
     /**
@@ -2399,13 +2524,13 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * It's very useful to get the list of files and import descriptors in the ZIP.
      * And do not calculate things twice.
      */
-    public static class ImportZipContext implements Closeable {
+    private static class ImportZipContextImpl implements ImportZipContext {
         private final List<String> loadedContentFilePaths = new ArrayList<>();
         private final List<String> loadedImportDescriptorNames = new ArrayList<>();
         private File expandedFolder = null;
         private final Resource archive;
 
-        public ImportZipContext(Resource archive) throws IOException {
+        public ImportZipContextImpl(Resource archive) throws IOException {
             this.archive = archive;
             logger.info("Building import context, by analyzing file {}", archive);
             long timer = System.currentTimeMillis();
@@ -2495,7 +2620,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             }
         }
 
-        private <X> X executeWithImportDescriptors(Collection<String> descriptors, ImportDescriptorCallback<X> callback) throws RepositoryException, IOException {
+        public  <X> X executeWithImportDescriptors(Collection<String> descriptors, ImportDescriptorCallback<X> callback) throws RepositoryException, IOException {
             if (descriptors == null || descriptors.isEmpty() || callback == null ||
                     descriptors.stream().noneMatch(loadedImportDescriptorNames::contains)) {
                 // Skip if no descriptors or no matching descriptors contained in the ZIP

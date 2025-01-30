@@ -60,7 +60,9 @@ import java.util.*;
  * User: toto
  * Date: 5 juin 2006
  * Time: 17:57:47
+ * @deprecated Legacy import code
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class CategoriesImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(CategoriesImportHandler.class);
     private Stack<Category> cats = new Stack<Category>();

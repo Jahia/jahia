@@ -43,10 +43,13 @@
 package org.jahia.services.importexport.validation;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.i18n.Messages;
 
 /**
  * Represents a validation result, containing missing modules in the content to be imported.
@@ -151,6 +154,18 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
     @Override
     public boolean isBlocking() {
         return true;
+    }
+
+    @Override
+    public Set<String> getFormatedMessages(Locale locale) {
+        Set<String> messages = new HashSet<>();
+        if (!isTargetTemplateSetPresent()) {
+            messages.add(Messages.getInternalWithArguments("failure.import.missingTemplateSet", locale, getTargetTemplateSet()));
+        }
+        if (!getMissingModules().isEmpty()) {
+            messages.add(Messages.getInternalWithArguments("failure.import.missingModules", locale, getMissingModules().size()) + getMissingModules());
+        }
+        return messages;
     }
 
     @Override

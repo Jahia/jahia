@@ -53,7 +53,9 @@ import java.util.Locale;
 
 /**
  * User: rincevent
+ * @deprecated Legacy import code, seems not used
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class LegacyPidToVanityUrlMappingToolImpl implements LegacyPidMappingTool {
     private static Logger logger = LoggerFactory.getLogger(LegacyPidToVanityUrlMappingToolImpl.class);
 

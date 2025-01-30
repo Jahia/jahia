@@ -43,6 +43,9 @@
 package org.jahia.services.importexport.validation;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Implementors represent results of the validation checks for imported content items.
@@ -73,6 +76,15 @@ public interface ValidationResult {
      * @return <code>true</code> if the current validation result is blocking.
      */
     boolean isBlocking();
+
+
+    /**
+     * Returns a list of user formated validation results messages
+     * @return
+     */
+    default Set<String> getFormatedMessages(Locale locale) {
+        return Collections.emptySet();
+    }
 
     class FailedValidationResult implements ValidationResult, Serializable {
         private final Exception exception;

@@ -59,7 +59,9 @@ import java.util.regex.Pattern;
 
 /**
  *  User: toto Date: Oct 29, 2009 Time: 7:09:03 PM
+ * @deprecated Legacy import code
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class DefinitionsMapping {
     private static Logger logger = LoggerFactory.getLogger(LegacyImportHandler.class);
 

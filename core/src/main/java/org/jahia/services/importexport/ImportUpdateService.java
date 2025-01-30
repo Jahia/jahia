@@ -50,7 +50,9 @@ import java.util.Set;
 
 /**
  * Service used to update import file based on the originating version and build number
+ * @deprecated Legacy import code, seems not used
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class ImportUpdateService {
 
     private Set<ImportFileUpdater> updaters = new LinkedHashSet<ImportFileUpdater>();

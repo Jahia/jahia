@@ -43,9 +43,12 @@
 package org.jahia.services.importexport.validation;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.i18n.Messages;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 public class ProviderAvailabilityValidatorResult implements ValidationResult, Serializable {
@@ -77,6 +80,12 @@ public class ProviderAvailabilityValidatorResult implements ValidationResult, Se
     @Override
     public boolean isBlocking() {
         return false;
+    }
+
+    @Override
+    public Set<String> getFormatedMessages(Locale locale) {
+        return Collections.singleton(Messages.getInternalWithArguments("failure.import.unavailableProviders", locale, getUnavailableProviders().size()) +
+                getUnavailableProviders());
     }
 
     @Override

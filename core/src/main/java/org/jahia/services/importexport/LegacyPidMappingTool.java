@@ -48,7 +48,9 @@ import java.util.Locale;
 
 /**
  * User: rincevent
+ * @deprecated Legacy import code, seems not used
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public interface LegacyPidMappingTool {
     /**
      * Defines a new page IDs mapping

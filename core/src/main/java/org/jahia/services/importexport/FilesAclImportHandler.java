@@ -74,6 +74,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.ZipEntry;
 
+/**
+ * @deprecated Legacy import code
+ */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
     private static Logger corruptedFilesLogger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class.getName()+".CorruptedFiles");

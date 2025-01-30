@@ -53,8 +53,8 @@ import org.jahia.services.content.decorator.validation.DefaultSkipOnImportGroup;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -946,10 +946,9 @@ public class JCRSessionWrapper implements Session {
     @Override
     public void exportDocumentView(String path, ContentHandler handler, boolean skipBinary, boolean noRecurse)
             throws PathNotFoundException, SAXException, RepositoryException {
-        DocumentViewExporter exporter = new DocumentViewExporter(this, handler, skipBinary, noRecurse);
         Item item = getItem(path);
         if (item.isNode()) {
-            exporter.export((JCRNodeWrapper) item);
+            ImportExportBaseService.getInstance().exportDocumentView((JCRNodeWrapper) item, handler, skipBinary, noRecurse);
         } else {
             throw new PathNotFoundException("XML export is not defined for properties: " + path);
         }

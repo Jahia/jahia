@@ -56,6 +56,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ImportZipContext;
 import org.jahia.services.scheduler.SchedulerService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -135,7 +136,7 @@ public class TemplatePackageDeployer {
                 } else if (imp.toLowerCase().contains("/importsite")) {
                     importExportService.importSiteZip(importFile, session);
                 } else {
-                    try (ImportExportBaseService.ImportZipContext importZipContext = new ImportExportBaseService.ImportZipContext(importFile)) {
+                    try (ImportZipContext importZipContext = importExportService.initImportZipContext(importFile)) {
                         importExportService.importZip(targetPath, importZipContext, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session,
                                 new HashSet<>(Arrays.asList(PERMISSIONS_XML, ROLES_XML)), false);
                         if (targetPath.equals("/")) {

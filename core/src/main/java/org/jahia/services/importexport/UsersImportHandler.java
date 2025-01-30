@@ -65,7 +65,9 @@ import java.util.Properties;
  * User: toto
  * Date: 5 juin 2006
  * Time: 17:57:36
+ * @deprecated Legacy import code
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class UsersImportHandler extends DefaultHandler {
 
     private static Logger LOG = LoggerFactory.getLogger(UsersImportHandler.class);

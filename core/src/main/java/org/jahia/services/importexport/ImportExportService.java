@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.springframework.core.io.Resource;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
@@ -99,20 +100,13 @@ public interface ImportExportService {
     /**
      * Performs the full repository export into the provided output stream using the specified parameters.
      *
-     * @param out
-     *            the output stream to write exported content into
-     * @param params
-     *            the export options
-     * @throws JahiaException
-     *             in case of processing errors
-     * @throws RepositoryException
-     *             for JCR-related errors
-     * @throws SAXException
-     *             in case of a parsing exceptions
-     * @throws IOException
-     *             I/O communication errors
-     * @throws TransformerException
-     *             XSLT transformation errors
+     * @param out the output stream to write exported content into
+     * @param params the export options
+     * @throws JahiaException in case of processing errors
+     * @throws RepositoryException for JCR-related errors
+     * @throws SAXException in case of a parsing exceptions
+     * @throws IOException I/O communication errors
+     * @throws TransformerException XSLT transformation errors
      */
     void exportAll(OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, TransformerException;
 
@@ -144,6 +138,17 @@ public interface ImportExportService {
      */
     void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException;
 
+    /** Export JCR node using document view export
+     *
+     * @param node node to export
+     * @param handler the content handler
+     * @param skipBinary skip binary content
+     * @param noRecurse do not recurse
+     * @throws RepositoryException in case of JCR-related errors
+     * @throws SAXException in case of a parsing exception
+     */
+    void exportDocumentView(JCRNodeWrapper node, ContentHandler handler, boolean skipBinary, boolean noRecurse) throws RepositoryException, SAXException;
+
     /**
      * Export JCR content along with binaries into a zip
      *
@@ -163,19 +168,12 @@ public interface ImportExportService {
      * Performs an import of the XML content, detecting its type: users,
      * categories or general JCR content.
      *
-     * @param parentNodePath
-     *            the path of the parent node, where the content should be
-     *            imported
-     * @param content
-     *            the XML content stream
-     * @param rootBehavior Ignore root xml element - can be used to import multiple nodes in the same node, using one single
-     *          import
-     * @throws IOException
-     *             in case of read/write errors
-     * @throws RepositoryException
-     *             in case of repository operation errors
-     * @throws JahiaException
-     *             in case of errors during categories import
+     * @param parentNodePath the path of the parent node, where the content should be imported
+     * @param content the XML content stream
+     * @param rootBehavior Ignore root xml element - can be used to import multiple nodes in the same node, using one single import
+     * @throws IOException in case of read/write errors
+     * @throws RepositoryException in case of repository operation errors
+     * @throws JahiaException in case of errors during categories import
      */
     void importXML(String parentNodePath, InputStream content, int rootBehavior) throws IOException, RepositoryException,
             JahiaException;
@@ -223,12 +221,18 @@ public interface ImportExportService {
      */
     void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
 
+
+    /**
+     * Init ImportZipContext
+     */
+    ImportZipContext initImportZipContext(Resource file) throws IOException;
+
     /**
      * Imports the content of the specified import context.
      * Convenient as it let you run multiple import on the same resource with only one already built zip context.
-     * (Don't forget to call {@link ImportExportBaseService.ImportZipContext#close()} after you are done with the import)
+     * (Don't forget to call {@link ImportZipContext#close()} after you are done with the import)
      *
-     * In order to initialize the import context, you can use {@link ImportExportBaseService.ImportZipContext#ImportZipContext(Resource)}
+     * In order to initialize the import context, you can use {@link #initImportZipContext(Resource)}
      *
      * @param parentNodePath the node to use as a parent for the import
      * @param importZipContext the context for the import
@@ -238,16 +242,14 @@ public interface ImportExportService {
      * @throws IOException         in case of an I/O operation error
      * @throws RepositoryException in case of a JCR-related error
      */
-    void importZip(String parentNodePath, ImportExportBaseService.ImportZipContext importZipContext, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, ImportZipContext importZipContext, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
 
     /**
      * Validates a JCR content import file in document format and returns expected failures.
      *
      *
-     * @param session
-     *            current JCR session instance
-     * @param is
-     *            the input stream with a JCR content in document format
+     * @param session current JCR session instance
+     * @param is the input stream with a JCR content in document format
      * @param contentType the content type for the content
      * @param installedModules the list of installed modules, where the first element is a template set name
      * @return the validation result
@@ -258,60 +260,42 @@ public interface ImportExportService {
     /**
      * Import the site from the specified file node.
      *
-     * @param nodeWrapper
-     *            the file node to read content of the imported site from
-     * @throws RepositoryException
-     *             in case of a JCR error
-     * @throws IOException
-     *             in case of an I/O exception
-     * @throws JahiaException
-     *             if a processing error happens
+     * @param nodeWrapper the file node to read content of the imported site from
+     * @throws RepositoryException in case of a JCR error
+     * @throws IOException in case of an I/O exception
+     * @throws JahiaException if a processing error happens
      */
     void importSiteZip(JCRNodeWrapper nodeWrapper) throws RepositoryException, IOException, JahiaException;
 
     /**
      * Import the sitee from the specified file.
      *
-     * @param file
-     *            the file to read content of the imported site from
-     * @param session
-     *            current JCR session instance
-     * @throws RepositoryException
-     *             in case of a JCR error
-     * @throws IOException
-     *             in case of an I/O exception
-     * @throws JahiaException
-     *             if a processing error happens
+     * @param file the file to read content of the imported site from
+     * @param session current JCR session instance
+     * @throws RepositoryException in case of a JCR error
+     * @throws IOException in case of an I/O exception
+     * @throws JahiaException if a processing error happens
      */
     void importSiteZip(File file, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
 
     /**
      * Import the site from the specified resource.
      *
-     * @param resource
-     *            the resource to read content of the imported site from
-     * @throws RepositoryException
-     *             in case of a JCR error
-     * @throws IOException
-     *             in case of an I/O exception
-     * @throws JahiaException
-     *             if a processing error happens
+     * @param resource the resource to read content of the imported site from
+     * @throws RepositoryException in case of a JCR error
+     * @throws IOException in case of an I/O exception
+     * @throws JahiaException if a processing error happens
      */
     void importSiteZip(Resource resource) throws RepositoryException, IOException, JahiaException;
 
     /**
      * Import the site from the specified resource using the provided JCR session.
      *
-     * @param resource
-     *            the resource to read content of the imported site from
-     * @param session
-     *            current JCR session to use for the import
-     * @throws RepositoryException
-     *             in case of a JCR error
-     * @throws IOException
-     *             in case of an I/O exception
-     * @throws JahiaException
-     *             if a processing error happens
+     * @param resource the resource to read content of the imported site from
+     * @param session current JCR session to use for the import
+     * @throws RepositoryException in case of a JCR error
+     * @throws IOException in case of an I/O exception
+     * @throws JahiaException if a processing error happens
      */
     void importSiteZip(Resource resource, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
 
@@ -346,11 +330,11 @@ public interface ImportExportService {
     /**
      * Performs the import of categories from the provided import stream into the specified root category.
      *
-     * @param rootCategory
-     *            the root category to use
-     * @param is
-     *            the input stream to read import content from
+     * @param rootCategory the root category to use
+     * @param is the input stream to read import content from
+     * @deprecated legacy import will be removed at some point
      */
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     void importCategories(Category rootCategory, InputStream is);
 
     /**
@@ -358,6 +342,8 @@ public interface ImportExportService {
      * @param file a file to read user data from
      * @return a list of tuples &lt;username, password, homePage&gt; for the imported users
      * @throws IOException in case of a reading/parsing error
+     * @deprecated legacy import will be removed at some point
      */
+    @Deprecated(since = "8.2.1.0", forRemoval = true)
     List<String[]> importUsers(File file) throws IOException, RepositoryException;
 }

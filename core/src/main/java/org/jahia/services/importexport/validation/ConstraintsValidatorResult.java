@@ -43,12 +43,10 @@
 package org.jahia.services.importexport.validation;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.i18n.Messages;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Constraints validator result object
@@ -122,6 +120,33 @@ public class ConstraintsValidatorResult implements ValidationResult, Serializabl
     @Override
     public boolean isBlocking() {
         return true;
+    }
+
+    @Override
+    public Set<String> getFormatedMessages(Locale locale) {
+        // missing properties
+        Set<String> messages = new HashSet<>();
+        messages.addAll(getImportErrorMissingProperties(getMissingMandatoryProperties(), locale));
+        messages.addAll(getImportErrorMissingProperties(getMissingMandatoryI18NProperties(), locale));
+
+        // other constraint validations
+        if (!getOtherConstraintViolations().isEmpty()) {
+            messages.add(Messages.getInternalWithArguments("failure.import.constraintViolation", locale, getOtherConstraintViolations().size())
+                    + getOtherConstraintViolations().keySet());
+        }
+
+        return messages;
+    }
+
+
+    private Set<String> getImportErrorMissingProperties(Map<String, Set<String>> missingProperties, Locale uiLocale) {
+        Set<String> messages = new HashSet<>();
+        for (Map.Entry<String, Set<String>> missingPropertiesEntry : missingProperties.entrySet()) {
+            for (String missingProperty : missingPropertiesEntry.getValue()) {
+                messages.add(Messages.getInternalWithArguments("failure.import.missingProperty", uiLocale, missingProperty, missingPropertiesEntry.getKey()));
+            }
+        }
+        return messages;
     }
 
     @Override

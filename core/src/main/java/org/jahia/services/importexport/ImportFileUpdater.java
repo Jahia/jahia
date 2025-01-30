@@ -48,7 +48,9 @@ import java.io.File;
 
 /**
  * Class used to update import file based on the originating version and build number
+ * @deprecated Legacy import code, seems not used
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public abstract class ImportFileUpdater {
 
     private ImportUpdateService importUpdateService;

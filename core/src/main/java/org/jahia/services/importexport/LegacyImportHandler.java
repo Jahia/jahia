@@ -100,7 +100,9 @@ import java.util.regex.Pattern;
  * @author toto
  *         Date: Oct 28, 2009
  *         Time: 2:31:18 PM
+ * @deprecated Legacy import code
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public class LegacyImportHandler extends DefaultHandler {
     private static Logger logger = LoggerFactory.getLogger(LegacyImportHandler.class);
 

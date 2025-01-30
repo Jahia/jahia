@@ -43,12 +43,10 @@
 package org.jahia.services.importexport.validation;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.i18n.Messages;
 
 /**
  * Represents a validation result, containing missing templates in the content to be imported.
@@ -177,6 +175,12 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
     @Override
     public boolean isBlocking() {
         return true;
+    }
+
+    @Override
+    public Set<String> getFormatedMessages(Locale locale) {
+        return Collections.singleton(Messages.getInternalWithArguments("failure.import.missingTemplates", locale, getMissingTemplates().size()) +
+                getMissingTemplates().keySet());
     }
 
     @Override

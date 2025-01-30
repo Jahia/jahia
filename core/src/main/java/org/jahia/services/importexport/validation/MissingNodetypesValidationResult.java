@@ -43,11 +43,10 @@
 package org.jahia.services.importexport.validation;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.i18n.Messages;
 
 /**
  * An instance of this class is being returned when validating JCR document view import files and contains information about expected import
@@ -150,6 +149,11 @@ public class MissingNodetypesValidationResult implements ValidationResult, Seria
     @Override
     public boolean isBlocking() {
         return true;
+    }
+
+    @Override
+    public Set<String> getFormatedMessages(Locale locale) {
+        return Collections.singleton(Messages.getInternalWithArguments("failure.import.missingNodetypes", locale, getMissingNodetypes(), getMissingMixins()));
     }
 
     @Override

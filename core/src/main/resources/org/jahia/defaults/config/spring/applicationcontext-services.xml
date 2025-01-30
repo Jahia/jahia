@@ -80,13 +80,6 @@
                    -->
             </list>
         </property>
-        <!--
-        <property name="legacyPidMappingTool">
-            <bean class="org.jahia.services.importexport.LegacyPidToVanityUrlMappingToolImpl">
-                <property name="urlMgr" ref="org.jahia.services.seo.jcr.VanityUrlManager"/>
-            </bean>
-        </property>
-        -->
         <property name="attributeProcessors">
             <list>
                 <bean class="org.jahia.services.importexport.TemplateNodeProcessor"/>

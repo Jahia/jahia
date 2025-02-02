@@ -5,7 +5,7 @@
 
 name: Bug Report
 description: File a bug report.
-title: "[BUG] <title>"
+title: 'title'
 labels: ["need-triage"]
 type: Bug
 projects: ["Jahia/13"]

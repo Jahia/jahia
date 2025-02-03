@@ -42,8 +42,11 @@
  */
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.JahiaRepositoryImpl;
+import org.apache.jackrabbit.core.state.ItemStateException;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.framework.AbstractJUnitTest;
@@ -56,6 +59,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.ConstraintViolationException;
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -574,6 +578,15 @@ public class JCRSessionWrapperTest extends AbstractJUnitTest {
         Assert.assertEquals(session.getChangedNodes().size(), 1);
         Assert.assertEquals(session.getChangedNodes().iterator().next().getPath(), "/sites/" + siteKey + "/home/a");
         Assert.assertFalse(assertPathNotFoundException(session, "/sites/" + siteKey + "/home/a"));
+    }
+
+    @Test
+    public void testReindexAsPath() throws RepositoryException, IOException, ItemStateException {
+        try {
+             ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).reindexTree("/", Constants.EDIT_WORKSPACE);
+        } catch (Exception e) {
+            Assert.fail("Reindexing failed: " + e.getMessage());
+        }
     }
 
     private boolean assertPathNotFoundException(JCRSessionWrapper session, String path) throws RepositoryException {

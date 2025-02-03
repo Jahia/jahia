@@ -42,6 +42,7 @@
  */
 package org.apache.jackrabbit.core;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
@@ -273,6 +274,11 @@ public class JahiaRepositoryImpl extends RepositoryImpl implements ReadOnlyModeC
      */
     public void reindexTree(String startNodeId, String workspaceName) throws RepositoryException,
             NoSuchItemStateException, IllegalArgumentException, ItemStateException, IOException {
+        // check if startNodeId is a path or a UUID
+        if (StringUtils.startsWith(startNodeId, "/")) {
+            // startNodeId is a path
+            startNodeId = getSystemSession(workspaceName).getNode(startNodeId).getIdentifier();
+        }
         ((JahiaSearchIndex) getWorkspaceInfo(workspaceName).getSearchManager().getQueryHandler())
                 .reindexTree(startNodeId);
     }

@@ -69,10 +69,10 @@ class UrlRewriteEngine extends UrlRewriter {
         if (confLocations == null || confLocations.length == 0) {
             logger.warn("No configuration resource location specified for"
                     + " the URL rewrite engine. Using empty one.");
-            return new Configuration();
+            return Configuration.createEmptyConfiguration();
         }
         try {
-            cfg = new Configuration(context, confLocations);
+            cfg = Configuration.createConfiguration(context, confLocations);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -96,8 +96,7 @@ class UrlRewriteEngine extends UrlRewriter {
     }
 
     public String rewriteOutbound(String url, HttpServletRequest request,
-                                  HttpServletResponse response) throws IOException, ServletException,
-            InvocationTargetException {
+                                  HttpServletResponse response) {
 
         RewrittenOutboundUrl rou = processEncodeURL(response, request, false, url);
         if (rou == null) {

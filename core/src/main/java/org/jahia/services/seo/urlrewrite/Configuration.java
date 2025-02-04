@@ -43,6 +43,9 @@
 package org.jahia.services.seo.urlrewrite;
 
 import org.apache.commons.io.IOUtils;
+import org.jahia.osgi.BundleResource;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -64,28 +67,22 @@ public class Configuration extends Conf {
     /**
      * Initializes an instance of this class.
      */
-    public Configuration() {
+    private Configuration() {
         super();
         super.initialise();
     }
 
-    Configuration(InputStream is, String fileName) {
-        super(is, fileName);
-        // now call initialize
-        super.initialise();
-    }
-
-    private Configuration(ServletContext context, InputStream is, Resource[] confLocations) {
-        super(context, is, confLocations[0].getFilename(), confLocations[0].getDescription());
+    private Configuration(ServletContext context, InputStream is, Resource[] confLocations, ClassLoader mainClassLoader) {
+        super(context, is, confLocations[0].getFilename(), confLocations[0].getDescription(), mainClassLoader);
         IOUtils.closeQuietly(is);
         for (int i = 1; i < confLocations.length; i++) {
             Resource resource = confLocations[i];
             InputStream stream = null;
             try {
                 stream = resource.getInputStream();
-                loadDom(stream);
+                loadDom(stream, getClassLoader(resource));
             } catch (Exception e) {
-                logger.error("Error loading URL rewrite rules from " + resource.getDescription(), e);
+                logger.error("Error loading URL rewrite rules from {}", resource.getDescription(), e);
             } finally {
                 IOUtils.closeQuietly(stream);
             }
@@ -94,21 +91,37 @@ public class Configuration extends Conf {
         super.initialise();
     }
 
-    /**
-     * Initializes an instance of this class.
-     *
-     * @param context
-     *            current servlet context
-     * @param confLocations
-     *            configuration files locations
-     * @throws IOException
-     */
-    public Configuration(ServletContext context, Resource[] confLocations) throws IOException {
-        this(context, confLocations[0].getInputStream(), confLocations);
-    }
-
     @Override
     public void initialise() {
         // prevent it from being executed until all rules are loaded
+    }
+    /**
+     * Creates a new configuration instance.
+     * The first resource is used to load the configuration, the rest are used to load additional rules.
+     *
+     * @param context       the servlet context
+     * @param confLocations the configuration locations
+     * @return the configuration
+     * @throws IOException if an error occurs
+     */
+    static Configuration createConfiguration(ServletContext context, Resource[] confLocations) throws IOException {
+        return new Configuration(context, confLocations[0].getInputStream(), confLocations, getClassLoader(confLocations[0]));
+    }
+
+    static Configuration createEmptyConfiguration() {
+        return new Configuration();
+    }
+
+    private static ClassLoader getClassLoader(Resource resource) {
+        if (resource instanceof BundleResource) {
+            Bundle bundle = ((BundleResource) resource).getBundle();
+            BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+            if (bundleWiring == null) {
+                logger.warn("Unable to get the bundle wiring for bundle {}", bundle.getSymbolicName());
+                return null;
+            }
+            return bundleWiring.getClassLoader();
+        }
+        return null;
     }
 }

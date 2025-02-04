@@ -1,0 +1,12 @@
+# DO NOT EDIT
+# This file is managed globally at https://github.com/Jahia/.github
+name: Delivery - PR Chores
+
+on:
+  pull_request:
+  pull_request_review:
+
+jobs:
+  WF:
+    uses: Jahia/jahia-modules-action/.github/workflows/reusable-delivery-pr-chores.yml@v2
+    secrets: inherit

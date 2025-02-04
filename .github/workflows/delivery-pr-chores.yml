@@ -4,6 +4,11 @@ name: Delivery - PR Chores
 
 on:
   pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize  
   pull_request_review:
 
 jobs:

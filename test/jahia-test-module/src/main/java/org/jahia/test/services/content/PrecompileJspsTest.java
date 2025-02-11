@@ -105,7 +105,7 @@ public class PrecompileJspsTest extends JahiaTestCase {
             assertThat(response.getCode()).isEqualTo(HttpStatus.SC_OK).withFailMessage("Authenticating to precompile page in tools failed");
 
             Source source = new Source(EntityUtils.toString(response.getEntity()));
-            Element aElement = source.getFirstElement(HTMLElementName.A);
+            Element aElement = source.getElementById("allJsp");
             String url = getBaseServerURL() + aElement.getAttributeValue("href");
             logger.info("Starting the precompileServlet with the following url: {}", url);
             get = new HttpGet(url);

@@ -113,12 +113,12 @@
         <jahia.tomcat.version>9.0.99</jahia.tomcat.version>
         <protobuf.java.version>3.25.5</protobuf.java.version>
 
-        <driver.derby.version>10.14.2.0</driver.derby.version>
-        <driver.mssql.version>12.6.1.jre11</driver.mssql.version>
+        <driver.derby.version>10.15.2.0</driver.derby.version>
+        <driver.mssql.version>12.8.1.jre11</driver.mssql.version>
         <driver.mysql.version>8.3.0</driver.mysql.version>
-        <driver.oracle.version>21.13.0.0</driver.oracle.version>
-        <driver.postgresql.version>42.6.1</driver.postgresql.version>
-        <driver.mariadb.version>3.3.3</driver.mariadb.version>
+        <driver.oracle.version>23.7.0.25.01</driver.oracle.version>
+        <driver.postgresql.version>42.7.5</driver.postgresql.version>
+        <driver.mariadb.version>3.5.1</driver.mariadb.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
@@ -184,7 +184,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.8</jahia.commons.version>
-        <jahia.plugin.version>6.10</jahia.plugin.version>
+        <jahia.plugin.version>6.11</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>

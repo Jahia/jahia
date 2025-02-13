@@ -5,7 +5,7 @@
 
     <DataSources>
         <DataSource name="jahiaDS">
-            <param name="driver" value="org.apache.derby.iapi.jdbc.AutoloadedDriver"/>
+            <param name="driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
             <param name="url" value="jdbc:derby:memory:jahia"/>
             <param name="databaseType" value="derby" />
         </DataSource>

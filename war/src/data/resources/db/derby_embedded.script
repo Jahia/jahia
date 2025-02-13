@@ -1,7 +1,7 @@
 # Jahia Derby Database configuration file
 
 jahia.database.name     =  Sun JavaDB / Apache Derby (embedded)
-jahia.database.driver   =  org.apache.derby.iapi.jdbc.AutoloadedDriver
+jahia.database.driver   =  org.apache.derby.jdbc.EmbeddedDriver
 jahia.database.url      =  jdbc:derby:directory:jahia
 jahia.database.user     =
 jahia.database.pass     =

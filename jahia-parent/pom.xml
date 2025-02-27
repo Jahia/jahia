@@ -140,7 +140,7 @@
         <!-- plugin versions -->
         <javadoc.plugin.version>3.6.3</javadoc.plugin.version>
         <assembly.plugin.version>2.5.2</assembly.plugin.version>
-        <site.plugin.version>3.4</site.plugin.version>
+        <site.plugin.version>3.21.0</site.plugin.version>
         <war.plugin.version>2.5</war.plugin.version>
         <enforcer.plugin.version>1.1.1</enforcer.plugin.version>
         <compiler.plugin.version>3.11.0</compiler.plugin.version>
@@ -155,8 +155,8 @@
         <eclipse.plugin.version>2.9</eclipse.plugin.version>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
         <dependency.plugin.version>2.8</dependency.plugin.version>
-        <sonar.plugin.version>3.10.0.2594</sonar.plugin.version>
-        <dependency.check.plugin.version>10.0.3</dependency.check.plugin.version>
+        <sonar.plugin.version>3.11.0.3922</sonar.plugin.version>
+        <dependency.check.plugin.version>12.1.0</dependency.check.plugin.version>
         <!-- OSGi versions -->
         <felix.framework.version>6.0.5</felix.framework.version>
         <felix.configadmin.version>1.9.26</felix.configadmin.version>

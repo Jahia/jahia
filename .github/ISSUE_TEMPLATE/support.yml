@@ -4,8 +4,8 @@
 # Documentation: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
 # Syntax: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
 
-name: Support Request
-description: File a support request.
+name: Internal Support Request
+description: File a support request, reserved to Jahia employees.
 title: "<title>"
 labels: ["support-request"]
 type: Sup

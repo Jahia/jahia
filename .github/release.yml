@@ -24,3 +24,6 @@ changelog:
     - title: Other Changes
       labels:
         - "*"
+    - title: Excluded (needs review)
+      labels:
+        - no-changelog

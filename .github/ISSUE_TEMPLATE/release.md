@@ -71,5 +71,5 @@ After Testing
 - [ ] The artifact was released on Nexus
 - [ ] If applicable, corresponding academy pages were published
 - [ ] The module was published on the store
-- [ ] The [modules releases log page](https://edit.jahia.com/jahia/page-composer/default/en/sites/academy/home/customer-center/release-lifecycle-1.html) on the Academy was updated
+- [ ] The [modules releases log page](https://edit.jahia.com/jahia/page-composer/default/en/sites/academy/home/customer-center/modules-releases-log.html) on the Academy was updated
 - [ ] A message was published on slack #releases channel

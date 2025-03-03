@@ -53,6 +53,9 @@ import org.apache.karaf.shell.support.table.Col;
 import org.apache.karaf.shell.support.table.ShellTable;
 import org.osgi.service.http.HttpService;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import java.lang.reflect.Field;
 
 /**
@@ -81,16 +84,17 @@ public class ServletListCommand implements Action {
             handlerRegistryField.setAccessible(true);
             HandlerRegistry handlerRegistry = (HandlerRegistry) handlerRegistryField.get(httpServiceImpl);
             for (ServletHandler servletHandler : handlerRegistry.getServlets()) {
+                Servlet servlet = servletHandler.getServlet();
+                ServletConfig servletConfig = servlet != null ? servlet.getServletConfig() : null;
+                ServletContext servletContext = servletConfig != null ? servletConfig.getServletContext() : null;
                 table.addRow().addContent(servletHandler.getId(),
                         servletHandler.getAlias(),
-                        servletHandler.getServlet().getClass(),
-                        servletHandler.getServlet().getServletConfig().getServletName(),
-                        servletHandler.getServlet().getServletInfo(),
-                        servletHandler.getServlet().getServletConfig().getServletContext().getContextPath());
+                        servlet != null ? servlet.getClass() : null,
+                        servletConfig != null ? servletConfig.getServletName() : null,
+                        servlet != null ? servlet.getServletInfo() : null,
+                        servletContext != null ? servletContext.getContextPath() : null);
             }
             table.print(System.out, true);
-        } else {
-            // unknown http service implementation
         }
 
         return null;

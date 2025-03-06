@@ -69,6 +69,12 @@ export default {
       }
     },
     {
+      label: 'Private',
+      value: row => {
+        return row.isPrivate
+      }
+    },    
+    {
       label: 'Created At',
       value: row => {
         return row.createdAt.slice(0, 10)

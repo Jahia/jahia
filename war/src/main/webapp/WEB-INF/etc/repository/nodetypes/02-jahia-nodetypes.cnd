@@ -677,6 +677,9 @@
 [jmix:blockUiMove] mixin
 
 // @since Jahia 8.2.1.0
+// Used to differentiate area and content list nodes from a given template
+// Applied during intial rendering and creation of template-related resources 
+//   and determining visiblity of certain actions (cut, copy, move) in jContent
 [jmix:isAreaList] > jmix:systemNameReadonly, jmix:blockUiMove mixin
 
 //---------------------------------------------------------

@@ -48,6 +48,8 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 
@@ -62,6 +64,7 @@ import javax.servlet.http.HttpSession;
  */
 
 public class SessionAuthValveImpl extends BaseAuthValve {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionAuthValveImpl.class);
 
     private JahiaUserManagerService userManagerService;
 
@@ -84,6 +87,10 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         if (jahiaUser != null) {
             JCRUserNode userNode = userManagerService.lookupUser(jahiaUser.getName(), jahiaUser.getRealm(), false);
             jahiaUser = userNode != null ? userNode.getJahiaUser() : null;
+            if (userNode != null && invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authContext.getRequest())) {
+                LOGGER.debug("Login failed. Session expired for user " + jahiaUser.getName());
+                return;
+            }
         }
         if (jahiaUser == null || JahiaUserManagerService.isGuest(jahiaUser)) {
             valveContext.invokeNext(context);

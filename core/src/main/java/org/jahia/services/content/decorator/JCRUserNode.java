@@ -176,6 +176,19 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
         }
     }
 
+    /**
+     * Get the time before when the user sessions should be invalidated
+     * @return the time in milliseconds, 0 to keep all existing session opened.
+     */
+    public long getInvalidatedSessionTime() {
+        try {
+            return hasProperty("j:invalidateSessionTime") ? getProperty("j:invalidateSessionTime").getLong() : 0L;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return 0L;
+        }
+    }
+
     public List<PasswordHistoryEntry> getPasswordHistory() {
         return JahiaPasswordPolicyService.getInstance().getPasswordHistory(this);
     }

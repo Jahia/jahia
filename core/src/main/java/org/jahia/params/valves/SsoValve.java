@@ -50,6 +50,7 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -138,6 +139,11 @@ public abstract class SsoValve extends BaseAuthValve {
             sessionUser = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         }
         if (sessionUser != null && !JahiaUserManagerService.isGuest(sessionUser)) {
+            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(sessionUser.getLocalPath());
+            if (invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authContext.getRequest())) {
+                logger.debug("Login failed. Session expired for user " + sessionUser.getName());
+                return;
+            }
             if (logger.isDebugEnabled()) {
                 logger.debug("user '{}' was already authenticated!", sessionUser.getUsername());
             }
@@ -182,7 +188,10 @@ public abstract class SsoValve extends BaseAuthValve {
                 servletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
                 throw new PipelineException("user '" + uid + "' was authenticated but not found in database!");
             }
-
+            if (invalidateSessionIfExpired(user.getInvalidatedSessionTime(), authContext.getRequest())) {
+                logger.debug("Login failed. Session expired for user " + user.getName());
+                return;
+            }
             if (user.isAccountLocked()) {
                 logger.warn("Login failed. Account is locked for user " + uid);
                 servletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);

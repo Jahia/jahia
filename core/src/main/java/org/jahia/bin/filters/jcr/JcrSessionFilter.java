@@ -46,6 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.filters.CompositeFilter;
 import org.jahia.params.valves.AuthValveContext;
+import org.jahia.params.valves.BaseAuthValve;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
@@ -109,12 +110,15 @@ public class JcrSessionFilter implements Filter {
             }
 
             if (sessionFactory.getCurrentUser() == null) {
+                // Valves did not resolve any user, fallback on guest user
                 sessionFactory
                         .setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
             } else {
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
-                if (userNode == null || userNode.isAccountLocked()) {
-                    sessionFactory.setCurrentUser(null);
+                // Valves should have detected lock account or session expiration, we double-check here in case an external valve did not do it.
+                if (userNode == null || userNode.isAccountLocked() || BaseAuthValve.invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), (HttpServletRequest) servletRequest)) {
+                    ((HttpServletRequest) servletRequest).getSession().invalidate();
+                    sessionFactory.setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
                 }
 
                 // Only creates a session if we wants to store the user in a new session. Otherwise, just get the

@@ -369,6 +369,7 @@
  - j:linkedinID (string)
  - j:picture (weakreference, picker[type='file']) < jnt:file
  - j:publicProperties (string) multiple
+ - j:invalidateSessionTime (string)
  - * (string)
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
  + j:phones (jnt:phoneNumbers) = jnt:phoneNumbers mandatory autocreated

@@ -283,6 +283,7 @@
                 <value>j:external</value>
                 <value>j:password</value>
                 <value>j:accountLocked</value>
+                <value>j:invalidateSessionTime</value>
                 <value>j:lockTypes</value>
                 <value>j:locktoken</value>
                 <value>j:published</value>

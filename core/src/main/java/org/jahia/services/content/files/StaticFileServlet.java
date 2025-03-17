@@ -98,10 +98,8 @@ public class StaticFileServlet extends HttpServlet {
     private static final Pattern PATTERN_RANGE = Pattern.compile("^bytes=\\d*-\\d*(,\\d*-\\d*)*$");
 
     private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
-    private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
     private static final String CONTENT_RANGE = "Content-Range";
-    private static final String EXPIRES = "Expires";
 
     // Properties ---------------------------------------------------------------------------------
 
@@ -189,8 +187,6 @@ public class StaticFileServlet extends HttpServlet {
         long length = file.length();
         long lastModified = file.lastModified();
         String eTag = fileName + "_" + length + "_" + lastModified;
-        long expires = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME;
-
 
         // Validate request headers for caching ---------------------------------------------------
 
@@ -199,7 +195,6 @@ public class StaticFileServlet extends HttpServlet {
         if (ifNoneMatch != null && matches(ifNoneMatch, eTag)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             response.setHeader("ETag", eTag); // Required in 304.
-            response.setDateHeader(EXPIRES, expires); // Postpone cache with 1 week.
             return;
         }
 
@@ -209,7 +204,6 @@ public class StaticFileServlet extends HttpServlet {
         if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             response.setHeader("ETag", eTag); // Required in 304.
-            response.setDateHeader(EXPIRES, expires); // Postpone cache with 1 week.
             return;
         }
 
@@ -327,7 +321,6 @@ public class StaticFileServlet extends HttpServlet {
         response.setHeader("Accept-Ranges", "bytes");
         response.setHeader("ETag", eTag);
         response.setDateHeader("Last-Modified", lastModified);
-        response.setDateHeader(EXPIRES, expires);
 
 
         // Send requested file (part(s)) to client ------------------------------------------------

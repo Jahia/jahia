@@ -685,10 +685,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         return super.getComparisonQuery(left, transform, operator, rigth, selectorMap);
     }
 
-    @Override
-    protected Analyzer getTextAnalyzer() {
+    private Analyzer getI18nAnalyzer() {
         if (locale != null || queryLanguage != null) {
-            // if we have a locale or the query specified a language, use it to retrieve a potential language-specific Analyzer
             final AnalyzerRegistry analyzerRegistry = index.getAnalyzerRegistry();
             final String lang = getLocale().toString();
             if (analyzerRegistry.acceptKey(lang)) {
@@ -699,8 +697,12 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             }
         }
 
-        // if we didn't find a language-specific analyzer, just return the default one
-        return super.getTextAnalyzer();
+        return null;
+    }
+
+    @Override
+    protected QueryParser getQueryParser(String field) {
+        return new JahiaDualAnalyzerQueryParser(field, getI18nAnalyzer(), index.getTextAnalyzer(), index.getSynonymProvider(), cache);
     }
 
     public NamespaceMappings getNamespaceMappings() {

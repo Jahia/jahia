@@ -775,7 +775,9 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
             StringBuilder textSearchConstraints = new StringBuilder(256);
             if (textSearch.getFields().isSiteContent() || !isFieldSearch(textSearch.getFields())) {
-                addConstraint(textSearchConstraints, OR, getSearchExpression(xpath ? "." : "n", textSearch.getTerm(), textSearch.getMatch(),
+                // According to JCR-SQL2 spec: https://jackrabbit.apache.org/oak/docs/query/grammar-sql2.html#constraint n.* is the correct syntax
+                // to perform full text search on all properties of a node
+                addConstraint(textSearchConstraints, OR, getSearchExpression(xpath ? "." : "n.*", textSearch.getTerm(), textSearch.getMatch(),
                         textSearch.isApplyFilter(), xpath));
             }
             if (textSearch.getFields().isFileContent()) {

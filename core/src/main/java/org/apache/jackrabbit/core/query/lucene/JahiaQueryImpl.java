@@ -42,6 +42,9 @@
  */
 package org.apache.jackrabbit.core.query.lucene;
 
+import org.apache.jackrabbit.core.HierarchyManager;
+import org.apache.jackrabbit.core.HierarchyManagerImpl;
+import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.query.PropertyTypeRegistry;
 import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
 import org.apache.jackrabbit.core.session.SessionContext;
@@ -57,6 +60,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
 
 public class JahiaQueryImpl extends QueryImpl {
+
     public static boolean checkAclUuidInIndex = Boolean
             .valueOf(System.getProperty("jahia.jackrabbit.query.xpath.checkAclUuidInIndex", "true"));
 
@@ -83,16 +87,14 @@ public class JahiaQueryImpl extends QueryImpl {
         return statement.contains(Constants.JCR_SYSTEM);
     }
 
-    @Override
-    protected Analyzer getTextAnalyzer() {
+    private Analyzer getI18nAnalyzer() {
         final String lang = LuceneUtils.extractLanguageOrNullFromStatement(statement);
 
         if (lang != null) {
-            final Analyzer analyzer = index.getAnalyzerRegistry().getAnalyzer(lang);
-            return analyzer != null ? analyzer : super.getTextAnalyzer();
+            return index.getAnalyzerRegistry().getAnalyzer(lang);
         }
 
-        return super.getTextAnalyzer();
+        return null;
     }
 
     @Override
@@ -109,5 +111,28 @@ public class JahiaQueryImpl extends QueryImpl {
         } else {
             return super.createQueryResult(offset, limit, query, orderProperties, ascSpecs, orderFuncs);
         }
+    }
+
+    @Override
+    protected Query createLuceneQuery() throws RepositoryException {
+        HierarchyManager hmgr = new HierarchyManagerImpl(
+                RepositoryImpl.ROOT_NODE_ID, index.getContext().getItemStateManager());
+
+        LuceneQueryBuilder builder = new JahiaLuceneQueryBuilder(
+                root, sessionContext.getSessionImpl(), index.getContext().getItemStateManager(), hmgr, index.getNamespaceMappings(),
+                getI18nAnalyzer(), index.getTextAnalyzer(), propReg, index.getSynonymProvider(),
+                index.getIndexFormatVersion(), cache);
+
+        Query query = builder.createLuceneQuery();
+
+        if (!builder.getExceptions().isEmpty()) {
+            StringBuilder msg = new StringBuilder();
+            for (Exception exception : builder.getExceptions()) {
+                msg.append(exception.toString()).append('\n');
+            }
+            throw new RepositoryException("Exception building query: " + msg);
+        }
+
+        return query;
     }
 }

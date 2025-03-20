@@ -129,7 +129,7 @@
                                             writer.writeLine(" - installOrUpgradeBundle: ")
                                             artifactIds.forEach { f ->
                                                 if ("tgz".equals(f[2])) {
-                                                    writer.writeLine("   - url: 'npm:mvn:${f[0]}/${f[1]}/${f[3]}/${f[2]}'");
+                                                    writer.writeLine("   - url: 'js:mvn:${f[0]}/${f[1]}/${f[3]}/${f[2]}'");
                                                 } else {
                                                     writer.writeLine("   - url: 'mvn:${f[0]}/${f[1]}/${f[3]}'");
                                                 }

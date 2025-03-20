@@ -1,45 +1,79 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "labels": ["dependencies"],
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
   "branchPrefix": "renovate_",
   "rebaseWhen": "never",
   "dependencyDashboardApproval": true,
   "packageRules": [
     {
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "enabled": false
     },
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": false,
       "commitMessageExtra": "{{#if currentValue}}from {{{currentValue}}} {{/if}}to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}"
     },
     {
-      "matchDepTypes": ["devDependencies", "test", "provided"],
+      "matchDepTypes": [
+        "devDependencies",
+        "test",
+        "provided"
+      ],
       "enabled": false
     },
     {
-      "matchDepTypes": ["optionalDependencies"],
-      "addLabels": ["optional"]
+      "matchDepTypes": [
+        "optionalDependencies"
+      ],
+      "addLabels": [
+        "optional"
+      ]
     },
     {
-      "matchPackagePatterns": ["^org.springframework", "^org.jbpm", "^org.drools", "^org.apache.jackrabbit", "^org.apache.portals.pluto", "^org.apache.maven.plugins", ".*maven-.*plugin", ".*cypress.*"],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": [
+        "/^org.springframework/",
+        "/^org.jbpm/",
+        "/^org.drools/",
+        "/^org.apache.jackrabbit/",
+        "/^org.apache.portals.pluto/",
+        "/^org.apache.maven.plugins/",
+        "/.*maven-.*plugin/",
+        "/.*cypress.*/"
+      ]
     },
     {
-      "matchPackagePatterns": ["^org.apache.karaf"],
-      "allowedVersions": "<=4.2"
+      "allowedVersions": "<=4.2",
+      "matchPackageNames": [
+        "/^org.apache.karaf/"
+      ]
     },
     {
-      "matchPackagePatterns": ["^org.apache.lucene"],
-      "allowedVersions": "<9"
+      "allowedVersions": "<9",
+      "matchPackageNames": [
+        "/^org.apache.lucene/"
+      ]
     },
     {
-      "matchPackagePatterns": ["^org.apache.solr"],
-      "allowedVersions": "<9"
+      "allowedVersions": "<9",
+      "matchPackageNames": [
+        "/^org.apache.solr/"
+      ]
     }
   ],
   "timezone": "Europe/Paris",
-  "schedule": ["every 3 months on the first day of the month"]
+  "schedule": [
+    "every 3 months on the first day of the month"
+  ]
 }

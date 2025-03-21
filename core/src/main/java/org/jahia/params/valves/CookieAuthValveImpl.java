@@ -47,16 +47,20 @@ import org.jahia.api.Constants;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.SecureRandom;
 import java.util.Properties;
@@ -136,6 +140,8 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                 if (foundUsers.size() == 1) {
                     jahiaUser = foundUsers.iterator().next();
                     if (invalidateSessionIfExpired(jahiaUser.getInvalidatedSessionTime(), authContext.getRequest())) {
+                        // Clean up cookie
+                        removeAuthCookie(authContext.getRequest(), authContext.getResponse(), cookieAuthConfig, jahiaUser.getJahiaUser());
                         logger.debug("Login failed. Session expired for user " + jahiaUser.getName());
                         return;
                     }
@@ -220,6 +226,35 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
         authCookie.setSecure(cookieAuthConfig.isSecure());
         authContext.getResponse().addCookie(authCookie);
+    }
+
+    static public void removeAuthCookie(HttpServletRequest request, HttpServletResponse response, CookieAuthConfig cookieAuthConfig, JahiaUser curUser) {
+        // now let's destroy the cookie authentication if there was one
+        // set for this user.
+        JCRPropertyWrapper cookieAuthKey = null;
+        try {
+            if (!JahiaUserManagerService.isGuest(curUser)) {
+                JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(curUser.getLocalPath());
+                String userPropertyName = cookieAuthConfig.getUserPropertyName();
+                if (userNode != null && userNode.hasProperty(userPropertyName)) {
+                    cookieAuthKey = userNode.getProperty(userPropertyName);
+                }
+            }
+            if (cookieAuthKey != null) {
+                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey.getString());
+                authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
+                authCookie.setMaxAge(0); // means we want it deleted now !
+                authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+                authCookie.setSecure(cookieAuthConfig.isSecure());
+                response.addCookie(authCookie);
+                if (!SettingsBean.getInstance().isFullReadOnlyMode()) {
+                    cookieAuthKey.remove();
+                    cookieAuthKey.getSession().save();
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public static String getAvailableCookieKey(CookieAuthConfig cookieAuthConfig) {

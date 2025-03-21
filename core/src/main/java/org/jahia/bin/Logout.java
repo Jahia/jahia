@@ -73,6 +73,8 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 
+import static org.jahia.params.valves.CookieAuthValveImpl.removeAuthCookie;
+
 /**
  * Logout controller.
  * User: toto
@@ -271,7 +273,8 @@ public class Logout implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         if (cookieAuthConfig.isActivated()) {
-            removeAuthCookie(request, response);
+            JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
+            removeAuthCookie(request, response, cookieAuthConfig, curUser);
         }
         Locale uiLocale = (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE);
         Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
@@ -306,36 +309,6 @@ public class Logout implements Controller {
         }
 
         return null;
-    }
-
-    protected void removeAuthCookie(HttpServletRequest request, HttpServletResponse response) {
-        // now let's destroy the cookie authentication if there was one
-        // set for this user.
-        JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
-        JCRPropertyWrapper cookieAuthKey = null;
-        try {
-            if (!JahiaUserManagerService.isGuest(curUser)) {
-                JCRUserNode userNode = userManagerService.lookupUserByPath(curUser.getLocalPath());
-                String userPropertyName = cookieAuthConfig.getUserPropertyName();
-                if (userNode != null && userNode.hasProperty(userPropertyName)) {
-                    cookieAuthKey = userNode.getProperty(userPropertyName);
-                }
-            }
-            if (cookieAuthKey != null) {
-                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey.getString());
-                authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
-                authCookie.setMaxAge(0); // means we want it deleted now !
-                authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
-                authCookie.setSecure(cookieAuthConfig.isSecure());
-                response.addCookie(authCookie);
-                if (!SettingsBean.getInstance().isFullReadOnlyMode()) {
-                    cookieAuthKey.remove();
-                    cookieAuthKey.getSession().save();
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
     }
 
     protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site)

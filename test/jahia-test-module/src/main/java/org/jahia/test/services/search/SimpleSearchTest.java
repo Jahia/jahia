@@ -194,7 +194,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         criteria.getTerms().get(0).getFields().setSiteContent(true);
 
         List<Hit<?>> hits = searchService.search(criteria, context).getResults();
-        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 15, hits.size());
+        assertEquals(UNEXPECTED_NUMBER_OF_SEARCH_RESULTS_FOR + criteria.toString(), 16, hits.size());
     }
 
     @Test

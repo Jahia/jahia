@@ -57,6 +57,22 @@ export default {
       }
     },
     {
+      label: 'Champion',
+      value: row => {
+        if (
+          row.customProperties === undefined ||
+          row.customProperties.totalCount === 0
+        ) {
+          return ''
+        }
+        return row.customProperties.edges
+          .filter(e => e.node.name === 'Champion')
+          .map(e => e.node.values)
+          .sort()
+          .join(', ')
+      }
+    },    
+    {
       label: 'Description',
       value: row => {
         return row.description

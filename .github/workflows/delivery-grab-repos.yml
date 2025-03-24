@@ -2,7 +2,7 @@ name: Delivery - Grab Jahia Repositories
 
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron:  '0 0 * * 6' # Midnight on saturday
   workflow_dispatch:
 
 jobs:
@@ -16,10 +16,11 @@ jobs:
 
       - name: Get Org Repositories
         id: get-repos
-        uses: fgerthoffert/actions-get-org-repos@v1.0.0
+        uses: fgerthoffert/actions-get-org-repos@v1.2.0
         with:
           org: jahia
           token: ${{ secrets.GH_JAHIACI_TOKEN }}
+          max_query_nodes: 10
           fetch_custom_properties: true
           filter_topics: product
           filter_operator: AND
@@ -29,14 +30,6 @@ jobs:
         shell: bash
         run: |
           npx @json2csv/cli -i ${{ steps.get-repos.outputs.artifact_filepath }} --ndjson --config ${{ github.workspace }}/.github/config/delivery-grab-repos-cfg.js -o repositories.csv
-
-      - name: Archive CSV artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: repositories.csv
-          path: |
-            repositories.csv
-          retention-days: 2
 
       - name: Push the CSV file to Google Sheets
         uses: fgerthoffert/actions-csv-to-gsheet@v1.0.0
@@ -48,3 +41,131 @@ jobs:
           gsheet_worksheet_title: Repositories
           gsheet_header_row: 5
           gsheet_title_key: Name
+
+      - name: Archive CSV artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repositories.csv
+          path: |
+            repositories.csv
+          retention-days: 2
+
+      # Created a list of releases based on the tags present in repositories
+      # This is useful to get a sense of the repo activity (frequency of releases)
+      # This creates two tables
+      # - A list of all individual tags (i.e. releases) with the last commit date
+      # - A list of all tags created per year
+      # This is available as ndjson and csv
+      - run: npm install ndjson
+      - name: Build list of recent releases
+        uses: actions/github-script@v7
+        env:
+          sourceFilePath: ${{ steps.get-repos.outputs.artifact_filepath }}
+          destinationFilePath: 'releases.ndjson'
+          destinationFilePathPerYear: 'releases-peryear.ndjson'
+        with:
+          script: |
+            const fs = require('fs');
+            const ndjson = require('ndjson');
+            const { sourceFilePath, destinationFilePath, destinationFilePathPerYear } = process.env;
+
+            async function readNDJSONFile(filePath) {
+                return new Promise((resolve, reject) => {
+                    const jsonArray = [];
+                    fs.createReadStream(filePath)
+                        .pipe(ndjson.parse())
+                        .on('data', obj => jsonArray.push(obj))
+                        .on('end', () => resolve(jsonArray))
+                        .on('error', err => reject(err));
+                });
+            }
+
+            const repos = await readNDJSONFile(sourceFilePath);
+
+            const releases = repos.reduce((acc, repo) => {
+              const repoData = {
+                nameWithOwner: repo.nameWithOwner,
+                url: repo.url,
+                topics: repo.repositoryTopics.edges
+                  .map(e => e.node.topic.name)
+                  .sort()
+                  .join(', ')
+              }
+              if (repo.tags.nodes.length === 0) {
+                acc.push({
+                  ...repoData,
+                  tag: 'N/A',
+                  date: 'N/A',
+                })
+              } else {
+                for (const tag of repo.tags.nodes) {
+                  acc.push({
+                    ...repoData,
+                    tag: tag.name,
+                    date: tag.target?.tagger?.date ?? tag.target?.committedDate ?? 'N/A'
+                  })
+                }
+              }
+              return acc
+            }, [])
+            console.log(releases)
+
+            for (const release of releases) {
+              fs.writeFileSync(
+                destinationFilePath,
+                JSON.stringify(release) + '\n',
+                { flag: 'a' }
+              )
+            }
+
+            console.log('Create array of releases per year')
+            const releasesPerYear = releases.reduce((acc, release) => {
+              const releaseYear = release.date !== 'N/A' ? release.date.substring(0, 4) : 'Date Unknown'
+              if (acc.find((r) => r.nameWithOwner === release.nameWithOwner) === undefined) {
+                let releaseEntry = {
+                  nameWithOwner: release.nameWithOwner,
+                  url: release.url,
+                  topics: release.topics,
+                  2025: 0,
+                  2024: 0,
+                  2023: 0,
+                  2022: 0,
+                  2021: 0,
+                  2020: 0,
+                }
+                releaseEntry[releaseYear] = 1
+                acc.push(releaseEntry)
+              } else {
+                acc = acc.map((r) => {
+                  if (r.nameWithOwner === release.nameWithOwner) {
+                    r[releaseYear] = r[releaseYear] === undefined ? 0 : r[releaseYear] + 1
+                  }
+                  return r
+                })
+              }              
+              return acc
+            }, [])
+            console.log(releasesPerYear)
+
+            for (const release of releasesPerYear) {
+              fs.writeFileSync(
+                destinationFilePathPerYear,
+                JSON.stringify(release) + '\n',
+                { flag: 'a' }
+              )
+            }
+
+      - name: Convert the NDJSON to CSV
+        shell: bash
+        run: |
+          npx @json2csv/cli -i releases.ndjson --ndjson -o releases.csv
+          npx @json2csv/cli -i releases-peryear.ndjson --ndjson -o releases-peryear.csv
+
+      - name: Archive artifacts about releases
+        uses: actions/upload-artifact@v4
+        with:
+          name: releases
+          path: |
+            releases*
+          retention-days: 2
+

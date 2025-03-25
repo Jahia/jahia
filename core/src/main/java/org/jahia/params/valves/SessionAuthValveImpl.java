@@ -87,9 +87,9 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         if (jahiaUser != null) {
             JCRUserNode userNode = userManagerService.lookupUser(jahiaUser.getName(), jahiaUser.getRealm(), false);
             jahiaUser = userNode != null ? userNode.getJahiaUser() : null;
-            if (userNode != null && invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authContext.getRequest())) {
+            if (userNode != null && invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authContext)) {
                 LOGGER.debug("Login failed. Session expired for user " + jahiaUser.getName());
-                return;
+                jahiaUser = null;
             }
         }
         if (jahiaUser == null || JahiaUserManagerService.isGuest(jahiaUser)) {

@@ -80,7 +80,7 @@ public class ContainerAuthValveImpl extends BaseAuthValve {
             try {
                 JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUser(principal.getName());
                 if (userNode != null) {
-                    if (invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), request)) {
+                    if (invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authContext)) {
                         logger.debug("Login failed. Session expired for user " + principal.getName());
                         return;
                     }

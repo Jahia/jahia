@@ -58,6 +58,7 @@ public class AuthValveContext {
     private JCRSessionFactory sessionFactory;
     private boolean authRetrievedFromSession = false;
     private boolean shouldStoreAuthInSession = true;
+    private boolean invalidateHttpSession = false;
 
     public AuthValveContext(HttpServletRequest request, HttpServletResponse response, JCRSessionFactory sessionFactory) {
         this.request = request;
@@ -103,5 +104,15 @@ public class AuthValveContext {
 
     public void setShouldStoreAuthInSession(boolean shouldStoreAuthInSession) {
         this.shouldStoreAuthInSession = shouldStoreAuthInSession;
+    }
+
+    // If true, it means the http session requires to be invalidated at the end of the valves process.
+    public boolean invalidateHttpSession() {
+        return invalidateHttpSession;
+    }
+
+    // Set to true to indicate that the session requires to be  invalidated at the end of the valves execution
+    public void setInvalidateHttpSession(boolean invalidateHttpSession) {
+        this.invalidateHttpSession = invalidateHttpSession;
     }
 }

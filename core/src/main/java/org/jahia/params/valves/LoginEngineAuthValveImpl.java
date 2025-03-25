@@ -106,7 +106,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
 
-        JCRUserNode theUser = getJcrUserNode(httpServletRequest);
+        JCRUserNode theUser = getJcrUserNode(httpServletRequest, authContext);
 
         if (theUser != null) {
 
@@ -159,7 +159,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         }
     }
 
-    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest) {
+    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest, AuthValveContext valveContext) {
         if (isLoginRequested(httpServletRequest)) {
             final String username = httpServletRequest.getParameter("username");
             final String password = httpServletRequest.getParameter("password");
@@ -167,17 +167,17 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
             if ((username != null) && (password != null)) {
                 // Check if the user has site access ( even though it is not a user of this site )
-                return getJcrUserNode(httpServletRequest, username, password, site);
+                return getJcrUserNode(httpServletRequest, username, password, site, valveContext);
             }
         }
         return null;
     }
 
-    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest, String username, String password, String site) {
+    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest, String username, String password, String site, AuthValveContext valveContext) {
         JCRUserNode theUser = userManagerService.lookupUser(username, site);
         if (theUser != null) {
             if (theUser.verifyPassword(password)) {
-                if (invalidateSessionIfExpired(theUser.getInvalidatedSessionTime(), httpServletRequest)) {
+                if (invalidateSessionIfExpired(theUser.getInvalidatedSessionTime(), valveContext)) {
                     logger.debug("Login failed. Session expired for user " + theUser.getName());
                     return null;
                 }

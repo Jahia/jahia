@@ -76,6 +76,11 @@ public class JahiaAuthenticationFilter extends AuthenticatingFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         AuthValveContext authValveContext = new AuthValveContext(WebUtils.toHttp(request), WebUtils.toHttp(response), sessionFactory);
         authPipeline.invoke(authValveContext);
+        // Invalidate session if valves say so.
+        if (authValveContext.invalidateHttpSession()) {
+            WebUtils.toHttp(request).getSession().invalidate();
+            WebUtils.toHttp(request).getSession(true);
+        }
 
         JahiaUser jahiaUser = sessionFactory.getCurrentUser();
         boolean userSet = jahiaUser != null;

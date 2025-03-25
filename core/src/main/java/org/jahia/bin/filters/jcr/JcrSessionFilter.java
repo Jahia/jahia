@@ -104,6 +104,11 @@ public class JcrSessionFilter implements Filter {
                                                 (HttpServletResponse) servletResponse, sessionFactory);
                     servletRequest.setAttribute(AuthValveContext.class.getName(), authValveContext);
                     authPipeline.invoke(authValveContext);
+                    // Auth valves required to reset the current session. do it.
+                    if (authValveContext.invalidateHttpSession()) {
+                        ((HttpServletRequest) servletRequest).getSession().invalidate();
+                        ((HttpServletRequest) servletRequest).getSession(true);
+                    }
                 } catch (PipelineException pe) {
                     logger.error("Error while authorizing user", pe);
                 }
@@ -116,7 +121,7 @@ public class JcrSessionFilter implements Filter {
             } else {
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
                 // Valves should have detected lock account or session expiration, we double-check here in case an external valve did not do it.
-                if (userNode == null || userNode.isAccountLocked() || BaseAuthValve.invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), (HttpServletRequest) servletRequest)) {
+                if (userNode == null || userNode.isAccountLocked() || BaseAuthValve.invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authValveContext)) {
                     ((HttpServletRequest) servletRequest).getSession().invalidate();
                     sessionFactory.setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
                 }

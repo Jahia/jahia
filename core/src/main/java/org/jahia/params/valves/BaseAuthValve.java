@@ -49,10 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanNameAware;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.net.http.HttpRequest;
-
 /**
  * Common class for authentication valves.
  *
@@ -133,11 +129,10 @@ public abstract class BaseAuthValve implements Valve, BeanNameAware {
      * @param request
      * @return true if the session has been invalidated
      */
-    public static boolean invalidateSessionIfExpired(long invalidateSessionTime, HttpServletRequest request) {
-        if (invalidateSessionTime > 0 && request.getSession().getCreationTime() < invalidateSessionTime) {
+    public static boolean invalidateSessionIfExpired(long invalidateSessionTime, AuthValveContext valveContext) {
+        if (invalidateSessionTime > 0 && valveContext.getRequest().getSession().getCreationTime() < invalidateSessionTime) {
             logger.debug("Session invalidated");
-            request.getSession().invalidate();
-            request.getSession(true);
+            valveContext.setInvalidateHttpSession(true);
             return true;
         }
         return false;

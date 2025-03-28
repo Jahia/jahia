@@ -60,6 +60,7 @@ package org.jahia.services.content.files;
  */
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 
@@ -314,6 +315,7 @@ public class StaticFileServlet extends HttpServlet {
             disposition = accept != null && accepts(accept, contentType) ? "inline" : "attachment";
         }
 
+        String presetCacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
         // Initialize response.
         response.reset();
         response.setBufferSize(DEFAULT_BUFFER_SIZE);
@@ -321,6 +323,9 @@ public class StaticFileServlet extends HttpServlet {
         response.setHeader("Accept-Ranges", "bytes");
         response.setHeader("ETag", eTag);
         response.setDateHeader("Last-Modified", lastModified);
+        if (presetCacheControl != null && !presetCacheControl.isEmpty()) {
+            response.setHeader(HttpHeaders.CACHE_CONTROL, presetCacheControl);
+        }
 
 
         // Send requested file (part(s)) to client ------------------------------------------------

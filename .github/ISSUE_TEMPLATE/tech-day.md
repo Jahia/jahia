@@ -37,8 +37,9 @@ When creating such tickets, try to provide details about complexity of such an i
 This checklist is there to help you but is not exaustive, if some items are not relevant or should be added, [please request a change](https://github.com/Jahia/.github/blob/master/.github/ISSUE_TEMPLATE/custom_product/tech-day.md).
 
 ### General
-- [ ] 🚨 I reviewed all OPEN TECH tickets created for that codebase (using codebase-X.Y.Z milestone)
-- [ ] 🚨 I reviewed older tech day tickets for that codebase
+- [ ] 🚨 I reviewed all OPEN tickets planned for an upcoming release (using codebase-X.Y.Z milestone)
+- [ ] 🚨 I reviewed older tech day tickets / ownership activities for that codebase
+- [ ] 🔝 I submitted updates to the [tech-day template](https://github.com/Jahia/.github/blob/maintain-list/.github/ISSUE_TEMPLATE/custom_product/tech-day.md) if I noticed incorrect elements
 - [ ] 🟠 Standards have been discussed in a tech kumite in the past semester
 - [ ] 🙏 Module's license is up-to-date (see https://github.com/Jahia/open-source/blob/master/README.md#licenses)
 ### Dependency management

@@ -139,16 +139,15 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                 foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null, JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null));
                 if (foundUsers.size() == 1) {
                     jahiaUser = foundUsers.iterator().next();
-                    if (invalidateSessionIfExpired(jahiaUser.getInvalidatedSessionTime(), authContext)) {
+                    if (markSessionToBeInvalidated(jahiaUser.getInvalidatedSessionTime(), authContext)) {
                         // Clean up cookie
                         removeAuthCookie(authContext.getRequest(), authContext.getResponse(), cookieAuthConfig, jahiaUser.getJahiaUser());
                         logger.debug("Login failed. Session expired for user " + jahiaUser.getName());
-                        return;
+                        jahiaUser = null;
                     }
-                    if (jahiaUser.isAccountLocked()) {
+                    if (jahiaUser == null || jahiaUser.isAccountLocked()) {
                         logger.debug("Account locked");
                         jahiaUser = null;
-                        return;
                     } else {
                         HttpSession session = authContext.getRequest().getSession(false);
                         if (session != null) {

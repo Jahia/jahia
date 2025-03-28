@@ -139,11 +139,6 @@ public abstract class SsoValve extends BaseAuthValve {
             sessionUser = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         }
         if (sessionUser != null && !JahiaUserManagerService.isGuest(sessionUser)) {
-            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(sessionUser.getLocalPath());
-            if (invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authContext)) {
-                logger.debug("Login failed. Session expired for user " + sessionUser.getName());
-                return;
-            }
             if (logger.isDebugEnabled()) {
                 logger.debug("user '{}' was already authenticated!", sessionUser.getUsername());
             }
@@ -187,10 +182,6 @@ public abstract class SsoValve extends BaseAuthValve {
             if (user == null) {
                 servletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
                 throw new PipelineException("user '" + uid + "' was authenticated but not found in database!");
-            }
-            if (invalidateSessionIfExpired(user.getInvalidatedSessionTime(), authContext)) {
-                logger.debug("Login failed. Session expired for user " + user.getName());
-                return;
             }
             if (user.isAccountLocked()) {
                 logger.warn("Login failed. Account is locked for user " + uid);

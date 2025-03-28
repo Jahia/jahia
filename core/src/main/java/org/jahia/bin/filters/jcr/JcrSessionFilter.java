@@ -121,7 +121,7 @@ public class JcrSessionFilter implements Filter {
             } else {
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
                 // Valves should have detected lock account or session expiration, we double-check here in case an external valve did not do it.
-                if (userNode == null || userNode.isAccountLocked() || BaseAuthValve.invalidateSessionIfExpired(userNode.getInvalidatedSessionTime(), authValveContext)) {
+                if (userNode == null || userNode.isAccountLocked()) {
                     ((HttpServletRequest) servletRequest).getSession().invalidate();
                     sessionFactory.setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
                 }

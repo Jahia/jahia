@@ -177,10 +177,6 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         JCRUserNode theUser = userManagerService.lookupUser(username, site);
         if (theUser != null) {
             if (theUser.verifyPassword(password)) {
-                if (invalidateSessionIfExpired(theUser.getInvalidatedSessionTime(), valveContext)) {
-                    logger.debug("Login failed. Session expired for user " + theUser.getName());
-                    return null;
-                }
                 if (!theUser.isAccountLocked()) {
                     if (!theUser.isRoot() && LicenseCheckUtil.isLoggedInUsersLimitReached()) {
                         logger.warn("The number of logged in users has reached the authorized limit.");

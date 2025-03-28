@@ -124,12 +124,12 @@ public abstract class BaseAuthValve implements Valve, BeanNameAware {
     }
 
     /**
-     * invalidate the current session if it was created before the specified time and create a new one.
+     * mark the current session to be invalidted if it was created before the specified time and create a new one.
      * @param invalidateSessionTime
      * @param request
-     * @return true if the session has been invalidated
+     * @return true if the session requires to be invalidated
      */
-    public static boolean invalidateSessionIfExpired(long invalidateSessionTime, AuthValveContext valveContext) {
+    public static boolean markSessionToBeInvalidated(long invalidateSessionTime, AuthValveContext valveContext) {
         if (invalidateSessionTime > 0 && valveContext.getRequest().getSession().getCreationTime() < invalidateSessionTime) {
             logger.debug("Session invalidated");
             valveContext.setInvalidateHttpSession(true);

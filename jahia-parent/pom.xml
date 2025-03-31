@@ -109,7 +109,7 @@
         <xmlunit.version>2.8.2</xmlunit.version>
         <izpack.version>4.3.5-jahia12</izpack.version>
         <launch4j.version>3.12</launch4j.version>
-        <log4j.version>2.17.2</log4j.version>
+        <log4j.version>2.23.1</log4j.version>
         <jahia.tomcat.version>9.0.104</jahia.tomcat.version>
         <protobuf.java.version>3.25.5</protobuf.java.version>
 

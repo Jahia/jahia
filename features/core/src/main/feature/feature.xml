@@ -7,6 +7,7 @@
     <repository>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features</repository>
     <repository>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features</repository>
+    <repository>mvn:org.jahia.bundles/client-cache-control/${client-cache-control.version}/xml/features</repository>
 
     <feature name="dx-core" description="DX Core OSGi bundles" version="${project.version}">
         <details>DX Core OSGi bundles</details>
@@ -15,6 +16,7 @@
         <feature>dx-jax-rs</feature>
         <feature>shell</feature>
         <feature>scr</feature>
+        <feature>client-cache-control</feature>
         <bundle start-level="24">mvn:org.jahia.bundles/org.jahia.bundles.extends.osgi.registry/${project.version}</bundle>
         <bundle start-level="25">mvn:org.jahia.bundles/org.jahia.bundles.config.manager/${project.version}</bundle>
         <bundle start-level="35">mvn:org.jahia.bundles/org.jahia.bundles.spring.bridge/${project.version}</bundle>

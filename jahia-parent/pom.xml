@@ -181,6 +181,7 @@
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <jersey.version>2.18</jersey.version>
         <hk2.version>2.4.0-b25</hk2.version>
+        <client-cache-control.version>9.0.0-SNAPSHOT</client-cache-control.version>
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.8</jahia.commons.version>
@@ -287,6 +288,12 @@
         <developer>
             <name>François Pral</name>
             <email>francois.pral@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Jerome Blanchard</name>
+            <email>jblanchard@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>

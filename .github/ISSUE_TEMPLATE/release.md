@@ -30,8 +30,7 @@ Desired Jahia Version: 8.X.X.X
 In the testing matrix, always use the latest patch version of a particular release
 
 The following combinations should be validated:
- - Jahia 8.1.7.0
- - Jahia 8.2.1.0
+ - minimum Jahia version (according to the pom.xml)
 
 :information_source: If you are releasing for the main branch of a module, make sure to complete the checklist below when working on the ticket.
 
@@ -41,13 +40,13 @@ The following combinations should be validated:
 - [ ] Testing matrix and Minimum Jahia version are detailed
 - [ ] Jahia-parent (minimum Jahia version) was updated if requested in the ticket
 - [ ] The release workflow will [publish](https://github.com/Jahia/sandbox/commit/9a6ab10c8fbe5e11eb7fe3c6b391be2be776319b) a slack notification
-- [ ] Release creation has been triggered from the Github Release UI (https://github.com/Jahia/[module-repo]/releases/new)
+- [ ] Release creation has been triggered from the Github Release UI ([detailed documentation](https://jahia-confluence.atlassian.net/wiki/spaces/PR/pages/2064804/Releasing+a+module#Releasingamodule-ReleasingwithGithub))
 
 <h2 id="tests-checklist">:vertical_traffic_light: Tests checklist</h2>
 
 General
 - [ ] Manual tests detailing testing steps for validating the release of this module are present on Testrail
-- [ ] Automated tests using the release artifacts were executed
+- [ ] Automated tests using the release artifacts were executed against the oldest and newest release of Jahia
 
 Module migration
 - [ ] Upgrade from the previous released version of the module was tested
@@ -56,7 +55,7 @@ Module migration
 While Testing
 - [ ] No warnings or errors are present in the browser console when testing the module
 - [ ] No warnings or errors are present in Jahia logs when testing the module (incl. migration)
-- [ ] Verified tickets present in the release are actually included in the release artifact
+- [ ] Select a random set of fixes from the release and verify them on the minimum jahia-version
 
 After Testing
 - [ ] Tested combinations (Jahia versions, modules versions) are listed in this released ticket

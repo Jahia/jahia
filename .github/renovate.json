@@ -9,7 +9,7 @@
   "branchPrefix": "renovate_",
   "rebaseWhen": "never",
   "dependencyDashboardApproval": true,
-  "prHeader": ["> [!CAUTION]\n> Ensure that [custom.properties](https://github.com/Jahia/jahia-private/blob/master/war/src/data/resources/karaf/etc/custom.properties) is updated accordingly."],
+  "prHeader": ["> [!CAUTION]\n> Ensure that [custom.properties](https://github.com/Jahia/jahia-private/blob/{{{branchName}}}/war/src/data/resources/karaf/etc/custom.properties) is updated accordingly."],
   "packageRules": [
     {
       "matchUpdateTypes": [

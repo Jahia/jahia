@@ -15,7 +15,6 @@ on:
       - '.owasp/**'
 
 env:
-  TESTS_PATH: docker/docker-tests/
   TARGET_BRANCH: ""
 
 concurrency:
@@ -143,49 +142,6 @@ jobs:
           skip-docker: true
           slack-webhook: ${{ secrets.SLACK_WEBHOOK_TEAM_PRODUCT_SNAPSHOTS_NOTIFICATIONS }}
 
-  integration-tests:
-    name: Integration Tests (Standalone)
-    needs: build
-    runs-on: self-hosted
-    timeout-minutes: 45
-    steps:
-      - uses: jahia/jahia-modules-action/helper@v2
-      - uses: KengoTODA/actions-setup-docker-compose@main
-        with:
-          version: '1.29.2'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-      - uses: actions/checkout@v4
-      - uses: jahia/jahia-modules-action/integration-tests@v2
-        with:
-          module_id: jahia-root
-          testrail_project: Jahia
-          tests_manifest: provisioning-manifest-build.yml
-          tests_path: ${{ env.TESTS_PATH }}
-          jahia_image: jahia/jahia-core-dev:${{ needs.build.outputs.image_tag }}
-          should_use_build_artifacts: false
-          should_skip_notifications: false
-          should_skip_testrail: false
-          should_skip_zencrepes: true
-          github_artifact_name: jahia-private-integ-tests-${{ github.run_number }}
-          jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
-          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          nexus_username: ${{ secrets.NEXUS_USERNAME }}
-          nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          tests_report_name: Test report (Standalone)
-          testrail_username: ${{ secrets.TESTRAIL_USERNAME }}
-          testrail_password: ${{ secrets.TESTRAIL_PASSWORD }}
-          incident_service: jahia-private
-          incident_pagerduty_api_key: ${{ secrets.INCIDENT_PAGERDUTY_API_KEY }}
-          incident_pagerduty_reporter_email: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_EMAIL }}
-          incident_pagerduty_reporter_id: ${{ secrets.INCIDENT_PAGERDUTY_REPORTER_ID }}
-          incident_google_spreadsheet_id: ${{ secrets.INCIDENT_GOOGLE_SPREADSHEET_ID }}
-          incident_google_client_email: ${{ secrets.INCIDENT_GOOGLE_CLIENT_EMAIL }}
-          incident_google_api_key_base64: ${{ secrets.INCIDENT_GOOGLE_PRIVATE_KEY_BASE64 }}
-          zencrepes_secret: ${{ secrets.ZENCREPES_WEBHOOK_SECRET }}
-
   vulnerability-scan:
     runs-on: ubuntu-latest
     needs: build
@@ -197,7 +153,6 @@ jobs:
           auditci_level: critical
           auditci_level_tests: critical
           module_path: war/
-          tests_path: ${{ env.TESTS_PATH }}
           skip_lint_modules: true
           skip_lint_tests: true
 

@@ -97,7 +97,6 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.42.1</version>
                         <executions>
                             <execution>
                                 <id>default</id>
@@ -143,7 +142,6 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.42.1</version>
                         <executions>
                             <execution>
                                 <id>default</id>
@@ -159,6 +157,11 @@
                                     <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
                                     <build>
                                         <contextDir>${project.basedir}</contextDir>
+                                        <buildx>
+                                            <platforms>
+                                                <platform>linux/amd64</platform>
+                                            </platforms>
+                                        </buildx>
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <JAHIA_PLUGIN>org.jahia.server:jahia-simple-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>

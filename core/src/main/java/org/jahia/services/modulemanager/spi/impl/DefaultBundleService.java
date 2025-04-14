@@ -78,9 +78,19 @@ public class DefaultBundleService implements BundleService {
     private static final Logger logger = LoggerFactory.getLogger(DefaultBundleService.class);
 
     protected static Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws ModuleNotFoundException {
+        return getBundleEnsureExists(bundleInfo, false);
+    }
+
+    private static Bundle getBundleEnsureExists(BundleInfo bundleInfo, boolean allowNonModule) throws ModuleNotFoundException {
         Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
         if (bundle == null) {
             throw new ModuleNotFoundException(bundleInfo.getKey());
+        }
+
+        // This should only be used for returning states/infos for read purpose.
+        // Otherwise, any operation on bundles that are non jahia module should be rejected !
+        if (allowNonModule) {
+            BundleUtils.isJahiaModuleBundle(bundle);
         }
         return bundle;
     }
@@ -292,14 +302,14 @@ public class DefaultBundleService implements BundleService {
 
     @Override
     public BundleState getLocalState(BundleInfo bundleInfo) throws ModuleNotFoundException {
-        Bundle bundle = getBundleEnsureExists(bundleInfo);
+        Bundle bundle = getBundleEnsureExists(bundleInfo, true);
         return BundleState.fromInt(bundle.getState());
     }
 
     @Override
     public BundleInformation getLocalInfo(BundleInfo bundleInfo) throws ModuleNotFoundException {
 
-        Bundle bundle = getBundleEnsureExists(bundleInfo);
+        Bundle bundle = getBundleEnsureExists(bundleInfo, true);
         final BundleState osgiState = BundleState.fromInt(bundle.getState());
 
         if (!BundleUtils.isJahiaModuleBundle(bundle)) {

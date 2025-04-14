@@ -79,4 +79,16 @@ public interface Operation {
     }
 
     String getType();
+
+    /**
+     * Retrieves the list of API names that the operation refers to, which will be used for access control.
+     * A {@code null} or empty array indicates no access control, so use with caution.
+     * Each API name will be checked using the syntax {@code "provisioning." + apiName}.
+     * (only matching APIs is enough to grant access)
+     *
+     * @return an array of API names for access control checks
+     */
+    default String[] getAPIsForAccessControl() {
+        return new String[] { getType() };
+    }
 }

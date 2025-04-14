@@ -64,9 +64,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>
-                            org.jahia.bundles.provisioning
-                        </Export-Package>
                         <JAX-RS-Alias>/api/provisioning</JAX-RS-Alias>
                         <JAX-RS-Application>org.jahia.bundles.provisioning.rest.RestConfig</JAX-RS-Application>
                         <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>

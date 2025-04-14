@@ -58,6 +58,10 @@ import org.springframework.core.Constants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.Manifest;
+
+import static org.jahia.services.modulemanager.Constants.ATTR_JAHIA_MODULE_TYPE;
+import static org.jahia.services.modulemanager.Constants.ATTR_NAME_JAHIA_MODULE_TYPE;
 
 /**
  * Convenient utilities for Jahia OSGi bundles.
@@ -290,7 +294,17 @@ public final class BundleUtils {
      * @return <code>true</code> if the provided bundle represents Jahia module
      */
     public static boolean isJahiaModuleBundle(Bundle bundle) {
-        return bundle.getHeaders().get("Jahia-Module-Type") != null;
+        return bundle.getHeaders().get(ATTR_JAHIA_MODULE_TYPE) != null;
+    }
+
+    /**
+     * Returns <code>true</code> if the provided manifest represents Jahia module.
+     *
+     * @param manifest the module jar manifest
+     * @return <code>true</code> if the provided manifest represents Jahia module
+     */
+    public static boolean isJahiaModuleBundle(Manifest manifest) {
+        return manifest != null && manifest.getMainAttributes().getValue(ATTR_NAME_JAHIA_MODULE_TYPE) != null;
     }
 
     /**

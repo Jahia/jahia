@@ -43,7 +43,7 @@
 package org.jahia.services.modulemanager;
 
 /**
- * Signals that a submitted JAR file does not correspond to a valid OSGi module.
+ * Signals that a submitted JAR file does not correspond to a valid Jahia module.
  *
  * @author Sergiy Shyrkov
  */
@@ -55,7 +55,7 @@ public class InvalidModuleException extends ModuleManagementInvalidArgumentExcep
      * Initializes an instance of this class.
      */
     public InvalidModuleException() {
-        super("Submitted bundle is either not a valid OSGi bundle or has no required manifest headers"
-                + " Bundle-SymbolicName and Implementation-Version/Bundle-Version");
+        super("Submitted package is not a valid Jahia module, check for missing required manifest headers:"
+                + " Bundle-SymbolicName, Implementation-Version/Bundle-Version, Jahia-Module-Type");
     }
 }

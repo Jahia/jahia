@@ -54,9 +54,13 @@ import java.util.*;
 /**
  * Stop bundle operation
  */
-@Component(service = Operation.class, property = "type=stopBundle")
-public class StopBundle implements Operation {
+@Component(service = Operation.class, property = "type=stopModule")
+public class StopModule implements Operation {
+    // Legacy keys for backward compatibility
     public static final String STOP_BUNDLE = "stopBundle";
+
+    // Valid keys
+    public static final String STOP_MODULE = "stopModule";
     public static final String TARGET = "target";
     private ModuleManager moduleManager;
 
@@ -67,15 +71,16 @@ public class StopBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.containsKey(STOP_BUNDLE);
+        return entry.containsKey(STOP_BUNDLE) || entry.containsKey(STOP_MODULE);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, STOP_BUNDLE, "key");
+        String cmd = entry.containsKey(STOP_BUNDLE) ? STOP_BUNDLE : STOP_MODULE;
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, cmd, "key");
         List<OperationResult> stopResults = new ArrayList<>();
         for (Map<String, Object> subEntry : entries) {
-            stopResults.add(moduleManager.stop((String) subEntry.get(STOP_BUNDLE), (String) entry.get(TARGET)));
+            stopResults.add(moduleManager.stop((String) subEntry.get(cmd), (String) entry.get(TARGET)));
         }
         if (executionContext.getContext().get("result") instanceof Collection) {
             ((Collection) executionContext.getContext().get("result")).add(Collections.singletonMap("stop", stopResults));
@@ -85,5 +90,10 @@ public class StopBundle implements Operation {
     @Override
     public String getType() {
         return STOP_BUNDLE;
+    }
+
+    @Override
+    public String[] getAPIsForAccessControl() {
+        return new String[] { STOP_MODULE, STOP_BUNDLE };
     }
 }

@@ -54,9 +54,13 @@ import java.util.*;
 /**
  * Start bundle operation
  */
-@Component(service = Operation.class, property = "type=startBundle")
-public class StartBundle implements Operation {
+@Component(service = Operation.class, property = "type=startModule")
+public class StartModule implements Operation {
+    // Legacy keys for backward compatibility
     public static final String START_BUNDLE = "startBundle";
+
+    // valid keys
+    public static final String START_MODULE = "startModule";
     public static final String TARGET = "target";
     private ModuleManager moduleManager;
 
@@ -67,15 +71,16 @@ public class StartBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.containsKey(START_BUNDLE);
+        return entry.containsKey(START_BUNDLE) || entry.containsKey(START_MODULE);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, START_BUNDLE, "key");
+        String cmd = entry.containsKey(START_BUNDLE) ? START_BUNDLE : START_MODULE;
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, cmd, "key");
         List<OperationResult> startResults = new ArrayList<>();
         for (Map<String, Object> subEntry : entries) {
-            startResults.add(moduleManager.start((String) subEntry.get(START_BUNDLE), (String) entry.get(TARGET)));
+            startResults.add(moduleManager.start((String) subEntry.get(cmd), (String) entry.get(TARGET)));
         }
         if (executionContext.getContext().get("result") instanceof Collection) {
             ((Collection) executionContext.getContext().get("result")).add(Collections.singletonMap("start", startResults));
@@ -84,6 +89,11 @@ public class StartBundle implements Operation {
 
     @Override
     public String getType() {
-        return START_BUNDLE;
+        return START_MODULE;
+    }
+
+    @Override
+    public String[] getAPIsForAccessControl() {
+        return new String[] { START_MODULE, START_BUNDLE };
     }
 }

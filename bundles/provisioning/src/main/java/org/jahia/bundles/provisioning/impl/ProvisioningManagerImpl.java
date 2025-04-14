@@ -167,7 +167,19 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
     private boolean hasPermission(Operation operation) {
             boolean hasPermission;
             try {
-                hasPermission = permissionService.hasPermission("provisioning." + operation.getType());
+                // no access control for the operation
+                if (operation.getAPIsForAccessControl() == null || operation.getAPIsForAccessControl().length == 0) {
+                    return true;
+                }
+
+                // check if the user has permission to execute the operation
+                hasPermission = false;
+                for (String apiName : operation.getAPIsForAccessControl()) {
+                    if (permissionService.hasPermission("provisioning." + apiName)) {
+                        hasPermission = true;
+                        break;
+                    }
+                }
                 if (!hasPermission) {
                     logger.warn("No permission to execute provisioning operation of type {}", operation.getType());
                 }

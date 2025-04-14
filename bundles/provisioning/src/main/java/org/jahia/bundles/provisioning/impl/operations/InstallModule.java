@@ -78,20 +78,29 @@ import java.util.stream.Collectors;
 /**
  * Install operation
  */
-@Component(service = Operation.class, property = "type=installBundle")
-public class InstallBundle implements Operation {
-    public static final String AUTO_START = "autoStart";
+@Component(service = Operation.class, property = "type=installModule")
+public class InstallModule implements Operation {
+    // Legacy keys for backward compatibility
     public static final String INSTALL_BUNDLE = "installBundle";
     public static final String INSTALL_AND_START_BUNDLE = "installAndStartBundle";
     public static final String INSTALL_OR_UPGRADE_BUNDLE = "installOrUpgradeBundle";
+
+    // Valid keys
+    public static final String AUTO_START = "autoStart";
+    public static final String INSTALL_MODULE = "installModule";
+    public static final String INSTALL_AND_START_MODULE = "installAndStartModule";
+    public static final String INSTALL_OR_UPGRADE_MODULE = "installOrUpgradeModule";
     public static final String START_LEVEL = "startLevel";
     public static final String IGNORE_CHECKS = "ignoreChecks";
     public static final String FORCE_UPDATE = "forceUpdate";
     public static final String UNINSTALL_PREVIOUS_VERSION = "uninstallPreviousVersion";
     public static final String TARGET = "target";
     public static final String IF = "if";
-    private static final String[] SUPPORTED_KEYS = {INSTALL_BUNDLE, INSTALL_AND_START_BUNDLE, INSTALL_OR_UPGRADE_BUNDLE};
-    private static final Logger logger = LoggerFactory.getLogger(InstallBundle.class);
+    private static final String[] SUPPORTED_KEYS = {
+            INSTALL_BUNDLE, INSTALL_AND_START_BUNDLE, INSTALL_OR_UPGRADE_BUNDLE,
+            INSTALL_MODULE, INSTALL_AND_START_MODULE, INSTALL_OR_UPGRADE_MODULE
+    };
+    private static final Logger logger = LoggerFactory.getLogger(InstallModule.class);
     private BundleContext bundleContext;
     private ModuleManager moduleManager;
 
@@ -215,7 +224,7 @@ public class InstallBundle implements Operation {
                 return;
             }
 
-            if (entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null && checkMoreRecentVersion(resource, bundleKey, installedBundles)) {
+            if (isInstallOrUpgrade(entry) && checkMoreRecentVersion(resource, bundleKey, installedBundles)) {
                 return;
             }
 
@@ -289,9 +298,9 @@ public class InstallBundle implements Operation {
     }
 
     private void setupAutoStart(Map<String, Object> entry, BundleInfo bundleInfo, String target, Set<Bundle> installedVersions, LinkedHashMap<BundleInfo, String> toStart) {
-        boolean autoStart = entry.get(AUTO_START) == Boolean.TRUE || entry.get(INSTALL_AND_START_BUNDLE) != null;
+        boolean autoStart = entry.get(AUTO_START) == Boolean.TRUE || isInstallOrStart(entry);
 
-        if (entry.get(AUTO_START) != Boolean.FALSE && entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null) {
+        if (entry.get(AUTO_START) != Boolean.FALSE && isInstallOrUpgrade(entry)) {
             logger.info("Setup autostart {} {}", bundleInfo.getSymbolicName(), bundleInfo.getVersion());
             // In case of upgrade, get the previous version state, or auto-start by default
             Version thisVersion = new Version(bundleInfo.getVersion());
@@ -315,7 +324,7 @@ public class InstallBundle implements Operation {
 
     private void setupUninstall(Map<String, Object> entry, BundleInfo bundleInfo, String target, Set<Bundle> installedVersions, LinkedHashMap<BundleInfo, String> toUninstall) {
         boolean uninstallPreviousVersions = installedVersions != null &&
-                (entry.get(UNINSTALL_PREVIOUS_VERSION) == Boolean.TRUE || entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null);
+                (entry.get(UNINSTALL_PREVIOUS_VERSION) == Boolean.TRUE || isInstallOrUpgrade(entry));
 
         if (uninstallPreviousVersions) {
             for (Bundle installedVersion : installedVersions) {
@@ -340,8 +349,21 @@ public class InstallBundle implements Operation {
         return false;
     }
 
+    private boolean isInstallOrUpgrade(Map<String, Object> entry) {
+        return entry.get(INSTALL_OR_UPGRADE_BUNDLE) != null || entry.get(INSTALL_OR_UPGRADE_MODULE) != null;
+    }
+
+    private boolean isInstallOrStart(Map<String, Object> entry) {
+        return entry.get(INSTALL_AND_START_BUNDLE) != null || entry.get(INSTALL_AND_START_MODULE) != null;
+    }
+
     @Override
     public String getType() {
         return INSTALL_BUNDLE;
+    }
+
+    @Override
+    public String[] getAPIsForAccessControl() {
+        return new String[]{INSTALL_BUNDLE, INSTALL_MODULE};
     }
 }

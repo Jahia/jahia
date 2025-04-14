@@ -46,10 +46,7 @@ import org.apache.felix.fileinstall.*;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
-import org.jahia.services.modulemanager.BundleInfo;
-import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.ModuleManager;
-import org.jahia.services.modulemanager.OperationResult;
+import org.jahia.services.modulemanager.*;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.util.ModuleUtils;
@@ -458,7 +455,11 @@ public class ModuleFileInstallHandler implements CustomHandler {
      */
     private String computeChecksum(Artifact artifact) throws IOException {
         Resource resource = new UrlResource(artifact.getJaredUrl());
-        return PersistentBundleInfoBuilder.build(resource, true, false).getChecksum();
+        PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(resource, true, false);
+        if (bundleInfo == null) {
+            throw new InvalidModuleException();
+        }
+        return bundleInfo.getChecksum();
     }
 
 }

@@ -52,11 +52,15 @@ import org.osgi.service.component.annotations.Reference;
 import java.util.*;
 
 /**
- * Uninstall bundle operation
+ * Uninstall module operation
  */
-@Component(service = Operation.class, property = "type=uninstallBundle")
-public class UninstallBundle implements Operation {
+@Component(service = Operation.class, property = "type=uninstallModule")
+public class UninstallModule implements Operation {
+    // Legacy keys for backward compatibility
     public static final String UNINSTALL_BUNDLE = "uninstallBundle";
+
+    // Valid keys
+    public static final String UNINSTALL_MODULE = "uninstallModule";
     public static final String TARGET = "target";
     private ModuleManager moduleManager;
 
@@ -67,15 +71,16 @@ public class UninstallBundle implements Operation {
 
     @Override
     public boolean canHandle(Map<String, Object> entry) {
-        return entry.containsKey(UNINSTALL_BUNDLE);
+        return entry.containsKey(UNINSTALL_BUNDLE) || entry.containsKey(UNINSTALL_MODULE);
     }
 
     @Override
     public void perform(Map<String, Object> entry, ExecutionContext executionContext) {
-        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, UNINSTALL_BUNDLE, "key");
+        String cmd = entry.containsKey(UNINSTALL_BUNDLE) ? UNINSTALL_BUNDLE : UNINSTALL_MODULE;
+        List<Map<String, Object>> entries = ProvisioningScriptUtil.convertToList(entry, cmd, "key");
         List<OperationResult> uninstallResults = new ArrayList<>();
         for (Map<String, Object> subEntry : entries) {
-            uninstallResults.add(moduleManager.uninstall((String) subEntry.get(UNINSTALL_BUNDLE), (String) entry.get(TARGET)));
+            uninstallResults.add(moduleManager.uninstall((String) subEntry.get(cmd), (String) entry.get(TARGET)));
         }
         if (executionContext.getContext().get("result") instanceof Collection) {
             ((Collection) executionContext.getContext().get("result")).add(Collections.singletonMap("uninstall", uninstallResults));
@@ -84,6 +89,11 @@ public class UninstallBundle implements Operation {
 
     @Override
     public String getType() {
-        return UNINSTALL_BUNDLE;
+        return UNINSTALL_MODULE;
+    }
+
+    @Override
+    public String[] getAPIsForAccessControl() {
+        return new String[]{UNINSTALL_MODULE, UNINSTALL_BUNDLE};
     }
 }

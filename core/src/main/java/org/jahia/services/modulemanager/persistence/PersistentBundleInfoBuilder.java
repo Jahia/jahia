@@ -42,13 +42,6 @@
  */
 package org.jahia.services.modulemanager.persistence;
 
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_NAME;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_VERSION;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_GROUP_ID;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_IMPL_TITLE;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_IMPL_VERSION;
-import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.jar.Attributes;
@@ -56,11 +49,14 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+
+import static org.jahia.services.modulemanager.Constants.*;
 
 /**
  * Responsible for parsing module bundle info from the provided resource.
@@ -85,6 +81,7 @@ public final class PersistentBundleInfoBuilder {
 
     /**
      * Parses the supplied resource and builds the information for the bundle.
+     * Since Jahia 8.2.2.0 persistent bundle can only be a Jahia module
      *
      * @param resource The bundle resource
      * @param calculateChecksum should we calculate the resource checksum?
@@ -94,44 +91,42 @@ public final class PersistentBundleInfoBuilder {
      */
     public static PersistentBundle build(Resource resource, boolean calculateChecksum, boolean checkTransformationRequired) throws IOException {
 
-        // populate data from manifest
-        String groupId = null;
-        String symbolicName = null;
-        String version = null;
-        String displayName = null;
+        // Read the manifest once
+        Manifest manifest;
         try (JarInputStream jarIs = new JarInputStream(resource.getInputStream())) {
-            Manifest mf = jarIs.getManifest();
-            if (mf != null) {
-                Attributes attrs = mf.getMainAttributes();
-                groupId = attrs.getValue(ATTR_NAME_GROUP_ID);
-                symbolicName = attrs.getValue(ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
-                version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_BUNDLE_VERSION), attrs.getValue(ATTR_NAME_IMPL_VERSION));
-                displayName = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_IMPL_TITLE), attrs.getValue(ATTR_NAME_BUNDLE_NAME));
-            }
+            manifest = jarIs.getManifest();
         }
-
-        if (StringUtils.isBlank(symbolicName) || StringUtils.isBlank(version)) {
-            // not a valid JAR or bundle information is missing -> we stop here
-            logger.warn("Not a valid JAR or bundle information is missing for resource " + resource);
+        if (!BundleUtils.isJahiaModuleBundle(manifest)) {
+            logger.warn("Not a valid Jahia module JAR, for resource: {}", resource);
             return null;
         }
 
+        Attributes attrs = manifest.getMainAttributes();
+        String groupId = attrs.getValue(ATTR_NAME_GROUP_ID);
+        String symbolicName = attrs.getValue(ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
+        String version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_BUNDLE_VERSION), attrs.getValue(ATTR_NAME_IMPL_VERSION));
+        String displayName = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_IMPL_TITLE), attrs.getValue(ATTR_NAME_BUNDLE_NAME));
+        if (StringUtils.isBlank(symbolicName) || StringUtils.isBlank(version)) {
+            // not a valid JAR or bundle information is missing -> we stop here
+            logger.warn("Not a valid Jahia module JAR, missing information in manifest (symbolicName, version), for resource: {}", resource);
+            return null;
+        }
+
+        // Create the PersistentBundle and populate its properties
         PersistentBundle bundleInfo = new PersistentBundle(groupId, symbolicName, version);
         bundleInfo.setDisplayName(displayName);
+
         if (calculateChecksum) {
             bundleInfo.setChecksum(FileUtils.calculateDigest(resource.getInputStream()));
         }
+
         if (checkTransformationRequired) {
-            bundleInfo.setTransformationRequired(isTransformationRequired(resource));
+            // Reuse the manifest attributes to check if transformation is required
+            bundleInfo.setTransformationRequired(ModuleUtils.requiresTransformation(manifest.getMainAttributes()));
         }
+
         bundleInfo.setResource(resource);
         return bundleInfo;
-    }
-
-    private static boolean isTransformationRequired(Resource resource) throws IOException {
-        try (JarInputStream is = new JarInputStream(new BufferedInputStream(resource.getInputStream()), false)) {
-            return ModuleUtils.requiresTransformation(is.getManifest().getMainAttributes());
-        }
     }
 
     private PersistentBundleInfoBuilder() {

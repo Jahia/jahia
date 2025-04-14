@@ -114,12 +114,6 @@ public class PersistentBundleInfoBuilderTest {
     @Test
     public void testBuildNonDxBundle() throws IOException {
         PersistentBundle info = build("non-dx-bundle");
-        logger.info("Module info parsed for {}: {}", info.getResource(), info);
-
-        assertEquals(null, info.getGroupId());
-        assertEquals("org.apache.commons.codec", info.getSymbolicName());
-        assertEquals("1.8.0", info.getVersion());
-        assertEquals("org.apache.commons.codec/1.8.0", info.getKey());
-        assertEquals("Commons Codec", info.getDisplayName());
+        assertNull(info);
     }
 }

@@ -338,45 +338,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 }
             } else if (path != null) {
                 if (!path.startsWith("/")) {
-                    /*
-                     * This section builds a list of candidate nodes to resolve the area content.
-                     *
-                     * JCR Node Templating:
-                     * - In JCR templating, templates follow a hierarchy that can contain area content.
-                     * - Resolution follows a parent-first order before checking child templates.
-                     *   Example:
-                     *     /modules/templateSet/base
-                     *     /modules/templateSet/base/simple
-                     *     /sites/mySite/home/myPage
-                     * - This means area content can be resolved in the parent template, the child template, or finally the main resource node (page).
-                     *
-                     * JS Templating:
-                     * - Unlike JCR, JS templating lacks a hierarchy of templates.
-                     * - It can still be used to route area content to a specific node.
-                     * - By default, a JS module template node is null, as it does not rely on node templating.
-                     *   Example:
-                     *     /sites/mySite/home/myPage
-                     * - Here, the area content is only resolved by the main resource node (page).
-                     *
-                     * Special Case: jExperience A/B Testing
-                     * - jExperience leverages template hierarchy to insert a node template in the resolution chain.
-                     * - This allows routing area content to the correct page variant using `template.next`.
-                     *   Example (JCR Node Templating):
-                     *     /modules/templateSet/base
-                     *     /modules/templateSet/base/simple
-                     *     /sites/mySite/home/myPage/variant1
-                     *     /sites/mySite/home/myPage
-                     *   Example (JS Module Templating):
-                     *     /sites/mySite/home/myPage/variant1
-                     *     /sites/mySite/home/myPage
-                     * - In both cases, `/sites/mySite/home/myPage/variant1` resolves the area content, while `/sites/mySite/home/myPage` acts as a fallback.
-                     */
-                    List<JCRNodeWrapper> nodes = new ArrayList<>();
+                    List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
                     if (t != null) {
                         for (Template currentTemplate : t.getNextTemplates()) {
-                            if (currentTemplate.getNode() != null) {
-                                nodes.add(0, mainResource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
-                            }
+                            nodes.add(0,
+                                    mainResource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
                         }
                     }
                     nodes.add(mainResource.getNode());

@@ -154,7 +154,7 @@ public class ClusteringEnabler implements EventHandler {
 
         try {
             if (clusterActivated) {
-                final Set<String> clusterServices = new HashSet<>(Arrays.asList("config", "bundle", "feature"));
+                final Set<String> clusterServices = new HashSet<>(Arrays.asList("config", "bundle"));
                 tracker = new ServiceTracker<Object,Object>(bundleContext, "org.apache.karaf.cellar.core.Synchronizer", null) {
                     @Override
                     public Object addingService(ServiceReference<Object> reference) {

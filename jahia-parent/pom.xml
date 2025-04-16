@@ -90,7 +90,7 @@
         <groovy.version>3.0.8</groovy.version>
         <shiro.version>1.13.0</shiro.version>
         <jodconverter.version>4.4.2</jodconverter.version>
-        <tika.version>2.9.3</tika.version>
+        <tika.version>2.9.1</tika.version>
         <xstream.version>1.4.21</xstream.version>
         <jericho.version>3.4</jericho.version>
         <woodstox.version>6.4.0</woodstox.version>

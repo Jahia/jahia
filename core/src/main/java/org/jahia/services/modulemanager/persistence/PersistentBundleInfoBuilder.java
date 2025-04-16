@@ -42,14 +42,12 @@
  */
 package org.jahia.services.modulemanager.persistence;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -96,7 +94,9 @@ public final class PersistentBundleInfoBuilder {
         try (JarInputStream jarIs = new JarInputStream(resource.getInputStream())) {
             manifest = jarIs.getManifest();
         }
-        if (!BundleUtils.isJahiaModuleBundle(manifest)) {
+
+        // Only allows Jahia module bundles and fragments (CKEditor configuration is a fragment)
+        if (!ModuleUtils.isSupported(manifest)) {
             logger.warn("Not a valid Jahia module JAR, for resource: {}", resource);
             return null;
         }

@@ -45,15 +45,13 @@ package org.jahia.services.modulemanager.util;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
@@ -472,4 +470,21 @@ public class ModuleUtils {
         }
     }
 
+    /**
+     * Checks if the supplied bundle can be handled by Jahia module manager.
+     * @param bundle the bundle to check
+     * @return <code>true</code> if the bundle can be handled; <code>false</code> otherwise
+     */
+    public static boolean isSupported(Bundle bundle) {
+        return BundleUtils.isJahiaModuleBundle(bundle) || BundleUtils.isFragment(bundle);
+    }
+
+    /**
+     * Checks if the supplied manifest can be handled by Jahia module manager.
+     * @param manifest the manifest to check
+     * @return <code>true</code> if the manifest can be handled; <code>false</code> otherwise
+     */
+    public static boolean isSupported(Manifest manifest) {
+        return BundleUtils.isJahiaModuleBundle(manifest) || BundleUtils.isFragment(manifest);
+    }
 }

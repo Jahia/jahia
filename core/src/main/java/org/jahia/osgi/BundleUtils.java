@@ -536,6 +536,16 @@ public final class BundleUtils {
     }
 
     /**
+     * Checks if the provided manifest represents a fragment bundle.
+     *
+     * @param manifest the manifest to be checked
+     * @return <code>true</code> in case the supplied manifest represents a fragment bundle; <code>false</code> otherwise
+     */
+    public static boolean isFragment(Manifest manifest) {
+        return manifest != null && manifest.getMainAttributes().getValue(org.osgi.framework.Constants.FRAGMENT_HOST) != null;
+    }
+
+    /**
      * This method deduce and return the persistent state value of a bundle
      *
      * @param bundle the bundle to get the persistent state from

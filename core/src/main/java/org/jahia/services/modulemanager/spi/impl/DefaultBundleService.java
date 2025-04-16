@@ -50,6 +50,7 @@ import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.*;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
@@ -87,11 +88,11 @@ public class DefaultBundleService implements BundleService {
             throw new ModuleNotFoundException(bundleInfo.getKey());
         }
 
-        // This should only be used for returning states/infos for read purpose.
-        // Otherwise, any operation on bundles that are non jahia module should be rejected !
-        if (allowNonModule) {
-            BundleUtils.isJahiaModuleBundle(bundle);
+        // allowNonModule: should only be used for returning states/infos for read purpose.
+        if (!allowNonModule && !ModuleUtils.isSupported(bundle)) {
+            throw new ModuleNotFoundException(bundleInfo.getKey());
         }
+
         return bundle;
     }
 

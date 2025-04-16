@@ -63,6 +63,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Service to provision bundles/features/configs/content with script
@@ -74,6 +75,10 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
     private Collection<Operation> operations = new ArrayList<>();
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     private ObjectMapper jsonMapper = new ObjectMapper();
+
+    // Map to store the last logged timestamp for each key
+    private static final Map<String, Long> lastDeprecatedOpLogged = new ConcurrentHashMap<>();
+    private static final long DEPRECATED_OP_LOG_INTERVAL = 5 * 60 * 60 * 1000L; //
 
     private PermissionService permissionService;
 
@@ -154,6 +159,7 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
             if (operation.isPresent()) {
                 operation.ifPresent(op -> {
                     if (hasPermission(op)){
+                        checkForDeprecatedOperations(op, entry);
                         op.perform(entry, executionContext);
                     }
                 });
@@ -162,6 +168,37 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
             }
         }
         );
+    }
+
+    private void checkForDeprecatedOperations(Operation operation, Map<String, Object> entry) {
+        if (operation.getDeprecatedOperations() == null) {
+            return;
+        }
+
+        Optional<Map.Entry<String, String>> deprecatedKey = operation.getDeprecatedOperations().entrySet().stream()
+                .filter(e -> entry.containsKey(e.getKey()))
+                .findFirst();
+
+        if (deprecatedKey.isPresent()) {
+            String key = deprecatedKey.get().getKey();
+            String alternative = deprecatedKey.get().getValue();
+
+            // Check if we need to log the message according to the interval
+            long currentTime = System.currentTimeMillis();
+            lastDeprecatedOpLogged.compute(key, (k, lastLoggedTime) -> {
+                if (lastLoggedTime == null || (currentTime - lastLoggedTime) > DEPRECATED_OP_LOG_INTERVAL) {
+                    if (alternative != null) {
+                        logger.warn("The provisioning operation '{}' is deprecated and may be removed in future releases. " +
+                                "Please use '{}' instead.", key, alternative);
+                    } else {
+                        logger.warn("The provisioning operation '{}' is deprecated and may be removed in future releases. " +
+                                "No direct alternative is available. Please refer to the documentation for guidance.", key);
+                    }
+                    return currentTime; // Update the last logged time
+                }
+                return lastLoggedTime; // Keep the same last logged time if within interval
+            });
+        }
     }
 
     private boolean hasPermission(Operation operation) {

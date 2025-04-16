@@ -100,6 +100,11 @@ public class InstallModule implements Operation {
             INSTALL_BUNDLE, INSTALL_AND_START_BUNDLE, INSTALL_OR_UPGRADE_BUNDLE,
             INSTALL_MODULE, INSTALL_AND_START_MODULE, INSTALL_OR_UPGRADE_MODULE
     };
+    private static final Map<String, String> DEPRECATED_KEYS = Map.of(
+            INSTALL_BUNDLE, INSTALL_MODULE,
+            INSTALL_AND_START_BUNDLE, INSTALL_AND_START_MODULE,
+            INSTALL_OR_UPGRADE_BUNDLE, INSTALL_OR_UPGRADE_MODULE
+    );
     private static final Logger logger = LoggerFactory.getLogger(InstallModule.class);
     private BundleContext bundleContext;
     private ModuleManager moduleManager;
@@ -151,6 +156,11 @@ public class InstallModule implements Operation {
         Map<String, Set<Bundle>> installedBundles = Arrays.stream(bundleContext.getBundles())
                 .collect(Collectors.groupingBy(Bundle::getSymbolicName, Collectors.toSet()));
         executionContext.getContext().put("installedBundles", installedBundles);
+    }
+
+    @Override
+    public Map<String, String> getDeprecatedOperations() {
+        return DEPRECATED_KEYS;
     }
 
     @Override

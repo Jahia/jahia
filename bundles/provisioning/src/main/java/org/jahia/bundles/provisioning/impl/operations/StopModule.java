@@ -61,6 +61,9 @@ public class StopModule implements Operation {
 
     // Valid keys
     public static final String STOP_MODULE = "stopModule";
+    private static final Map<String, String> DEPRECATED_KEYS = Map.of(
+            STOP_BUNDLE, STOP_MODULE
+    );
     public static final String TARGET = "target";
     private ModuleManager moduleManager;
 
@@ -72,6 +75,11 @@ public class StopModule implements Operation {
     @Override
     public boolean canHandle(Map<String, Object> entry) {
         return entry.containsKey(STOP_BUNDLE) || entry.containsKey(STOP_MODULE);
+    }
+
+    @Override
+    public Map<String, String> getDeprecatedOperations() {
+        return DEPRECATED_KEYS;
     }
 
     @Override

@@ -91,4 +91,20 @@ public interface Operation {
     default String[] getAPIsForAccessControl() {
         return new String[] { getType() };
     }
+
+    /**
+     * Retrieves a map containing deprecated operations and their suggested alternatives.
+     *
+     * <p>
+     * The keys in the returned map represent the names of deprecated operations, and the values
+     * represent their corresponding alternatives, if available. If no alternative exists for a
+     * deprecated operation, the value associated with the key will be {@code null}.
+     * </p>
+     *
+     * @return a map of deprecated operation names to their suggested alternatives, or {@code null}
+     *         if there are no deprecated operations.
+     */
+    default Map<String, String> getDeprecatedOperations() {
+        return null;
+    }
 }

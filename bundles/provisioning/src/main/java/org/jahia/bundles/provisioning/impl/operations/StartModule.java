@@ -61,6 +61,9 @@ public class StartModule implements Operation {
 
     // valid keys
     public static final String START_MODULE = "startModule";
+    private static final Map<String, String> DEPRECATED_KEYS = Map.of(
+            START_BUNDLE, START_MODULE
+    );
     public static final String TARGET = "target";
     private ModuleManager moduleManager;
 
@@ -72,6 +75,11 @@ public class StartModule implements Operation {
     @Override
     public boolean canHandle(Map<String, Object> entry) {
         return entry.containsKey(START_BUNDLE) || entry.containsKey(START_MODULE);
+    }
+
+    @Override
+    public Map<String, String> getDeprecatedOperations() {
+        return DEPRECATED_KEYS;
     }
 
     @Override

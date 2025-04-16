@@ -61,6 +61,9 @@ public class UninstallModule implements Operation {
 
     // Valid keys
     public static final String UNINSTALL_MODULE = "uninstallModule";
+    private static final Map<String, String> DEPRECATED_KEYS = Map.of(
+            UNINSTALL_BUNDLE, UNINSTALL_MODULE
+    );
     public static final String TARGET = "target";
     private ModuleManager moduleManager;
 
@@ -72,6 +75,11 @@ public class UninstallModule implements Operation {
     @Override
     public boolean canHandle(Map<String, Object> entry) {
         return entry.containsKey(UNINSTALL_BUNDLE) || entry.containsKey(UNINSTALL_MODULE);
+    }
+
+    @Override
+    public Map<String, String> getDeprecatedOperations() {
+        return DEPRECATED_KEYS;
     }
 
     @Override

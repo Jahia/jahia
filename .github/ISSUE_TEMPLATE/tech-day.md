@@ -98,7 +98,8 @@ This checklist is there to help you but is not exaustive, if some items are not 
 - [ ] 🟠 If the repository is public, issues/pull requests from the community have been reviewed and answered, if answer was not possible, a PM/DM was notified.
 ### GitHub
 - [ ] 🚨 [Branch protection](https://jahia-confluence.atlassian.net/wiki/spaces/PR/pages/2067858/GitHub+Product+-+Ref+ISPOL08.A14025#Branch-protection) is enabled for the repository
-- [ ] **Automatically delete head branches** is selected in **Settings**
+- [ ] 🟠 The repository uses the organization-level template for the Pull Requests. Make sure the repository does not contain its own template (`.github/PULL_REQUEST_TEMPLATE.md`) that takes precedence over the organization-level one
+- [ ] 🙏 **Automatically delete head branches** is selected in **Settings**
 - [ ] 🙏 Repository topics match are populated (at a minimum: "product" and "supported")
 - [ ] 🙏 Stale branches or branches older than 2 years (non-maintenance branches) have been removed
 
@@ -118,5 +119,6 @@ This checklist is focused on our forked repositories
 - [ ] 🚨 The build and the release/publish workflows are configured (or at least documented in [confluence](https://jahia-confluence.atlassian.net/wiki/spaces/PR/pages/2065402/Releasing+our+project+forks))
 ### GitHub
 - [ ] 🚨 [Branch protection](https://jahia-confluence.atlassian.net/wiki/spaces/PR/pages/2067858/GitHub+Product+-+Ref+ISPOL08.A14025#Branch-protection) is enabled for the repository
-- [ ] **Automatically delete head branches** is selected in **Settings**
+- [ ] 🟠 The repository uses the organization-level template for the Pull Requests. Make sure the repository does not contain its own template (`.github/PULL_REQUEST_TEMPLATE.md`) that takes precedence over the organization-level one
+- [ ] 🙏 **Automatically delete head branches** is selected in **Settings**
 - [ ] 🙏 Repository topics match are populated (at a minimum: "product" and "supported")

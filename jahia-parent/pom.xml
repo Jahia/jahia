@@ -158,6 +158,7 @@
         <sonar.plugin.version>3.11.0.3922</sonar.plugin.version>
         <dependency.check.plugin.version>12.1.1</dependency.check.plugin.version>
         <fabric8.docker.plugin.version>0.46.0</fabric8.docker.plugin.version>
+        <gmaven-plus.version>4.1.1</gmaven-plus.version>
         <!-- OSGi versions -->
         <felix.framework.version>6.0.5</felix.framework.version>
         <felix.configadmin.version>1.9.26</felix.configadmin.version>
@@ -1058,6 +1059,23 @@
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${fabric8.docker.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>${gmaven-plus.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <version>${groovy.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.codehaus.groovy</groupId>
+                            <artifactId>groovy-ant</artifactId>
+                            <version>${groovy.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>

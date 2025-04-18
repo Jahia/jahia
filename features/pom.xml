@@ -65,6 +65,63 @@
     </modules>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <!--
+                  Workaround: Manually set the main artifact for Karaf feature modules.
+
+                  The 'karaf-maven-plugin' does not assign the generated 'feature.xml' as the main artifact
+                  when using <packaging>feature</packaging>. This leads to build failures with errors like:
+
+                    [ERROR] Failed to execute goal org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install (default-install) on project <project_name>:
+                    NoFileAssignedException: The packaging plugin for this project did not assign a main file to the project but it has attachments.
+                    Change packaging to 'pom'.
+
+                  Refer to the Karaf issue tracker for more details:
+                  https://issues.apache.org/jira/browse/KARAF-7734
+
+                  Alternative approaches considered:
+                  - Using 'build-helper-maven-plugin' to attach the artifact: Did not resolve the issue.
+                  - Configuring 'maven-install-plugin' with <allowIncompleteProjects>true</allowIncompleteProjects>: Suppresses the error but generates warnings.
+
+                  Previously, we used <packaging>kar</packaging>, which packaged the feature and its dependencies into a .kar file, automatically set as the main artifact.
+                  However, we moved away from .kar files to avoid storing large binaries in our Maven repository.
+
+                  Current solution:
+                  Utilize 'gmavenplus-plugin' to execute a Groovy script during the 'package' phase, explicitly setting the 'feature.xml' as the main artifact.
+                  This ensures compatibility with Maven's expectations and avoids build issues.
+
+                  Note: The 'karaf-maven-plugin' has known reliability issues, and many developers opt for manually managing 'feature.xml' files.
+                  Consider this approach if further complications arise.
+                -->
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>set-main-artifact</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <configuration>
+                                <scripts>
+                                    <script>
+                                        import java.io.File
+                                        def file = new File(project.build.directory + "/feature/feature.xml")
+                                        if (!file.exists()) {
+                                            throw new FileNotFoundException("Feature file not found: " + file)
+                                        }
+                                        project.artifact.file = file
+                                        log.info "Main artifact set to: ${file.absolutePath}"
+                                    </script>
+                                </scripts>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
@@ -72,6 +129,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <startLevel>30</startLevel>
+                    <enableGeneration>true</enableGeneration>
                     <includeTransitiveDependency>false</includeTransitiveDependency>
                 </configuration>
             </plugin>

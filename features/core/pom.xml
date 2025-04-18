@@ -52,7 +52,16 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dx-core</artifactId>
     <name>Jahia DX Core Karaf OSGi Features</name>
-    <packaging>kar</packaging>
+    <packaging>feature</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>

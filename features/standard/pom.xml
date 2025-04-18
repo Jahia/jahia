@@ -52,7 +52,24 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dx-standard</artifactId>
     <name>Jahia DX Standard Karaf OSGi Features</name>
-    <packaging>kar</packaging>
+    <packaging>feature</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <aggregateFeatures>true</aggregateFeatures>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
@@ -91,18 +108,5 @@
             <type>xml</type>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.karaf.tooling</groupId>
-                <artifactId>karaf-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <aggregateFeatures>true</aggregateFeatures>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

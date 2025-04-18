@@ -52,7 +52,16 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dx-graphql</artifactId>
     <name>Jahia DX graphql-java Karaf OSGi Feature</name>
-    <packaging>kar</packaging>
+    <packaging>feature</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>

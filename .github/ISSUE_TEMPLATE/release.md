@@ -26,6 +26,15 @@ Desired Jahia Version: 8.X.X.X
 
 <h2 id="testing-matrix">:scroll: Testing matrix</h2>
 
+<h3> Notes for release testing:</h3>
+
+Please add all relevant hints which can help QA when testing the release - for module releases on the main branch, this might be obsolete. For releases on the maintenance branch consider the following topics:
+
+- expected automated tests 
+- scope of the release (simple backport vs. different implementation of a fix)
+
+<h3>Version matrix</h3>
+
 > We aim at clearly documenting the possible deployment scenarios in a matrix and specify which ones are expected to be tested or not.
 In the testing matrix, always use the latest patch version of a particular release
 

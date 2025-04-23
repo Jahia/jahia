@@ -27,6 +27,8 @@ import org.jahia.services.render.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -39,6 +41,7 @@ import java.util.Properties;
 public interface ClientCachePolicyContributor {
 
     Logger LOGGER = LoggerFactory.getLogger(ClientCachePolicyContributor.class);
+    List<String> WARNED_CLASSES = new ArrayList<>();
 
     /**
      * Determine the cache client cache policy.
@@ -50,8 +53,12 @@ public interface ClientCachePolicyContributor {
      * @return The client cache policy
      */
     default ClientCachePolicy getClientCachePolicy(Resource resource, RenderContext renderContext, Properties properties, String key) {
-        LOGGER.info("Default usage of ClientCachePolicyContributor.getClientCachePolicy() in class {}, "
-                + "please implements interface to ensure best client cache policy optimization", this.getClass().getName());
+        if (!WARNED_CLASSES.contains(this.getClass().getName())) {
+            LOGGER.warn("Default usage of ClientCachePolicyContributor.getClientCachePolicy() in class {}, "
+                            + "please implements interface to avoid breaking client cache policy optimization (this warn only appear once for each concrete class)",
+                    this.getClass().getName());
+            WARNED_CLASSES.add(this.getClass().getName());
+        }
         return ClientCachePolicy.PRIVATE;
     }
 

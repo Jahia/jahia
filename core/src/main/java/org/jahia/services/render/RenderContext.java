@@ -70,6 +70,8 @@ import java.util.*;
  * @author toto
  */
 public class RenderContext {
+    public static final String LIVE_MODE = "live";
+    public static final String PREVIEW_MODE = "preview";
     private HttpServletRequest request;
     private HttpServletResponse response;
     private Resource mainResource;
@@ -168,10 +170,10 @@ public class RenderContext {
                     mode = StringUtils.substringBefore(mode, "frame");
                 }
                 if ("render".equals(mode)) {
-                    if (workspace.equals("live")) {
-                        mode = "live";
+                    if (workspace.equals(Constants.LIVE_WORKSPACE)) {
+                        mode = LIVE_MODE;
                     } else {
-                        mode = "preview";
+                        mode = PREVIEW_MODE;
                     }
                 }
             }

@@ -484,48 +484,56 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return (PrincipalAcl) element.getObjectValue();
     }
 
+    private Set<String> getAllPrincipalsWithAcl(JCRSessionWrapper session, String queryStatement, String language) throws RepositoryException {
+        long startTime = System.currentTimeMillis();
+        Set<String> results = new HashSet<>();
+        QueryWrapper query = session.getWorkspace().getQueryManager().createQuery(queryStatement, language);
+        RowIterator ri = query.execute().getRows();
+        while (ri.hasNext()) {
+            Row row = ri.nextRow();
+            String path = row.getValue("jcr:path").getString();
+            if (isUnderUsersNode(path)) {
+                continue;
+            }
+            Value v = row.getValue("j:principal");
+            String principal = v !=  null ? v.getString() : null;
+            if (StringUtils.isEmpty(principal)) {
+                continue;
+            }
+            results.add(principal);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug(
+                    "getAllPrincipalsWithAcl query ({}) brought {} nodes back; collected {} principals; finished in {} ms",
+                    queryStatement, ri.getSize(), results.size(), System.currentTimeMillis() - startTime);
+        }
+        return results;
+    }
+
     @SuppressWarnings("unchecked")
     public Set<String> getAllPrincipalsWithAcl() throws RepositoryException {
-      Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
-      if (element == null) {
-          // generate it
-          element = generateCacheEntry(CACHE_ALL_PRINCIPALS_ENTRY_KEY, new CacheEntryNotFoundCallback() {
-            @Override
-            public Object generateCacheEntry() throws RepositoryException {
-                return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Set<String>>() {
-                    @Override
-                    public Set<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        long startTime = System.currentTimeMillis();
-                        Set<String> results = new HashSet<>();
-                        String queryStatement = getAllPrincipalsWithAclQuery();
-                        QueryWrapper query = session.getWorkspace().getQueryManager().createQuery(queryStatement, Query.JCR_SQL2);
-                        RowIterator ri = query.execute().getRows();
-                        while (ri.hasNext()) {
-                            Row row = ri.nextRow();
-                            String path = row.getValue("jcr:path").getString();
-                            if (isUnderUsersNode(path)) {
-                                continue;
-                            }
-                            Value v = row.getValue("j:principal");
-                            String principal = v !=  null ? v.getString() : null;
-                            if (StringUtils.isEmpty(principal)) {
-                                continue;
-                            }
-                            results.add(principal);
+        Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
+        if (element == null) {
+            // generate it
+            element = generateCacheEntry(CACHE_ALL_PRINCIPALS_ENTRY_KEY, new CacheEntryNotFoundCallback() {
+                @Override
+                public Object generateCacheEntry() throws RepositoryException {
+                    return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Set<String>>() {
+                        @Override
+                        public Set<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            Set<String> results = new HashSet<>();
+                            // get all principals with ACL for general paths like: /j:acl, /modules, /mounts
+                            results.addAll(getAllPrincipalsWithAcl(session, getAllPrincipalsWithAclQuery(), Query.JCR_SQL2));
+                            // get all principals with ACL under /sites using XPath query to avoid performance issues related to /sites/*/users ACL
+                            results.addAll(getAllPrincipalsWithAcl(session, "/jcr:root/sites/*/*[not(fn:name()='users')]//element(*, jnt:ace)", Query.XPATH));
+                            return results;
                         }
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(
-                                    "getAllPrincipalsWithAcl query ({}) brought {} nodes back; collected {} principals; finished in {} ms",
-                                    new Object[] { queryStatement, ri.getSize(), results.size(), System.currentTimeMillis() - startTime });
-                        }
-                        return results;
-                    }
-                });
-            }
-          });
-      }
+                    });
+                }
+            });
+        }
 
-      return (Set<String>) element.getObjectValue();
+        return (Set<String>) element.getObjectValue();
     }
 
     /**

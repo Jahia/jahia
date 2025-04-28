@@ -68,12 +68,12 @@
  *
  * The Shared Modifications are Jahia button taglibs.
  *
- * The Developer of the Shared Modifications is Jahia Solution S�rl.
+ * The Developer of the Shared Modifications is Jahia Solution Sàrl.
  * Portions created by the Initial Developer are Copyright (C) 2002 by the
  * Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- * Sep 24 2002 Jahia Solutions S�rl: MAP Initial release.
+ * Sep 24 2002 Jahia Solutions Sàrl: MAP Initial release.
  *
  * ----- END LICENSE BLOCK -----
  */

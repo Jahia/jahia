@@ -55,7 +55,7 @@ import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 /**
  *
  * User: rfelden
- * Date: 28 ao�t 2008
+ * Date: 28 août 2008
  * Time: 11:54:43
  * <p/>
  * This is the Layout version of the tripanel browser, allowing the component to be placed

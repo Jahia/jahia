@@ -49,7 +49,7 @@ import com.google.gwt.user.client.Element;
 /**
  *
  * User: hollis
- * Date: 27 ao�t 2008
+ * Date: 27 août 2008
  * Time: 11:44:37
  *
  */

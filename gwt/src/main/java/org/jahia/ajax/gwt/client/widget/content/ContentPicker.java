@@ -62,7 +62,7 @@ import java.util.Map;
  * File and folder picker control.
  *
  * @author rfelden
- *         Date: 27 ao�t 2008
+ *         Date: 27 août 2008
  *         Time: 17:55:07
  */
 public class ContentPicker extends TriPanelBrowserLayout {

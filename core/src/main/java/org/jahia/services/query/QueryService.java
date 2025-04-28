@@ -56,7 +56,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 
 /**
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
- * complex queries specified in JSR-283 (Content Repository for Java� Technology API 2.0)
+ * complex queries specified in JSR-283 (Content Repository for Java™ Technology API 2.0)
  *
  * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.

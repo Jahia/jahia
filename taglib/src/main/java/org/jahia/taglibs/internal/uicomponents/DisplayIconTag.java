@@ -67,8 +67,8 @@ import java.io.IOException;
  * resource : Alternative resource defined by the relative path from the
  * JSP source file to an image file.</p>
  *
- * <p>Copyright: MAP (Jahia Solutions S�rl 2002)</p>
- * <p>Company: Jahia Solutions S�rl</p>
+ * <p>Copyright: MAP (Jahia Solutions Sàrl 2002)</p>
+ * <p>Company: Jahia Solutions Sàrl</p>
  * @author MAP
  * @version 1.0
  *

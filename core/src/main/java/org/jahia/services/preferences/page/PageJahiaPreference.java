@@ -50,7 +50,7 @@ import javax.jcr.RepositoryException;
 /**
  *
  * User: jahia
- * Date: 21 ao�t 2008
+ * Date: 21 août 2008
  * Time: 10:30:57
  *
  */

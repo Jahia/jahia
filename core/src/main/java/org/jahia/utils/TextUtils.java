@@ -482,164 +482,164 @@ public class TextUtils {
                 output[outputPos++] = c;
             else {
                 switch (c) {
-                    case '\u00C0': // Ã€
-                    case '\u00C1': // Ã�
-                    case '\u00C2': // Ã‚
-                    case '\u00C3': // Ãƒ
-                    case '\u00C4': // Ã„
-                    case '\u00C5': // Ã…
+                    case '\u00C0': // À
+                    case '\u00C1': // Á
+                    case '\u00C2': // Â
+                    case '\u00C3': // Ã
+                    case '\u00C4': // Ä
+                    case '\u00C5': // Å
                         output[outputPos++] = 'A';
                         break;
-                    case '\u00C6': // Ã†
+                    case '\u00C6': // Æ
                         output[outputPos++] = 'A';
                         output[outputPos++] = 'E';
                         break;
-                    case '\u00C7': // Ã‡
+                    case '\u00C7': // Ç
                         output[outputPos++] = 'C';
                         break;
-                    case '\u00C8': // Ãˆ
-                    case '\u00C9': // Ã‰
-                    case '\u00CA': // ÃŠ
-                    case '\u00CB': // Ã‹
+                    case '\u00C8': // È
+                    case '\u00C9': // É
+                    case '\u00CA': // Ê
+                    case '\u00CB': // Ë
                         output[outputPos++] = 'E';
                         break;
-                    case '\u00CC': // ÃŒ
-                    case '\u00CD': // Ã�
-                    case '\u00CE': // ÃŽ
-                    case '\u00CF': // Ã�
+                    case '\u00CC': // Ì
+                    case '\u00CD': // Í
+                    case '\u00CE': // Î
+                    case '\u00CF': // Ï
                         output[outputPos++] = 'I';
                         break;
-                    case '\u0132': // Ä²
+                    case '\u0132': // Ĳ
                         output[outputPos++] = 'I';
                         output[outputPos++] = 'J';
                         break;
-                    case '\u00D0': // Ã�
+                    case '\u00D0': // Ð
                         output[outputPos++] = 'D';
                         break;
-                    case '\u00D1': // Ã‘
+                    case '\u00D1': // Ñ
                         output[outputPos++] = 'N';
                         break;
-                    case '\u00D2': // Ã’
-                    case '\u00D3': // Ã“
-                    case '\u00D4': // Ã”
-                    case '\u00D5': // Ã•
-                    case '\u00D6': // Ã–
-                    case '\u00D8': // Ã˜
+                    case '\u00D2': // Ò
+                    case '\u00D3': // Ó
+                    case '\u00D4': // Ô
+                    case '\u00D5': // Õ
+                    case '\u00D6': // Ö
+                    case '\u00D8': // Ø
                         output[outputPos++] = 'O';
                         break;
-                    case '\u0152': // Å’
+                    case '\u0152': // Œ
                         output[outputPos++] = 'O';
                         output[outputPos++] = 'E';
                         break;
-                    case '\u00DE': // Ãž
+                    case '\u00DE': // Þ
                         output[outputPos++] = 'T';
                         output[outputPos++] = 'H';
                         break;
-                    case '\u00D9': // Ã™
-                    case '\u00DA': // Ãš
-                    case '\u00DB': // Ã›
-                    case '\u00DC': // Ãœ
+                    case '\u00D9': // Ù
+                    case '\u00DA': // Ú
+                    case '\u00DB': // Û
+                    case '\u00DC': // Ü
                         output[outputPos++] = 'U';
                         break;
-                    case '\u00DD': // Ã�
-                    case '\u0178': // Å¸
+                    case '\u00DD': // Ý
+                    case '\u0178': // Ÿ
                         output[outputPos++] = 'Y';
                         break;
-                    case '\u00E0': // Ã 
-                    case '\u00E1': // Ã¡
-                    case '\u00E2': // Ã¢
-                    case '\u00E3': // Ã£
-                    case '\u00E4': // Ã¤
-                    case '\u00E5': // Ã¥
+                    case '\u00E0': // à
+                    case '\u00E1': // á
+                    case '\u00E2': // â
+                    case '\u00E3': // ã
+                    case '\u00E4': // ä
+                    case '\u00E5': // å
                         output[outputPos++] = 'a';
                         break;
-                    case '\u00E6': // Ã¦
+                    case '\u00E6': // æ
                         output[outputPos++] = 'a';
                         output[outputPos++] = 'e';
                         break;
-                    case '\u00E7': // Ã§
+                    case '\u00E7': // ç
                         output[outputPos++] = 'c';
                         break;
-                    case '\u00E8': // Ã¨
-                    case '\u00E9': // Ã©
-                    case '\u00EA': // Ãª
-                    case '\u00EB': // Ã«
+                    case '\u00E8': // è
+                    case '\u00E9': // é
+                    case '\u00EA': // ê
+                    case '\u00EB': // ë
                         output[outputPos++] = 'e';
                         break;
-                    case '\u00EC': // Ã¬
-                    case '\u00ED': // Ã­
-                    case '\u00EE': // Ã®
-                    case '\u00EF': // Ã¯
+                    case '\u00EC': // ì
+                    case '\u00ED': // í
+                    case '\u00EE': // î
+                    case '\u00EF': // ï
                         output[outputPos++] = 'i';
                         break;
-                    case '\u0133': // Ä³
+                    case '\u0133': // ĳ
                         output[outputPos++] = 'i';
                         output[outputPos++] = 'j';
                         break;
-                    case '\u00F0': // Ã°
+                    case '\u00F0': // ð
                         output[outputPos++] = 'd';
                         break;
-                    case '\u00F1': // Ã±
+                    case '\u00F1': // ñ
                         output[outputPos++] = 'n';
                         break;
-                    case '\u00F2': // Ã²
-                    case '\u00F3': // Ã³
-                    case '\u00F4': // Ã´
-                    case '\u00F5': // Ãµ
-                    case '\u00F6': // Ã¶
-                    case '\u00F8': // Ã¸
+                    case '\u00F2': // ò
+                    case '\u00F3': // ó
+                    case '\u00F4': // ô
+                    case '\u00F5': // õ
+                    case '\u00F6': // ö
+                    case '\u00F8': // ø
                         output[outputPos++] = 'o';
                         break;
-                    case '\u0153': // Å“
+                    case '\u0153': // œ
                         output[outputPos++] = 'o';
                         output[outputPos++] = 'e';
                         break;
-                    case '\u00DF': // ÃŸ
+                    case '\u00DF': // ß
                         output[outputPos++] = 's';
                         output[outputPos++] = 's';
                         break;
-                    case '\u00FE': // Ã¾
+                    case '\u00FE': // þ
                         output[outputPos++] = 't';
                         output[outputPos++] = 'h';
                         break;
-                    case '\u00F9': // Ã¹
-                    case '\u00FA': // Ãº
-                    case '\u00FB': // Ã»
-                    case '\u00FC': // Ã¼
+                    case '\u00F9': // ù
+                    case '\u00FA': // ú
+                    case '\u00FB': // û
+                    case '\u00FC': // ü
                         output[outputPos++] = 'u';
                         break;
-                    case '\u00FD': // Ã½
-                    case '\u00FF': // Ã¿
+                    case '\u00FD': // ý
+                    case '\u00FF': // ÿ
                         output[outputPos++] = 'y';
                         break;
-                    case '\uFB00': // ï¬€
+                    case '\uFB00': // ﬀ
                         output[outputPos++] = 'f';
                         output[outputPos++] = 'f';
                         break;
-                    case '\uFB01': // ï¬�
+                    case '\uFB01': // ﬁ
                         output[outputPos++] = 'f';
                         output[outputPos++] = 'i';
                         break;
-                    case '\uFB02': // ï¬‚
+                    case '\uFB02': // ﬂ
                         output[outputPos++] = 'f';
                         output[outputPos++] = 'l';
                         break;
                     // following 2 are commented as they can break the maxSizeNeeded (and doing *3 could be expensive)
-//          case '\uFB03': // ï¬ƒ
+//          case '\uFB03': // ﬃ
 //              output[outputPos++] = 'f';
 //              output[outputPos++] = 'f';
 //              output[outputPos++] = 'i';
 //              break;
-//          case '\uFB04': // ï¬„
+//          case '\uFB04': // ﬄ
 //              output[outputPos++] = 'f';
 //              output[outputPos++] = 'f';
 //              output[outputPos++] = 'l';
 //              break;
-                    case '\uFB05': // ï¬…
+                    case '\uFB05': // ﬅ
                         output[outputPos++] = 'f';
                         output[outputPos++] = 't';
                         break;
-                    case '\uFB06': // ï¬†
+                    case '\uFB06': // ﬆ
                         output[outputPos++] = 's';
                         output[outputPos++] = 't';
                         break;

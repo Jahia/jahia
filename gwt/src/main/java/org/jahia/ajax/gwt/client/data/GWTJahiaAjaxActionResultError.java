@@ -47,7 +47,7 @@ import java.io.Serializable;
 /**
  *
  * User: hollis
- * Date: 20 ao�t 2008
+ * Date: 20 août 2008
  * Time: 12:37:59
  *
  */

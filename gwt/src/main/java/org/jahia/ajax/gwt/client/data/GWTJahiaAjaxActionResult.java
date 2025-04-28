@@ -51,7 +51,7 @@ import java.util.List;
 /**
  *
  * User: hollis
- * Date: 20 ao�t 2008
+ * Date: 20 août 2008
  * Time: 12:26:53
  *
  */

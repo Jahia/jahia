@@ -46,7 +46,7 @@ import java.io.Serializable;
 
 /**
  * User: jahia
- * Date: 7 ao�t 2008
+ * Date: 7 août 2008
  * Time: 14:37:39
  */
 public class GWTJahiaProcessJobInfo implements Serializable {

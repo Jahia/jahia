@@ -490,7 +490,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     @Override
     protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
-        if (canEdit(renderContext) || !isEmptyArea() || path == null || RenderContext.LIVE_MODE.equals(renderContext.getMode()) || RenderContext.PREVIEW_MODE.equals(renderContext.getMode())) {
+        if (canEdit(renderContext) || !isEmptyArea() || path == null || Constants.LIVE_MODE.equals(renderContext.getMode()) || Constants.PREVIEW_MODE.equals(renderContext.getMode())) {
             super.render(renderContext, resource);
         }
     }

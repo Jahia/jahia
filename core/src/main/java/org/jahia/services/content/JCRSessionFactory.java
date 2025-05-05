@@ -104,7 +104,10 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
     private ThreadLocal<Locale> fallbackLocale = new ThreadLocal<Locale>();
     private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
-    private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
+    private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<>();
+
+    private ThreadLocal<String> currentRenderMode = new ThreadLocal<>();
+
     private ThreadLocal<Boolean> readOnlyCacheEnabled = new ThreadLocal<Boolean>();
     private LocalValidatorFactoryBean validatorFactoryBean;
     private boolean readOnlyModeEnabled;
@@ -645,6 +648,26 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
 
     public Calendar getCurrentPreviewDate() {
         return currentPreviewDate.get();
+    }
+
+    /**
+     * Returns the current render mode.
+     * Render mode could be "edit", "preview" or "live".
+     *
+     * @return the current render mode
+     */
+    public String getCurrentRenderMode() {
+        return currentRenderMode.get();
+    }
+
+    /**
+     * Sets the current render mode.
+     * Render mode could be "edit", "preview" or "live".
+     *
+     * @param currentRenderMode the current render mode
+     */
+    public void setCurrentRenderMode(String currentRenderMode) {
+        this.currentRenderMode.set(currentRenderMode);
     }
 
     public LocalValidatorFactoryBean getValidatorFactoryBean() {

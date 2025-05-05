@@ -70,8 +70,6 @@ import java.util.*;
  * @author toto
  */
 public class RenderContext {
-    public static final String LIVE_MODE = "live";
-    public static final String PREVIEW_MODE = "preview";
     private HttpServletRequest request;
     private HttpServletResponse response;
     private Resource mainResource;
@@ -171,9 +169,9 @@ public class RenderContext {
                 }
                 if ("render".equals(mode)) {
                     if (workspace.equals(Constants.LIVE_WORKSPACE)) {
-                        mode = LIVE_MODE;
+                        mode = Constants.LIVE_MODE;
                     } else {
-                        mode = PREVIEW_MODE;
+                        mode = Constants.PREVIEW_MODE;
                     }
                 }
             }
@@ -282,11 +280,11 @@ public class RenderContext {
     }
 
     public boolean isLiveMode() {
-        return getMode().equals("live");
+        return getMode().equals(Constants.LIVE_MODE);
     }
 
     public boolean isPreviewMode() {
-        return getMode().equals("preview");
+        return getMode().equals(Constants.PREVIEW_MODE);
     }
 
     public void setAjaxRequest(boolean ajaxRequest) {

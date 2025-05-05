@@ -187,8 +187,7 @@ public class JcrSessionFilter implements Filter {
         sessionFactory.setCurrentServletPath(null);
         sessionFactory.setCurrentPreviewDate(null);
         sessionFactory.setReadOnlyCacheEnabled(null);
-        /*sessionFactory.setVersionDate(null);
-        sessionFactory.setVersionLabel(null);*/
+        sessionFactory.setCurrentRenderMode(null);
         sessionFactory.closeAllSessions();
 
         ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();

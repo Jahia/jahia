@@ -266,8 +266,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                             if (isAclUuidInIndex()) {
                                 canRead = checkIndexedAcl(checkedAcls, infos.getAclUuid());
                             }
-
-                            boolean checkVisibility = "1".equals(infos.getCheckVisibility()) && Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName());
+                            String currentRenderMode = JCRSessionFactory.getInstance().getCurrentRenderMode();
+                            boolean checkVisibility = "1".equals(infos.getCheckVisibility()) && (currentRenderMode != null && (currentRenderMode.equals(Constants.LIVE_MODE) || currentRenderMode.equals(Constants.PREVIEW_MODE)));
                             if (canRead && (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName())
                                     || ((infos.getPublished() == null || "true".equals(infos.getPublished()))
                                     && (infos.getCheckInvalidLanguages() == null || getLocale() == null || !infos.getCheckInvalidLanguages().contains(getLocale().toString()))))) {
@@ -423,7 +423,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
         if (checkVisibility) {
             String nodePath = objectNode.getPath();
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE);
+
+            String workspace = JCRSessionFactory.getInstance().getCurrentRenderMode().equals(Constants.PREVIEW_MODE) ? Constants.EDIT_WORKSPACE: Constants.LIVE_WORKSPACE;
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
             if (session.itemExists(nodePath) && !VisibilityService.getInstance().matchesConditions(session.getNode(nodePath))) {
                 throw new ItemNotFoundException(node.getNodeId().toString());
             }

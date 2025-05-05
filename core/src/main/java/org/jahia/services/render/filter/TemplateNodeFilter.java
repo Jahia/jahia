@@ -66,11 +66,6 @@ public class TemplateNodeFilter extends AbstractFilter {
                     throw new TemplateNotFoundException(resource.getTemplate());
                 }
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
-                if (template.isExternal()) {
-                    // External template handling, we delegate the render chain to this external system by skipping current filter
-                    chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.FALSE);
-                    return null;
-                }
 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Template set to : " + template.serialize() + " for resource " + resource);
@@ -95,35 +90,47 @@ public class TemplateNodeFilter extends AbstractFilter {
                         }
                     }
                 }
-
             }
 
-            if (template != null && template.node != null) {
-                JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
-
-                Template last = template;
-                while (last.next != null) {
-                    last = last.next;
-                }
-                JCRNodeWrapper currentTemplate = last.node != null ? resource.getNode().getSession().getNodeByIdentifier(last.node) : null;
-
+            if (template != null) {
+                // Even if previousTemplate is a concept born with the JCR node templating mechanism, it's still useful for external templates
+                // Example: jExperience page perso, pushing a template.next in order route areas of the rendered page to the right variant.
                 renderContext.getRequest().setAttribute("previousTemplate", template);
-                renderContext.getRequest().setAttribute("currentTemplateNode", currentTemplate);
                 renderContext.getRequest().setAttribute("wrappedResource", resource);
-                Resource wrapperResource = new Resource(templateNode,
-                        resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
-                if (service.hasView(templateNode, template.getView(), resource.getTemplateType(), renderContext)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Calling render service with template : " + template.serialize() +
-                                " templateNode path : " + templateNode.getPath() + " for wrapperresource " +
-                                wrapperResource);
-                    }
-                    String output = RenderService.getInstance().render(wrapperResource, renderContext);
-                    renderContext.getRequest().setAttribute("previousTemplate", previousTemplate);
 
-                    return output;
-                } else {
-                    logger.warn("Cannot get wrapper " + template);
+                if (template.isExternal()) {
+                    // External template handling, we delegate the render chain to this external system by skipping rendering of template nodes
+                    // Example: JS modules and JS views/templates
+                    chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.FALSE);
+                    return null;
+                }
+
+                // JCR template nodes handling, only if the template is a JCR template node
+                if (template.node != null) {
+                    JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
+
+                    Template last = template;
+                    while (last.next != null) {
+                        last = last.next;
+                    }
+                    JCRNodeWrapper currentTemplate = last.node != null ? resource.getNode().getSession().getNodeByIdentifier(last.node) : null;
+                    renderContext.getRequest().setAttribute("currentTemplateNode", currentTemplate);
+
+                    Resource wrapperResource = new Resource(templateNode,
+                            resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
+                    if (service.hasView(templateNode, template.getView(), resource.getTemplateType(), renderContext)) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Calling render service with template : " + template.serialize() +
+                                    " templateNode path : " + templateNode.getPath() + " for wrapperresource " +
+                                    wrapperResource);
+                        }
+                        String output = RenderService.getInstance().render(wrapperResource, renderContext);
+                        renderContext.getRequest().setAttribute("previousTemplate", previousTemplate);
+
+                        return output;
+                    } else {
+                        logger.warn("Cannot get wrapper " + template);
+                    }
                 }
             }
         } else if (renderContext.isAjaxRequest() && resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE)) {

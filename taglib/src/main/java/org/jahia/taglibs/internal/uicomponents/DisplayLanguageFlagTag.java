@@ -115,8 +115,8 @@ import java.util.Locale;
  * resourceOn, resourceOff : Alternative resource defined by the relative
  * path from the JSP source file to an image file.</p>
  *
- * <p>Copyright: MAP (Jahia Solutions S�rl 2002)</p>
- * <p>Company: Jahia Solutions S�rl</p>
+ * <p>Copyright: MAP (Jahia Solutions Sàrl 2002)</p>
+ * <p>Company: Jahia Solutions Sàrl</p>
  * @author MAP
  * @version 1.0
  *
@@ -136,8 +136,8 @@ import java.util.Locale;
  * <p>
  *   examples :
  *              &nbsp;&nbsp; code=\"en_UK\" ; will display : English<br>
- *              &nbsp;&nbsp; code=\"fr\" ; will display : fran�ais<br>
- *              &nbsp;&nbsp; code=\"fr_CH\" ; will display : fran�ais<br>
+ *              &nbsp;&nbsp; code=\"fr\" ; will display : français<br>
+ *              &nbsp;&nbsp; code=\"fr_CH\" ; will display : français<br>
  *              &nbsp;&nbsp; code=\"ar_AS\" ; will display : \u0627\u0644\u0639\u0631\u0628\u064A\u0629 (arabic chars)<br>
  * </p>
  * <p><b>Example :</b>

@@ -113,13 +113,19 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
 
     private static boolean isUnderUsersNode(String path) {
+        // Check if the path starts with "/users/" directly
         if (path.startsWith("/users/")) {
             return true;
         }
-        if (path.startsWith("/sites/") && path.contains("/users/")) {
-            String siteKey = JCRContentUtils.getSiteKey(path);
-            return siteKey != null && path.startsWith(JahiaSitesService.SITES_JCR_PATH + "/" + siteKey + "/users/");
+
+        // Simplify the check for paths under "/sites/*/users"
+        if (path.startsWith("/sites/")) {
+            String[] segments = path.split("/");
+            // Check if the path has at least 4 segments: ["", "sites", "<siteKey>", "users"]
+            // and ensure the fourth segment is "users"
+            return segments.length >= 4 && "users".equals(segments[3]);
         }
+
         return false;
     }
 
@@ -493,6 +499,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             Row row = ri.nextRow();
             String path = row.getValue("jcr:path").getString();
             if (isUnderUsersNode(path)) {
+                // Normally queries should never return users sub nodes, but we keep this check just in case it happens
+                logger.warn("Matching ACE under user node for path: {}. Check configuration to avoid potential ACL cache key performance issues.", path);
                 continue;
             }
             Value v = row.getValue("j:principal");
@@ -545,17 +553,24 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
      *         otherwise.
      */
     public boolean isRelevantForAllPrincipalsCacheEntry(String path) {
+        // Initialize testPaths and always include "/sites" for checking
+        // /sites path is added manually, because it has been separate from the configured paths
+        // in order to avoid performance issues related to /sites/*/users ACL it has now a dedicated xPath query
+        Set<String> testPaths = new HashSet<>();
+        testPaths.add("/sites");
         if (groupsSignatureAclPathsToQuery != null) {
-            boolean relevant = false;
-            for (String testPath : groupsSignatureAclPathsToQuery) {
-                if (path.startsWith(testPath)) {
-                    relevant = true;
-                    break;
-                }
-            }
-            return relevant && !isUnderUsersNode(path);
+            testPaths.addAll(groupsSignatureAclPathsToQuery);
         }
-        return true;
+
+        // Check if the path starts with any of the test paths
+        for (String testPath : testPaths) {
+            if (path.startsWith(testPath)) {
+                // Ensure the path is not under a users node
+                return !isUnderUsersNode(path);
+            }
+        }
+
+        return false;
     }
 
     private String getAllPrincipalsWithAclQuery() {

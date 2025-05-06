@@ -29,7 +29,6 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     else
         echo "Storing environment to prevent changes"
         echo "DB_VENDOR=${DB_VENDOR}" >> ${DATA_FOLDER}/env
-        echo "DB_VENDOR=${DB_VENDOR}" >> ${DATA_FOLDER}/env
         echo "DB_HOST=${DB_HOST}" >> ${DATA_FOLDER}/env
         echo "DB_NAME=${DB_NAME}" >> ${DATA_FOLDER}/env
         echo "DB_USER=${DB_USER}" >> ${DATA_FOLDER}/env
@@ -191,8 +190,8 @@ fi
 
 if [ "$YOURKIT_ACTIVATED" == "true" ]; then
     if [ ! -d "/home/tomcat/yourkit" ]; then
-        echo "Retrieve latest Yourkit agent binaries..."
-        wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2023.9-docker.zip -P /tmp/
+        echo "Retrieve Yourkit agent binaries..."
+        wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2025.3-docker.zip -P /tmp/
         unzip /tmp/yourkit.zip -d /home/tomcat
         mv /home/tomcat/YourKit-JavaProfiler* /home/tomcat/yourkit
         rm /tmp/yourkit.zip

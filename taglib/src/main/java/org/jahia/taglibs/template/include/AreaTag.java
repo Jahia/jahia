@@ -54,6 +54,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
+import org.jahia.services.render.filter.TemplateNodeFilter;
 import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -64,10 +65,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -79,7 +77,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private static final long serialVersionUID = -6195547330532753697L;
 
-    private static Logger logger = LoggerFactory.getLogger(AreaTag.class);
+    private static final Logger logger = LoggerFactory.getLogger(AreaTag.class);
 
     private String areaType = "jnt:contentList";
 
@@ -94,8 +92,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
     private boolean areaAsSubNode;
 
     private boolean limitedAbsoluteAreaEdit = true;
-
-    private String conflictsWith = null;
 
     public void setAreaType(String areaType) {
         this.areaType = areaType;
@@ -126,6 +122,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         return moduleType;
     }
 
+    @Override
     protected void missingResource(RenderContext renderContext, Resource resource)
             throws RepositoryException, IOException {
         if (renderContext.isEditMode() && checkNodeEditable(renderContext, node)) {
@@ -189,9 +186,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
             } else {
                 additionalParameters.append(" missingList=\"true\"");
             }
-            if (conflictsWith != null) {
-                additionalParameters.append(" conflictsWith=\"").append(conflictsWith).append("\"");
-            }
             if (!areaType.equals("jnt:contentList")) {
                 additionalParameters.append(" areaType=\"").append(areaType).append("\"");
             }
@@ -251,6 +245,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         return areaNode;
     }
 
+    @Override
     protected String getConfiguration() {
         return Resource.CONFIGURATION_WRAPPEDCONTENT;
     }
@@ -258,232 +253,272 @@ public class AreaTag extends ModuleTag implements ParamParent {
     @Override
     protected boolean canEdit(RenderContext renderContext) {
         if (path != null) {
-            boolean stillInWrapper = false;
-            return renderContext.isEditMode() && editable && !stillInWrapper &&
-                    renderContext.getRequest().getAttribute("inArea") == null;
+            return renderContext.isEditMode() && editable &&
+                    renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA) == null;
         } else if (node != null) {
             return renderContext.isEditMode() && editable &&
-                    renderContext.getRequest().getAttribute("inArea") == null && node.getPath().equals(renderContext.getMainResource().getNode().getPath());
+                    renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA) == null &&
+                    node.getPath().equals(renderContext.getMainResource().getNode().getPath());
         } else {
             return super.canEdit(renderContext);
         }
     }
 
+    @Override
     protected void findNode(RenderContext renderContext, Resource currentResource) throws IOException {
-        Resource mainResource = renderContext.getMainResource();
         showAreaButton = renderContext.getMainResource().getPath().startsWith("/modules") || !SettingsBean.getInstance().isAreaAutoActivated();
-        if (renderContext.isAjaxRequest() && renderContext.getAjaxResource() != null) {
-            mainResource = renderContext.getAjaxResource();
-        }
-        renderContext.getRequest().removeAttribute("skipWrapper");
-        renderContext.getRequest().removeAttribute("inArea");
-        pageContext.setAttribute("org.jahia.emptyArea", Boolean.TRUE, PageContext.PAGE_SCOPE);
+        Resource mainResource = resolveMainResource(renderContext);
+
+        // Reset some attributes, they will be set again during the process in various cases
+        renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_SKIP_TEMPLATE_NODE_WRAPPER);
+        renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_IN_AREA);
+
         try {
-            // path is null in main resource display
-            Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
-            templateNode = t;
-
+            // Absolute areas and main resource display will always resolve the area content in the main resource node
+            // (That's why the resolvedTemplate is set to null for those cases.)
             if ("absoluteArea".equals(moduleType)) {
-                // No more areas in an absolute area
-                renderContext.getRequest().setAttribute("previousTemplate", null);
-                JCRNodeWrapper main = null;
-                try {
-                    main = renderContext.getMainResource().getNode();
-                    if (level != null && main.getDepth() >= level + 3) {
-                        node = (JCRNodeWrapper) main.getAncestor(level + 3);
-                    } else if (level == null) {
-                        node = renderContext.getSite().getHome();
-                    } else {
-                        return;
-                    }
-                    if (node == null) {
-                        return;
-                    }
-                    if ((limitedAbsoluteAreaEdit && !mainResource.getNode().getPath().equals(node.getPath())) || (mainResource.getNode().getPath().startsWith("/modules") && mainResource.getNode().isNodeType("jnt:template"))) {
-                        parameters.put("readOnly", "true");
-                        editable = false;
-                        renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
-                    }
-
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Looking for absolute area " + path + ", will be searched in node " + node.getPath() +
-                                " saved template = " + (templateNode != null ? templateNode.serialize() : "none") + ", previousTemplate set to null");
-                    }
-                    node = node.getNode(path);
-                    pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
-                } catch (RepositoryException e) {
-                    if (node != null) {
-                        path = node.getPath() + "/" + path;
-                    }
-                    node = null;
-                    if (editable) {
-                        missingResource(renderContext, currentResource);
-                    }
-                } finally {
-                    if (node == null && logger.isDebugEnabled()) {
-                        if (level == null) {
-                            logger.debug(
-                                    "Cannot get a node {}, relative to the home page of site {}"
-                                            + " for main resource {}",
-                                    new String[]{
-                                            path,
-                                            main != null && main.getResolveSite() != null ? main.getResolveSite().getPath() : null,
-                                            main != null ? main.getPath() : null});
-                        } else {
-                            logger.debug(
-                                    "Cannot get a node {}, with level {} for main resource {}",
-                                    new String[]{path, String.valueOf(level), main != null ? main.getPath() : null});
-                        }
-                    }
-                }
+                setResolvedTemplate(null);
+                findNodeForAbsoluteAreaType(renderContext, mainResource, currentResource);
             } else if (path != null) {
-                if (!path.startsWith("/")) {
-                    /*
-                     * This section builds a list of candidate nodes to resolve the area content.
-                     *
-                     * JCR Node Templating:
-                     * - In JCR templating, templates follow a hierarchy that can contain area content.
-                     * - Resolution follows a parent-first order before checking child templates.
-                     *   Example:
-                     *     /modules/templateSet/base
-                     *     /modules/templateSet/base/simple
-                     *     /sites/mySite/home/myPage
-                     * - This means area content can be resolved in the parent template, the child template, or finally the main resource node (page).
-                     *
-                     * JS Templating:
-                     * - Unlike JCR, JS templating lacks a hierarchy of templates.
-                     * - It can still be used to route area content to a specific node.
-                     * - By default, a JS module template node is null, as it does not rely on node templating.
-                     *   Example:
-                     *     /sites/mySite/home/myPage
-                     * - Here, the area content is only resolved by the main resource node (page).
-                     *
-                     * Special Case: jExperience A/B Testing
-                     * - jExperience leverages template hierarchy to insert a node template in the resolution chain.
-                     * - This allows routing area content to the correct page variant using `template.next`.
-                     *   Example (JCR Node Templating):
-                     *     /modules/templateSet/base
-                     *     /modules/templateSet/base/simple
-                     *     /sites/mySite/home/myPage/variant1
-                     *     /sites/mySite/home/myPage
-                     *   Example (JS Module Templating):
-                     *     /sites/mySite/home/myPage/variant1
-                     *     /sites/mySite/home/myPage
-                     * - In both cases, `/sites/mySite/home/myPage/variant1` resolves the area content, while `/sites/mySite/home/myPage` acts as a fallback.
-                     */
-                    List<JCRNodeWrapper> nodes = new ArrayList<>();
-                    if (t != null) {
-                        for (Template currentTemplate : t.getNextTemplates()) {
-                            if (currentTemplate.getNode() != null) {
-                                nodes.add(0, mainResource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
-                            }
-                        }
-                    }
-                    nodes.add(mainResource.getNode());
-                    boolean isCurrentResource = false;
-                    if (areaAsSubNode) {
-                        nodes.add(0, currentResource.getNode());
-                        isCurrentResource = true;
-                    }
-                    boolean found = false;
-                    boolean notMainResource = false;
-
-                    Set<String> allPaths = renderContext.getRenderedPaths();
-                    for (JCRNodeWrapper node : nodes) {
-                        if (!path.equals("*") && node.hasNode(path) && !allPaths.contains(node.getPath() + "/" + path)) {
-                            notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());
-                            this.node = node.getNode(path);
-                            if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
-                                this.node = null;
-                            } else {
-                                // now let's check if the content node matches the areaType. If not it means we have a
-                                // conflict with another content created outside of the content of the area (DEVMINEFI-223)
-                                if (!this.node.isNodeType(areaType) && !this.node.isNodeType("jmix:skipConstraintCheck")) {
-//                                    conflictsWith = this.node.getPath();
-                                    found = false;
-                                    this.node = null;
-                                    break;
-                                } else {
-                                    found = true;
-                                    pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
-                                    // if the processed resource is an area, set area path to this node, else set it to the generated node.
-                                    renderContext.getRequest().setAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH,
-                                            currentResource.getNode().isNodeType("jnt:area") ? currentResource.getNodePath() : this.node.getPath());
-                                    break;
-                                }
-                            }
-                        }
-                        if (t != null && !isCurrentResource) {
-                            t = t.getNext();
-                        }
-                        isCurrentResource = false;
-                    }
-                    renderContext.getRequest().setAttribute("previousTemplate", t);
-                    if (logger.isDebugEnabled()) {
-                        String tempNS = (templateNode != null) ? templateNode.serialize() : null;
-                        String prevNS = (t != null) ? t.serialize() : null;
-                        logger.debug("Looking for local area " + path + ", will be searched in node " + (node != null ? node.getPath() : null) +
-                                " saved template = " + tempNS + ", previousTemplate set to " + prevNS);
-                    }
-                    boolean templateEdit = mainResource.getModuleParams().containsKey("templateEdit") && mainResource.getModuleParams().get("templateEdit").equals(node.getParent().getIdentifier());
-                    if (notMainResource && !templateEdit) {
-                        renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
-                    }
-                    if (!found) {
-                        missingResource(renderContext, currentResource);
-                    }
-                } else if (path.startsWith("/")) {
-                    JCRSessionWrapper session = mainResource.getNode().getSession();
-
-                    // No more areas in an absolute area
-                    renderContext.getRequest().setAttribute("previousTemplate", null);
-
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Looking for absolute area " + path + ", will be searched in node " + (node != null ? node.getPath() : null) +
-                                " saved template = " + (templateNode != null ? templateNode.serialize() : "none") + ", previousTemplate set to null");
-
-                    }
-                    try {
-                        node = (JCRNodeWrapper) session.getItem(path);
-                        pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
-                    } catch (PathNotFoundException e) {
-                        missingResource(renderContext, currentResource);
-                    }
+                if (path.startsWith("/")) {
+                    setResolvedTemplate(null);
+                    findNodeForAbsoluteAreaPath(renderContext, mainResource, currentResource);
+                } else {
+                    findNodeForRelativeAreaPath(renderContext, mainResource, currentResource);
                 }
-                renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
+                renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_SKIP_TEMPLATE_NODE_WRAPPER, Boolean.TRUE);
             } else {
-                renderContext.getRequest().setAttribute("previousTemplate", null);
-                renderContext.getRequest().removeAttribute("skipWrapper");
+                // main source display, <template:area/> without path always resolve to main resource node rendering
+                // see mainResourceDisplay.jsp
+                setResolvedTemplate(null);
                 node = mainResource.getNode();
-                pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
 
-        if (node == null && logger.isDebugEnabled()) {
-            logger.debug("Can not find the area node for path " + path + " with templates " + (templateNode != null ? templateNode.serialize() : "none") +
-                    "rendercontext " + renderContext + " main resource " + mainResource +
-                    " current resource " + currentResource);
+        if (node != null) {
+            pageContext.setAttribute("org.jahia.emptyArea", Boolean.FALSE, PageContext.PAGE_SCOPE);
+        } else {
+            pageContext.setAttribute("org.jahia.emptyArea", Boolean.TRUE, PageContext.PAGE_SCOPE);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Can not find the area node for path {} with templates {} renderContext {} main resource {} current resource {}",
+                        path, templateNode != null ? templateNode.serialize() : "none", renderContext, mainResource, currentResource);
+            }
         }
+    }
+
+    /**
+     * usage: <template:area path="footer-1" moduleType="absoluteArea" level="0"/>
+     * Area using absoluteArea type is similar to absolute path (but more advanced, more options: level for example).
+     * the path being relative, the main resource node where the area content will be created depends on the level.
+     * if no level, then the absolute area will resolve to the home page of the site.
+     */
+    private void findNodeForAbsoluteAreaType(RenderContext renderContext, Resource mainResource, Resource currentResource) throws RepositoryException, IOException {
+        JCRNodeWrapper main = null;
+        try {
+            main = renderContext.getMainResource().getNode();
+            if (level != null && main.getDepth() >= level + 3) {
+                node = (JCRNodeWrapper) main.getAncestor(level + 3);
+            } else if (level == null) {
+                node = renderContext.getSite().getHome();
+            } else {
+                return;
+            }
+            if (node == null) {
+                return;
+            }
+            if ((limitedAbsoluteAreaEdit && !mainResource.getNode().getPath().equals(node.getPath())) || (mainResource.getNode().getPath().startsWith("/modules") && mainResource.getNode().isNodeType("jnt:template"))) {
+                parameters.put("readOnly", "true");
+                editable = false;
+                renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, Boolean.TRUE);
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Looking for absolute area {}, will be searched in node {} saved template = {}, previousTemplate set to null",
+                        path, node.getPath(), templateNode != null ? templateNode.serialize() : "none");
+            }
+            node = node.getNode(path);
+        } catch (RepositoryException e) {
+            if (node != null) {
+                path = node.getPath() + "/" + path;
+            }
+            node = null;
+            if (editable) {
+                missingResource(renderContext, currentResource);
+            }
+        } finally {
+            if (node == null && logger.isDebugEnabled()) {
+                if (level == null) {
+                    logger.debug("Cannot get a node {}, relative to the home page of site {} for main resource {}", path,
+                                    main != null && main.getResolveSite() != null ? main.getResolveSite().getPath() : null,
+                                    main != null ? main.getPath() : null);
+                } else {
+                    logger.debug("Cannot get a node {}, with level {} for main resource {}",
+                            path, level, main != null ? main.getPath() : null);
+                }
+            }
+        }
+    }
+
+    /**
+     * usage: <template:area path="/sites/mySite/home/myPage/myArea"/>
+     * Area using absolute path are similar (but simplified, less options) to the absolute area type.
+     */
+    private void findNodeForAbsoluteAreaPath(RenderContext renderContext, Resource mainResource, Resource currentResource) throws RepositoryException, IOException {
+        JCRSessionWrapper session = mainResource.getNode().getSession();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Looking for absolute area {}, will be searched in node {} saved template = {}, previousTemplate set to null",
+                    path, node != null ? node.getPath() : null, templateNode != null ? templateNode.serialize() : "none");
+        }
+        try {
+            node = (JCRNodeWrapper) session.getItem(path);
+        } catch (PathNotFoundException e) {
+            missingResource(renderContext, currentResource);
+        }
+    }
+
+    /**
+     * usage: <template:area path="name"/>
+     * Here is a summary of the relative area resolution process:
+     *
+     * JCR Node Templating:
+     * - In JCR templating, templates follow a hierarchy that can contain area content.
+     * - Resolution follows a parent-first order before checking child templates.
+     *   Example:
+     *     /modules/templateSet/base
+     *     /modules/templateSet/base/simple
+     *     /sites/mySite/home/myPage
+     * - This means area content can be resolved in the parent template, the child template, or finally the main resource node (page).
+     *
+     * JS Templating:
+     * - Unlike JCR, JS templating lacks a hierarchy of templates.
+     * - It can still be used to route area content to a specific node.
+     * - By default, a JS module template node is null, as it does not rely on node templating.
+     *   Example:
+     *     /sites/mySite/home/myPage
+     * - Here, the area content is only resolved by the main resource node (page).
+     *
+     * Special Case: jExperience A/B Testing
+     * - jExperience leverages template hierarchy to insert a node template in the resolution chain.
+     * - This allows routing area content to the correct page variant using `template.next`.
+     *   Example (JCR Node Templating):
+     *     /modules/templateSet/base
+     *     /modules/templateSet/base/simple
+     *     /sites/mySite/home/myPage/variant1
+     *     /sites/mySite/home/myPage
+     *   Example (JS Module Templating):
+     *     /sites/mySite/home/myPage/variant1
+     *     /sites/mySite/home/myPage
+     * - In both cases, `/sites/mySite/home/myPage/variant1` resolves the area content, while `/sites/mySite/home/myPage` acts as a fallback.
+     */
+    private void findNodeForRelativeAreaPath(RenderContext renderContext, Resource mainResource, Resource currentResource) throws RepositoryException, IOException {
+        // Build the lookup stack, the list of element order in the lookup priority
+        List<Map.Entry<JCRNodeWrapper, Template>> lookupStack = new ArrayList<>();
+        if (templateNode != null) {
+            for (Template currentTemplate : templateNode.getNextTemplates()) {
+                if (!currentTemplate.isExternal() && currentTemplate.getNode() != null) {
+                    lookupStack.add(0, new AbstractMap.SimpleEntry<>(
+                            mainResource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()),
+                            currentTemplate)
+                    );
+                }
+            }
+        }
+        // Push currentResource in top of stack in case of areaAsSubNode option is set
+        if (areaAsSubNode) {
+            lookupStack.add(0, new AbstractMap.SimpleEntry<>(currentResource.getNode(), null));
+        }
+        // Last element of the stack is always mainResource (Aka the page)
+        lookupStack.add(new AbstractMap.SimpleEntry<>(mainResource.getNode(), null));
+
+        boolean found = false;
+        boolean notMainResource = false;
+        Set<String> allPaths = renderContext.getRenderedPaths();
+        Template templateNodeMatch = null;
+
+        for (Map.Entry<JCRNodeWrapper, Template> lookupStackEntry : lookupStack) {
+            JCRNodeWrapper node = lookupStackEntry.getKey();
+            templateNodeMatch = lookupStackEntry.getValue();
+            if (!path.equals("*") && node.hasNode(path) && !allPaths.contains(node.getPath() + "/" + path)) {
+                notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());
+                this.node = node.getNode(path);
+                if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
+                    this.node = null;
+                } else {
+                    // now let's check if the content node matches the areaType. If not it means we have a
+                    // conflict with another content created outside of the content of the area (DEVMINEFI-223)
+                    if (!this.node.isNodeType(areaType) && !this.node.isNodeType("jmix:skipConstraintCheck")) {
+                        this.node = null;
+                        break;
+                    } else {
+                        found = true;
+                        // Keep the last template node from the stack (can be null, if area is not in a template)
+                        setResolvedTemplate(templateNodeMatch);
+                        // if the processed resource is an area, set area path to this node, else set it to the generated node.
+                        renderContext.getRequest().setAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH,
+                                currentResource.getNode().isNodeType("jnt:area") ? currentResource.getNodePath() : this.node.getPath());
+                        break;
+                    }
+                }
+            }
+        }
+        if (logger.isDebugEnabled()) {
+            String tempNS = (templateNode != null) ? templateNode.serialize() : null;
+            String prevNS = (templateNodeMatch != null) ? templateNodeMatch.serialize() : null;
+            logger.debug("Looking for local area {}, will be searched in node {} saved template = {}, previousTemplate set to {}",
+                    path, node != null ? node.getPath() : null, tempNS, prevNS);
+        }
+        if (notMainResource) {
+            renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, Boolean.TRUE);
+        }
+        if (!found) {
+            missingResource(renderContext, currentResource);
+        }
+    }
+
+    /**
+     * To be called before rendering the area content.
+     * Used to store the template that was able to resolve the area content.
+     * If the area content was not resolved from any template (area content is in main resource for example,
+     * but also absolute areas, main resource display),
+     * then the templateNode will be null and this is expected.
+     * <br>
+     * Mostly used for relative areas and the template hierarchy. For example:
+     * template base -> template home -> template simple -> main resource
+     * if the area content is resolved in template simple, then the templateNode will be set to template simple.
+     * See will store the template simple in the cache key of the current rendered resource and subsequent resources.
+     * Which will speed up next resolution in case a fragment need to be re-generated.
+     * then it will spare lookup in: template base, template home.
+     */
+    private void setResolvedTemplate(Template templateNode) {
+        pageContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, templateNode);
+    }
+
+    private Resource resolveMainResource(RenderContext renderContext) {
+        if (renderContext.isAjaxRequest() && renderContext.getAjaxResource() != null) {
+            return renderContext.getAjaxResource();
+        }
+        return renderContext.getMainResource();
     }
 
     @Override
     public int doEndTag() throws JspException {
-        Object o = pageContext.getRequest().getAttribute("inArea");
+        Object originalInArea = pageContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA);
+        templateNode = (Template) pageContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
         try {
             return super.doEndTag();
         } finally {
-            pageContext.getRequest().setAttribute("previousTemplate", templateNode);
+            pageContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, templateNode);
             if (logger.isDebugEnabled()) {
-                logger.debug("Restoring previous template " + (templateNode != null ? templateNode.serialize() : "none"));
+                logger.debug("Restoring previous template {}", (templateNode != null ? templateNode.serialize() : "none"));
             }
             templateNode = null;
             level = null;
             areaAsSubNode = false;
-            conflictsWith = null;
             areaType = "jnt:contentList";
-            pageContext.getRequest().setAttribute("inArea", o);
+            pageContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, originalInArea);
             pageContext.getRequest().removeAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH);
         }
     }
@@ -509,7 +544,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     @Override
     protected void appendExtraAdditionalParameters(StringBuilder additionalParameters) {
-        if (node == null || isEmptyArea()) {
+        if (isEmptyArea()) {
             additionalParameters.append(" isEmptyArea=\"true\"");
         }
     }

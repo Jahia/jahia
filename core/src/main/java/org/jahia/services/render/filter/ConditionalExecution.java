@@ -320,6 +320,12 @@ public abstract class ConditionalExecution {
         }
     }
 
+    public void setApplyOnAjaxRequestOnly(Boolean apply) {
+        if (apply) {
+            addCondition(new AjaxRequestCondition());
+        }
+    }
+
     @Deprecated(since = "7.2.1.0", forRemoval = true)
     public void setSkipOnConfiguration(String configurations) {
         setSkipOnConfigurations(configurations);

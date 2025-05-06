@@ -45,6 +45,7 @@ package org.jahia.services.render.filter.cache;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.TemplateNodeFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
@@ -53,13 +54,13 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, Rende
 
     @Override
     public String getKey() {
-        return "inArea";
+        return TemplateNodeFilter.ATTR_IN_AREA;
     }
 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
-        Object inArea = request.getAttribute("inArea");
+        Object inArea = request.getAttribute(TemplateNodeFilter.ATTR_IN_AREA);
         return inArea != null ? inArea.toString() : "";
     }
 
@@ -70,11 +71,11 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, Rende
 
     @Override
     public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
-        Object original = renderContext.getRequest().getAttribute("inArea");
+        Object original = renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA);
         if (StringUtils.isEmpty(value)) {
-            renderContext.getRequest().removeAttribute("inArea");
+            renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_IN_AREA);
         } else {
-            renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(value));
+            renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, Boolean.valueOf(value));
         }
         return original;
     }
@@ -82,9 +83,9 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, Rende
     @Override
     public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
         if (original != null) {
-            renderContext.getRequest().setAttribute("inArea", original);
+            renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, original);
         } else {
-            renderContext.getRequest().removeAttribute("inArea");
+            renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_IN_AREA);
         }
     }
 

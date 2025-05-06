@@ -57,6 +57,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.filter.TemplateNodeFilter;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
@@ -969,19 +970,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // Prepare to dispatch to the render service - restore all area/templates atributes
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
-            Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
-            String context = keyAttrbs.get("context");
-            if (!context.equals("page")) {
-                renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
-            }
+
+            // previousTemplate restore
+            Template oldPreviousTemplate = (Template) renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
             if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
                 Template templateNodes = new Template(keyAttrbs.get("templateNodes"));
-                renderContext.getRequest().setAttribute("previousTemplate", templateNodes);
+                renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, templateNodes);
             } else {
-                renderContext.getRequest().removeAttribute("previousTemplate");
+                renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
             }
 
-            Set<String> addedPath = new HashSet<String>();
+            // Keep track of rendered paths for generated contents
+            Set<String> addedPath = new HashSet<>();
             if (null != allPaths && !allPaths.isEmpty()) {
                 for (String path : allPaths) {
                     if (!renderContext.getRenderedPaths().contains(path)) {
@@ -991,21 +991,25 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }
             }
 
-            renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
-            Object oldInArea = renderContext.getRequest().getAttribute("inArea");
-            String inArea = keyAttrbs.get("inArea");
+            // inArea restore
+            Object oldInArea = renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA);
+            String inArea = keyAttrbs.get(TemplateNodeFilter.ATTR_IN_AREA);
             if (StringUtils.isEmpty(inArea)) {
-                renderContext.getRequest().removeAttribute("inArea");
+                renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_IN_AREA);
             } else {
-                renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(inArea));
+                renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, Boolean.valueOf(inArea));
             }
+
             if (areaIdentifier != null) {
                 renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
             } else {
                 renderContext.getRequest().removeAttribute("areaListResource");
             }
-            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);
 
+            // Init resource from cache key values
+            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
+
+            // Restore moduleParams by injecting them into the resource
             String params = keyAttrbs.get("moduleParams");
             if (StringUtils.isNotEmpty(params)) {
                 try {
@@ -1024,27 +1028,34 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // a cache entry based on incomplete dependencies.
             resource.getModuleParams().put("cache.forceGeneration", true);
 
-            // Dispatch to the render service to generate the content
+            // Main resource will never be generated here, only sub fragments can be generated here.
+            // So we set some attributes for TemplateNodeFilter and call rendering
+            renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_TEMPLATE_SET, Boolean.TRUE);
+            renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_SKIP_TEMPLATE_NODE_WRAPPER, Boolean.TRUE);
             String content = RenderService.getInstance().render(resource, renderContext);
             if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
-                logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
-                        " areaIdentifier " + areaIdentifier);
+                logger.error("Empty generated content for key {} with attributes: areaIdentifier {}", cacheKey, areaIdentifier);
             }
 
+            // Handle rendered paths once the content is generated
             for (String s : addedPath) {
                 renderContext.getRenderedPaths().remove(s);
             }
 
+            // inArea reset
             if (oldInArea != null) {
-                renderContext.getRequest().setAttribute("inArea", oldInArea);
+                renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, oldInArea);
             } else {
-                renderContext.getRequest().removeAttribute("inArea");
+                renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_IN_AREA);
             }
-            if (oldOne != null) {
-                renderContext.getRequest().setAttribute("previousTemplate", oldOne);
+
+            // previousTemplate reset
+            if (oldPreviousTemplate != null) {
+                renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, oldPreviousTemplate);
             } else {
-                renderContext.getRequest().removeAttribute("previousTemplate");
+                renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
             }
+
             return content;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

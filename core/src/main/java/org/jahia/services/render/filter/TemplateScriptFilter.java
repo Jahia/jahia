@@ -51,10 +51,8 @@ import org.slf4j.Logger;
 import org.slf4j.profiler.Profiler;
 import org.springframework.util.StopWatch;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Stack;
 import java.util.UUID;
@@ -94,16 +92,12 @@ public class TemplateScriptFilter extends AbstractFilter {
         Stack<StopWatch> stopWatchStack = null;
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Render " + script.getView().getPath() + " for resource: " + resource);
-                if(renderContext.getRequest().getAttribute("previousTemplate")!=null) {
-                    logger.debug("previousTemplate object for rendering before script: "+((Template) renderContext.getRequest().getAttribute("previousTemplate")).serialize());
+                logger.debug("Render {} for resource: {}", script.getView().getPath(), resource);
+                if(renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE)!=null) {
+                    logger.debug("previousTemplate object for rendering before script: {}",
+                            ((Template) renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE)).serialize());
                 } else {
                     logger.debug("previousTemplate object for rendering before script is null.");
-                }
-                if(renderContext.getRequest().getAttribute("usedTemplate")!=null) {
-                    logger.debug("usedTemplate object for rendering before script: "+((Template) renderContext.getRequest().getAttribute("usedTemplate")).serialize());
-                } else {
-                    logger.debug("usedTemplate object for rendering before script is null.");
                 }
             }
             long start = 0;
@@ -144,15 +138,11 @@ public class TemplateScriptFilter extends AbstractFilter {
             }
 
             if (logger.isDebugEnabled()) {
-                if(renderContext.getRequest().getAttribute("previousTemplate")!=null) {
-                    logger.debug("Current previousTemplate object for rendering after script: "+((Template) renderContext.getRequest().getAttribute("previousTemplate")).serialize());
+                if(renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE)!=null) {
+                    logger.debug("Current previousTemplate object for rendering after script: {}",
+                            ((Template) renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE)).serialize());
                 } else {
                     logger.debug("previousTemplate object for rendering after script is null.");
-                }
-                if(renderContext.getRequest().getAttribute("usedTemplate")!=null) {
-                    logger.debug("Current usedTemplate object for rendering after script: "+((Template) renderContext.getRequest().getAttribute("usedTemplate")).serialize());
-                } else {
-                    logger.debug("usedTemplate object for rendering after script is null.");
                 }
             }
 

@@ -257,9 +257,17 @@
     </bean>
 
     <bean id="templateNodeFilter" class="org.jahia.services.render.filter.TemplateNodeFilter">
-        <property name="priority" value="22"/>
-        <property name="description"
-                  value=" Looks for all registered wrappers in the resource and calls the associated scripts around the output. Output is made available to the wrapper script through the 'wrappedContent' request attribute."/>
+        <property name="priority" value="22.0"/>
+        <property name="description" value="Looks for all registered wrappers in the resource and calls the associated scripts around the output. Output is made available to the wrapper script through the 'wrappedContent' request attribute."/>
+        <property name="skipOnAjaxRequest" value="true"/>
+        <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
+        <property name="applyOnTemplateTypes" value="html,html-.+"/>
+    </bean>
+
+    <bean id="templateAjaxFilter" class="org.jahia.services.render.filter.TemplateAjaxFilter">
+        <property name="priority" value="22.1"/>
+        <property name="description" value="Special handling for template/area resolution in ajax"/>
+        <property name="applyOnAjaxRequestOnly" value="true"/>
         <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
         <property name="applyOnTemplateTypes" value="html,html-.+"/>
     </bean>

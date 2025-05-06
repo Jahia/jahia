@@ -352,8 +352,6 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
 
         String resourceTemplate = (resource.getTemplate() != null && !resource.getTemplate().equals("default")) ?
                 resource.getTemplate() : "";
-        JCRNodeWrapper currentTemplateNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("currentTemplateNode");
-        String templateName = (currentTemplateNode != null) ? StringEscapeUtils.escapeHtml(currentTemplateNode.getDisplayableName()) : "";
 
         if (renderContext.isEditMode() && renderContext.getServletPath().endsWith("frame")) {
             boolean doParse = true;
@@ -376,7 +374,6 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
                         " path=\"" + resource.getNode().getPath() +
                         "\" locale=\"" + resource.getLocale() +
                         "\" template=\"" + resourceTemplate +
-                        "\" templateName=\"" + templateName +
                         "\" nodetypes=\"" + ConstraintsHelper.getConstraints(renderContext.getMainResource().getNode()) +
                         "\">");
                 if (doParse) {

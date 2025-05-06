@@ -46,6 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
+import org.jahia.services.render.filter.TemplateNodeFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
@@ -60,7 +61,7 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
-        final Template t = (Template) request.getAttribute("previousTemplate");
+        final Template t = (Template) request.getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
         return t != null ? t.serialize() : "";
     }
 
@@ -72,12 +73,12 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     @Override
     public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         HttpServletRequest request = renderContext.getRequest();
-        Object original = request.getAttribute("previousTemplate");
+        Object original = request.getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
         if (!StringUtils.isEmpty(value)) {
             Template template = new Template(value);
-            request.setAttribute("previousTemplate", template);
+            request.setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, template);
         } else {
-            request.removeAttribute("previousTemplate");
+            request.removeAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
         }
         return original;
     }
@@ -85,9 +86,9 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     @Override
     public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
         if (original != null) {
-            renderContext.getRequest().setAttribute("previousTemplate", original);
+            renderContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, original);
         } else {
-            renderContext.getRequest().removeAttribute("previousTemplate");
+            renderContext.getRequest().removeAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
         }
     }
 

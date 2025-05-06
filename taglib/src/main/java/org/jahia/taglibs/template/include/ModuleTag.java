@@ -56,6 +56,7 @@ import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.AggregateFilter;
 import org.jahia.services.render.filter.TemplateAttributesFilter;
+import org.jahia.services.render.filter.TemplateNodeFilter;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -511,7 +512,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected boolean canEdit(RenderContext renderContext) {
         return renderContext.isEditMode() && editable &&
                 !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper")) &&
-                renderContext.getRequest().getAttribute("inArea") == null;
+                renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA) == null;
     }
 
     protected void printModuleStart(String type, String path, String resolvedTemplate, Script script,

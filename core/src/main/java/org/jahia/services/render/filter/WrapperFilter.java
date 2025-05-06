@@ -81,7 +81,6 @@ public class WrapperFilter extends AbstractFilter {
     private String wrap(RenderContext renderContext, Resource resource, String output, JCRNodeWrapper node,
                         String wrapper) throws RepositoryException {
         try {
-//                renderContext.getRequest().setAttribute("wrappedResource", resource);
             Resource wrapperResource = new Resource(node, resource.getTemplateType(),
                     wrapper,
                     Resource.CONFIGURATION_WRAPPER);

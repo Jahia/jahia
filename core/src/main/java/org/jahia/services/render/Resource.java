@@ -67,6 +67,10 @@ import java.util.*;
 public class Resource {
 
     public static final String CONFIGURATION_PAGE = "page";
+    // gwt configuration is barely used anymore, but still used in some places
+    // - old hidden gwt trash dashboard
+    // - jExperience graphql personalization
+    // Seems to be used for reason: only mode that allows to get the assets and resolve lang/mode/workspace placeholders in links
     public static final String CONFIGURATION_GWT = "gwt";
     public static final String CONFIGURATION_MODULE = "module";
     public static final String CONFIGURATION_INCLUDE = "include";

@@ -73,12 +73,6 @@ RUN apt-get update \
         ${packages} \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "Retrieve latest Yourkit agent binaries..." \
-    && wget -nv -O yourkit.zip https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2023.9-docker.zip -P /tmp/ \
-    && unzip /tmp/yourkit.zip -d /usr/local \
-    && rm /tmp/yourkit.zip \
-    && mv /usr/local/YourKit-JavaProfiler* /usr/local/yourkit
-
 # Add container user and grant permissions
 RUN groupadd -g 999 ${C_GROUP}
 RUN useradd -r -u 999 -g ${C_GROUP} ${C_USER} -d /home/${C_USER} -m

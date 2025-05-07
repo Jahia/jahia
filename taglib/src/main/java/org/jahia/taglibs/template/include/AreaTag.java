@@ -212,7 +212,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
             printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString(), isReferencesAllowed(resource.getNode()));
             if (enableArea && areaNode != null) {
                 try {
-                    render(renderContext, new Resource(areaNode, resource.getTemplateType(), resource.getTemplate(), Resource.CONFIGURATION_WRAPPEDCONTENT));
+                    // if area content does not exist, we create it, and it can only happen in main resource resolved area content.
+                    // We reset the resolved template to null, so the area content will be created/resolved in the main resource node.
+                    setResolvedTemplate(null);
+                    render(renderContext, new Resource(areaNode, resource.getTemplateType(), resource.getTemplate(), getConfiguration()));
                 } catch (RenderException e) {
                     logger.error("error while rendering auto created node {}", areaNode.getPath(), e);
                 }

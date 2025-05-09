@@ -799,7 +799,7 @@ div[role="combobox"] {
 
 
 /* Global Form */
-form {
+form:not(.ck-form) {
     padding: 0 !important;
     width: auto !important;
 }

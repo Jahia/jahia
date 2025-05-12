@@ -445,9 +445,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
             JCRNodeWrapper node = lookupStackEntry.getKey();
             templateNodeMatch = lookupStackEntry.getValue();
             if (!path.equals("*") && node.hasNode(path) && !allPaths.contains(node.getPath() + "/" + path)) {
-                notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());
+                // Resolving the relative area path
                 this.node = node.getNode(path);
-                if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
+
+                notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());
+                if (isNodeParentToCurrentResource(currentResource)) {
+                    // not sure this check is really useful ... but it's here since 2010... keeping it for now
                     this.node = null;
                 } else {
                     // now let's check if the content node matches the areaType. If not it means we have a
@@ -479,6 +482,23 @@ public class AreaTag extends ModuleTag implements ParamParent {
         if (!found) {
             missingResource(renderContext, currentResource);
         }
+    }
+
+    private boolean isNodeParentToCurrentResource(Resource currentResource) throws RepositoryException {
+        if (this.node == null) {
+            // no resolved area node, no check possible
+            return false;
+        }
+
+        JCRNodeWrapper currentResourceParentNode = null;
+        try {
+            currentResourceParentNode = currentResource.getNode().getParent();
+        } catch (PathNotFoundException e) {
+            // In Node templating this cannot happen, currentResource is always a templateNode, and parent is available
+            // In JS templating this can happen, currentResource is a page, if parent is not published and we are in live
+            // ignore
+        }
+        return currentResourceParentNode != null && currentResourceParentNode.getPath().equals(this.node.getPath());
     }
 
     /**

@@ -100,6 +100,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class JahiaSearchIndex extends SearchIndex {
 
+    public static final String TRANSLATION = "translation";
+
     /**
      * Background job that performs re-indexing of the repository content for the specified workspaces.
      */
@@ -495,6 +497,15 @@ public class JahiaSearchIndex extends SearchIndex {
                         }
                         if (nodeParent != null) {
                             addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
+                            List<ChildNodeEntry> childNodeEntries = nodeParent.getChildNodeEntries();
+                            if (!childNodeEntries.isEmpty()){
+                                for (final ChildNodeEntry subNode : new ArrayList<>(childNodeEntries)){
+                                    NodeState subNodeState = (NodeState) itemStateManager.getItemState(subNode.getId());
+                                    if (subNodeState.getNodeTypeName().getLocalName().equals(TRANSLATION)){
+                                        addIdToBeIndexed(subNodeState.getNodeId(), addedIds, removedIds, addList, removeList);
+                                    }
+                                }
+                            }
                         }
                     }
                 } catch (ItemStateException e) {

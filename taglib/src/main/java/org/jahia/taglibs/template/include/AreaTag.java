@@ -60,6 +60,7 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -493,7 +494,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         JCRNodeWrapper currentResourceParentNode = null;
         try {
             currentResourceParentNode = currentResource.getNode().getParent();
-        } catch (PathNotFoundException e) {
+        } catch (PathNotFoundException | ItemNotFoundException e) {
             // In Node templating this cannot happen, currentResource is always a templateNode, and parent is available
             // In JS templating this can happen, currentResource is a page, if parent is not published and we are in live
             // ignore

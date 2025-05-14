@@ -138,6 +138,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     private static boolean aggregateCacheFilterDisabled;
     private static boolean areaResourceCacheKeyPartGeneratorDisabled;
 
+    private Map<String, CloseableHttpClient> httpClients = new HashMap<>();
+
     Random random = new SecureRandom();
     private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
     char[] simplePassword = SIMPLE_PASSWORD.toCharArray();
@@ -246,6 +248,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @Before
     public void setUp() {
         clearAll();
+        httpClients = new HashMap<>();
     }
 
     private void clearAll() {
@@ -317,7 +320,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         Map<String, String> m = new HashMap<>();
         for (SimpleCredentials userCredentials : users) {
             for (String path : paths) {
-                m.put(userCredentials.getUserID() + path, getContent(getUrl(path), userCredentials, null));
+                m.put(userCredentials.getUserID() + path, getContent(getUrl(path), userCredentials, null, true));
             }
         }
 
@@ -334,7 +337,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             for (SimpleCredentials userCredentials : users) {
                 for (String path : paths) {
                     logger.info("{} - {}", userCredentials.getUserID(), path);
-                    softly.assertThat(getContent(getUrl(path), userCredentials, null))
+                    softly.assertThat(getContent(getUrl(path), userCredentials, null, true))
                             .as("Different content for " + userCredentials.getUserID() + " , " + path + " when flushing : " + toFlush)
                             .isEqualTo(m.get(userCredentials.getUserID() + path));
                     checkCacheContent(cache, cacheCopy, toFlush, softly);
@@ -484,7 +487,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             clearAll();
 
             for (SimpleCredentials userCredentials : allPerm) {
-                results.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null));
+                results.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null, true));
             }
 
             List<String> allPermUserIds = allPerm.stream().map(SimpleCredentials::getUserID).collect(Collectors.toList());
@@ -512,7 +515,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             Map<String, String> results2 = new HashMap<>();
 
             for (SimpleCredentials userCredentials : users) {
-                results2.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null));
+                results2.put(userCredentials.getUserID(), getContent(getUrl(path), userCredentials, null, true));
             }
             checkAcl(userIds + ", guest : ", results2.get(null), new boolean[] { false, false, false, false, false, false, false, false });
             checkAcl(userIds + ", " + JahiaTestCase.getRootUserCredentials().getUserID() + " : ",
@@ -532,7 +535,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
         for (SimpleCredentials userCredentials : users) {
             assertEquals("Content served is not the same for " + userCredentials.getUserID(),
-                    results.get(userCredentials.getUserID()), getContent(getUrl(path), userCredentials, null));
+                    results.get(userCredentials.getUserID()), getContent(getUrl(path), userCredentials, null, true));
         }
     }
 
@@ -570,8 +573,22 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     public String getContent(URL url, SimpleCredentials credentials, String requestId) throws IOException {
+        return getContent(url, credentials, requestId, false);
+    }
+
+    public String getContent(URL url, SimpleCredentials credentials, String requestId, boolean requiredCookieSupport) throws IOException {
+        CloseableHttpClient client = null;
+        if (requiredCookieSupport && credentials != null && credentials.getUserID() != null) {
+            if (httpClients.containsKey(credentials.getUserID())) {
+                logger.info("reusing http client for user {}", credentials.getUserID());
+                client = httpClients.get(credentials.getUserID());
+            } else {
+                client = HttpClients.custom().setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.MAX_VALUE)).build();
+                httpClients.put(credentials.getUserID(), client);
+            }
+        }
         String content;
-        try (CloseableHttpResponse response = executeCall(url, credentials, requestId)) {
+        try (CloseableHttpResponse response = executeCall(url, credentials, requestId, client)) {
             assertEquals("Bad result code", HttpServletResponse.SC_OK, response.getCode());
             content = EntityUtils.toString(response.getEntity());
         } catch (ParseException e) {
@@ -581,8 +598,13 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     public CloseableHttpResponse executeCall(URL url, SimpleCredentials credentials, String requestId) throws IOException {
-        CloseableHttpClient client = HttpClients.custom().setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.MAX_VALUE)).build();
+        return executeCall(url, credentials, requestId, null);
+    }
 
+    public CloseableHttpResponse executeCall(URL url, SimpleCredentials credentials, String requestId, CloseableHttpClient client) throws IOException {
+        if (client == null) {
+            client = HttpClients.custom().setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.MAX_VALUE)).build();
+        }
         HttpGet method = new HttpGet(url.toExternalForm());
         if (credentials != null && credentials.getUserID() != null) {
             method.addHeader("Authorization", "Basic " + Base64.encode((credentials.getUserID() + ":" + String.valueOf(credentials.getPassword())).getBytes()));

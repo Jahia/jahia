@@ -44,6 +44,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaVersionManagerImpl;
+import org.apache.jackrabbit.core.WorkspaceImpl;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
@@ -176,7 +177,9 @@ public class JCRWorkspaceWrapper implements Workspace {
             } catch (RepositoryException e) {
             }
             if (sessionMove) {
-                getSession().getNode(source).copy(StringUtils.substringBeforeLast(dest,"/"),StringUtils.substringAfterLast(dest,"/"));
+                JCRNodeWrapper sourceNode = session.getNode(source);
+                sourceNode.copy(StringUtils.substringBeforeLast(dest,"/"),StringUtils.substringAfterLast(dest,"/"));
+
                 session.getItem(source).remove();
             } else {
                 throw new UnsupportedRepositoryOperationException();

@@ -2235,6 +2235,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         boolean sameProvider = (provider.getKey().equals(node.getProvider().getKey()));
         if (!sameProvider) {
             copy(node, name, true, namingConflictResolutionStrategy);
+            rewireWeakreferences(node.getNode(name));
             node.save();
         } else {
             copy(node, name, true, namingConflictResolutionStrategy);
@@ -4080,6 +4081,31 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             // recurse into children
             unmarkNodesForDeletion(child);
+        }
+    }
+
+    private void rewireWeakreferences(JCRNodeWrapper dest) throws RepositoryException {
+        PropertyIterator weakrefs = getWeakReferences();
+
+        while(weakrefs.hasNext()) {
+            Property prop = weakrefs.nextProperty();
+            Node parent = ((JCRPropertyWrapperImpl) prop).getRealProperty().getParent();
+
+            if(prop.isMultiple()) {
+                Value[] values = prop.getValues();
+                String[] ids = new String[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    if (getIdentifier().equals(values[i].getString())) {
+                        ids[i] = dest.getIdentifier();
+                    } else {
+                        ids[i] = values[i].getString();
+                    }
+                }
+
+                parent.setProperty(prop.getName(), ids, prop.getType());
+            } else {
+                parent.setProperty(prop.getName(), dest.getIdentifier(), prop.getType());
+            }
         }
     }
 }

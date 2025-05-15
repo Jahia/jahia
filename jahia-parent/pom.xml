@@ -49,7 +49,7 @@
     <artifactId>jahia-parent</artifactId>
     <name>Jahia Common Project Parent</name>
     <groupId>org.jahia</groupId>
-    <version>8.1.8.3</version>
+    <version>8.1.8.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <organization>

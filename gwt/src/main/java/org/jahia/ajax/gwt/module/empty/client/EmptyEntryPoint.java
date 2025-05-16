@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.EmptyLinker;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
@@ -72,11 +73,13 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.JavaScripObjectWrapper;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.poller.ContentUnpublishedEvent;
 import org.jahia.ajax.gwt.client.widget.poller.EventDispatcherPollListener;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 
 import java.util.ArrayList;
@@ -135,6 +138,27 @@ public class EmptyEntryPoint extends CommonEntryPoint {
 
     public Linker getLinker() {
         return linker;
+    }
+
+    public static void showPublicationManager(String uuid, String path, String displayName, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes, String siteKey, JsArrayString publicationNodeTypes, JsArray<JavaScriptObject> siteLanguages ) {
+
+        GWTJahiaNode node = MainModule.getGwtJahiaNode(uuid, path, displayName, nodeTypes, inheritedNodeTypes);
+        node.setSiteKey(siteKey);
+
+        Linker editLinker = getInstance().getLinker();
+        LinkerSelectionContext selectionContext = editLinker.getSelectionContext();
+        selectionContext.setMainNode(node);
+
+        List<GWTJahiaLanguage> languages = new ArrayList<>();
+
+        for (int i = 0; i < siteLanguages.length(); i++) {
+            JavaScripObjectWrapper l = new JavaScripObjectWrapper(siteLanguages.get(i));
+            GWTJahiaLanguage gwtL = new GWTJahiaLanguage(l.getString("language"), l.getString("displayName"));
+            gwtL.setActive(l.getBoolean("activeInEdit"));
+            languages.add(gwtL);
+        }
+
+        new PublicationManagerEngine(editLinker, languages, MainModule.convertArray(publicationNodeTypes)).show();
     }
 
     private native void exposeFunctions() /*-{
@@ -198,6 +222,10 @@ public class EmptyEntryPoint extends CommonEntryPoint {
         }
         $wnd.jahia.alert = function (title, message) {
             @org.jahia.ajax.gwt.module.empty.client.EmptyEntryPoint::alert(Ljava/lang/String;Ljava/lang/String;)(title, message);
+        };
+
+        nsAuthoringApi.showPublicationManager = function (path, uuid, displayName, types, inheritedTypes, siteKey, publicationNodeTypes, siteLanguages) {
+            return @org.jahia.ajax.gwt.module.empty.client.EmptyEntryPoint::showPublicationManager(*)(path, uuid, displayName, types, inheritedTypes, siteKey, publicationNodeTypes, siteLanguages);
         };
     }-*/;
 

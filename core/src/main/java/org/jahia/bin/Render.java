@@ -48,8 +48,6 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
-import org.apache.hc.core5.http.io.entity.PathEntity;
 import org.apache.jackrabbit.spi.commons.conversion.NameException;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -70,8 +68,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
+import org.jahia.utils.LimiterExecutor;
 import org.jahia.utils.Url;
-import org.jahia.utils.i18n.Messages;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -190,6 +188,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     private static final String PARAM_IS_WEBFLOW_REQUEST = Render.class.getName() + ".isWebflowRequest";
+    private static final long XSS_FILTER_DEPRECATED_LOG_INTERVAL = 24 * 60 * 60 * 1000L;
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Render.class);
 
@@ -433,12 +432,17 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return parameters;
     }
 
+    @Deprecated(since = "8.2.2.0", forRemoval = true)
     private String xssFilter(String stringValue) {
-
         // fail fast if we find no start or end of a tag
         if (!stringValue.contains("<") && !stringValue.contains(">")) {
             return stringValue;
         }
+
+        LimiterExecutor.executeOncePerInterval("xssFilterDeprecate", XSS_FILTER_DEPRECATED_LOG_INTERVAL,
+                () -> logger.warn("Automatic XSS Filter sanitizer on Jahia actions request parameters is deprecated, " +
+                        "and will be removed in future Jahia release, please use the html-filtering module instead " +
+                        "and refer to its documentation for configuration."));
 
         // fix for https://jira.jahia.org/browse/QA-4337, attack with unclosed tags. These regexp will encode unclosed tags.
         stringValue = TAG_MISSING_END_BIGGERTHAN_PATTERN.matcher(stringValue).replaceAll("&lt;$1");

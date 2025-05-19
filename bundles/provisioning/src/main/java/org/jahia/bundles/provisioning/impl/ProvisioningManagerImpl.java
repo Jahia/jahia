@@ -54,6 +54,7 @@ import org.jahia.services.provisioning.Operation;
 import org.jahia.services.provisioning.ProvisioningManager;
 import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.LimiterExecutor;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Service to provision bundles/features/configs/content with script
@@ -76,9 +76,7 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
     private ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
     private ObjectMapper jsonMapper = new ObjectMapper();
 
-    // Map to store the last logged timestamp for each key
-    private static final Map<String, Long> lastDeprecatedOpLogged = new ConcurrentHashMap<>();
-    private static final long DEPRECATED_OP_LOG_INTERVAL = 5 * 60 * 60 * 1000L; //
+    private static final long DEPRECATED_OP_LOG_INTERVAL = 5 * 60 * 60 * 1000L;
 
     private PermissionService permissionService;
 
@@ -183,20 +181,15 @@ public class ProvisioningManagerImpl implements ProvisioningManager {
             String key = deprecatedKey.get().getKey();
             String alternative = deprecatedKey.get().getValue();
 
-            // Check if we need to log the message according to the interval
-            long currentTime = System.currentTimeMillis();
-            lastDeprecatedOpLogged.compute(key, (k, lastLoggedTime) -> {
-                if (lastLoggedTime == null || (currentTime - lastLoggedTime) > DEPRECATED_OP_LOG_INTERVAL) {
-                    if (alternative != null) {
-                        logger.warn("The provisioning operation '{}' is deprecated and may be removed in future releases. " +
-                                "Please use '{}' instead.", key, alternative);
-                    } else {
-                        logger.warn("The provisioning operation '{}' is deprecated and may be removed in future releases. " +
-                                "No direct alternative is available. Please refer to the documentation for guidance.", key);
-                    }
-                    return currentTime; // Update the last logged time
+            // log the deprecation warning only once every 5 hours
+            LimiterExecutor.executeOncePerInterval(key, DEPRECATED_OP_LOG_INTERVAL, () -> {
+                if (alternative != null) {
+                    logger.warn("The provisioning operation '{}' is deprecated and may be removed in future releases. " +
+                            "Please use '{}' instead.", key, alternative);
+                } else {
+                    logger.warn("The provisioning operation '{}' is deprecated and may be removed in future releases. " +
+                            "No direct alternative is available. Please refer to the documentation for guidance.", key);
                 }
-                return lastLoggedTime; // Keep the same last logged time if within interval
             });
         }
     }

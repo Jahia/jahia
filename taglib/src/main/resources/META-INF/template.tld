@@ -547,7 +547,13 @@
         <tag-class>org.jahia.taglibs.template.TokenizedFormTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Disable XSS filtering (since Jahia 6.6.1.7). [false]</description>
+            <description>
+                Deprecated: Disable XSS filtering (since Jahia 6.6.1.7). [false]
+                This attribute is deprecate and may be removed in future versions.
+                Automatic XSS filtering on jahia actions is deprecated.
+                A new module "html-filtering" to provide XSS protection on content creation/edition.
+                Refer to the documentation for more information.
+            </description>
             <name>disableXSSFiltering</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

@@ -69,10 +69,14 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.SitesSettings;
 
 /**
- * Filters out unwanted HTML elements from the rich text property values before saving.
- *
  * @author Sergiy Shyrkov
+ * @deprecated a new module "html-filtering" is available in Jahia to provide XSS protection,
+ * this implementation was related to site property: htmlMarkupFilteringEnabled
+ * to re-enable this implementation, you need to programmatically call: setConsiderSiteSettingsForFiltering.
+ * But beware that this interceptor is deprecated and will be removed in future releases.
+ * (Please use the new module "html-filtering" instead, and refer to its documentation for configuration)
  */
+@Deprecated(since = "8.2.0.0", forRemoval = true)
 public class HtmlFilteringInterceptor extends BaseInterceptor {
 
     private static Logger logger = LoggerFactory.getLogger(HtmlFilteringInterceptor.class);

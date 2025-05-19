@@ -55,6 +55,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.URLFilter;
@@ -452,6 +453,7 @@ public class URLFilterTest extends JahiaTestCase {
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
+        assertEquals("Site key not resolved", TESTSITE_NAME, urlResolver.getSiteKey());
 
         try {
             urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage2"));
@@ -465,6 +467,7 @@ public class URLFilterTest extends JahiaTestCase {
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
+        assertEquals("Site key not resolved", TESTSITE_NAME, urlResolver.getSiteKey());
 
 
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french2", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french2"));
@@ -487,12 +490,23 @@ public class URLFilterTest extends JahiaTestCase {
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "fr".equals(resolvedNode.getLanguage()));
+        assertEquals("Site key not resolved", TESTSITE_NAME, urlResolver.getSiteKey());
 
         urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french", site.getServerName(), (HttpServletRequest) new MockHttpServletRequest("GET","/render/live/testpage/french"));
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "fr".equals(resolvedNode.getLanguage()));
+        assertEquals("Site key not resolved", TESTSITE_NAME, urlResolver.getSiteKey());
+
+        // Ensure that siteKey is resolved even if site doesn't have serverName configured/resolvable
+        // As soon as a vanity is matching, the siteKey of the matching vanity URL should be used
+        ((JCRSiteNode)session.getNode("/sites/test")).setServerName(null);
+        session.save();
+        urlResolver = getUrlResolverFactory().createURLResolver("/render/live/test4page/french", site.getServerName(),
+                new MockHttpServletRequest("GET","/render/live/testpage/french"));
+        assertEquals("vanityUrl not resolved", "/test4page/french", urlResolver.getVanityUrl());
+        assertEquals("Site key not resolved", TESTSITE_NAME, urlResolver.getSiteKey());
     }
 
     private VanityUrlService getVanityUrlService() {

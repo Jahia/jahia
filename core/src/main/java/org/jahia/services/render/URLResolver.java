@@ -366,6 +366,10 @@ public class URLResolver {
                             .getPath(), VANITY_URL_NODE_PATH_SEGMENT);
                     path = nodePath + ".html";
                     setVanityUrl(resolvedVanityUrl.getUrl());
+                    // If siteKey was not resolved so far, we can fairly consider it is now, we have a matching vanity URL
+                    if (getSiteKey() == null) {
+                        setSiteKey(resolvedVanityUrl.getSite());
+                    }
                     if (SettingsBean.getInstance()
                             .isPermanentMoveForVanityURL()
                             && !resolvedVanityUrl.isDefaultMapping()) {

@@ -179,7 +179,8 @@ public class JCRWorkspaceWrapper implements Workspace {
             if (sessionMove) {
                 JCRNodeWrapper sourceNode = session.getNode(source);
                 sourceNode.copy(StringUtils.substringBeforeLast(dest,"/"),StringUtils.substringAfterLast(dest,"/"));
-
+                // When a referenced file is moved into an external provider the referencing node needs to rewire that reference
+                rewireWeakreferences(sourceNode, session.getNode(dest));
                 session.getItem(source).remove();
             } else {
                 throw new UnsupportedRepositoryOperationException();
@@ -583,6 +584,31 @@ public class JCRWorkspaceWrapper implements Workspace {
             });
         }
 
+    }
+
+    private void rewireWeakreferences(JCRNodeWrapper source, JCRNodeWrapper dest) throws RepositoryException {
+        PropertyIterator weakrefs = source.getWeakReferences();
+
+        while(weakrefs.hasNext()) {
+            Property prop = weakrefs.nextProperty();
+            Node parent = ((JCRPropertyWrapperImpl) prop).getRealProperty().getParent();
+
+            if(prop.isMultiple()) {
+                Value[] values = prop.getValues();
+                String[] ids = new String[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    if (source.getIdentifier().equals(values[i].getString())) {
+                        ids[i] = dest.getIdentifier();
+                    } else {
+                        ids[i] = values[i].getString();
+                    }
+                }
+
+                parent.setProperty(prop.getName(), ids, prop.getType());
+            } else {
+                parent.setProperty(prop.getName(), dest.getIdentifier(), prop.getType());
+            }
+        }
     }
 
     class LockManagerWrapper implements LockManager {

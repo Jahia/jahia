@@ -3,7 +3,7 @@
 <mix='http://www.jcp.org/jcr/mix/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[test:emptyNodeType] > nt:base 
+[test:emptyNodeType] > nt:base
 
 [test:mixinNodeType]
   mixin
@@ -18,7 +18,7 @@
 - test:mandatoryItem (string) mandatory
 - test:copyItem (string) copy
 - test:versionItem (string) version
-- test:initializeItem (string) initialize 
+- test:initializeItem (string) initialize
 - test:computeItem (string) compute
 - test:abortItem (string) abort
 - test:protectedItem (string) protected
@@ -26,7 +26,7 @@
 [test:propertyNodeType] > nt:base
 - test:emptyProperty (string)
 - test:binaryProperty (binary) < '[0,)'
-- test:booleanProperty (boolean) = true < true, false 
+- test:booleanProperty (boolean) = true < true, false
 - test:dateProperty (date) = '2005-01-01T00:00:00.000Z' < '[2005-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z)'
 - test:doubleProperty (double) = '1.5' nofulltext queryops '=,<>,>,>=,<,<=' < '[,0.0)', '(1.0,2.0)', '(3.0,]'
 - test:longProperty (long) = 25 nofulltext < '(-10,0]', '[1,2]', '[10,100)'
@@ -106,7 +106,7 @@
 [test:setProperty] > nt:base, mix:referenceable
 - * (undefined) copy
 - test:multiProperty (undefined) copy multiple
-+ * (nt:base) = test:setProperty copy 
++ * (nt:base) = test:setProperty copy
 
 [test:setPropertyAssumingType] > nt:base
 - test:singleProperty (undefined) copy
@@ -118,7 +118,7 @@
 + * (nt:base) = test:sameNameSibsFalseChildNodeDefinition compute
 
 [test:externalReference] > nt:base, jmix:droppableContent
-- test:simpleNode (reference)     
+- test:simpleNode (reference)
 - test:multipleI18NNode (reference) multiple i18n
 
 [test:externalWeakReference] > nt:base, jmix:droppableContent
@@ -152,7 +152,7 @@
  - propertyCurrentUser (string) = currentUser() autocreated
  - propertyResourceBundleShared (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.1') autocreated
  - propertyResourceBundleI18n (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.2') autocreated i18n
- 
+
 
 [test:dynamicValuesTestMixin] mixin
  - propertyTextNotAutoCreatedMixin (string) = 'Text plain'
@@ -178,3 +178,6 @@
 - nofulltextSmallText (string) nofulltext
 - scoreboostedSmallText (string) scoreboost=5
 - sortableFloat (double) sortable
+
+[test:weakrefContent] > jnt:content, jmix:droppableContent
+- file (weakreference) mandatory

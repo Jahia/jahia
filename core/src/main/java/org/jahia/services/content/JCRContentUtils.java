@@ -112,7 +112,6 @@ public final class JCRContentUtils implements ServletContextAware {
     private static final String PREFIX = Jahia.getContextPath() + "/modules/";
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
 
-    private static Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512, 0.8f, 32);
     private static volatile JCRContentUtils instance;
 
     private final Map<String, String> fileExtensionIcons;
@@ -173,14 +172,7 @@ public final class JCRContentUtils implements ServletContextAware {
         String moduleId = StringUtils.substringBefore(icon, "/");
         String pathAfter = StringUtils.substringAfter(icon, "/");
         JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId);
-        icon = module.getId() + "/" + module.getVersion() + "/" + pathAfter;
-
-        Boolean present = iconsPresence.get(icon);
-        if (present == null) {
-            present = module.resourceExists(pathAfter + ".png");
-            iconsPresence.put(icon, present);
-        }
-        return present;
+        return module != null && module.checkNodeTypeIconPresence(pathAfter);
     }
 
     /**

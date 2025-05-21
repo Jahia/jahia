@@ -66,6 +66,7 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import pl.touk.throwing.ThrowingFunction;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,145 +82,69 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JahiaTemplatesPackage {
 
-    /**
-     * The ID of the default module.
-     */
+    public static final String RESOURCE_BASE_PATH = "src/main/resources/";
     public static final String ID_DEFAULT = "default";
-
-    /**
-     * The name of the default module.
-     */
     public static final String NAME_DEFAULT = "Default Jahia Templates";
-
     private static final Resource[] NO_RESOURCES = new Resource[0];
-
     private static final String GIT_URI_END = ".git";
-
-    private static URL NULL_URL;
-
+    private static URL nullUrl;
     static {
         try {
-            NULL_URL = new URL("http://");
+            nullUrl = new URL("http://");
         } catch (MalformedURLException e) {
             //
         }
     }
 
-    private Bundle bundle = null;
-
-    private String bundleKey;
-
-    private ModuleState state;
-
-    private ClassLoader classLoader;
-
-    private ClassLoader chainedClassLoader;
-
-    /**
-     * the full path to the source file or directory
-     */
-    private String m_FilePath;
-
-    /**
-     * Name of the package
-     */
-    private String m_Name;
-
-    private ModuleVersion version;
-
-    /**
-     * Name of the dependent package
-     */
-    private List<String> depends = new LinkedList<>();
-
-    /**
-     * Name of the dependent package with version
-     */
-    private List<JahiaDepends> versionDepends = new LinkedList<>();
-
-    /**
-     * The module id (= artifactId)
-     */
     private String id;
-
-    private String groupId;
-
-    /**
-     * The initial import file
-     */
-    private List<String> initialImports = new LinkedList<String>();
-
-    /**
-     * The Package Provider Name
-     */
-    private String m_Provider;
-
-    /**
-     * The Package thumbnail image file Name entry
-     */
-    private String m_Thumbnail;
-
+    private String name;
     private String description;
-
-    private LinkedHashMap<String, JahiaTemplatesPackage> dependencies;
-
-    private int modulePriority = 0;
-
-    private String moduleType;
-
-    private String rootFolderPath;
-
+    private String thumbnail;
+    private String groupId;
+    private String providerName;
     private String resourceBundleName;
-
-    private List<String> definitionsFile = new LinkedList<String>();
-
-    private List<String> rulesFiles = new LinkedList<String>();
-
-    /**
-     * Contains names of the resource bundles for template sets starting from this one, then the direct parent and so on.
-     */
-    private List<String> resourceBundleHierarchy = new LinkedList<String>();
-
-    private List<String> rulesDescriptorFiles = new LinkedList<String>();
-
-    private Map<String,URL> resourcesCache = new ConcurrentHashMap<String, URL>();
-
-    private long buildNumber;
-
+    private String moduleType;
     private String autoDeployOnSite;
-
-    private AbstractApplicationContext context;
-
+    private long buildNumber;
     private String scmURI;
-
     private String scmTag;
-
-    private File sourcesFolder;
-
-    private SourceControlManagement sourceControl;
-
+    private int modulePriority = 0;
+    private final Bundle bundle;
+    private String bundleKey;
+    private ModuleVersion version;
     private boolean isActiveVersion = false;
-
     private boolean isLastVersion = false;
-
+    private ModuleState state;
     private boolean serviceInitialized;
-
+    private ClassLoader classLoader;
+    private ClassLoader chainedClassLoader;
+    private AbstractApplicationContext context;
+    private String filePath;
+    private String rootFolderPath;
     private boolean sourcesDownloadable;
-
+    private File sourcesFolder;
+    private SourceControlManagement sourceControl;
     private String forgeUrl;
-
     private boolean editModeBlocked;
 
-    /**
-     * List of callbacks to execute when spring context is set
-     */
+
+    private final List<String> depends = new LinkedList<>();
+    private final List<JahiaDepends> versionDepends = new LinkedList<>();
+    private LinkedHashMap<String, JahiaTemplatesPackage> dependencies;
+    private final List<String> initialImports = new LinkedList<>();
+    private final List<String> definitionsFile = new LinkedList<>();
+    private final List<String> rulesFiles = new LinkedList<>();
+    private final List<String> rulesDescriptorFiles = new LinkedList<>();
+    private final List<String> resourceBundleHierarchy = new LinkedList<>();
+    private final Map<String,URL> resourcesCache = new ConcurrentHashMap<>();
+    private final Map<String, Boolean> nodeTypeIconsPresence = new ConcurrentHashMap<>();
     private final List<ContextInitializedCallback> contextInitializedCallbacks = new ArrayList<>();
+
 
     /**
      * Initializes an instance of this class.
      *
-     * @param bundle
-     *            the backing OSGi bundle for this module
+     * @param bundle the backing OSGi bundle for this module
      */
     public JahiaTemplatesPackage(Bundle bundle) {
         this.bundle = bundle;
@@ -260,8 +185,7 @@ public class JahiaTemplatesPackage {
      * @return (String) the name of the template
      */
     public String getName() {
-
-        return m_Name;
+        return name;
     }
 
     /**
@@ -270,8 +194,7 @@ public class JahiaTemplatesPackage {
      * @param name the name of the template
      */
     public void setName(String name) {
-
-        m_Name = name;
+        this.name = name;
     }
 
     /**
@@ -280,14 +203,13 @@ public class JahiaTemplatesPackage {
      * @return (String) the module Id
      * @deprecated use {@link #getId()} instead
      */
+    @Deprecated(since = "6.7.0.0", forRemoval = true)
     public String getRootFolder() {
         return getId();
     }
 
     /**
-     * Return the module Id.
-     *
-     * @return (String) the module Id
+     * @return (String) the module Id (= artifactId)
      */
     public String getId() {
         return id;
@@ -299,6 +221,7 @@ public class JahiaTemplatesPackage {
      * @return the module Id concatenated with it version
      * @deprecated use {@link #getIdWithVersion()} instead
      */
+    @Deprecated(since = "6.7.0.0", forRemoval = true)
     public String getRootFolderWithVersion() {
         return getIdWithVersion();
     }
@@ -318,12 +241,13 @@ public class JahiaTemplatesPackage {
      * @param moduleId the module Id
      * @deprecated use {@link #setId(String)} instead
      */
+    @Deprecated(since = "6.7.0.0", forRemoval = true)
     public void setRootFolder(String moduleId) {
         setId(moduleId);
     }
 
     /**
-     * Set the module Id.
+     * Set the module Id. (= artifactId)
      *
      * @param moduleId the module Id
      */
@@ -354,8 +278,7 @@ public class JahiaTemplatesPackage {
      * @return (String) the name of the Provider
      */
     public String getProvider() {
-
-        return m_Provider;
+        return providerName;
     }
 
     /**
@@ -364,8 +287,7 @@ public class JahiaTemplatesPackage {
      * @param provider the name of the Provider
      */
     public void setProvider(String provider) {
-
-        m_Provider = provider;
+        providerName = provider;
     }
 
     /**
@@ -374,8 +296,7 @@ public class JahiaTemplatesPackage {
      * @return (String) the thumbnail file name
      */
     public String getThumbnail() {
-
-        return m_Thumbnail;
+        return thumbnail;
     }
 
     /**
@@ -384,22 +305,21 @@ public class JahiaTemplatesPackage {
      * @param val the file name
      */
     public void setThumbnail(String val) {
-
-        m_Thumbnail = val;
+        thumbnail = val;
     }
 
     /**
-     * Get the file path.
+     * Get the file path. (the full path to the source file or directory)
      */
     public String getFilePath() {
-        return this.m_FilePath;
+        return this.filePath;
     }
 
     /**
-     * Set the file path.
+     * Set the file path. (the full path to the source file or directory)
      */
     public void setFilePath(String path) {
-        this.m_FilePath = path;
+        this.filePath = path;
     }
 
     /**
@@ -411,45 +331,49 @@ public class JahiaTemplatesPackage {
         return getId() != null && ID_DEFAULT.equals(getId());
     }
 
+    /**
+     * @return the initial import files
+     */
     public List<String> getInitialImports() {
         return initialImports;
     }
 
+    /**
+     * Add initial import file
+     *
+     * @param initImport the initial import file
+     */
     public void addInitialImport(String initImport) {
         initialImports.add(initImport);
     }
 
     /**
-     * Returns the name of the parent template package.
-     *
-     * @return the name of the parent template package
+     * @return the name of the dependent packages.
      */
     public List<String> getDepends() {
         return depends;
     }
 
     /**
-     * Returns the name of the parent template package.
-     *
-     * @return the name of the parent template package
+     * @return the name of the dependent packages with version
      */
     public List<JahiaDepends> getVersionDepends() {
         return versionDepends;
     }
 
     /**
-     * Sets the name of the parent template package.
+     * Add package name to the list of dependent packages.
      *
-     * @param dep name of the parent template package
+     * @param dep the name of the dependent package
      */
     public void setDepends(String dep) {
         depends.add(dep);
     }
 
     /**
-     * Sets the name of the parent template package with version restriction
+     * Add package name + version to the list of dependent packages.
      *
-     * @param dep name of the parent template package
+     * @param dep the name + version of the dependent package
      */
     public void setVersionDepends(JahiaDepends dep) {
         versionDepends.add(dep);
@@ -572,15 +496,8 @@ public class JahiaTemplatesPackage {
         }
 
         JahiaTemplatesPackage that = (JahiaTemplatesPackage) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) {
-            return false;
-        }
-        if (version != null ? !version.equals(that.version) : that.version != null) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(version, that.version);
     }
 
     @Override
@@ -905,7 +822,7 @@ public class JahiaTemplatesPackage {
         }
         if (getSourcesFolder() != null && getSourcesFolder().exists()) {
             try {
-                File file = new File(getSourcesFolder(), "src/main/resources/" + relativePath);
+                File file = new File(getSourcesFolder(), RESOURCE_BASE_PATH + relativePath);
                 if (file.exists()) {
                     return new UrlResource(file.toURI());
                 }
@@ -932,11 +849,11 @@ public class JahiaTemplatesPackage {
         if (relativePath == null) {
             return false;
         }
-        if (getSourcesFolder() != null && getSourcesFolder().exists()) {
-            if ((new File(getSourcesFolder(), "src/main/resources/" + relativePath)).exists()) {
-                return true;
-            }
+        if (getSourcesFolder() != null && getSourcesFolder().exists() &&
+                (new File(getSourcesFolder(), RESOURCE_BASE_PATH + relativePath)).exists()) {
+            return true;
         }
+
         return getResourceFromCache(relativePath) != null;
     }
 
@@ -944,9 +861,9 @@ public class JahiaTemplatesPackage {
         URL url = resourcesCache.get(relativePath);
         if (url == null) {
             url = bundle.getEntry(relativePath);
-            resourcesCache.put(relativePath, url != null ? url : NULL_URL);
+            resourcesCache.put(relativePath, url != null ? url : nullUrl);
         }
-        return url != NULL_URL ? url : null;
+        return url != nullUrl ? url : null;
     }
 
     /**
@@ -958,34 +875,31 @@ public class JahiaTemplatesPackage {
      * @see Bundle#findEntries(String, String, boolean)
      */
     public Resource[] getResources(String relativePath) {
-        List<Resource> resources = null;
-        File sourceLocation = getSourcesFolder() != null ? new File(getSourcesFolder(), "src/main/resources/"
-                + relativePath) : null;
+        File sourceLocation = getSourcesFolder() != null ?
+                new File(getSourcesFolder(), RESOURCE_BASE_PATH + relativePath) : null;
+
         if (sourceLocation != null && sourceLocation.exists()) {
+            // Load resources from the sources
             File[] files = sourceLocation.listFiles();
             if (files == null || files.length == 0) {
                 return NO_RESOURCES;
             }
-            resources = new ArrayList<Resource>();
-            for (File file : files) {
-                try {
-                    resources.add(new UrlResource(file.toURI()));
-                } catch (MalformedURLException e) {
-                    // file.toURI cannot return malformed URL
-                }
-            }
+
+            return Arrays.stream(files)
+                    .map(ThrowingFunction.unchecked(file -> new UrlResource(file.toURI())))
+                    .toArray(Resource[]::new);
         } else {
+            // Load resources from the bundle
             Enumeration<URL> resourceEnum = bundle.findEntries(relativePath, null, false);
             if (resourceEnum == null) {
                 return NO_RESOURCES;
-            } else {
-                resources = new ArrayList<Resource>();
-                while (resourceEnum.hasMoreElements()) {
-                    resources.add(new BundleResource(resourceEnum.nextElement(), bundle));
-                }
             }
+
+            return Collections.list(resourceEnum)
+                    .stream()
+                    .map(url -> new BundleResource(url, bundle))
+                    .toArray(Resource[]::new);
         }
-        return resources != null ? resources.toArray(new Resource[resources.size()]) : NO_RESOURCES;
     }
 
     /**
@@ -1029,11 +943,11 @@ public class JahiaTemplatesPackage {
             return chainedClassLoader;
         }
 
-        final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
+        final List<ClassLoader> classLoaders = new ArrayList<>();
         classLoaders.add(Jahia.class.getClassLoader());
-        final ClassLoader classLoader = getClassLoader();
-        if (classLoader != null) {
-            classLoaders.add(classLoader);
+        final ClassLoader cl = getClassLoader();
+        if (cl != null) {
+            classLoaders.add(cl);
         }
         for (JahiaTemplatesPackage dependentPack : getDependencies()) {
             if (dependentPack != null && dependentPack.getClassLoader() != null) {
@@ -1057,7 +971,7 @@ public class JahiaTemplatesPackage {
             @Override
             public Enumeration<URL> getResources(String name) throws IOException {
 
-                final List<Enumeration<URL>> urlsEnums = new ArrayList<Enumeration<URL>>();
+                final List<Enumeration<URL>> urlsEnums = new ArrayList<>();
                 for (ClassLoader loader : classLoaders) {
                     Enumeration<URL> urls = loader.getResources(name);
                     if (urls != null && urls.hasMoreElements()) {
@@ -1066,11 +980,11 @@ public class JahiaTemplatesPackage {
                     }
                 }
 
-                if (urlsEnums.size() == 0) {
+                if (urlsEnums.isEmpty()) {
                     return java.util.Collections.emptyEnumeration();
                 }
 
-                return new Enumeration<URL>() {
+                return new Enumeration<>() {
 
                     int i=0;
                     Enumeration<URL> currentEnum = urlsEnums.get(i);
@@ -1111,9 +1025,9 @@ public class JahiaTemplatesPackage {
 
             @Override
             protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                for (ClassLoader classLoader : classLoaders) {
+                for (ClassLoader cl : classLoaders) {
                     try {
-                        Class<?> clazz = classLoader.loadClass(name);
+                        Class<?> clazz = cl.loadClass(name);
                         if (resolve) {
                             resolveClass(clazz);
                         }
@@ -1271,12 +1185,22 @@ public class JahiaTemplatesPackage {
 
             List<BundleWire> providedWires = bundleWiring.getProvidedWires(null);
             for (BundleWire wire : providedWires) {
-                Bundle bundle = wire.getRequirer().getBundle();
-                if (BundleUtils.isJahiaModuleBundle(bundle)) {
-                    deps.add(BundleUtils.getModule(bundle));
+                Bundle requiredBundle = wire.getRequirer().getBundle();
+                if (BundleUtils.isJahiaModuleBundle(requiredBundle)) {
+                    deps.add(BundleUtils.getModule(requiredBundle));
                 }
             }
         }
         return deps;
+    }
+
+    /**
+     * Checks if the node type icon is present in the module.
+     * @param iconResourcePath the path to the icon resource
+     * @return <code>true</code> if the icon is present; <code>false</code> otherwise
+     */
+    public boolean checkNodeTypeIconPresence(String iconResourcePath) {
+        return nodeTypeIconsPresence.computeIfAbsent(iconResourcePath,
+                k -> resourceExists(iconResourcePath + ".png"));
     }
 }

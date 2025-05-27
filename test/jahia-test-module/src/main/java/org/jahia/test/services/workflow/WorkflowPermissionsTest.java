@@ -43,9 +43,9 @@
 package org.jahia.test.services.workflow;
 
 import static org.jahia.test.TestHelper.triggerScheduledJobsAndWait;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +55,8 @@ import java.util.Properties;
 import javax.jcr.RepositoryException;
 
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
@@ -68,6 +68,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.test.TestHelper;
 import org.junit.After;
@@ -85,11 +86,12 @@ import com.google.common.collect.Sets;
  * @author Sergiy Shyrkov
  */
 public class WorkflowPermissionsTest {
-    private final static String CONTENTS_NODE;
+    private static final String CONTENTS_NODE;
 
     private static JahiaUser editor;
 
     private static final String LIST_NAME = "wf-test-list";
+    private static final String PASSWORD = "password";
 
     private static final String LIST_NODE_PATH;
 
@@ -98,6 +100,7 @@ public class WorkflowPermissionsTest {
     private static JCRPublicationService publicationService;
 
     private static JahiaUser reviewer;
+    private static JahiaUser subReviewer;
 
     private static final String SITE_NAME = WorkflowPermissionsTest.class.getSimpleName();
 
@@ -109,8 +112,6 @@ public class WorkflowPermissionsTest {
 
     private static final String TEXT_WITH_PERMISSIONS_REVOKED_NAME = "text-node-with-permissions-revoked";
 
-    private static JahiaUserManagerService userManagerService;
-
     private static WorkflowService workflowService;
 
     static {
@@ -121,27 +122,26 @@ public class WorkflowPermissionsTest {
     }
 
     @BeforeClass
-    public static void oneTimeSetUp() throws Exception {
-        userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+    public static void oneTimeSetUp() throws RepositoryException, JahiaException, IOException {
+        JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         workflowService = WorkflowService.getInstance();
         publicationService = JCRPublicationService.getInstance();
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                Locale.ENGLISH);
-
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JahiaSite site = TestHelper.createSite(SITE_NAME);
 
-        // init users
-        editor = userManagerService.createUser("wf-editor", SITE_NAME, "password", new Properties(), session)
-                .getJahiaUser();
-        reviewer = userManagerService.createUser("wf-reviewer", SITE_NAME, "password", new Properties(), session)
-                .getJahiaUser();
+        // init users and roles
+        addSubReviewerRole(session);
+        editor = userManagerService.createUser("wf-editor", SITE_NAME, PASSWORD, new Properties(), session).getJahiaUser();
+        reviewer = userManagerService.createUser("wf-reviewer", SITE_NAME, PASSWORD, new Properties(), session).getJahiaUser();
+        subReviewer = userManagerService.createUser("wf-sub-reviewer", SITE_NAME, PASSWORD, new Properties(), session).getJahiaUser();
         session.save();
 
         // grant permissions on site node
         JCRNodeWrapper siteNode = session.getNode(site.getJCRLocalPath());
         siteNode.grantRoles("u:" + editor.getName(), ImmutableSet.of("editor"));
         siteNode.grantRoles("u:" + reviewer.getName(), ImmutableSet.of("reviewer"));
+        siteNode.grantRoles("u:" + subReviewer.getName(), ImmutableSet.of("sub-reviewer"));
         session.save();
 
         // publish site
@@ -150,10 +150,24 @@ public class WorkflowPermissionsTest {
     }
 
     @AfterClass
-    public static void oneTimeTearDown() throws Exception {
+    public static void oneTimeTearDown() throws JahiaException, RepositoryException {
         TestHelper.deleteSite(SITE_NAME);
 
+        // delete sub-reviewer role
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        session.getNode("/roles/reviewer/sub-reviewer").remove();
+        session.save();
+
         JCRSessionFactory.getInstance().closeAllSessions();
+    }
+
+    private static void addSubReviewerRole(JCRSessionWrapper sessionWrapper) throws RepositoryException {
+        // did not find any service/utility to create role, so doing it manually
+        JCRNodeWrapper reviewerRoleNode = sessionWrapper.getNode("/roles/reviewer");
+        JCRNodeWrapper subReviewerRoleNode = reviewerRoleNode.addNode("sub-reviewer", "jnt:role");
+        subReviewerRoleNode.setProperty("j:roleGroup", "edit-role");
+        subReviewerRoleNode.setProperty("j:privilegedAccess", true);
+        sessionWrapper.save();
     }
 
     protected String processId;
@@ -170,7 +184,7 @@ public class WorkflowPermissionsTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws RepositoryException {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 Locale.ENGLISH);
 
@@ -190,7 +204,7 @@ public class WorkflowPermissionsTest {
     private String startProcess(JCRNodeWrapper node, String workflowKey) throws RepositoryException {
         List<String> nodeIds = Arrays.asList(node.getIdentifier());
 
-        final HashMap<String, Object> map = new HashMap<String, Object>();
+        final HashMap<String, Object> map = new HashMap<>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
         map.put("publicationInfos",
@@ -205,15 +219,12 @@ public class WorkflowPermissionsTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws RepositoryException {
         if (processId != null) {
             workflowService.abortProcess(processId, PROVIDER);
         }
-        deleteTestContent(
-                JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH));
-
-        deleteTestContent(
-                JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH));
+        deleteTestContent(JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH));
+        deleteTestContent(JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH));
     }
 
     /**
@@ -229,22 +240,18 @@ public class WorkflowPermissionsTest {
                         "publish", Locale.ENGLISH));
 
         JCRTemplate.getInstance().doExecute(editor, Constants.EDIT_WORKSPACE, Locale.ENGLISH,
-                new JCRCallback<Object>() {
-                    @Override
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        assertNotNull("Editor should have a permission to start publication of the list node",
-                                getPossiblePublishWorkflow(session.getNode(LIST_NODE_PATH)));
+                session -> {
+                    assertNotNull("Editor should have a permission to start publication of the list node",
+                            getPossiblePublishWorkflow(session.getNode(LIST_NODE_PATH)));
 
-                        assertNotNull("Editor should have a permission to start publication of the text node",
-                                getPossiblePublishWorkflow(session.getNode(TEXT_NODE_PATH)));
+                    assertNotNull("Editor should have a permission to start publication of the text node",
+                            getPossiblePublishWorkflow(session.getNode(TEXT_NODE_PATH)));
 
-                        assertNull(
-                                "Editor should NOT have a permission to start publication of the text node with permissions revoked",
-                                getPossiblePublishWorkflow(session.getNode(TEXT_NODE_WITH_PERMISSIONS_REVOKED_PATH)));
+                    assertNull(
+                            "Editor should NOT have a permission to start publication of the text node with permissions revoked",
+                            getPossiblePublishWorkflow(session.getNode(TEXT_NODE_WITH_PERMISSIONS_REVOKED_PATH)));
 
-                        return null;
-                    }
-
+                    return null;
                 });
 
     }
@@ -259,34 +266,37 @@ public class WorkflowPermissionsTest {
     public void testStart() throws RepositoryException {
         // with editor start the workflow
         JCRTemplate.getInstance().doExecute(editor, Constants.EDIT_WORKSPACE, Locale.ENGLISH,
-                new JCRCallback<Object>() {
-                    @Override
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper listNode = session.getNode(LIST_NODE_PATH);
-                        WorkflowDefinition possiblePublishoWorkflow = getPossiblePublishWorkflow(listNode);
-                        assertNotNull("Editor should have a permission to start publication of the list node",
-                                possiblePublishoWorkflow);
+                session -> {
+                    JCRNodeWrapper listNode = session.getNode(LIST_NODE_PATH);
+                    WorkflowDefinition possiblePublishoWorkflow = getPossiblePublishWorkflow(listNode);
+                    assertNotNull("Editor should have a permission to start publication of the list node",
+                            possiblePublishoWorkflow);
 
-                        // start workflow
-                        processId = startProcess(listNode, possiblePublishoWorkflow.getKey());
-                        assertNotNull("Workflow process should have been started", processId);
+                    // start workflow
+                    processId = startProcess(listNode, possiblePublishoWorkflow.getKey());
+                    assertNotNull("Workflow process should have been started", processId);
 
-                        triggerScheduledJobsAndWait();
+                    triggerScheduledJobsAndWait();
 
-                        return null;
-                    }
+                    return null;
                 });
 
         // verify that the workflow process is started on the list and one of the sub-nodes, but not on the second one (with permissions
         // revoked)
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 Locale.ENGLISH);
+        List<WorkflowTask> reviewerTasks = workflowService.getTasksForUser(reviewer, Locale.ENGLISH);
+        // child role should inherit parent role permissions, testing that sub-reviewer can see the task as well
+        List<WorkflowTask> subReviewerTasks = workflowService.getTasksForUser(subReviewer, Locale.ENGLISH);
+        assertTrue("Reviewer should have associated task available",
+                reviewerTasks.size() == 1 && reviewerTasks.get(0).getProcessId().equals(processId));
+        assertTrue("Reviewer sub roles should have associated task available",
+                subReviewerTasks.size() == 1 && subReviewerTasks.get(0).getProcessId().equals(processId));
         assertNotNull("The workflow process should have been started on node " + LIST_NODE_PATH,
                 session.getNode(LIST_NODE_PATH).getPropertyAsString(Constants.PROCESSID));
         assertNotNull("The workflow process should have been started on node " + TEXT_NODE_PATH,
                 session.getNode(TEXT_NODE_PATH).getPropertyAsString(Constants.PROCESSID));
-        assertNull(
-                "The workflow process should NOT have been started on node " + TEXT_NODE_WITH_PERMISSIONS_REVOKED_PATH,
+        assertNull("The workflow process should NOT have been started on node " + TEXT_NODE_WITH_PERMISSIONS_REVOKED_PATH,
                 session.getNode(TEXT_NODE_WITH_PERMISSIONS_REVOKED_PATH).getPropertyAsString(Constants.PROCESSID));
     }
 

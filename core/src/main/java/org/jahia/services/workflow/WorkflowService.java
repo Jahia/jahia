@@ -453,6 +453,8 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                 while (ni.hasNext()) {
                     JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
                     roles.add(roleNode.getName());
+                    // Look for sub-roles as they inherit permissions
+                    JCRContentUtils.getChildrenOfType(roleNode, "jnt:role").forEach(role -> roles.add(role.getName()));
                 }
                 ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '" + JCRContentUtils.sqlEncode(permissionName) + "'", Query.JCR_SQL2).execute().getNodes();
                 while (ni.hasNext()) {

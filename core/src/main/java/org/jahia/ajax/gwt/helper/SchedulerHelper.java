@@ -342,8 +342,11 @@ public class SchedulerHelper {
                     //In case job is ended only and there is no active nor started job
                     totalCount = 0;
                 }
+                logger.debug("Start to broadcast events");
                 final BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
                 if (broadcasterFactory != null) {
+                    logger.debug("BroadcasterFactory found, Broadcaster instance: {}", broadcasterFactory.getClass().getName());
+                    logger.debug("Broadcasting job event: {} started, {} ended, total count: {}", new Object[]{startedJob.size(), endedJob.size(), totalCount});
                     ProcessPollingEvent pollingEvent = new ProcessPollingEvent();
                     if (startedJob != null) {
                         pollingEvent.setStartedJob(convertToGWTJobs(startedJob));
@@ -354,8 +357,10 @@ public class SchedulerHelper {
                     pollingEvent.setTotalCount(totalCount);
                     Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
                     if (broadcaster != null) {
+                        logger.debug("Broadcaster job event to Broadcaster {}, Class name: {}", broadcaster.getID(), broadcaster.getClass().getName());
                         broadcaster.broadcast(pollingEvent);
                     } else {
+                        logger.debug("Broadcaster is null");
                         try {
                             ChannelHolder bean = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
                             JGroupsChannel jc = bean.getChannel();
@@ -363,7 +368,7 @@ public class SchedulerHelper {
                                 jc.send(ManagedGWTResource.GWT_BROADCASTER_ID, pollingEvent);
                             }
                         } catch (Exception e) {
-                            logger.debug(e.getMessage(), e);
+                            logger.error(e.getMessage(), e);
                         }
                     }
                 }

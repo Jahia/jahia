@@ -352,7 +352,14 @@ public class CKEditorField extends Field<String> {
 
     @Override
     public String getRawValue() {
-        return readOnly ? html.getHtml() : ckeditor.getData();
+        if (readOnly) {
+            // Workaround in case property does not exist on the node,
+            // then htmlContent from html.getHtml() will be undefined/null.
+            // Which will cause a NPE in the Field.getValue() method
+            String htmlContent = html.getHtml();
+            return htmlContent != null ? htmlContent : getEmptyText();
+        }
+        return ckeditor.getData();
     }
 
     @Override

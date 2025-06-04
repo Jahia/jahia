@@ -34,7 +34,7 @@ def processProvisioningFile = { Path file ->
 
 // JDK 17 only modules
 if (jdk.startsWith("11") && Files.exists(provisioningDirectory)) {
-    log.info("JDK11 detected. removing JDK17 only modules from provisioning files")
+    log.info("JDK11 detected. removing JDK17-only modules from provisioning files")
     log.info("Modules to disable: {}", nonJDK11CompatibleModules)
     // Directory to search files in
     Files.walkFileTree(provisioningDirectory, new SimpleFileVisitor<Path>() {
@@ -47,5 +47,5 @@ if (jdk.startsWith("11") && Files.exists(provisioningDirectory)) {
             return FileVisitResult.CONTINUE
         }
     })
+    log.info("Done disabling JDK17 modules that are not compatible with the current JDK {}", jdk);
 }
-log.info("Done disable JDK17 modules as not compatible with the current JDK {}", jdk);

@@ -390,6 +390,7 @@ public class JCRVersionService extends JahiaService {
         }
 
         names.clear();
+        Set<String> skippedNodeNames = new HashSet<>();
         ni = frozenNode.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
@@ -401,7 +402,10 @@ public class JCRVersionService extends JahiaService {
                     synchronizeNode(child, node, session, allSubTree);
                 } else if (child.getRealNode().getParent().isNodeType(Constants.NT_FROZENNODE)) {
                     String primaryNodeType = child.getPrimaryNodeType().getName();
-                    if (!nodetypesToSkipWhenSynchronizing.contains(primaryNodeType)) {
+                    if (nodetypesToSkipWhenSynchronizing.contains(primaryNodeType)) {
+                        // keep track of the child nodes to skip, so they can also be ignored when ordering them
+                        skippedNodeNames.add(child.getName());
+                    } else {
                         JCRNodeWrapper node = destinationNode.addNode(child.getName(), primaryNodeType);
                         synchronizeNode(child, node, session, allSubTree);
                     }
@@ -442,6 +446,10 @@ public class JCRVersionService extends JahiaService {
             Collections.reverse(names);
             String previous = null;
             for (String name : names) {
+                if (skippedNodeNames.contains(name)) {
+                    logger.debug("Skipping node {} on node {}", name, destinationNode.getPath());
+                    continue;
+                }
                 destinationNode.orderBefore(name, previous);
                 previous = name;
             }

@@ -63,8 +63,7 @@ import java.net.URLConnection;
 public final class ResourceServlet extends HttpServlet {
     private final String path;
 
-    public ResourceServlet(String path)
-    {
+    public ResourceServlet(String path) {
         this.path = path;
     }
 
@@ -95,8 +94,9 @@ public final class ResourceServlet extends HttpServlet {
             res.setContentType(contentType);
         }
 
-        long lastModified  = getLastModified(url);
-        String eTag = DigestUtils.md5Hex(url.toString()).concat(".").concat(Long.toHexString(lastModified));
+        long lastModified = getLastModified(url);
+        String eTag = "\"".concat(DigestUtils.md5Hex(url.toString())).concat(".").concat(Long.toHexString(lastModified))
+                .concat("\"");
         if (lastModified != 0) {
             res.setDateHeader("Last-Modified", lastModified);
             res.setHeader("ETag", eTag);
@@ -112,9 +112,10 @@ public final class ResourceServlet extends HttpServlet {
 
     private long getLastModified(URL url) {
         long lastModified = 0;
-        if("bundle".equals(url.getProtocol())) {
+        if ("bundle".equals(url.getProtocol())) {
             Long lastModifiedLong = getLastModifiedFromBundleHeaders();
-            if (lastModifiedLong != null) return lastModifiedLong;
+            if (lastModifiedLong != null)
+                return lastModifiedLong;
         }
         try {
             URLConnection conn = url.openConnection();

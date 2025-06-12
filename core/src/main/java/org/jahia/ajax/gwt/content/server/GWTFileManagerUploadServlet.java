@@ -122,6 +122,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         SettingsBean settingsBean = SettingsBean.getInstance();
+        upload.setFileCountMax(settingsBean.getJahiaFileUploadCountMax());
         final long fileSizeLimit = settingsBean.getJahiaFileUploadMaxSize();
         upload.setHeaderEncoding("UTF-8");
         Map<String, FileItem> uploads = new HashMap<String, FileItem>();

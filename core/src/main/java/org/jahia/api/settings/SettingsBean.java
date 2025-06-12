@@ -193,6 +193,8 @@ public interface SettingsBean {
 
     long getJahiaFileUploadMaxSize();
 
+    long getJahiaFileUploadCountMax();
+
     /**
      * @deprecated since 7.0.0.2
      */

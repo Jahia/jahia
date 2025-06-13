@@ -58,157 +58,158 @@ import java.util.*;
 import static org.jahia.api.Constants.*;
 
 /**
- * Listener implementation used to update last modification date.
- * User: toto
- * Date: Feb 15, 2010
- * Time: 2:36:05 PM
+ * This listener is responsible for two critical functions related to publication system:
+ * <p>
+ * 1. Content Modification Tracking:
+ *    - Updates the lastModified and lastModifiedBy properties on nodes when content changes
+ *    - This tracking is essential for publication status calculation, comparing lastModified
+ *      date with lastPublished date to determine if content needs republication
+ * <p>
+ * 2. Auto-Publication Management:
+ *    - Automatically publishes nodes marked with the jmix:autoPublish mixin
+ *    - Ensures content changes in default workspace are immediately reflected in live workspace
+ *    - Maintains deleted node tracking for published content
+ * <p>
+ * Special Cases:
+ * - Import operations: By default, lastModified dates are not updated during imports unless the node
+ *   is auto-published, preserving the original modification date from the imported content
+ * - Resource/File handling: When file content changes (nt:resource), both the resource node and its
+ *   parent file node get their lastModified properties updated
+ * - Origin workspace tracking: For newly created nodes with the jmix:originWS mixin, the j:originWS
+ *   property is automatically set to the current workspace name. This helps track where content was
+ *   originally created, which is useful for cross-workspace operations.
+ * - Deletion tracking:
+ *      - When published nodes are deleted (bypassing mark-for-deletion, like direct delete in JCR default workspace),
+ *      their identifiers are stored in j:deletedChildren on the parent to facilitate proper publication of the removal.
+ *      - When a node is deleted, parent lastModified date is updated to reflect the change.
+ *
+ * @author toto
+ * @since JAHIA 6.5
  */
 public class LastModifiedListener extends DefaultEventListener {
-    public static final String JMIX_AUTO_PUBLISH = "jmix:autoPublish";
     public static final String J_DELETED_CHILDREN = "j:deletedChildren";
-    private static Logger logger = LoggerFactory.getLogger(LastModifiedListener.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(LastModifiedListener.class);
 
     private JCRPublicationService publicationService;
 
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
+        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + 
+                Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
     }
 
+    @SuppressWarnings("java:S3776")
     public void onEvent(final EventIterator eventIterator) {
         try {
+            // Get user information and operation type from event context
             final JahiaUser user = ((JCREventIterator)eventIterator).getSession().getUser();
             final boolean isImport = ((JCREventIterator)eventIterator).getOperationType() == JCRObservationManager.IMPORT;
 
-            final Set<Session> sessions = new LinkedHashSet<>();
-            final Set<String> nodes = new LinkedHashSet<>();
-            final Set<String> addedNodes = new LinkedHashSet<>();
-            final Set<String> reorderedNodes = new LinkedHashSet<>();
-            final List<String> autoPublishedIds;
+            // Track sessions that need to be saved
+            final Set<Session> sessionsToSave = new LinkedHashSet<>();
 
+            // Track different node paths based on operation type
+            final Set<String> modifiedNodePaths = new LinkedHashSet<>();     // Modified nodes
+            final Set<String> addedNodePaths = new LinkedHashSet<>();        // Newly added nodes
+            final Set<String> reorderedNodePaths = new LinkedHashSet<>();    // Nodes that were just reordered
+
+            // Only create auto-publish list for default workspace
+            final List<String> autoPublishedIds;
             if (workspace.equals("default")) {
-                autoPublishedIds = new ArrayList<String>();
+                autoPublishedIds = new ArrayList<>();
             } else {
                 autoPublishedIds = null;
             }
 
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Calendar c = Calendar.getInstance();
+                    Calendar modificationTime = Calendar.getInstance();
                     while (eventIterator.hasNext()) {
                         final Event event = eventIterator.nextEvent();
+
+                        // Special handling for node removal events
                         if (event.getType() == Event.NODE_REMOVED && event.getIdentifier() != null) {
-                            try {
-                                session.getNodeByIdentifier(event.getIdentifier());
-                            } catch (ItemNotFoundException infe) {
-                                try {
-                                    final JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(), "/"));
-                                    if (!session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && parent.getProvider().getMountPoint().equals("/")) {
-                                        // Test if published and has lastPublished property
-                                        boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, Constants.LIVE_WORKSPACE, null, new JCRCallback<Boolean>() {
-                                            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                                JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(event.getIdentifier());
-                                                boolean lastPublished = nodeByIdentifier.hasProperty(Constants.LASTPUBLISHED);
-                                                if (lastPublished && !parent.isNodeType(JMIX_AUTO_PUBLISH)) {
-                                                    List<String> nodeTypes = (event instanceof JCRObservationManager.EventWrapper) ? ((JCRObservationManager.EventWrapper) event).getNodeTypes() : null;
-                                                    if (nodeTypes != null) {
-                                                        for (String nodeType : nodeTypes) {
-                                                            ExtendedNodeType eventNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType);
-                                                            if (eventNodeType != null && eventNodeType.isNodeType(JMIX_AUTO_PUBLISH)) {
-                                                                nodeByIdentifier.remove();
-                                                                session.save();
-                                                                return false;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return lastPublished;
-                                            }
-                                        });
-
-                                        if (lastPublished) {
-                                            if (!parent.isNodeType("jmix:deletedChildren")) {
-                                                parent.addMixin("jmix:deletedChildren");
-                                                parent.setProperty(J_DELETED_CHILDREN, new String[]{event.getIdentifier()});
-                                            } else if (!parent.hasProperty(J_DELETED_CHILDREN)) {
-                                                parent.setProperty(J_DELETED_CHILDREN, new String[]{event.getIdentifier()});
-                                            } else {
-                                                parent.getProperty(J_DELETED_CHILDREN).addValue(event.getIdentifier());
-                                            }
-                                            sessions.add(parent.getRealNode().getSession());
-                                        }
-                                    }
-                                } catch (PathNotFoundException e) {
-                                    // no parent
-                                } catch (ItemNotFoundException e) {
-                                    // no live
-                                }
-                            }
+                            processNodeRemovalEvent(event, session, user, sessionsToSave);
                         }
 
+                        // Filter out events we don't need to process
                         String path = event.getPath();
-                        if (path.startsWith("/jcr:system/")) {
+                        if (path.startsWith("/jcr:system/") || shouldPropertyEventBeSkipped(event.getType(), path)) {
                             continue;
                         }
-                        if ((event.getType() & Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED) != 0 &&
-                                propertiesToIgnore.contains(StringUtils.substringAfterLast(path, "/"))) {
-                            continue;
-                        }
+
                         if (logger.isDebugEnabled()) {
                             logger.debug("Receiving event for lastModified date for : {}", path);
                         }
+
+                        // Categorize the event based on type
                         if (event.getType() == Event.NODE_ADDED) {
-                            addedNodes.add(path);
+                            addedNodePaths.add(path);
                         } else if (Event.NODE_MOVED == event.getType()) {
-                            // in the case of a real node move, we won't track this as we want to have last modification
-                            // properties on moved nodes so we only handle the reordering case.
+                            // For move events, differentiate between real moves and reordering
                             if (event.getInfo().get("srcChildRelPath") != null) {
-                                // this case is a node reordering in it's parent
-                                reorderedNodes.add(path);
+                                // Node reordering within the same parent
+                                reorderedNodePaths.add(path);
                             }
-                            nodes.add(StringUtils.substringBeforeLast(path, "/"));
+                            // For both moves and reordering, track the parent
+                            modifiedNodePaths.add(StringUtils.substringBeforeLast(path, "/"));
                         } else {
-                            nodes.add(StringUtils.substringBeforeLast(path, "/"));
+                            // For property changes and other events, track the parent node
+                            modifiedNodePaths.add(StringUtils.substringBeforeLast(path, "/"));
                         }
                     }
-                    if (reorderedNodes.size() > 0) {
-                        addedNodes.removeAll(reorderedNodes);
+
+                    // Remove reordered nodes from added nodes to avoid duplicate processing
+                    if (!reorderedNodePaths.isEmpty()) {
+                        addedNodePaths.removeAll(reorderedNodePaths);
                     }
-                    if (addedNodes.size() > 0) {
-                        nodes.removeAll(addedNodes);
+
+                    // Remove added nodes from the modified nodes set to avoid duplicate processing
+                    if (!addedNodePaths.isEmpty()) {
+                        modifiedNodePaths.removeAll(addedNodePaths);
                     }
-                    if (!nodes.isEmpty() || !addedNodes.isEmpty()) {
+
+                    // If we have nodes to process, update their lastModified properties
+                    if (!modifiedNodePaths.isEmpty() || !addedNodePaths.isEmpty()) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Updating lastModified date for existing nodes : {}",
-                                    Arrays.deepToString(nodes.toArray(new String[nodes.size()])));
+                                    Arrays.deepToString(modifiedNodePaths.toArray(new String[0])));
                             logger.debug("Updating lastModified date for added nodes : {}",
-                                    Arrays.deepToString(addedNodes.toArray(new String[addedNodes.size()])));
+                                    Arrays.deepToString(addedNodePaths.toArray(new String[0])));
                         }
-                        for (String node : nodes) {
+
+                        // Process existing modified nodes
+                        for (String nodePath : modifiedNodePaths) {
                             try {
-                                JCRNodeWrapper n = session.getNode(node);
-                                sessions.add(n.getRealNode().getSession());
-                                updateProperty(n, c, user, autoPublishedIds, isImport);
-                            } catch (UnsupportedRepositoryOperationException e) {
-                                // Cannot write property
-                            } catch (PathNotFoundException e) {
-                                // node has been removed
+                                JCRNodeWrapper node = session.getNode(nodePath);
+                                sessionsToSave.add(node.getRealNode().getSession());
+                                updateLastModifiedProperties(node, modificationTime, user, autoPublishedIds, isImport);
+                            } catch (UnsupportedRepositoryOperationException | PathNotFoundException e) {
+                                // Cannot write property - node might be protected or
+                                // Node is removed
                             }
                         }
-                        for (String addedNode : addedNodes) {
+
+                        // Process newly added nodes
+                        for (String addedNodePath : addedNodePaths) {
                             try {
-                                JCRNodeWrapper n = session.getNode(addedNode);
-                                sessions.add(n.getRealNode().getSession());
-                                if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
-                                    n.setProperty("j:originWS", workspace);
+                                JCRNodeWrapper node = session.getNode(addedNodePath);
+                                sessionsToSave.add(node.getRealNode().getSession());
+
+                                // Set origin workspace for new nodes with the appropriate mixin
+                                if (!node.hasProperty("j:originWS") && node.isNodeType("jmix:originWS")) {
+                                    node.setProperty("j:originWS", workspace);
                                 }
-                                updateProperty(n, c, user, autoPublishedIds, isImport);
-                            } catch (UnsupportedRepositoryOperationException e) {
-                                // Cannot write property
-                            } catch (PathNotFoundException e) {
-                                // node has been removed
+
+                                updateLastModifiedProperties(node, modificationTime, user, autoPublishedIds, isImport);
+                            } catch (UnsupportedRepositoryOperationException | PathNotFoundException e) {
+                                // Cannot write property - node might be protected or
+                                // Node has been removed during processing
                             }
                         }
-                        for (Session jcrsession : sessions) {
+
+                        // Save all modified sessions
+                        for (Session jcrsession : sessionsToSave) {
                             try {
                                 jcrsession.save();
                             } catch (RepositoryException e) {
@@ -220,6 +221,7 @@ public class LastModifiedListener extends DefaultEventListener {
                 }
             });
 
+            // If we found auto-published nodes in default workspace, publish them to live
             if (autoPublishedIds != null && !autoPublishedIds.isEmpty()) {
                 synchronized (this) {
                     publicationService.publish(autoPublishedIds, "default", "live", false, null);
@@ -229,41 +231,161 @@ public class LastModifiedListener extends DefaultEventListener {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-
     }
 
-    private void updateProperty(JCRNodeWrapper n, Calendar c, JahiaUser user, List<String> autoPublished, boolean isImport) throws RepositoryException {
-        while (!n.isNodeType(MIX_LAST_MODIFIED)) {
-            addAutoPublish(n, autoPublished);
+    /**
+     * Determines if a property-related event should be skipped during processing.
+     * This method filters out events for specific properties that don't require
+     * updating the lastModified status of a node (like technical properties).
+     *
+     * @param eventType The type of event (PROPERTY_CHANGED, PROPERTY_ADDED, PROPERTY_REMOVED)
+     * @param path The path of the property that triggered the event
+     * @return true if the event should be skipped, false if it should be processed
+     */
+    private boolean shouldPropertyEventBeSkipped(int eventType, String path) {
+        return (eventType & Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED) != 0 &&
+                propertiesToIgnore.contains(StringUtils.substringAfterLast(path, "/"));
+    }
+
+    /**
+     * Processes node removal events, handling special cases for published content.
+     * When a published node is deleted, its identifier is stored in j:deletedChildren
+     * property of the parent to track that it was published and now needs unpublication.
+     *
+     * @param event The removal event to process
+     * @param session The JCR session to use
+     * @param user The current user
+     * @param sessions Collection to track sessions that need saving
+     * @throws RepositoryException if a repository error occurs
+     */
+    private void processNodeRemovalEvent(final Event event, JCRSessionWrapper session,
+                                        final JahiaUser user, Set<Session> sessions) throws RepositoryException {
+        try {
+            // First check if the node still exists (might be a move rather than delete)
+            session.getNodeByIdentifier(event.getIdentifier());
+        } catch (ItemNotFoundException infe) {
             try {
-                n = n.getParent();
+                // Get the parent of the deleted node
+                final JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(), "/"));
+
+                // Only process if in default workspace and on the main provider
+                if (!session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) &&
+                    parent.getProvider().getMountPoint().equals("/")) {
+
+                    // Check if the node was published by looking in live workspace
+                    boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(
+                        user, Constants.LIVE_WORKSPACE, null, liveSession -> {
+                            try {
+                                JCRNodeWrapper nodeByIdentifier = liveSession.getNodeByIdentifier(event.getIdentifier());
+                                boolean hasLastPublished = nodeByIdentifier.hasProperty(Constants.LASTPUBLISHED);
+
+                                // Handle auto-published nodes - delete them immediately from live
+                                if (hasLastPublished && !parent.isNodeType(JAHIAMIX_AUTO_PUBLISH)) {
+                                    List<String> nodeTypes = (event instanceof JCRObservationManager.EventWrapper) ?
+                                            ((JCRObservationManager.EventWrapper) event).getNodeTypes() : null;
+
+                                    if (nodeTypes != null) {
+                                        for (String nodeType : nodeTypes) {
+                                            ExtendedNodeType eventNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+                                            if (eventNodeType != null && eventNodeType.isNodeType(JAHIAMIX_AUTO_PUBLISH)) {
+                                                // If the node itself was auto-published, remove it from live directly
+                                                nodeByIdentifier.remove();
+                                                liveSession.save();
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                }
+                                return hasLastPublished;
+                            } catch (RepositoryException e) {
+                                // Node doesn't exist in live
+                                return false;
+                            }
+                        });
+
+                    // If the node was published, track it in parent's deletedChildren property
+                    if (lastPublished) {
+                        if (!parent.isNodeType("jmix:deletedChildren")) {
+                            // Add the mixin if not already present
+                            parent.addMixin("jmix:deletedChildren");
+                            parent.setProperty(J_DELETED_CHILDREN, new String[]{event.getIdentifier()});
+                        } else if (!parent.hasProperty(J_DELETED_CHILDREN)) {
+                            // Initialize the property if mixin exists but property doesn't
+                            parent.setProperty(J_DELETED_CHILDREN, new String[]{event.getIdentifier()});
+                        } else {
+                            // Add to existing property values
+                            parent.getProperty(J_DELETED_CHILDREN).addValue(event.getIdentifier());
+                        }
+                        sessions.add(parent.getRealNode().getSession());
+                    }
+                }
+            } catch (PathNotFoundException | ItemNotFoundException e) {
+                // Parent node not found or
+                // Live node not found
+            }
+        }
+    }
+
+    /**
+     * Updates the lastModified properties on a node, and checks for auto-publication.
+     * Traverses up the node hierarchy to find the first node with mix:lastModified mixin.
+     *
+     * @param node The node to process
+     * @param modificationTime Calendar instance with current time
+     * @param user Current user
+     * @param autoPublishedIds List to collect auto-published node IDs (null for live workspace)
+     * @param isImport Flag indicating if operation is an import
+     * @throws RepositoryException if a repository error occurs
+     */
+    private void updateLastModifiedProperties(JCRNodeWrapper node, Calendar modificationTime, JahiaUser user, 
+                                       List<String> autoPublishedIds, boolean isImport) throws RepositoryException {
+        // Find the first node (or ancestor) that has the MIX_LAST_MODIFIED mixin
+        while (!node.isNodeType(MIX_LAST_MODIFIED)) {
+            // Check each node for auto-publish on the way up
+            registerForAutoPublication(node, autoPublishedIds);
+            try {
+                node = node.getParent();
             } catch (ItemNotFoundException e) {
+                // Reached the root without finding mix:lastModified
                 return;
             }
         }
 
-        boolean isAutoPublished = addAutoPublish(n, autoPublished);
+        // Check if this node should be auto-published
+        boolean isAutoPublished = registerForAutoPublication(node, autoPublishedIds);
 
+        // Only update properties if not an import or if node is auto-published
+        // This preserves original modification dates on imported content unless auto-published
         if (!isImport || isAutoPublished) {
-            n.getSession().checkout(n);
-            n.setProperty(JCR_LASTMODIFIED,c);
-            n.setProperty(JCR_LASTMODIFIEDBY, user != null ? user.getUsername() : "");
-            if (n.isNodeType("nt:resource")) {
-                JCRNodeWrapper parent = n.getParent();
+            node.getSession().checkout(node);
+            node.setProperty(JCR_LASTMODIFIED, modificationTime);
+            node.setProperty(JCR_LASTMODIFIEDBY, user != null ? user.getUsername() : "");
+
+            // Special handling for nt:resource nodes - also update parent file node
+            if (node.isNodeType("nt:resource")) {
+                JCRNodeWrapper parent = node.getParent();
                 if (parent.isNodeType(MIX_LAST_MODIFIED)) {
-                    parent.setProperty(JCR_LASTMODIFIED, c);
+                    parent.setProperty(JCR_LASTMODIFIED, modificationTime);
                     parent.setProperty(JCR_LASTMODIFIEDBY, user != null ? user.getUsername() : "");
                 }
             }
         }
     }
 
-    private boolean addAutoPublish(JCRNodeWrapper n, List<String> autoPublished) throws RepositoryException {
-        if (autoPublished != null &&
-                !n.getPath().startsWith("/modules") &&
-                !autoPublished.contains(n.getIdentifier()) &&
-                (n.isNodeType(JMIX_AUTO_PUBLISH) || (n.isNodeType(JAHIANT_TRANSLATION) && n.getParent().isNodeType(JMIX_AUTO_PUBLISH)))) {
-            autoPublished.add(n.getIdentifier());
+    /**
+     * Checks if a node should be auto-published and adds it to the list if needed.
+     *
+     * @param node The node to check
+     * @param autoPublishedIds List to collect auto-published node IDs (null for live workspace)
+     * @return true if node was added to auto-publish list, false otherwise
+     * @throws RepositoryException if a repository error occurs
+     */
+    private boolean registerForAutoPublication(JCRNodeWrapper node, List<String> autoPublishedIds) throws RepositoryException {
+        if (autoPublishedIds != null &&
+                !node.getPath().startsWith("/modules") &&
+                !autoPublishedIds.contains(node.getIdentifier()) &&
+                (node.isNodeType(JAHIAMIX_AUTO_PUBLISH) || (node.isNodeType(JAHIANT_TRANSLATION) && node.getParent().isNodeType(JAHIAMIX_AUTO_PUBLISH)))) {
+            autoPublishedIds.add(node.getIdentifier());
             return true;
         }
         return false;

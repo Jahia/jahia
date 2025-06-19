@@ -38,6 +38,26 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>download-configurator-library</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.configuration</groupId>
+                                    <artifactId>configurators</artifactId>
+                                    <version>${jahia.plugin.version}</version>
+                                    <classifier>standalone</classifier>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.build.directory}/configurator</outputDirectory>
+                                    <destFileName>configurator.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>download</id>
                         <phase>validate</phase>
                         <goals>

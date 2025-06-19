@@ -99,61 +99,49 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
       alive.sh ${DB_HOST} ${DB_PORT}
     fi
 
-    if [ "${JAHIA_LICENSE}" != "" ]; then
-      echo "decoding license"
-      echo "${JAHIA_LICENSE}" | base64 --decode > ${DATA_FOLDER}/license.xml
-      JAHIA_LICENSE_OPTS="-Djahia.configure.licenseFile=${DATA_FOLDER}/license.xml"
-    else
-      echo "No license provided via environment variable"
-    fi
-
     if [ "${JAHIA_PROPERTIES}" != "" ]; then
       JAHIA_PROPERTIES="${JAHIA_PROPERTIES},\"mvnPath\":\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",\"svnPath\":\"/usr/bin/svn\",\"gitPath\":\"/usr/bin/git\",\"karaf.remoteShell.host\":\"0.0.0.0\""
     else
       JAHIA_PROPERTIES="\"mvnPath\":\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",\"svnPath\":\"/usr/bin/svn\",\"gitPath\":\"/usr/bin/git\",\"karaf.remoteShell.host\":\"0.0.0.0\""
     fi
 
-    echo "Configure jahia..."
-    echo "/opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
-    -Djahia.deploy.targetServerType="tomcat" \
-    -Djahia.deploy.targetServerDirectory="/usr/local/tomcat" \
-    -Djahia.deploy.dataDir="${DATA_FOLDER}" \
-    -Djahia.configure.externalizedTargetPath="/etc/jahia" \
-    -Djahia.configure.databaseType="${DB_VENDOR}" \
-    -Djahia.configure.databaseUrl="${DB_URL}" \
-    -Djahia.configure.databaseUsername="${DB_USER}" \
-    -Djahia.configure.databasePassword=xxxxx \
-    -Djahia.configure.storeFilesInAWS="${DS_IN_AWS}" \
-    -Djahia.configure.storeFilesInDB="${DS_IN_DB}" \
-    -Djahia.configure.fileDataStorePath="${DS_PATH}" \
-    -Djahia.configure.jahiaRootPassword=xxxxx \
-    -Djahia.configure.processingServer="${PROCESSING_SERVER}" \
-    -Djahia.configure.operatingMode="${OPERATING_MODE}" \
-    -Djahia.configure.deleteFiles="false" \
-    -Djahia.configure.overwritedb="${OVERWRITEDB}" \
-    -Djahia.configure.jahiaProperties="{${JAHIA_PROPERTIES}}" \
-    $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration"
 
-    /opt/apache-maven-${MAVEN_VER}/bin/mvn ${JAHIA_PLUGIN}:configure \
-    -Djahia.deploy.targetServerType="tomcat" \
-    -Djahia.deploy.targetServerDirectory="/usr/local/tomcat" \
-    -Djahia.deploy.dataDir="${DATA_FOLDER}" \
-    -Djahia.configure.externalizedTargetPath="/etc/jahia" \
-    -Djahia.configure.databaseType="${DB_VENDOR}" \
-    -Djahia.configure.databaseUrl="${DB_URL}" \
-    -Djahia.configure.databaseUsername="${DB_USER}" \
-    -Djahia.configure.databasePassword="${DB_PASS}" \
-    -Djahia.configure.storeFilesInAWS="${DS_IN_AWS}" \
-    -Djahia.configure.storeFilesInDB="${DS_IN_DB}" \
-    -Djahia.configure.fileDataStorePath="${DS_PATH}" \
-    -Djahia.configure.jahiaRootPassword="${SUPER_USER_PASSWORD}" \
-    -Djahia.configure.processingServer="${PROCESSING_SERVER}" \
-    -Djahia.configure.operatingMode="${OPERATING_MODE}" \
-    -Djahia.configure.deleteFiles="false" \
-    -Djahia.configure.overwritedb="${OVERWRITEDB}" \
-    -Djahia.configure.jahiaProperties="{${JAHIA_PROPERTIES}}" \
-    $JAHIA_CONFIGURE_OPTS $JAHIA_LICENSE_OPTS -Pconfiguration
+    # Create or overwrite install.properties file
+    PROPERTIES_FILE="/tmp/install.properties"
+    echo "# Generated install.properties file" > $PROPERTIES_FILE
 
+    # Extract values from the command arguments, removing -Djahia.configure prefix
+    echo "targetServerDirectory=/usr/local/tomcat" >> $PROPERTIES_FILE
+    echo "databaseType=${DB_VENDOR}" >> $PROPERTIES_FILE
+    echo "jahiaVarDiskPath=${DATA_FOLDER}" >> $PROPERTIES_FILE
+    echo "externalizedConfigTargetPath=/etc/jahia" >> $PROPERTIES_FILE
+    echo "databaseUrl=${DB_URL}" >> $PROPERTIES_FILE
+    echo "databaseUsername=${DB_USER}" >> $PROPERTIES_FILE
+    echo "databasePassword=${DB_PASS}" >> $PROPERTIES_FILE
+    echo "storeFilesInAWS=${DS_IN_AWS}" >> $PROPERTIES_FILE
+    echo "storeFilesInDB=${DS_IN_DB}" >> $PROPERTIES_FILE
+    echo "fileDataStorePath=${DS_PATH}" >> $PROPERTIES_FILE
+    echo "jahiaRootPassword=${SUPER_USER_PASSWORD}" >> $PROPERTIES_FILE
+    echo "processingServer=${PROCESSING_SERVER}" >> $PROPERTIES_FILE
+    echo "operatingMode=${OPERATING_MODE}" >> $PROPERTIES_FILE
+    echo "deleteFiles=false" >> $PROPERTIES_FILE
+    echo "overwritedb=${OVERWRITEDB}" >> $PROPERTIES_FILE
+    echo "jahiaProperties={${JAHIA_PROPERTIES}}" >> $PROPERTIES_FILE
+    # Handle external opts
+    echo "processing OPTS: ${JAHIA_CONFIGURE_OPTS}"
+    echo ${JAHIA_CONFIGURE_OPTS} | sed -E 's/-Djahia\.[configure,data,deploy]+\.([^=]+)=/\n\1=/g'  >> $PROPERTIES_FILE
+
+    if [ "${JAHIA_LICENSE}" != "" ]; then
+      echo "decoding license"
+      echo "${JAHIA_LICENSE}" | base64 --decode > ${DATA_FOLDER}/license.xml
+     echo "licenseFile=${DATA_FOLDER}/license.xml" >> $PROPERTIES_FILE
+    else
+      echo "No license provided via environment variable"
+    fi
+
+    echo "Configuring Jahia with command:"
+    echo "java -jar /opt/jahia/configurator.jar --configure ${PROPERTIES_FILE}"
+    java -jar /opt/jahia/configurator.jar --configure ${PROPERTIES_FILE}
     mkdir -p ${DATA_FOLDER}/info/initial-config
     cp /etc/jahia/jahia/* ${DATA_FOLDER}/info/initial-config
 

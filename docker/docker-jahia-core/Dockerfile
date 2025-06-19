@@ -61,6 +61,7 @@ RUN set -ux; \
     rm /tmp/graalvm.tgz && \
     /usr/local/graalvm/bin/gu install js ;
 
+# Wrap everything to reduce the image size from the removed elements
 FROM scratch
 COPY --from=base / /
 
@@ -137,11 +138,6 @@ RUN wget -nv -O maven.zip ${MAVEN_BASE_URL}/${MAVEN_VER}/binaries/apache-maven-$
 
 COPY --chown=${C_USER}:${C_GROUP} settings.xml /home/${C_USER}/.m2/settings.xml
 
-# Download jahia plugin
-USER ${C_USER}
-RUN mvn -q -Pconfiguration ${JAHIA_PLUGIN}:help
-USER root
-
 # Add scripts
 COPY bin/* /usr/local/bin/
 COPY setenv.sh /usr/local/tomcat/bin
@@ -153,6 +149,10 @@ COPY target/dependency/shared-libraries /usr/local/tomcat/lib
 COPY target/dependency/jdbc-drivers /usr/local/tomcat/lib
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package /usr/local/tomcat/digital-factory-data
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war /usr/local/tomcat/webapps/ROOT
+
+# Copy configurator
+RUN mkdir -p /opt/jahia
+COPY --chown=${C_USER}:${C_GROUP} target/configurator/configurator.jar /opt/jahia
 
 RUN mkdir -p /etc/jahia  \
     && mkdir -p /etc/jahia/jahia \

@@ -246,5 +246,47 @@
                 </plugins>
             </build>
         </profile>
+        <!-- docker-plugin-dev: is just a copy of docker-plugin without buildx conf -->
+        <profile>
+            <id>docker-plugin-dev</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                    <build>
+                                        <contextDir>${project.basedir}</contextDir>
+                                        <dockerFile>Dockerfile</dockerFile>
+                                        <tags>${image.alias}</tags>
+                                        <args>
+                                            <PARENT_TAG>${parent.tag}</PARENT_TAG>
+                                            <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
+                                            <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
+                                        </args>
+                                        <env>
+                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
+                                        </env>
+                                        <skip>${build.skip}</skip>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

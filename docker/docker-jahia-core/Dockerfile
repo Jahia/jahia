@@ -72,7 +72,9 @@ ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/archive/binaries/
 ARG LOG_MAX_DAYS="5"
 ARG JAHIA_PLUGIN="jahia"
 ARG DATA_FOLDER="/var/jahia"
+ARG ETC_FOLDER="/etc/jahia"
 ARG LOGS_FOLDER="/var/log/jahia"
+ARG CATALINA_HOME="/usr/local/tomcat"
 ARG TARGETOS
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -85,7 +87,7 @@ ARG C_GROUP="tomcat"
 
 ENV RESTORE_MODULE_STATES="false"
 ENV RESTORE_PERSISTED_CONFIGURATION="false"
-ENV DATA_FOLDER=${DATA_FOLDER} LOGS_FOLDER=${LOGS_FOLDER}
+ENV DATA_FOLDER=${DATA_FOLDER} ETC_FOLDER=${ETC_FOLDER} LOGS_FOLDER=${LOGS_FOLDER}
 ENV PROCESSING_SERVER="true"
 ENV OPERATING_MODE="development"
 ENV MAX_UPLOAD="268435456"
@@ -95,7 +97,7 @@ ENV MAVEN_VER="${MAVEN_VER}"
 ENV JAHIA_PLUGIN="${JAHIA_PLUGIN}"
 ENV JAHIA_LICENSE=""
 
-ENV CATALINA_BASE="/usr/local/tomcat" CATALINA_HOME="/usr/local/tomcat" CATALINA_TMPDIR="/usr/local/tomcat/temp" LOG_MAX_DAYS="5" LOG_MAX_SIZE="500M"
+ENV CATALINA_BASE="${CATALINA_HOME}" CATALINA_HOME="${CATALINA_HOME}" CATALINA_TMPDIR="${CATALINA_HOME}/temp" LOG_MAX_DAYS="5" LOG_MAX_SIZE="500M"
 ENV CATALINA_OPTS="" JPDA="false" JPDA_ADDRESS="*:8000"
 
 ENV DB_VENDOR="derby_embedded" DB_HOST="mariadb" DB_NAME="jahia" DB_USER="jahia" DB_PASS="fakepassword" DB_PORT="" DB_URL=""
@@ -127,8 +129,8 @@ RUN useradd -r -u 9999 -g ${C_GROUP} ${C_USER} -d /home/${C_USER} -m
 # Prepare data folders
 RUN mkdir -p ${DATA_FOLDER}/info ${DATA_FOLDER}/repository ${DATA_FOLDER}/modules ${DATA_FOLDER}/patches/provisioning ${LOGS_FOLDER} \
     && chown -R ${C_USER}:${C_GROUP} ${DATA_FOLDER} ${LOGS_FOLDER} \
-    && rm -r /usr/local/tomcat/logs \
-    && ln -s ${LOGS_FOLDER} /usr/local/tomcat/logs
+    && rm -r ${CATALINA_HOME}/logs \
+    && ln -s ${LOGS_FOLDER} ${CATALINA_HOME}/logs
 
 # Prepare maven
 RUN wget -nv -O maven.zip ${MAVEN_BASE_URL}/${MAVEN_VER}/binaries/apache-maven-${MAVEN_VER}-bin.zip \
@@ -140,23 +142,23 @@ COPY --chown=${C_USER}:${C_GROUP} settings.xml /home/${C_USER}/.m2/settings.xml
 
 # Add scripts
 COPY bin/* /usr/local/bin/
-COPY setenv.sh /usr/local/tomcat/bin
-RUN chmod +x /usr/local/bin/* /usr/local/tomcat/bin/setenv.sh
+COPY setenv.sh ${CATALINA_HOME}/bin
+RUN chmod +x /usr/local/bin/* ${CATALINA_HOME}/bin/setenv.sh
 
-COPY conf/* /usr/local/tomcat/conf/
+COPY conf/* ${CATALINA_HOME}/conf/
 
-COPY target/dependency/shared-libraries /usr/local/tomcat/lib
-COPY target/dependency/jdbc-drivers /usr/local/tomcat/lib
-COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package /usr/local/tomcat/digital-factory-data
-COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war /usr/local/tomcat/webapps/ROOT
+COPY target/dependency/shared-libraries ${CATALINA_HOME}/lib
+COPY target/dependency/jdbc-drivers ${CATALINA_HOME}/lib
+COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package ${CATALINA_HOME}/digital-factory-data
+COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war ${CATALINA_HOME}/webapps/ROOT
 
 # Copy configurator
 RUN mkdir -p /opt/jahia
 COPY --chown=${C_USER}:${C_GROUP} target/configurator/configurator.jar /opt/jahia
 
-RUN mkdir -p /etc/jahia  \
-    && mkdir -p /etc/jahia/jahia \
-    && chown -R ${C_USER}:${C_GROUP} /usr/local/tomcat/conf /etc/jahia
+RUN mkdir -p ${ETC_FOLDER}  \
+    && mkdir -p ${ETC_FOLDER}/jahia \
+    && chown -R ${C_USER}:${C_GROUP} ${CATALINA_HOME}/conf ${ETC_FOLDER}
 
 STOPSIGNAL SIGINT
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
+if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     echo "Initial container startup, configuring Jahia..."
 
     if [ -f "${DATA_FOLDER}/info/version.properties" ] || [ -d "${DATA_FOLDER}/bundles-deployed" ]; then
@@ -39,25 +39,25 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     fi
 
     echo "Updating digital-factory-data..."
-    cp -a /usr/local/tomcat/digital-factory-data/* ${DATA_FOLDER}/
+    cp -a ${CATALINA_HOME}/digital-factory-data/* ${DATA_FOLDER}/
 
-    echo "Updating /usr/local/tomcat/conf/server.xml and logging.properties..."
-    sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g" /usr/local/tomcat/conf/server.xml /usr/local/tomcat/conf/logging.properties
+    echo "Updating ${CATALINA_HOME}/conf/server.xml and logging.properties..."
+    sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g" ${CATALINA_HOME}/conf/server.xml ${CATALINA_HOME}/conf/logging.properties
 
     if [ "$SSL_ENABLED" == "true" ]; then
-      if [ ! -d /usr/local/tomcat/conf/ssl ]; then
-        mkdir -p /usr/local/tomcat/conf/ssl
-        openssl req -x509 -newkey rsa:4096 -keyout /usr/local/tomcat/conf/ssl/localhost-rsa-key.pem -out /usr/local/tomcat/conf/ssl/localhost-rsa-cert.pem -days 36500 -subj "/CN=localhost" -passout env:SSL_CERTIFICATE_PASSWD
+      if [ ! -d ${CATALINA_HOME}/conf/ssl ]; then
+        mkdir -p ${CATALINA_HOME}/conf/ssl
+        openssl req -x509 -newkey rsa:4096 -keyout ${CATALINA_HOME}/conf/ssl/localhost-rsa-key.pem -out ${CATALINA_HOME}/conf/ssl/localhost-rsa-cert.pem -days 36500 -subj "/CN=localhost" -passout env:SSL_CERTIFICATE_PASSWD
       fi
 
-      sed -i '/#SSL_DISABLED#/d' /usr/local/tomcat/conf/server.xml
-      sed -i "s/#SSL_CERTIFICATE_PASSWD#/${SSL_CERTIFICATE_PASSWD}/" /usr/local/tomcat/conf/server.xml
+      sed -i '/#SSL_DISABLED#/d' ${CATALINA_HOME}/conf/server.xml
+      sed -i "s/#SSL_CERTIFICATE_PASSWD#/${SSL_CERTIFICATE_PASSWD}/" ${CATALINA_HOME}/conf/server.xml
     fi
 
     echo "Update log4j..."
-    sed -i 's/ref="RollingJahia/ref="Jahia/' /usr/local/tomcat/webapps/ROOT/WEB-INF/etc/config/log4j2.xml
+    sed -i 's/ref="RollingJahia/ref="Jahia/' ${CATALINA_HOME}/webapps/ROOT/WEB-INF/etc/config/log4j2.xml
 
-    sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g;s|#LOG_MAX_DAYS#|$LOG_MAX_DAYS|g;s|#LOG_MAX_SIZE#|$LOG_MAX_SIZE|g" /usr/local/tomcat/conf/jahia_logrotate
+    sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g;s|#LOG_MAX_DAYS#|$LOG_MAX_DAYS|g;s|#LOG_MAX_SIZE#|$LOG_MAX_SIZE|g" ${CATALINA_HOME}/conf/jahia_logrotate
 
     if [ "$DB_URL" == "" ]; then
       case "$DB_VENDOR" in
@@ -110,10 +110,10 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "# Generated install.properties file" > $PROPERTIES_FILE
 
     # Extract values from the command arguments, removing -Djahia.configure prefix
-    echo "targetServerDirectory=/usr/local/tomcat" >> $PROPERTIES_FILE
+    echo "targetServerDirectory=${CATALINA_HOME}" >> $PROPERTIES_FILE
     echo "databaseType=${DB_VENDOR}" >> $PROPERTIES_FILE
     echo "jahiaVarDiskPath=${DATA_FOLDER}" >> $PROPERTIES_FILE
-    echo "externalizedConfigTargetPath=/etc/jahia" >> $PROPERTIES_FILE
+    echo "externalizedConfigTargetPath=${ETC_FOLDER}" >> $PROPERTIES_FILE
     echo "databaseUrl=${DB_URL}" >> $PROPERTIES_FILE
     echo "databaseUsername=${DB_USER}" >> $PROPERTIES_FILE
     echo "databasePassword=${DB_PASS}" >> $PROPERTIES_FILE
@@ -123,7 +123,6 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     echo "jahiaRootPassword=${SUPER_USER_PASSWORD}" >> $PROPERTIES_FILE
     echo "processingServer=${PROCESSING_SERVER}" >> $PROPERTIES_FILE
     echo "operatingMode=${OPERATING_MODE}" >> $PROPERTIES_FILE
-    echo "deleteFiles=false" >> $PROPERTIES_FILE
     echo "overwritedb=${OVERWRITEDB}" >> $PROPERTIES_FILE
     echo "jahiaProperties={${JAHIA_PROPERTIES}}" >> $PROPERTIES_FILE
     # Handle external opts
@@ -139,10 +138,12 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
     fi
 
     echo "Configuring Jahia with command:"
-    echo "java -jar /opt/jahia/configurator.jar --configure ${PROPERTIES_FILE}"
-    java -jar /opt/jahia/configurator.jar --configure ${PROPERTIES_FILE}
+    echo "java -cp \"/opt/jahia/configurator.jar:${CATALINA_HOME}/lib/*\" org.jahia.configuration.ConfigureMain --configure ${PROPERTIES_FILE}"
+    java -cp "/opt/jahia/configurator.jar:${CATALINA_HOME}/lib/*" org.jahia.configuration.ConfigureMain --configure ${PROPERTIES_FILE}
+
+    echo "Backup: ${ETC_FOLDER}/jahia to ${DATA_FOLDER}/info/initial-config (useful for future migrating to new versions)"
     mkdir -p ${DATA_FOLDER}/info/initial-config
-    cp /etc/jahia/jahia/* ${DATA_FOLDER}/info/initial-config
+    cp ${ETC_FOLDER}/jahia/* ${DATA_FOLDER}/info/initial-config
 
     if [ -f "${DATA_FOLDER}/info/passwd" ] && [ "`cat "${DATA_FOLDER}/info/passwd"`" != "`echo -n "$SUPER_USER_PASSWORD" | sha256sum`" ]; then
         echo "Update root's password..."
@@ -155,7 +156,7 @@ if [ ! -f "/usr/local/tomcat/conf/configured" ]; then
 
     echo -n "${SUPER_USER_PASSWORD}" | sha256sum > ${DATA_FOLDER}/info/passwd
 
-    touch "/usr/local/tomcat/conf/configured"
+    touch "${CATALINA_HOME}/conf/configured"
 fi
 
 if [[ $CATALINA_OPTS != *"-Djava.security.egd"* ]]; then
@@ -216,5 +217,5 @@ export JDK_JAVA_OPTIONS="$JDK_JAVA_OPTIONS --add-opens=java.base/java.net=ALL-UN
 
 rotate-jahia-logs.sh &
 
-echo "Start catalina... : /usr/local/tomcat/bin/catalina.sh $OPT"
-exec /usr/local/tomcat/bin/catalina.sh $OPT
+echo "Start catalina... : ${CATALINA_HOME}/bin/catalina.sh $OPT"
+exec ${CATALINA_HOME}/bin/catalina.sh $OPT

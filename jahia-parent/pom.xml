@@ -71,10 +71,10 @@
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
         <jackrabbit.version>2.18.4-jahia1</jackrabbit.version>
-        <jackson.core.version>2.14.2</jackson.core.version>
-        <jackson-databind.core.version>2.14.2</jackson-databind.core.version>
-        <jackson.osgi.version>2.14.2</jackson.osgi.version>
-        <jackson-databind.osgi.version>2.14.2</jackson-databind.osgi.version>
+        <jackson.core.version>2.19.0</jackson.core.version>
+        <jackson-databind.core.version>2.19.0</jackson-databind.core.version>
+        <jackson.osgi.version>2.19.0</jackson.osgi.version>
+        <jackson-databind.osgi.version>2.19.0</jackson-databind.osgi.version>
         <lucene.version>3.6.2</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>

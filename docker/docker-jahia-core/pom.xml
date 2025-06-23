@@ -141,7 +141,6 @@
                                         </buildx>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <JAHIA_PLUGIN>org.jahia.server:jahia-simple-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
                                         </args>
                                         <env>
@@ -184,7 +183,6 @@
                                         </buildx>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <JAHIA_PLUGIN>org.jahia.server:jahia-simple-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
                                         </args>
                                         <env>
@@ -223,7 +221,6 @@
                                         <contextDir>${project.basedir}</contextDir>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <JAHIA_PLUGIN>org.jahia.server:jahia-simple-maven-plugin:${jahia.plugin.version}</JAHIA_PLUGIN>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
                                         </args>
                                         <env>

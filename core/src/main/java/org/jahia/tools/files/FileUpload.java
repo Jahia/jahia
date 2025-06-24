@@ -59,6 +59,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.jahia.settings.SettingsBean;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -152,6 +153,7 @@ public class FileUpload {
         if (checkSavePath(savePath)) {
             try {
                 final ServletFileUpload upload = new ServletFileUpload();
+                upload.setFileCountMax(SettingsBean.getInstance().getJahiaFileUploadCountMax());
                 FileItemIterator iter = upload.getItemIterator(req);
                 DiskFileItemFactory factory = null;
                 while (iter.hasNext()) {

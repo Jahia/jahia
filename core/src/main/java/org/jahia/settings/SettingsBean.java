@@ -133,6 +133,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private Properties properties;
     private String classDiskPath;
     private long jahiaFileUploadMaxSize; // this is the list of jahia.properties files values...
+    private long jahiaFileUploadCountMax; // limit the number of request parts to be processed, prevents DDOS attack, see https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-24998
     private boolean useRelativeSiteURLs; // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     private String defaultLanguageCode; // Default language code for multi-language system
     private long jahiaJCRUserCountLimit = -1; // limit for reading JCR users (in administration)
@@ -367,6 +368,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             // files...
             jahiaFileUploadMaxSize = getLong("jahiaFileUploadMaxSize", 104857600);
+            jahiaFileUploadCountMax = getLong("jahiaFileUploadCountMax", 50);
 
             studioMaxDisplayableFileSize = getLong("studioMaxDisplayableFileSize", 1048576);
 
@@ -1069,6 +1071,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public long getJahiaFileUploadMaxSize() {
         return jahiaFileUploadMaxSize;
     }
+
+    @Override
+    public long getJahiaFileUploadCountMax() {
+        return jahiaFileUploadCountMax;
+    }
+
     /**
      * @deprecated since 7.0.0.2
      */

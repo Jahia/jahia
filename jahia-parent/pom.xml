@@ -109,7 +109,7 @@
         <izpack.version>4.3.5-jahia11</izpack.version>
         <launch4j.version>3.12</launch4j.version>
         <log4j.version>2.17.2</log4j.version>
-        <jahia.tomcat.version>9.0.104</jahia.tomcat.version>
+        <jahia.tomcat.version>9.0.106</jahia.tomcat.version>
         <protobuf.java.version>3.21.12</protobuf.java.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>

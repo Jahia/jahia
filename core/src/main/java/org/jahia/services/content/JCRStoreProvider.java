@@ -48,7 +48,6 @@ import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.state.StaleItemStateException;
-import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -80,13 +79,9 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
-import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.rmi.Naming;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -114,9 +109,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private String relativeRoot = "";
 
     private String repositoryName;
-    private String factory;
-    private String url;
-
 
     protected String systemUser;
     protected String systemPassword;
@@ -127,8 +119,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private SimpleCredentials guestCredentials;
 
     protected String authenticationType = null;
-
-    protected String rmibind;
 
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
@@ -216,20 +206,26 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.repositoryName = repositoryName;
     }
 
+    @Deprecated(since = "8.2.2.0", forRemoval = true)
     public String getFactory() {
-        return factory;
+        // no longer supported, will be removed in a future release
+        return null;
     }
 
+    @Deprecated(since = "8.2.2.0", forRemoval = true)
     public void setFactory(String factory) {
-        this.factory = factory;
+        // no longer supported, will be removed in a future release
     }
 
+    @Deprecated(since = "8.2.2.0", forRemoval = true)
     public String getUrl() {
-        return url;
+        // no longer supported, will be removed in a future release
+        return null;
     }
 
+    @Deprecated(since = "8.2.2.0", forRemoval = true)
     public void setUrl(String url) {
-        this.url = url;
+        // no longer supported, will be removed in a future release
     }
 
     public void setSystemUser(String user) {
@@ -259,12 +255,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.authenticationType = authenticationType;
     }
 
+    @Deprecated(since = "8.2.2.0", forRemoval = true)
     public String getRmibind() {
-        return rmibind;
+        // no longer supported, will be removed in a future release
+        return null;
     }
 
+    @Deprecated(since = "8.2.2.0", forRemoval = true)
     public void setRmibind(String rmibind) {
-        this.rmibind = rmibind;
+        // no longer supported, will be removed in a future release
     }
 
     public JahiaUserManagerService getUserManagerService() {
@@ -589,18 +588,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         logger.info("Unmounting provider of mount point {}", getMountPoint());
         unregisterObservers();
         getSessionFactory().removeProvider(key);
-        rmiUnbind();
         initialized = false;
-    }
-
-    protected void rmiUnbind() {
-        if (rmibind != null) {
-            try {
-                Naming.unbind(rmibind);
-            } catch (Exception e) {
-                logger.warn("Unable to unbind the JCR repository in RMI");
-            }
-        }
     }
 
     /**
@@ -696,21 +684,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 result = repo;
                 if (result == null) {
                     repo = result = createRepository();
-                    rmiBind();
                 }
             }
         }
         return result;
-    }
-
-    protected void rmiBind() {
-        if (rmibind != null && repo != null) {
-            try {
-                Naming.rebind(rmibind, new ServerAdapterFactory().getRemoteRepository(repo));
-            } catch (Exception e) {
-                logger.warn("Unable to bind remote JCR repository to RMI using " + rmibind, e);
-            }
-        }
     }
 
     /**
@@ -723,8 +700,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
         if (repositoryName != null) {
             instance = getRepositoryByJNDI();
-        } else if (factory != null && url != null) {
-            instance = getRepositoryByRMI();
         }
 
         return instance;
@@ -745,20 +720,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             logger.info("Repository {} acquired via JNDI", getKey());
         } catch (NamingException e) {
             logger.error("Cannot get by JNDI", e);
-        }
-        return instance;
-    }
-
-    protected Repository getRepositoryByRMI() {
-        Repository instance = null;
-        try {
-            Class<? extends ObjectFactory> factoryClass = Class.forName(factory).asSubclass(ObjectFactory.class);
-            ObjectFactory factory = (ObjectFactory) factoryClass.newInstance();
-            instance = (Repository) factory.getObjectInstance(new Reference(Repository.class.getName(),
-                    new StringRefAddr("url", url)), null, null, null);
-            logger.info("Repository {} acquired via RMI", getKey());
-        } catch (Exception e) {
-            logger.error("Cannot get by RMI", e);
         }
         return instance;
     }

@@ -69,7 +69,7 @@
         <spring-beans.version>3.2.18.jahia2_OSGI</spring-beans.version>
         <springtx.version>3.2.18.RELEASE_OSGI2</springtx.version>
         <springwebflow-version>2.4.8.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.20.12-jahia2-SNAPSHOT</jackrabbit.version>
+        <jackrabbit.version>2.22.0-jahia1-SNAPSHOT</jackrabbit.version>
         <oak-jackrabbit-api.version.implemented>1.48.0</oak-jackrabbit-api.version.implemented>
         <jackson.core.version>2.19.0</jackson.core.version>
         <jackson-databind.core.version>2.19.0</jackson-databind.core.version>

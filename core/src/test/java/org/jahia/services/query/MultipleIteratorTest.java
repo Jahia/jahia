@@ -43,9 +43,9 @@
 package org.jahia.services.query;
 
 
-import org.junit.Assert;
-import org.apache.jackrabbit.rmi.iterator.ArrayIterator;
+import org.apache.jackrabbit.commons.iterator.AccessControlPolicyIteratorAdapter;
 import org.jahia.services.content.MultipleIterator;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -58,57 +58,57 @@ public class MultipleIteratorTest {
 
     @Test
     public void testMultipleIterator() {
-        List<ArrayIterator> arrayIterators = new ArrayList<ArrayIterator>();
-        arrayIterators.add(new ArrayIterator(new String[] {"foo", "bar"}));
-        arrayIterators.add(new ArrayIterator(new String[] {}));
-        arrayIterators.add(new ArrayIterator(new String[] {"spam", "ham", "eggs"}));
-        MultipleIterator<ArrayIterator> multipleArrayIterator = new MultipleIterator<ArrayIterator>(arrayIterators, -1);
+        List<AccessControlPolicyIteratorAdapter> arrayIterators = new ArrayList<>();
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("foo", "bar")));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of()));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("spam", "ham", "eggs")));
+        MultipleIterator<AccessControlPolicyIteratorAdapter> multipleArrayIterator = new MultipleIterator<>(arrayIterators, -1);
         multipleArrayIterator.skip(3);
-        Assert.assertEquals(true, multipleArrayIterator.hasNext());
+        Assert.assertTrue(multipleArrayIterator.hasNext());
         Assert.assertEquals("ham", multipleArrayIterator.next());
         Assert.assertEquals("eggs", multipleArrayIterator.next());
-        Assert.assertEquals(false, multipleArrayIterator.hasNext());
+        Assert.assertFalse(multipleArrayIterator.hasNext());
     }
 
     @Test
     public void testMultipleIteratorWithLimit1() {
-        List<ArrayIterator> arrayIterators = new ArrayList<ArrayIterator>();
-        arrayIterators.add(new ArrayIterator(new String[] {"foo", "bar"}));
-        arrayIterators.add(new ArrayIterator(new String[] {}));
-        arrayIterators.add(new ArrayIterator(new String[] {"spam", "ham", "eggs"}));
-        MultipleIterator<ArrayIterator> multipleArrayIterator = new MultipleIterator<ArrayIterator>(arrayIterators, 1);
-        Assert.assertEquals(true, multipleArrayIterator.hasNext());
+        List<AccessControlPolicyIteratorAdapter> arrayIterators = new ArrayList<>();
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("foo", "bar")));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of()));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("spam", "ham", "eggs")));
+        MultipleIterator<AccessControlPolicyIteratorAdapter> multipleArrayIterator = new MultipleIterator<>(arrayIterators, 1);
+        Assert.assertTrue(multipleArrayIterator.hasNext());
         Assert.assertEquals("foo", multipleArrayIterator.next());
-        Assert.assertEquals(false, multipleArrayIterator.hasNext());
+        Assert.assertFalse(multipleArrayIterator.hasNext());
         Assert.assertEquals(1, multipleArrayIterator.getSize());
     }
 
     @Test
     public void testMultipleIteratorWithLimit2() {
-        List<ArrayIterator> arrayIterators = new ArrayList<ArrayIterator>();
-        arrayIterators.add(new ArrayIterator(new String[] {"foo", "bar"}));
-        arrayIterators.add(new ArrayIterator(new String[] {}));
-        arrayIterators.add(new ArrayIterator(new String[] {"spam", "ham", "eggs"}));
-        MultipleIterator<ArrayIterator> multipleArrayIterator = new MultipleIterator<ArrayIterator>(arrayIterators, 2);
-        Assert.assertEquals(true, multipleArrayIterator.hasNext());
+        List<AccessControlPolicyIteratorAdapter> arrayIterators = new ArrayList<>();
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("foo", "bar")));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of()));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("spam", "ham", "eggs")));
+        MultipleIterator<AccessControlPolicyIteratorAdapter> multipleArrayIterator = new MultipleIterator<>(arrayIterators, 2);
+        Assert.assertTrue(multipleArrayIterator.hasNext());
         Assert.assertEquals("foo", multipleArrayIterator.next());
         Assert.assertEquals("bar", multipleArrayIterator.next());
-        Assert.assertEquals(false, multipleArrayIterator.hasNext());
+        Assert.assertFalse(multipleArrayIterator.hasNext());
         Assert.assertEquals(2, multipleArrayIterator.getSize());
     }
 
     @Test
     public void testMultipleIteratorWithLimit3() {
-        List<ArrayIterator> arrayIterators = new ArrayList<ArrayIterator>();
-        arrayIterators.add(new ArrayIterator(new String[] {"foo", "bar"}));
-        arrayIterators.add(new ArrayIterator(new String[] {}));
-        arrayIterators.add(new ArrayIterator(new String[] {"spam", "ham", "eggs"}));
-        MultipleIterator<ArrayIterator> multipleArrayIterator = new MultipleIterator<ArrayIterator>(arrayIterators, 3);
-        Assert.assertEquals(true, multipleArrayIterator.hasNext());
+        List<AccessControlPolicyIteratorAdapter> arrayIterators = new ArrayList<>();
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("foo", "bar")));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of()));
+        arrayIterators.add(new AccessControlPolicyIteratorAdapter(List.of("spam", "ham", "eggs")));
+        MultipleIterator<AccessControlPolicyIteratorAdapter> multipleArrayIterator = new MultipleIterator<>(arrayIterators, 3);
+        Assert.assertTrue(multipleArrayIterator.hasNext());
         Assert.assertEquals("foo", multipleArrayIterator.next());
         Assert.assertEquals("bar", multipleArrayIterator.next());
         Assert.assertEquals("spam", multipleArrayIterator.next());
-        Assert.assertEquals(false, multipleArrayIterator.hasNext());
+        Assert.assertFalse(multipleArrayIterator.hasNext());
         Assert.assertEquals(3, multipleArrayIterator.getSize());
     }
 }

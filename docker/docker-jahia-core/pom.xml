@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>docker-parent-core</artifactId>
-        <version>8.1.8.4-SNAPSHOT</version>
+        <version>8.1.8.4</version>
     </parent>
     <artifactId>docker-jahia-core</artifactId>
     <modelVersion>4.0.0</modelVersion>

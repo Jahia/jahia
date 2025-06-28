@@ -75,6 +75,7 @@ After Testing
 - [ ] The release changelog was prepared
 - [ ] In case of a major release, a **Breaking Changes** section is present in the Changelog
 - [ ] The artifact was released on Nexus
+- [ ] If the module is included in Jahia distribution, [jahia-pack-private](https://github.com/Jahia/jahia-pack-private/blob/master/core-modules/pom.xml) was updated with the released version
 - [ ] If applicable, corresponding academy pages were published
 - [ ] The module was published on the store
 - [ ] The [modules releases log page](https://edit.jahia.com/jahia/page-composer/default/en/sites/academy/home/customer-center/modules-releases-log.html) on the Academy was updated

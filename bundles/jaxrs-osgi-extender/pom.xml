@@ -102,24 +102,6 @@
             <version>${hk2.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>asm-all-repackaged</artifactId>
-            <version>${hk2.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>osgi-resource-locator</artifactId>
-            <version>1.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-            <artifactId>jersey-guava</artifactId>
-            <version>${jersey.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Embedded dependencies -->
         <dependency>
@@ -128,9 +110,46 @@
             <version>${jersey.version}</version>
             <scope>compile</scope>
             <exclusions>
+                <!-- jaxrs-ri bundle is a "fat jar" that repackages many of its own dependencies, which causes OSGi split packages issues as multiple jars provide the same package. Therefore, those dependencies are explicitly excluded. -->
                 <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
+                    <groupId>jakarta.ws.rs</groupId>
+                    <artifactId>jakarta.ws.rs-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.inject</groupId>
+                    <artifactId>jersey-hk2</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-jaxb</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-json-binding</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-sse</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.containers</groupId>
+                    <artifactId>jersey-container-servlet-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.containers</groupId>
+                    <artifactId>jersey-container-servlet</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -139,18 +158,13 @@
             <artifactId>jersey-media-multipart</artifactId>
             <version>${jersey.version}</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-sse</artifactId>
-            <version>${jersey.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.mimepull</groupId>
-            <artifactId>mimepull</artifactId>
-            <version>1.9.5</version>
-            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- already packaged in jaxrs-ri -->
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-common</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -174,117 +188,57 @@
                             com.jahia.modules.dependencies;moduleIdentifier=jaxrs-osgi-extender;moduleVersion:Version=${project.version}
                         </Provide-Capability>
                         <Import-Package>
-                            javax.activation,
+                            com.sun.research.ws.wadl,
+                            javax.activation;resolution:=optional,
                             javax.annotation,
-                            javax.annotation.security ,
-                            javax.imageio,
-                            javax.imageio.spi,
-                            javax.imageio.stream,
+                            javax.annotation.security,
+                            javax.imageio;resolution:=optional,
+                            javax.imageio.spi;resolution:=optional,
+                            javax.imageio.stream;resolution:=optional,
                             javax.inject,
                             javax.management,
                             javax.naming,
                             javax.net.ssl,
-                            javax.persistence,
+                            javax.persistence;resolution:=optional,
                             javax.servlet,
-                            javax.servlet.annotation,
+                            javax.servlet.annotation;resolution:=optional,
                             javax.servlet.http,
-                            javax.validation.*;resolution:=optional;version="[1,3)",
+                            javax.validation.*;resolution:=optional;version="[2,3)",
                             javax.ws.rs,
                             javax.ws.rs.client,
                             javax.ws.rs.container,
                             javax.ws.rs.core,
                             javax.ws.rs.ext,
-                            javax.xml.bind,
-                            javax.xml.bind.annotation,
-                            javax.xml.bind.annotation.adapters,
-                            javax.xml.namespace,
-                            javax.xml.parsers,
-                            javax.xml.transform,
-                            javax.xml.transform.dom,
-                            javax.xml.transform.sax,
-                            javax.xml.transform.stream,
-                            jersey.repackaged.com.google.common.base,
-                            jersey.repackaged.com.google.common.cache,
-                            jersey.repackaged.com.google.common.collect,
-                            jersey.repackaged.com.google.common.net,
-                            jersey.repackaged.com.google.common.primitives,
-                            jersey.repackaged.com.google.common.util.concurrent,
-                            org.glassfish.hk2.api,
-                            org.glassfish.hk2.extension ,
-                            org.glassfish.hk2.osgiresourcelocator,
-                            org.glassfish.hk2.utilities,
-                            org.glassfish.hk2.utilities.binding,
-                            org.glassfish.hk2.utilities.cache,
+                            javax.ws.rs.sse,
+                            javax.xml.bind;resolution:=optional,
+                            javax.xml.bind.annotation;resolution:=optional,
+                            javax.xml.bind.annotation.adapters;resolution:=optional,
+                            javax.xml.namespace;resolution:=optional,
+                            javax.xml.parsers;resolution:=optional,
+                            javax.xml.transform;resolution:=optional,
+                            javax.xml.transform.dom;resolution:=optional,
+                            javax.xml.transform.sax;resolution:=optional,
+                            javax.xml.transform.stream;resolution:=optional,
+                            jersey.repackaged.org.objectweb.asm.*;version=${jersey.version},
+                            org.glassfish.hk2.*,
                             org.jvnet.hk2.annotations,
+                            org.jvnet.hk2.external.runtime,
                             org.osgi.framework,
                             org.osgi.service.http,
                             org.osgi.service.log,
                             org.osgi.util.tracker,
-                            org.w3c.dom,
-                            org.xml.sax,
-                            sun.misc,
+                            org.w3c.dom;resolution:=optional,
+                            org.xml.sax;resolution:=optional,
+                            sun.misc;resolution:=optional,
                         </Import-Package>
                         <Export-Package>
-                            javax.ws.rs.container;version=2.0.1;-split-package:=first,
-                            javax.ws.rs.ext;version=2.0.1;-split-package:=first,
-                            javax.ws.rs;version=2.0.1;-split-package:=first,
-                            javax.ws.rs.client;version=2.0.1;-split-package:=first,
-                            javax.ws.rs.core;version=2.0.1;-split-package:=first,
-                            org.glassfish.jersey;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.client;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.client.authentication;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.client.filter;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.client.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.client.spi;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.filter;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.internal.inject;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.internal.l10n;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.internal.spi;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.internal.util;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.internal.util.collection;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.media.multipart.file;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.media.multipart;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.message;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.message.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.model;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.model.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.process;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.process.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.filter;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.filter.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.internal.inject;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.internal.monitoring;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.internal.monitoring.jmx;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.internal.process;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.internal.routing;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.internal.scanning;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.model;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.model.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.monitoring;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.spi;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.spi.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl.config;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl.internal.generators;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl.internal.generators.resourcedoc;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl.internal.generators.resourcedoc.model;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl.internal.generators.resourcedoc.xhtml;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.server.wadl.processor;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.servlet;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.servlet.async;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.servlet.init;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.servlet.init.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.servlet.internal;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.servlet.internal.spi;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.servlet.spi;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.spi;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.uri;version=2.18;-split-package:=first,
-                            org.glassfish.jersey.uri.internal;version=2.18;-split-package:=first,
+                            com.sun.research.ws.wadl.*;version=${jersey.version},
+                            jersey.repackaged.org.objectweb.asm.*;version=${jersey.version},
+                            org.glassfish.jersey.*;version=${jersey.version},
+                            javax.ws.rs.*;version=${jersey.javax.ws.rs.version},
                         </Export-Package>
+                        <Private-Package>com.sun.research.ws.wadl</Private-Package>
+                        <Bundle-Activator>org.glassfish.hk2.osgiresourcelocator.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

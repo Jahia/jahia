@@ -83,21 +83,17 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <!-- deprecated, to be removed in Jahia 8.3 -->
             <groupId>org.glassfish.hk2.external</groupId>
             <artifactId>asm-all-repackaged</artifactId>
-            <version>${hk2.version}</version>
+            <version>${hk2.deprecated.repack.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <!-- deprecated, to be removed in Jahia 8.3 -->
             <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
             <artifactId>jersey-guava</artifactId>
-            <version>${jersey.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>osgi-resource-locator</artifactId>
-            <version>1.0.1</version>
+            <version>${jersey.deprecated.repack.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

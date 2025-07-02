@@ -97,6 +97,14 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <!-- jaxrs-ri does include a repackaged version of osgi-resource-locator, but does not declare the activator of osgi-resource-locator (org.glassfish.hk2.osgiresourcelocator.Activator) in its MANIFEST -->
+            <!-- so osgi-resource-locator has to be declared as a direct dependency -->
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>osgi-resource-locator</artifactId>
+            <version>${hk2-osgi-resource-locator.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.jaxrs-osgi-extender</artifactId>
             <version>${project.version}</version>

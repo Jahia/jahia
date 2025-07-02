@@ -236,9 +236,12 @@
                             jersey.repackaged.org.objectweb.asm.*;version=${jersey.version},
                             org.glassfish.jersey.*;version=${jersey.version},
                             javax.ws.rs.*;version=${jersey.javax.ws.rs.version},
+                            org.jvnet.mimepull.*;version=${jersey.mimepull.version}
                         </Export-Package>
-                        <Private-Package>com.sun.research.ws.wadl</Private-Package>
-                        <Bundle-Activator>org.glassfish.hk2.osgiresourcelocator.Activator</Bundle-Activator>
+                        <Private-Package>
+                            com.sun.research.ws.wadl,
+                            org.jahia.bundles.jaxrs_osgi_extender
+                        </Private-Package>
                     </instructions>
                 </configuration>
             </plugin>

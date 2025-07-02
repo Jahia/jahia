@@ -183,7 +183,9 @@
         <karaf.jaas.config.version>${karaf.version}</karaf.jaas.config.version>
         <jersey.version>2.47</jersey.version>
         <jersey.javax.ws.rs.version>2.1.6</jersey.javax.ws.rs.version> <!-- version of javax.ws.rs.* embedded by Jersey (https://github.com/eclipse-ee4j/jersey/blob/2.47/pom.xml#L2308). To review when updating ${jersey.version} -->
+        <jersey.mimepull.version>1.9.15</jersey.mimepull.version> <!-- version of org.jvnet.mimepull.* embedded by Jersey (https://github.com/eclipse-ee4j/jersey/blob/2.47/pom.xml#L2323). To review when updating ${jersey.version} -->
         <hk2.version>2.6.1</hk2.version> <!-- version of HK2 embedded by Jersey (https://github.com/eclipse-ee4j/jersey/blob/2.47/pom.xml#L2292). To review when updating ${jersey.version} -->
+        <hk2-osgi-resource-locator.version>1.0.3</hk2-osgi-resource-locator.version> <!-- version of osgi-resource-locator embedded by Jersey (https://github.com/eclipse-ee4j/jersey/blob/2.47/pom.xml#L1619). To review when updating ${jersey.version} -->
         <jersey.deprecated.repack.version>2.18</jersey.deprecated.repack.version>
         <hk2.deprecated.repack.version>2.5.0-b25</hk2.deprecated.repack.version>
         <client-cache-control.version>9.0.0-SNAPSHOT</client-cache-control.version>

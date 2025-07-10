@@ -49,6 +49,7 @@ import org.slf4j.Logger;
  * Class of utility method for compressing/decompressing cache key.
  */
 
+@Deprecated(since = "8.2.2.0", forRemoval = true)
 public class KeyCompressor {
     protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(KeyCompressor.class);
 

@@ -50,6 +50,10 @@ import org.jahia.services.render.filter.TemplateNodeFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
+/**
+ * This cache key part generator is only used to restore the "inArea" attribute,
+ * so that the TemplateNodeFilter can restore the "inWrapper" attribute.
+ */
 public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
     @Override

@@ -62,7 +62,7 @@ public class TemplateAjaxFilter extends AbstractFilter {
             }
         }
 
-        chain.pushAttribute(renderContext.getRequest(), TemplateNodeFilter.ATTR_IN_TEMPLATE_NODE_WRAPPER, Boolean.TRUE);
+        chain.pushAttribute(renderContext.getRequest(), TemplateNodeFilter.ATTR_IN_WRAPPER, Boolean.TRUE);
         return null;
     }
 }

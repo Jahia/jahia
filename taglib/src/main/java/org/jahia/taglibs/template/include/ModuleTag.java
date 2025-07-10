@@ -511,6 +511,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected boolean canEdit(RenderContext renderContext) {
         return renderContext.isEditMode() && editable &&
+                // We are checking inWrapper here, so that direct usages of template:module in template.jsp won't be editable
                 !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper")) &&
                 renderContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA) == null;
     }

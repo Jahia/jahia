@@ -313,10 +313,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     /**
-     * usage: <template:area path="footer-1" moduleType="absoluteArea" level="0"/>
-     * Area using absoluteArea type is similar to absolute path (but more advanced, more options: level for example).
-     * the path being relative, the main resource node where the area content will be created depends on the level.
-     * if no level, then the absolute area will resolve to the home page of the site.
+     * Want to display an area using the <code>absoluteArea</code> type? Just use:
+     * <pre>
+     *   &lt;template:area path="footer-1" moduleType="absoluteArea" level="0"/&gt;
+     * </pre>
+     * The <code>absoluteArea</code> type works a bit like an absolute path, but gives you more options (like the <code>level</code> parameter).
+     * If you don't set a level, the area will be resolved to the site's home page.
      */
     private void findNodeForAbsoluteAreaType(RenderContext renderContext, Resource mainResource, Resource currentResource) throws RepositoryException, IOException {
         JCRNodeWrapper main = null;
@@ -366,8 +368,13 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     /**
-     * usage: <template:area path="/sites/mySite/home/myPage/myArea"/>
-     * Area using absolute path are similar (but simplified, less options) to the absolute area type.
+     * Want to use an absolute path for your area? For example:
+     * <pre>
+     *   &lt;template:area path="/sites/mySite/home/myPage/myArea"/&gt;
+     * </pre>
+     * This is a straightforward way to resolve areas, similar to <code>absoluteArea</code> but with fewer options.
+     * <p>
+     * This method finds the node for an area using an absolute path.
      */
     private void findNodeForAbsoluteAreaPath(RenderContext renderContext, Resource mainResource, Resource currentResource) throws RepositoryException, IOException {
         JCRSessionWrapper session = mainResource.getNode().getSession();
@@ -384,38 +391,24 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     /**
-     * usage: <template:area path="name"/>
-     * Here is a summary of the relative area resolution process:
-     *
-     * JCR Node Templating:
-     * - In JCR templating, templates follow a hierarchy that can contain area content.
-     * - Resolution follows a parent-first order before checking child templates.
-     *   Example:
-     *     /modules/templateSet/base
-     *     /modules/templateSet/base/simple
-     *     /sites/mySite/home/myPage
-     * - This means area content can be resolved in the parent template, the child template, or finally the main resource node (page).
-     *
-     * JS Templating:
-     * - Unlike JCR, JS templating lacks a hierarchy of templates.
-     * - It can still be used to route area content to a specific node.
-     * - By default, a JS module template node is null, as it does not rely on node templating.
-     *   Example:
-     *     /sites/mySite/home/myPage
-     * - Here, the area content is only resolved by the main resource node (page).
-     *
-     * Special Case: jExperience A/B Testing
-     * - jExperience leverages template hierarchy to insert a node template in the resolution chain.
-     * - This allows routing area content to the correct page variant using `template.next`.
-     *   Example (JCR Node Templating):
-     *     /modules/templateSet/base
-     *     /modules/templateSet/base/simple
-     *     /sites/mySite/home/myPage/variant1
-     *     /sites/mySite/home/myPage
-     *   Example (JS Module Templating):
-     *     /sites/mySite/home/myPage/variant1
-     *     /sites/mySite/home/myPage
-     * - In both cases, `/sites/mySite/home/myPage/variant1` resolves the area content, while `/sites/mySite/home/myPage` acts as a fallback.
+     * Resolves relative area paths like <code>&lt;template:area path="name"/&gt;</code>.
+     * <p>
+     * Area resolution follows a template hierarchy lookup, checking templates first, then the main resource (page).
+     * <p>
+     * <strong>JCR Node Templating:</strong>
+     * <br>Templates have hierarchy and can contain area content. Resolution order: parent templates → child templates → main resource.
+     * <br>Example: <code>/modules/templateSet/base</code> → <code>/modules/templateSet/base/simple</code> → <code>/sites/mySite/home/myPage</code>
+     * <p>
+     * <strong>JS Templating:</strong>
+     * <br>No template hierarchy. Area content only resolved by the main resource node (page).
+     * <br>Example: <code>/sites/mySite/home/myPage</code>
+     * <p>
+     * <strong>jExperience A/B Testing:</strong>
+     * <br>Inserts template nodes in the resolution chain for page variants using <code>template.next</code>.
+     * <br>JCR example: <code>/modules/templateSet/base</code> → <code>/modules/templateSet/base/simple</code> → <code>/sites/mySite/home/myPage/variant1</code> → <code>/sites/mySite/home/myPage</code>
+     * <br>JS example: <code>/sites/mySite/home/myPage/variant1</code> → <code>/sites/mySite/home/myPage</code>
+     * <p>
+     * The variant node resolves area content, with the main page as fallback.
      */
     private void findNodeForRelativeAreaPath(RenderContext renderContext, Resource mainResource, Resource currentResource) throws RepositoryException, IOException {
         // Build the lookup stack, the list of element order in the lookup priority
@@ -503,18 +496,16 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     /**
-     * To be called before rendering the area content.
-     * Used to store the template that was able to resolve the area content.
-     * If the area content was not resolved from any template (area content is in main resource for example,
-     * but also absolute areas, main resource display),
-     * then the templateNode will be null and this is expected.
+     * Call this before rendering the area content!
+     * <p>
+     * This method stores the template that was able to resolve the area content. If the area wasn't resolved from any template
+     * (for example, if it's in the main resource or an absolute area), the <code>templateNode</code> will be <code>null</code>, and that's totally fine.
      * <br>
-     * Mostly used for relative areas and the template hierarchy. For example:
-     * template base -> template home -> template simple -> main resource
-     * if the area content is resolved in template simple, then the templateNode will be set to template simple.
-     * See will store the template simple in the cache key of the current rendered resource and subsequent resources.
-     * Which will speed up next resolution in case a fragment need to be re-generated.
-     * then it will spare lookup in: template base, template home.
+     * This is especially useful for relative areas and template hierarchies.
+     * <br>
+     * For example:
+     * in the following template hierarchy: template base -> template home -> template simple -> main resource
+     * if the area is found in "template simple", we'll persist that in the cache key, so next time we can skip checking "template base" and "template home".
      */
     private void setResolvedTemplate(Template templateNode) {
         pageContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, templateNode);
@@ -529,12 +520,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     @Override
     public int doEndTag() throws JspException {
-        Object originalInArea = pageContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA);
+        Object previousInArea = pageContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_IN_AREA);
         templateNode = (Template) pageContext.getRequest().getAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE);
         try {
             return super.doEndTag();
         } finally {
-            pageContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_RESOLVED_TEMPLATE, templateNode);
+            setResolvedTemplate(templateNode);
             if (logger.isDebugEnabled()) {
                 logger.debug("Restoring previous template {}", (templateNode != null ? templateNode.serialize() : "none"));
             }
@@ -542,14 +533,16 @@ public class AreaTag extends ModuleTag implements ParamParent {
             level = null;
             areaAsSubNode = false;
             areaType = "jnt:contentList";
-            pageContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, originalInArea);
+            pageContext.getRequest().setAttribute(TemplateNodeFilter.ATTR_IN_AREA, previousInArea);
             pageContext.getRequest().removeAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH);
         }
     }
 
     @Override
     protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
-        if (canEdit(renderContext) || !isEmptyArea() || path == null || Constants.LIVE_MODE.equals(renderContext.getMode()) || Constants.PREVIEW_MODE.equals(renderContext.getMode())) {
+        if (canEdit(renderContext) || !isEmptyArea() || path == null ||
+                Constants.LIVE_MODE.equals(renderContext.getMode()) ||
+                Constants.PREVIEW_MODE.equals(renderContext.getMode())) {
             super.render(renderContext, resource);
         }
     }

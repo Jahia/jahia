@@ -85,12 +85,9 @@ public class DefaultPostAction extends Action {
     public void setLoggingService(MetricsLoggingService loggingService) {
         this.loggingService = loggingService;
     }
-
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  final JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        JCRNodeWrapper newNode = null;
+    
+    protected JCRNodeWrapper resolveParent(JCRSessionWrapper session, URLResolver urlResolver, String missingParentType, boolean createMissingParents) throws RepositoryException {
         String[] subPaths = Patterns.SLASH.split(urlResolver.getPath());
-        String lastPath = subPaths[subPaths.length - 1];
         JCRNodeWrapper node = null;
         StringBuilder realPath = new StringBuilder();
         String startPath = "";
@@ -125,16 +122,29 @@ public class DefaultPostAction extends Action {
                             if (!node.isCheckedOut()) {
                                 session.checkout(node);
                             }
-                            String parentType = "jnt:contentList";
-                            if (parameters.containsKey(Render.PARENT_TYPE)) {
-                                parentType = parameters.get(Render.PARENT_TYPE).get(0);
+                            if (createMissingParents) {
+                                node = node.addNode(subPath, missingParentType);
+                            } else {
+                                // return last existing node.
+                                return node;
                             }
-                            node = node.addNode(subPath, parentType);
                         }
                     }
                 }
             }
         }
+
+        return node;
+    }
+
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
+                                  final JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+        JCRNodeWrapper newNode = null;
+        String[] subPaths = Patterns.SLASH.split(urlResolver.getPath());
+        String lastPath = subPaths[subPaths.length - 1];
+
+        String missingParentType = parameters.containsKey(Render.PARENT_TYPE) ? parameters.get(Render.PARENT_TYPE).get(0) : "jnt:contentList";
+        JCRNodeWrapper node = resolveParent(session, urlResolver, missingParentType, true);
         if (node != null) {
             String nodeType = null;
             if (parameters.containsKey(Render.NODE_TYPE)) {

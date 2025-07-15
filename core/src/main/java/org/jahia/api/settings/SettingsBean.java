@@ -195,6 +195,10 @@ public interface SettingsBean {
 
     long getJahiaFileUploadCountMax();
 
+    default  boolean isJahiaSecuredFileUpload() {
+        return true;
+    }
+
     /**
      * @deprecated since 7.0.0.2
      */

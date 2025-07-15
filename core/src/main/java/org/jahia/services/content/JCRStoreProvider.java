@@ -206,24 +206,24 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.repositoryName = repositoryName;
     }
 
-    @Deprecated(since = "8.2.2.0", forRemoval = true)
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public String getFactory() {
         // no longer supported, will be removed in a future release
         return null;
     }
 
-    @Deprecated(since = "8.2.2.0", forRemoval = true)
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setFactory(String factory) {
         // no longer supported, will be removed in a future release
     }
 
-    @Deprecated(since = "8.2.2.0", forRemoval = true)
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public String getUrl() {
         // no longer supported, will be removed in a future release
         return null;
     }
 
-    @Deprecated(since = "8.2.2.0", forRemoval = true)
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setUrl(String url) {
         // no longer supported, will be removed in a future release
     }
@@ -255,13 +255,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.authenticationType = authenticationType;
     }
 
-    @Deprecated(since = "8.2.2.0", forRemoval = true)
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public String getRmibind() {
         // no longer supported, will be removed in a future release
         return null;
     }
 
-    @Deprecated(since = "8.2.2.0", forRemoval = true)
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setRmibind(String rmibind) {
         // no longer supported, will be removed in a future release
     }

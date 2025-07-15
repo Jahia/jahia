@@ -478,7 +478,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return parameters;
     }
 
-    @Deprecated(since = "8.2.2.0", forRemoval = true)
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     private String xssFilter(String stringValue) {
         // fail fast if we find no start or end of a tag
         if (!stringValue.contains("<") && !stringValue.contains(">")) {

@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>docker-parent-core</artifactId>
-        <version>8.2.2.0-SNAPSHOT</version>
+        <version>8.2.3.0-SNAPSHOT</version>
     </parent>
     <artifactId>docker-jahia-core</artifactId>
     <modelVersion>4.0.0</modelVersion>
@@ -113,7 +113,7 @@
         <profile>
             <!-- IMPORTANT:
                  This profile uses buildx to build multi-platform images with ISOLATED build contexts, which does NOT access local images directly.
-                 So even if you have a custom Docker image jahia/jahia-core-dev:8.2.2.0-SNAPSHOT locally, buildx will always pull the one from Docker hub.
+                 So even if you have a custom Docker image jahia/jahia-core-dev:8.2.3.0-SNAPSHOT locally, buildx will always pull the one from Docker hub.
                  If you want to build Docker images locally using the cache, use the "docker-core-plugin-dev" profile instead.
              -->
             <id>docker-core-plugin</id>
@@ -162,7 +162,7 @@
         <profile>
             <!-- IMPORTANT:
                  This profile uses buildx to build multi-platform images with ISOLATED build contexts, which does NOT access local images directly.
-                 So even if you have a custom Docker image jahia/jahia-core-dev:8.2.2.0-SNAPSHOT locally, buildx will always pull the one from Docker hub.
+                 So even if you have a custom Docker image jahia/jahia-core-dev:8.2.3.0-SNAPSHOT locally, buildx will always pull the one from Docker hub.
                  If you want to build Docker images locally using the cache, use the "docker-core-plugin-dev" profile instead.
              -->
             <id>docker-core-plugin-amd64-only</id>

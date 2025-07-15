@@ -79,7 +79,7 @@ public final class PersistentBundleInfoBuilder {
 
     /**
      * Parses the supplied resource and builds the information for the bundle.
-     * Since Jahia 8.2.2.0 persistent bundle can only be a Jahia module
+     * Since Jahia 8.2.3.0 persistent bundle can only be a Jahia module
      *
      * @param resource The bundle resource
      * @param calculateChecksum should we calculate the resource checksum?

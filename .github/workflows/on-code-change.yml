@@ -283,7 +283,7 @@ jobs:
 
   call-workflow-jahia-pack:
     needs: [ build ]
-    uses: Jahia/jahia-pack-private/.github/workflows/do-it-all.yml@JAHIA-8-2-1-X-BRANCH
+    uses: Jahia/jahia-pack-private/.github/workflows/do-it-all.yml@JAHIA-8-2-2-X-BRANCH
     if: ${{ github.event_name != 'pull_request' }}
     secrets: inherit
     with:

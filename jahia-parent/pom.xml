@@ -207,7 +207,7 @@
         </jahia.modules.bundle.removeheaders>
         <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
 
-        <graphql-java.version>13.0</graphql-java.version>
+        <graphql-java.version>13.0.jahia1</graphql-java.version>
         <graphql-java-annotations.version>7.2.1</graphql-java-annotations.version>
         <graphql-java-servlet.version>9.1.0</graphql-java-servlet.version>
     </properties>

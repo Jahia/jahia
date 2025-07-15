@@ -59,6 +59,8 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,10 +90,32 @@ public class FileUpload {
     private Map<String, DiskFileItem> files;
     private Map<String, DiskFileItem> filesByFieldName;
 
-    private HttpServletRequest req;
+    private final HttpServletRequest req;
 
     private String savePath = "";
-    private String encoding;
+    private final String encoding;
+    private boolean allowsFiles = true;
+
+    /**
+     * Constructor
+     *
+     * @param req
+     * @param savePath the path where files should be saved
+     * @param fileMaxSize the max size of file to upload
+     * @param allowsFiles allows files to be uploaded or not (true by default)
+     */
+    public FileUpload(final HttpServletRequest req,
+                      final String savePath,
+                      final int fileMaxSize,
+                      boolean allowsFiles)
+            throws IOException {
+
+        this.req = req;
+        this.savePath = savePath;
+        this.encoding = UTF_8;
+        this.allowsFiles = allowsFiles;
+        init();
+    }
 
     /**
      * Constructor
@@ -157,7 +181,7 @@ public class FileUpload {
                 FileItemIterator iter = upload.getItemIterator(req);
                 DiskFileItemFactory factory = null;
                 while (iter.hasNext()) {
-                    factory = prepareUploadFileItem(iter.next(), factory);
+                    factory = prepareUploadFileItem(iter.next(), factory, JCRSessionFactory.getInstance().getCurrentUser());
                 }
             } catch (FileUploadException ioe) {
                 throw new IOException(ioe.getMessage(), ioe);
@@ -170,7 +194,7 @@ public class FileUpload {
         }
     }
 
-    private DiskFileItemFactory prepareUploadFileItem(FileItemStream item, DiskFileItemFactory factory) throws FileUploadException, IOException {
+    private DiskFileItemFactory prepareUploadFileItem(FileItemStream item, DiskFileItemFactory factory, JahiaUser user) throws FileUploadException, IOException {
         try (InputStream stream = item.openStream()) {
             if (item.isFormField()) {
                 final String name = item.getFieldName();
@@ -184,6 +208,13 @@ public class FileUpload {
                 v.add(Streams.asString(stream, encoding));
                 paramsContentType.put(name, item.getContentType());
             } else {
+                if (!allowsFiles) {
+                    logger.warn("File upload rejected user=[{}], enable debug log level for more details", user.getUsername());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("File uploaded rejected user=[{}] formField=[{}] fileName=[{}], requestURI=[{}]", user.getUsername(), item.getFieldName(), item.getName(), req.getRequestURI());
+                    }
+                    return factory;
+                }
                 if (factory == null) {
                     factory = new DiskFileItemFactory();
                     factory.setSizeThreshold(1);
@@ -202,8 +233,14 @@ public class FileUpload {
                 final FileItemHeaders fih = item.getHeaders();
                 fileItem.setHeaders(fih);
                 if (fileItem.getSize() > 0) {
+                    String tmpFileName = fileItem.getStoreLocation().getName();
                     files.put(fileItem.getStoreLocation().getName(), fileItem);
                     filesByFieldName.put(fileItem.getFieldName(), fileItem);
+                    logger.info("File uploaded user=[{}] tmpFile=[{}]", user.getUsername(), tmpFileName);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("File uploaded user=[{}] tmpFile=[{}] formField=[{}] fileName=[{}], requestURI=[{}]",
+                                user.getUsername(), tmpFileName, item.getFieldName(), item.getName(), req.getRequestURI());
+                    }
                 }
             }
         }

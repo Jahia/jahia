@@ -195,7 +195,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private transient String workspace;
     private transient MetricsLoggingService loggingService;
     private transient JahiaTemplateManagerService templateService;
-    private transient Action defaultPostAction;
+    private transient DefaultPostAction defaultPostAction;
     private transient Action defaultPutAction;
     private transient Action defaultDeleteAction;
     private transient Action webflowAction;
@@ -346,18 +346,23 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             return;
         }
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-        if (checkForUploadedFiles(req, resp, urlResolver.getWorkspace(), urlResolver.getLocale(), parameters, urlResolver)) {
+
+        // LEGACY CASE: old file upload implem, not secured, but can be re-enabled in by configuration.
+        // - Handling a mix of all cases: contribute mode, jcrTargetDirectory, ajax upload, default post action setup, all in one method mixed impossible to maintain 75% is dead code
+        // - in secured mode, old implem is replaced by a simplified version that is only handling file upload from Ajax requests because it's secured.
+        if ((!settingsBean.isJahiaSecuredFileUpload() && checkForUploadedFiles(req, resp, urlResolver.getWorkspace(), urlResolver.getLocale(), parameters, urlResolver)) ||
+                // CASE 1: Ajax file upload is the only one secured by permission check on targeted directory
+                (settingsBean.isJahiaSecuredFileUpload() && checkForSecuredAjaxFileUpload(req, resp, urlResolver.getWorkspace(), urlResolver.getLocale(), urlResolver))) {
             if (parameters.isEmpty()) {
+                // return early, most of the time it means that the request was an Ajax file upload request
                 return;
             }
         }
-        if (parameters.isEmpty()) {
-            parameters = toParameterMapOfListOfString(req);
-        }
 
         Action action;
-        Resource resource = null;
-        if (urlResolver.getPath().endsWith(".do") || isWebflowRequest(req)) {
+        Resource resource;
+        boolean isWebflowRequest = isWebflowRequest(req);
+        if (urlResolver.getPath().endsWith(".do") || isWebflowRequest) {
             resource = urlResolver.getResource();
             renderContext.setMainResource(resource);
             try {
@@ -366,10 +371,32 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 logger.warn("Cannot get site for action context", e);
             }
 
-            if (isWebflowRequest(req)) {
+            if (isWebflowRequest) {
+                // CASE 2: Webflow request, mostly used for admin UI, in secured mode:
+                // - only allow files from the multipart request for server settings and site settings.
                 action = webflowAction;
+                if (settingsBean.isJahiaSecuredFileUpload() && isMultipartRequest(req)) {
+                    boolean allowsMultipartFiles = renderContext.isEditMode() && resource.getNode() !=null &&
+                            (resource.getNode().isNodeType("jnt:globalSettings") || resource.getNode().isNodeType("jnt:virtualsite") );
+                    securedMultiPartRequestParsing(req, allowsMultipartFiles, parameters);
+                }
             } else {
+                // CASE 3: Regular action request, we don't know what could be the usage of the multipart request elements in the action, in secured mode:
+                // - ensure action at least required authenticated users OR requires permissions AND then enforce action requirements check and control !
+                //   <template:tokenizedForm> is not affecting this security check and will not be able to bypass it.
                 action = templateService.getActions().get(resource.getResolvedTemplate());
+                if (action != null) {
+                    if (settingsBean.isJahiaSecuredFileUpload() && isMultipartRequest(req)) {
+                        boolean allowsMultipartFiles = false;
+                        try {
+                            checkActionRequirements(action, renderContext, urlResolver);
+                            allowsMultipartFiles = (action.isRequireAuthenticatedUser() || StringUtils.isNotEmpty(action.getRequiredPermission()));
+                        } catch (Exception e) {
+                            // Action requirement check failed, we ignore and simply don't allow multipart files in the request.
+                        }
+                        securedMultiPartRequestParsing(req, allowsMultipartFiles, parameters);
+                    }
+                }
             }
         } else {
             final String path = urlResolver.getPath();
@@ -397,14 +424,33 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 renderContext.setSite(site);
             } catch (RepositoryException e) {
             }
+
+            // CASE 4: Default post action, is aimed to created/modify a node, we will resolve the targeted parent node, and check permissions on it.
             action = defaultPostAction;
+            if (settingsBean.isJahiaSecuredFileUpload() && isMultipartRequest(req)) {
+                boolean allowsMultipartFiles = false;
+                try {
+                    JCRNodeWrapper resolvedParent = defaultPostAction.resolveParent(resource.getNode().getSession(), urlResolver, null, false);
+                    if (resolvedParent != null) {
+                        allowsMultipartFiles = resolvedParent.hasPermission("jcr:addChildNodes");
+                    }
+                } catch (Exception e) {
+                    // error resolving parent, we ignore and simply don't allow multipart files in the request.
+                }
+                securedMultiPartRequestParsing(req, allowsMultipartFiles, parameters);
+            }
         }
+
         if (action == null) {
             if (urlResolver.getPath().endsWith(".do")) {
                 logger.error("Couldn't resolve action named [" + resource.getResolvedTemplate() + "]");
             }
             resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
         } else {
+            if (parameters.isEmpty()) {
+                // happens in case request is not multipart, queryString parameters are used in this case.
+                parameters = toParameterMapOfListOfString(req);
+            }
             doAction(req, resp, urlResolver, renderContext, resource, action, parameters);
         }
     }
@@ -480,6 +526,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return outputDocument.toString();
     }
 
+    /**
+     * Very unsecure, will allow any files from multipart requests, storing them on file system in temporary folder..
+     * Do not use unless you know what you are doing.
+     * @deprecated
+     */
+    @Deprecated
     private boolean checkForUploadedFiles(HttpServletRequest req, HttpServletResponse resp, String workspace,
                                           Locale locale, Map<String, List<String>> parameters,
                                           URLResolver urlResolver)
@@ -628,6 +680,141 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
 
         return false;
+    }
+
+    /**
+     * New method extracted from previous checkForUploadedFiles method to handle Ajax file upload only
+     * As we are able to check for permissions on the target directory before processing the multipart request, we can allows file upload accordingly.
+     */
+    private boolean checkForSecuredAjaxFileUpload(HttpServletRequest req, HttpServletResponse resp, String workspace,
+                                                  Locale locale, URLResolver urlResolver) throws RepositoryException {
+
+        boolean isAction = urlResolver.getPath().endsWith(".do");
+        final String requestWith = req.getHeader("x-requested-with");
+        boolean isAjaxRequest =
+                req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null &&
+                        requestWith.contains("XMLHttpRequest");
+
+        if (isMultipartRequest(req) && !isAction && isAjaxRequest) {
+            try {
+                List<String> uuids = new LinkedList<>();
+                List<String> urls = new LinkedList<>();
+
+                String path = urlResolver.getPath();
+                String target = path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path;
+
+                JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(workspace, locale);
+                final JCRNodeWrapper targetDirectory = session.getNode(target);
+
+                FileUpload fileUpload = securedMultiPartRequestParsing(req, targetDirectory.hasPermission("jcr:addChildNodes"), null);
+                if (fileUpload.getFileItems() != null && !fileUpload.getFileItems().isEmpty()) {
+
+                    boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) && (fileUpload.getParameterValues(VERSION))[0].equals("true");
+
+                    final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
+                    for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
+                        //if node exists, do a checkout before
+                        String name = itemEntry.getValue().getName();
+
+                        if (fileUpload.getParameterNames().contains(TARGETNAME)) {
+                            name = (fileUpload.getParameterValues(TARGETNAME))[0];
+                        }
+
+                        name = JCRContentUtils.escapeLocalNodeName(FilenameUtils.getName(name));
+
+                        JCRNodeWrapper fileNode = targetDirectory.hasNode(name) ?
+                                targetDirectory.getNode(name) : null;
+                        if (fileNode != null && isVersionActivated) {
+                            session.checkout(fileNode);
+                        }
+                        // checkout parent directory
+                        session.checkout(targetDirectory);
+                        InputStream is = null;
+                        JCRNodeWrapper wrapper = null;
+                        try {
+                            is = itemEntry.getValue().getInputStream();
+                            wrapper = targetDirectory.uploadFile(name, is, JCRContentUtils
+                                    .getMimeType(name, itemEntry.getValue()
+                                            .getContentType()));
+                        } finally {
+                            IOUtils.closeQuietly(is);
+                        }
+                        uuids.add(wrapper.getIdentifier());
+                        urls.add(wrapper.getAbsoluteUrl(req));
+                        if (isVersionActivated) {
+                            if (!wrapper.isVersioned()) {
+                                wrapper.versionFile();
+                            }
+                            session.save();
+                            // Handle potential move of the node after save
+                            wrapper = session.getNodeByIdentifier(wrapper.getIdentifier());
+                            wrapper.checkpoint();
+                        }
+                    }
+                    fileUpload.disposeItems();
+                    fileUpload.markFilesAsConsumed();
+                    session.save();
+
+                    try {
+                        resp.setStatus(HttpServletResponse.SC_CREATED);
+                        Map<String, Object> map = new LinkedHashMap<String, Object>();
+                        map.put("uuids", uuids);
+                        map.put("urls", urls);
+                        JSONObject nodeJSON = new JSONObject(map);
+                        nodeJSON.write(resp.getWriter());
+                        return true;
+                    } catch (JSONException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            } catch (IOException e) {
+                logger.error("Cannot parse multipart data for ajax file upload !", e);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Parses the multipart request and returns a FileUpload object if the request is multipart.
+     * If the request is not multipart, it returns null.
+     * Prior to calling this method,
+     * - ensure that the request is indeed multipart by using: isMultipartRequest(req).
+     * - calculate and check all necessary permissions and protection to allow or disallow files in the multipart request.
+     *
+     * @param req the HttpServletRequest
+     * @param allowsFiles whether files are allowed in the multipart request
+     * @param parameters a map to store parameters from the multipart request
+     * @return a FileUpload object or null if the request is not multipart
+     * @throws IOException if an I/O error occurs
+     */
+    private FileUpload securedMultiPartRequestParsing(HttpServletRequest req, boolean allowsFiles, Map<String, List<String>> parameters) throws IOException {
+        // check if we already have a FileUpload processed in the request
+        FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
+        if (fileUpload == null) {
+            final String savePath = settingsBean.getTmpContentDiskPath();
+            final File tmp = new File(savePath);
+            if (!tmp.exists()) {
+                tmp.mkdirs();
+            }
+
+            fileUpload = new FileUpload(req, savePath, Integer.MAX_VALUE, allowsFiles);
+            req.setAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE, fileUpload);
+            if (fileUpload.getParameterMap() != null && parameters != null) {
+                parameters.putAll(fileUpload.getParameterMap());
+
+                // compatibility with old file upload code (mostly used by DefaultPostAction)
+                if (fileUpload.getParameterNames().contains(TARGETDIRECTORY)) {
+                    List<String> files = new ArrayList<>();
+                    final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
+                    for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
+                        files.add(itemEntry.getValue().getName());
+                    }
+                    parameters.put(NODE_NAME, files);
+                }
+            }
+        }
+        return fileUpload;
     }
 
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
@@ -996,7 +1183,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             tokenResult = TokenChecker.checkToken(req, resp, parameters);
         }
 
-
         switch (tokenResult) {
             case TokenChecker.NO_TOKEN:
                 break;
@@ -1163,7 +1349,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         this.sessionExpiryTime = sessionExpiryTime;
     }
 
-    public void setDefaultPostAction(Action defaultPostActionResult) {
+    public void setDefaultPostAction(DefaultPostAction defaultPostActionResult) {
         this.defaultPostAction = defaultPostActionResult;
     }
 

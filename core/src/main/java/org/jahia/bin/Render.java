@@ -797,7 +797,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
                         files.add(itemEntry.getValue().getName());
                     }
-                    parameters.put(NODE_NAME, files);
+                    if (!files.isEmpty()) {
+                        parameters.put(NODE_NAME, files);
+                    }
                 }
             }
         }

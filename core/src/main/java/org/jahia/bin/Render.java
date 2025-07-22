@@ -794,16 +794,25 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (fileUpload.getParameterMap() != null && parameters != null) {
                 parameters.putAll(fileUpload.getParameterMap());
 
-                // compatibility with old file upload code (mostly used by DefaultPostAction)
-                if (fileUpload.getParameterNames().contains(TARGETDIRECTORY)) {
-                    List<String> files = new ArrayList<>();
-                    final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
-                    for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
-                        files.add(itemEntry.getValue().getName());
-                    }
-                    if (!files.isEmpty()) {
-                        parameters.put(NODE_NAME, files);
-                    }
+                if (parameters.containsKey(TARGETDIRECTORY)) {
+
+                    /*
+                     * Handle edge case in secured mode:
+                     *
+                     * When jcrTargetDirectory parameter is present but ignored in secured mode,
+                     * uploaded files may not be consumed as expected, potentially causing
+                     * conflicts in the fallback subsystem (mainly default post action).
+                     *
+                     * Solution: If the request contains jcrTargetDirectory, consume the files
+                     * immediately, even if the parameter is ignored. This prevents downstream
+                     * conflicts since we've already verified the request is secured.
+                     *
+                     * Note: We cannot detect jcrTargetDirectory before parsing the multipart
+                     * request, but at this point we trust the request security due to prior checks.
+                     * Reference: https://github.com/Jahia/jahia-private/issues/4043
+                     */
+                    fileUpload.disposeItems();
+                    fileUpload.markFilesAsConsumed();
                 }
             }
         }

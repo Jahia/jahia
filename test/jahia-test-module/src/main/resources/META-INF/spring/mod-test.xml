@@ -155,6 +155,7 @@
                 <value>testExceptionsFromRemapping(org.apache.jackrabbit.test.api.NamespaceRemappingTest)</value>
                 <value>testGetNamespacePrefixes(org.apache.jackrabbit.test.api.NamespaceRemappingTest)</value>
                 <value>testNamespaceRemapping(org.apache.jackrabbit.test.api.NamespaceRemappingTest)</value>
+                <value>testPrefixRemapping(org.apache.jackrabbit.test.api.NamespaceRemappingTest)</value>
                 <value>testSaveReferentialIntegrityException(org.apache.jackrabbit.test.api.NodeUUIDTest)</value>  <!-- Jahia only supports weak references -->
                 <value>testAddNodeRepositoryExceptionSaveOnNewNode(org.apache.jackrabbit.test.api.NodeTest)</value>  <!-- Node.save() is deprecated anyway -->
                 <value>testSaveOnNewNodeRepositoryException(org.apache.jackrabbit.test.api.NodeTest)</value> <!-- Node.save() is deprecated anyway -->

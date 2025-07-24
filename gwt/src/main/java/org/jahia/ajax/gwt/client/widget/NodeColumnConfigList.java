@@ -184,6 +184,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     };
 
+    public static final DateTimeFormat DATE_TIME_FORMAT = DateTimeFormat.getFormat("MMM dd, yyyy, hh:mm a");
+
     public static final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1,
                              ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
@@ -199,12 +201,17 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                         if (strings.length == 2) {
                             String s1;
                             if (strings[0].contains("published")) {
-                                s1 = Messages.get("label.version.published", "published at");
+                                s1 = Messages.get("label.version.published", "Compare current staging version with published version on");
                             } else {
                                 s1 = Messages.get("label.version.uploaded", "uploaded at");
                             }
-                            value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
-                                    DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+
+                            if (version.getDate() != null) {
+                                value = value + s1 + " " + DATE_TIME_FORMAT.format(version.getDate());
+                            } else {
+                                value = value + s1 + " " + DATE_TIME_FORMAT.format(
+                                        DATE_TIME_FORMAT.parse(strings[1]));
+                            }
                         }
                     }
                     combo.add(value + " (" + version.getVersionNumber() + ")");

@@ -131,7 +131,7 @@ public class VersionViewer extends ContentPanel {
 
         final Label[] label = {null};
 
-        label[0] = new Label(("live".equals(workspace) ? Messages.get("label.live.version", "Live version") : Messages.get("label.staging.version", "Staging version"))+ " ");
+        label[0] = new Label(("live".equals(workspace) ? Messages.get("label.live.version", "Published version") : Messages.get("label.staging.version", "Current staging version"))+ " ");
 
         // combo box that allows to select the version
         if (displayVersionSelector) {
@@ -154,7 +154,8 @@ public class VersionViewer extends ContentPanel {
         }
 
         if (versionDate != null) {
-            restoreButton = new Button(Messages.get("label.restore", "Restore"));
+            restoreButton = new Button(Messages.get("label.restore", "Restore this version"));
+            restoreButton.setToolTip(Messages.get("label.live.version.tooltip", "This will replace your current staging version with the displayed published version"));
             restoreButton.addStyleName("button-restore");
             restoreButton.setEnabled(false);
             restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -186,7 +187,7 @@ public class VersionViewer extends ContentPanel {
             }
         });
 
-        final ToggleButton hButton = new ToggleButton(Messages.get("label.highlight", "Highligthing"));
+        final ToggleButton hButton = new ToggleButton(Messages.get("label.highlight", "Highlight changes"));
         hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent componentEvent) {

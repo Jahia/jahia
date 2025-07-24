@@ -75,6 +75,6 @@ public interface ChoiceListInitializer {
      * @return a list of ChoiceListValue object that contain the name, displayName and custom properties to render the
      * choicelist values in a user interface
      */
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
-                                                     Map<String, Object> context);
+    List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
+                                              Map<String, Object> context);
 }

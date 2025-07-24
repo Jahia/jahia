@@ -537,6 +537,8 @@
           class="org.jahia.services.content.nodetypes.initializers.NamespaceChoiceListInitializer"/>
     <bean id="siteLanguageInitializer"
           class="org.jahia.services.content.nodetypes.initializers.SiteLanguagesChoiceListInitializerImpl"/>
+    <bean id="nodeTypePropertiesChoiceListInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.NodeTypePropertiesChoiceListInitializer"/>
     <bean id="choiceListInitializers"
           class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService"
           factory-method="getInstance">
@@ -566,6 +568,7 @@
                 <entry key="namespace" value-ref="namespaceChoiceListInitializer"/>
                 <entry key="permissions" value-ref="permissionsInitializer"/>
                 <entry key="siteLanguage" value-ref="siteLanguageInitializer"/>
+                <entry key="nodetypeproperties" value-ref="nodeTypePropertiesChoiceListInitializer"/>
             </map>
         </property>
     </bean>

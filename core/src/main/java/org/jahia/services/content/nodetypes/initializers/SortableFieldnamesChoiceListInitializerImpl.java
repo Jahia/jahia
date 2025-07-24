@@ -68,7 +68,7 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceListRenderer implements ChoiceListInitializer {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatesChoiceListInitializerImpl.class);
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(SortableFieldnamesChoiceListInitializerImpl.class);
 
     private Set<String> excludedNodeTypes = Collections.emptySet();
 

@@ -34,7 +34,6 @@
             </activation>
             <properties>
                 <sonar.host.url>${env.SONAR_URL}</sonar.host.url>
-                <sonar.login>${env.SONAR_TOKEN}</sonar.login>
             </properties>
         </profile>
     </profiles>

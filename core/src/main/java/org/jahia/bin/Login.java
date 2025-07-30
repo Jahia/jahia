@@ -147,10 +147,14 @@ public class Login implements Controller {
                     }
                     String theme = "jahia-anthracite";
                     String pathToCheck = "/errors/" + theme + "/error_401.jsp";
+                    request.setCharacterEncoding("UTF-8");
+                    response.setCharacterEncoding("UTF-8");
+                    response.setContentType("text/html; charset=UTF-8");
                     if (request.getServletContext().getResource(pathToCheck) != null) {
                         request.getRequestDispatcher("/errors/" + theme + "/error_401.jsp").forward(request, response);
                         return null;
                     }
+
                     request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
                 }
             } else {

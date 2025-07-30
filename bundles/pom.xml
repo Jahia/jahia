@@ -78,6 +78,12 @@
     </modules>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -88,6 +94,10 @@
                         <instructions>
                             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                             <Bundle-Version>${project.version}</Bundle-Version>
+                            <Git-last-commit-id>${git.commit.id}</Git-last-commit-id>
+                            <Git-last-commit-time>${git.commit.time}</Git-last-commit-time>
+                            <Git-branch>${git.branch}</Git-branch>
+                            <Git-commit-desc>${git.commit.message.full}</Git-commit-desc>
                         </instructions>
                     </configuration>
                 </plugin>

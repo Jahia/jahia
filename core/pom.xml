@@ -1805,13 +1805,12 @@
             <version>1.2.3</version>
         </dependency>
     </dependencies>
-    <build>
 
+    <build>
         <plugins>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>4.0.0</version>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>get-the-git-infos</id>
@@ -1830,13 +1829,14 @@
                 <configuration>
                     <verbose>true</verbose>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
-                    </generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
                     <includeOnlyProperties>
                         <includeOnlyProperty>git.build.time</includeOnlyProperty>
                         <includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>
                     </includeOnlyProperties>
                     <commitIdGenerationMode>full</commitIdGenerationMode>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
                 </configuration>
             </plugin>
             <plugin>

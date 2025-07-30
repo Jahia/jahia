@@ -252,34 +252,8 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>4.0.0</version>
-                <executions>
-                    <execution>
-                        <id>get-the-git-infos</id>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <!-- see https://github.com/git-commit-id/git-commit-id-maven-plugin/blob/v4.0.0/maven/docs/using-the-plugin.md for configuration options -->
-                <configuration>
-                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                    <prefix>git</prefix>
-                    <verbose>false</verbose>
-                    <gitDescribe>
-                        <skip>false</skip>
-                        <always>false</always>
-                        <dirty>-dirty</dirty>
-                    </gitDescribe>
-                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
-                    <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
-                    <skip>${skip.git.commit.info}</skip>
-                    <excludeProperties>
-                        <excludeProperty>git.user.*</excludeProperty>
-                    </excludeProperties>
-                </configuration>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -300,8 +274,6 @@
                         <Specification-Vendor>${project.organization.name}</Specification-Vendor>
 
                         <!-- Git maven plugin manifest attributes -->
-                        <!-- see https://github.com/git-commit-id/git-commit-id-maven-plugin/blob/v4.0.0/maven/docs/using-the-plugin.md#generated-properties for available properties -->
-
                         <Git-last-commit-id>${git.commit.id}</Git-last-commit-id>
                         <Git-last-commit-time>${git.commit.time}</Git-last-commit-time>
                         <Git-branch>${git.branch}</Git-branch>

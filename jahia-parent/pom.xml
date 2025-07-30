@@ -741,7 +741,6 @@
                 </plugins>
             </build>
         </profile>
-
     </profiles>
 
     <distributionManagement>
@@ -1081,6 +1080,40 @@
                             <version>${groovy.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>io.github.git-commit-id</groupId>
+                    <artifactId>git-commit-id-maven-plugin</artifactId>
+                    <version>9.0.2</version>
+                    <!--
+                        Default configuration for OSGi manifests, for more information see:
+                        https://github.com/git-commit-id/git-commit-id-maven-plugin/tree/v9.0.2/docs
+                        -->
+                    <executions>
+                        <execution>
+                            <id>get-the-git-infos</id>
+                            <goals>
+                                <goal>revision</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+                        <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                        <prefix>git</prefix>
+                        <verbose>false</verbose>
+                        <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                        <gitDescribe>
+                            <skip>false</skip>
+                            <always>false</always>
+                            <dirty>-dirty</dirty>
+                        </gitDescribe>
+                        <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                        <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+                        <excludeProperties>
+                            <excludeProperty>git.user.*</excludeProperty>
+                        </excludeProperties>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

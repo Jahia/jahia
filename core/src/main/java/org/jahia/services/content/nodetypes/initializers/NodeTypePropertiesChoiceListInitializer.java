@@ -1,11 +1,16 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.Patterns;
 
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,13 +71,37 @@ public class NodeTypePropertiesChoiceListInitializer implements ChoiceListInitia
         String[] dependentPropertyNames = Patterns.COMMA.split(dependentProperties);
         for (String dependentPropertyName : dependentPropertyNames) {
             if (context.containsKey(dependentPropertyName)) {
+                // creation/edition: the dependent property is passed in the context (not persisted yet in the JCR)
                 Object value = context.get(dependentPropertyName);
                 if (value instanceof Collection) {
-                    builder.addNodeTypes(StringUtils.join((Collection<String>) value, ","));
+                    ((Collection<String>) value).forEach(builder::addNodeTypes);
                 } else if (value instanceof String) {
                     builder.addNodeTypes((String) value);
                 } else {
                     throw new IllegalStateException("Invalid context type for dependent property " + dependentPropertyName + ": " + value);
+                }
+            } else {
+                // reading: get the dependent property's value directly from the property of the context node
+                JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
+                if (contextNode != null) {
+                    try {
+                        if (contextNode.hasProperty(dependentPropertyName)) {
+                            JCRPropertyWrapper property = contextNode.getProperty(dependentPropertyName);
+                            // only support single-value and multi-value string properties
+                            if (property.getType() != PropertyType.STRING) {
+                                throw new IllegalStateException("Dependent property " + dependentPropertyName + " must be of type string");
+                            }
+                            if (property.isMultiple()) {
+                                for (Value value : property.getValues()) {
+                                    builder.addNodeTypes(value.getString());
+                                }
+                            } else {
+                                builder.addNodeTypes(property.getValue().getString());
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        throw new IllegalStateException("Failed to get dependent property " + dependentPropertyName + " from context", e);
+                    }
                 }
             }
         }

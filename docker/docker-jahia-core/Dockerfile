@@ -111,6 +111,7 @@ ENV RESTORE_MODULE_STATES="false" \
     CATALINA_BASE="${CATALINA_HOME}" \
     CATALINA_HOME="${CATALINA_HOME}" \
     CATALINA_TMPDIR="${CATALINA_HOME}/temp" \
+    CATALINA_CONTEXT="ROOT" \
     MAVEN_OPTS="-Xmx256m" \
     MAVEN_VER="${MAVEN_VER}" \
     PATH="/usr/local/graalvm/bin:${PATH}" \
@@ -171,7 +172,10 @@ RUN chmod +x /usr/local/bin/* ${CATALINA_HOME}/bin/setenv.sh
 COPY target/dependency/shared-libraries ${CATALINA_HOME}/lib
 COPY target/dependency/jdbc-drivers ${CATALINA_HOME}/lib
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package ${CATALINA_HOME}/digital-factory-data
-COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war ${CATALINA_HOME}/webapps/ROOT
+# During the build, simply copy the Jahia WAR folder to a temp folder (jahia-war/). At runtime, this folder will be copied to the deployment folder (under webapps/) specified by the CATALINA_CONTEXT env variable
+COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war ${CATALINA_HOME}/jahia-war
+# Grant permissions to the webapps/ folder so that the tomcat user can copy the Jahia WAR folder in it at runtime
+RUN chown -R ${C_USER}:${C_GROUP} ${CATALINA_HOME}/webapps
 COPY --chown=${C_USER}:${C_GROUP} target/configurator/configurator.jar /opt/jahia
 
 # Shell (fix hadolint DL4006) and runtime configuration

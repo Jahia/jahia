@@ -3,6 +3,17 @@
 if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     echo "Initial container startup, configuring Jahia..."
 
+    CONTEXT="${CATALINA_CONTEXT:-ROOT}"
+    if [[ ! "$CONTEXT" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+      echo "Error: '$CONTEXT' is not a valid context" >&2
+      exit 1
+    fi
+    JAHIA_CONTEXT_DIRECTORY="${CATALINA_HOME}/webapps/${CONTEXT}"
+    echo "Preparing Jahia context directory ${JAHIA_CONTEXT_DIRECTORY}..."
+    # Move the temp "jahia-war" folder to its final webapp directory (under webapps/)
+    # Note that the tomcat user does not have write permissions in ${CATALINA_HOME} (and should not for security reasons) so the content of the folder is moved instead of doing: mv "${CATALINA_HOME}/jahia-war" "${JAHIA_CONTEXT_DIRECTORY}"
+    (mkdir "${JAHIA_CONTEXT_DIRECTORY}" && mv "${CATALINA_HOME}/jahia-war"/* "${JAHIA_CONTEXT_DIRECTORY}/") || (echo "Error: Unable to prepare the Jahia context directory ${JAHIA_CONTEXT_DIRECTORY}" >&2 && exit 1)
+
     if [ -f "${DATA_FOLDER}/info/version.properties" ] || [ -d "${DATA_FOLDER}/bundles-deployed" ]; then
         echo "Previous installation detected. Do not override db and existing data. Checking write permissions..."
         PREVIOUS_INSTALL="true"
@@ -55,7 +66,7 @@ if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     fi
 
     echo "Update log4j..."
-    sed -i 's/ref="RollingJahia/ref="Jahia/' ${CATALINA_HOME}/webapps/ROOT/WEB-INF/etc/config/log4j2.xml
+    sed -i 's/ref="RollingJahia/ref="Jahia/' "${JAHIA_CONTEXT_DIRECTORY}/WEB-INF/etc/config/log4j2.xml"
 
     sed -i "s|#LOGS_FOLDER#|$LOGS_FOLDER|g;s|#LOG_MAX_DAYS#|$LOG_MAX_DAYS|g;s|#LOG_MAX_SIZE#|$LOG_MAX_SIZE|g" ${CATALINA_HOME}/conf/jahia_logrotate
 
@@ -124,6 +135,7 @@ if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     echo "processingServer=${PROCESSING_SERVER}" >> $PROPERTIES_FILE
     echo "operatingMode=${OPERATING_MODE}" >> $PROPERTIES_FILE
     echo "overwritedb=${OVERWRITEDB}" >> $PROPERTIES_FILE
+    echo "webAppDirName=${CONTEXT}" >> $PROPERTIES_FILE
     echo "jahiaProperties={${JAHIA_PROPERTIES}}" >> $PROPERTIES_FILE
     # Handle external opts
     echo "processing OPTS: ${JAHIA_CONFIGURE_OPTS}"

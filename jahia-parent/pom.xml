@@ -924,14 +924,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${site.plugin.version}</version>
-                    <configuration>
-                        <relativizeDecorationLinks>true</relativizeDecorationLinks>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.6.0</version>
                 </plugin>
@@ -1184,17 +1176,6 @@
                     </releaseProfiles>
                     <scmCommentPrefix>[skip ci] [maven-release-plugin]</scmCommentPrefix>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-descriptor</id>
-                        <goals>
-                            <goal>attach-descriptor</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

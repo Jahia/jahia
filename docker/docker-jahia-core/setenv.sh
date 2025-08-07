@@ -24,14 +24,27 @@ export CATALINA_OPTS="${CATALINA_OPTS} -Djavax.xml.validation.SchemaFactory:http
 # Prevent Karaf from intercepting sigterm
 export CATALINA_OPTS="${CATALINA_OPTS} -Dkaraf.handle.sigterm=false"
 
-#Set JVM modules access for some modules
-export CATALINA_OPTS="${CATALINA_OPTS} --add-modules java.se"
-export CATALINA_OPTS="${CATALINA_OPTS} --add-exports java.base/jdk.internal.ref=ALL-UNNAMED"
-export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
-export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/java.nio=ALL-UNNAMED"
-export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.base/sun.nio.ch=ALL-UNNAMED"
-export CATALINA_OPTS="${CATALINA_OPTS} --add-opens java.management/sun.management=ALL-UNNAMED"
-export CATALINA_OPTS="${CATALINA_OPTS} --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
-
 # Disable recycling of facade objects (Tomcat will create new facade object for each request.)
 export CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.connector.RECYCLE_FACADES=false"
+
+# Module system flags better use JDK_JAVA_OPTIONS (processed at JVM startup)
+# Set JVM modules access for some modules specific to Jahia/Karaf/GraalVM/etc...
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-modules=java.se"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/java.net=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/java.lang=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/java.nio=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.management/sun.management=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.instrumentation=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.object=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.strings=ALL-UNNAMED"
+export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.library=ALL-UNNAMED"

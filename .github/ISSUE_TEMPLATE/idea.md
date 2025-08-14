@@ -12,3 +12,7 @@ type: Idea
 ### Description of the idea
 
 
+### Related bugs / stories / ideas
+To be filled by PM when reviewing
+For customer issues, use the Jira tickets field at the project level
+

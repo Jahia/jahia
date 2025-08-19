@@ -47,6 +47,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSearchManager;
+import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
@@ -253,6 +254,7 @@ public class JahiaSearchIndex extends SearchIndex {
     protected void doInit() throws IOException {
         Set<Name> ignoredTypes = new HashSet<>();
         NameFactory nf = NameFactoryImpl.getInstance();
+        // Ignore version types for system index
         if (SKIP_VERSION_INDEX && isVersionIndex()) {
             ignoredTypes.add(nf.create(Name.NS_REP_URI, "versionStorage"));
             ignoredTypes.add(nf.create(Name.NS_NT_URI, "versionHistory"));
@@ -376,11 +378,13 @@ public class JahiaSearchIndex extends SearchIndex {
             }
         }
 
+        // In case of a system index, do the default indexation
         if (isVersionIndex()) {
             super.updateNodes(remove, add);
             return;
         }
 
+        // In case of a jahia index (default/live) handle special cases such as visibility nodes or ACLs
         final List<NodeState> addList = new ArrayList<>();
         final List<NodeId> removeList = new ArrayList<>();
         final Set<NodeId> removedIds = new HashSet<>();
@@ -416,6 +420,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
         boolean debugEnabled = log.isDebugEnabled();
 
+        // if the current node to be indexed has an ACL/ACE
         if (isAddAclUuidInIndex() && hasAclOrAce) {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
@@ -439,10 +444,8 @@ public class JahiaSearchIndex extends SearchIndex {
                         addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                         if (!topIdsRecursedForAcl.contains(nodeParent.getNodeId()) && !aclChangedList.contains(nodeParent.getNodeId())) {
                             long startTime = debugEnabled ? System.currentTimeMillis() : 0;
-
                             recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                             topIdsRecursedForAcl.add(node.getParentId());
-
                             if (debugEnabled) {
                                 log.debug("ACL updated {}. Recursed down the JCR tree to update the index in {} ms.",
                                         event != null ? event.getPath() : nodeParent.getId(),
@@ -582,6 +585,10 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private void recurseTreeForAclIdSetting(NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeId> aclChangedList, ItemStateManager itemStateManager) {
         for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
+            // Do not browse the version tree.
+            if (RepositoryImpl.VERSION_STORAGE_NODE_ID.equals(childNodeEntry.getId())) {
+                continue;
+            }
             try {
                 NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
                 boolean breakInheritance = false;
@@ -740,6 +747,9 @@ public class JahiaSearchIndex extends SearchIndex {
     }
 
     /**
+     * This checks if the index is handling version nodes by itself.
+     * Jackrabbit default index (system) is a version index.
+     * Live/Default index are not a version index.
      * Returns <code>true</code> if the current search index corresponds to the index of the version store.
      *
      * @return <code>true</code> if the current search index corresponds to the index of the version store

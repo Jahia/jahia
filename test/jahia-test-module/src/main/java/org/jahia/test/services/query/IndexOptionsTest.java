@@ -108,6 +108,25 @@ public class IndexOptionsTest {
     }
 
     @Test
+    public void sanityTest() throws Exception {
+        // Ensure that versioning nodes are not indexed.
+        JCRStoreService jcrService = ServicesRegistry.getInstance()
+                .getJCRStoreService();
+        JCRSessionWrapper session = jcrService.getSessionFactory()
+                .getCurrentUserSession();
+        QueryManager queryManager = session.getWorkspace()
+                .getQueryManager();
+
+        if (queryManager != null) {
+            String query = "select count as [rep:count()] from [rep:versionStorage]";
+            Query q = queryManager.createQuery(query, Query.JCR_SQL2);
+            QueryResult queryResult = q.execute();
+
+            assertEquals("[rep:versionStorage] shouldn't be indexed", 0, queryResult.getRows().nextRow().getValue("count").getLong());
+        }
+    }
+
+    @Test
     public void testNonIndexedFields() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
@@ -117,10 +136,10 @@ public class IndexOptionsTest {
             QueryManager queryManager = session.getWorkspace()
                     .getQueryManager();
 
-            if (queryManager != null) {
-                String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'nonindexed')";
-                Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                QueryResult queryResult = q.execute();
+        if (queryManager != null) {
+            String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'nonindexed')";
+            Query q = queryManager.createQuery(query, Query.JCR_SQL2);
+            QueryResult queryResult = q.execute();
 
                 assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));
 

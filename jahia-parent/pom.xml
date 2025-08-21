@@ -81,7 +81,7 @@
         <drools.version>6.0.0.Final-jahia2</drools.version>
         <hibernate.version>5.5.3.Final</hibernate.version>
         <hibernate.core.version>5.5.3.Final</hibernate.core.version>
-        <hibernate.validator.version>6.2.0.Final</hibernate.validator.version>
+        <hibernate.validator.version>6.2.5.Final</hibernate.validator.version>
         <camel.version>2.25.2</camel.version>
         <gwt.version.base>2.8.2</gwt.version.base>
         <gwt.version>${gwt.version.base}</gwt.version>

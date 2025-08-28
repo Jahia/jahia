@@ -99,11 +99,14 @@ public final class EncryptionUtils {
     /**
      * Created the Base64 encoded SHA-1 digest of the provided text. The method is introduced for compatibility with the password encryption
      * in Jahia prior to 6.5.
+     *  @deprecated in Jahia 7 a more robust PBKDF2 algorithm is used for password hashing.
+     *  The previous SHA-1 based algorithm is no longer used and this method is only kept for backward compatibility,
+     *  for users with passwords already hashed with SHA-1 in the system.
      * 
-     * @param source
-     *            the source text to be digested
+     * @param source the source text to be digested
      * @return the Base64 encoded SHA-1 digest of the provided text
      */
+    @Deprecated(since = "7.1.0.1", forRemoval = true)
     public static String sha1DigestLegacy(String source) {
         return org.jahia.commons.encryption.EncryptionUtils.sha1DigestLegacy(source);
     }

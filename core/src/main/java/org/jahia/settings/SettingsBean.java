@@ -494,6 +494,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             DatabaseUtils.setDatasource(dataSource);
 
+            initEncryptionUtils();
+
             initJcrSystemProperties();
 
             initStartupOptions();
@@ -567,6 +569,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         // if logging for Jericho is not explicitly enabled, we disable it by default
         if (!getBoolean("jahia.jericho.logging.enabled", false)) {
             Config.LoggerProvider = LoggerProvider.DISABLED;
+        }
+    }
+
+    private void initEncryptionUtils() {
+        String encryptorPassword = getString("jahia-commons.encryptor.password", null);
+        if (encryptorPassword != null) {
+            setSystemProperty("jahia-commons.encryptor.password", encryptorPassword);
+        }
+        String encryptorAlgorithm = getString("jahia-commons.encryptor.algorithm", null);
+        if (encryptorAlgorithm != null) {
+            setSystemProperty("jahia-commons.encryptor.algorithm", encryptorAlgorithm);
         }
     }
 

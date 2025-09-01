@@ -51,6 +51,7 @@ import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONObject;
@@ -61,7 +62,6 @@ import javax.jcr.Value;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import java.util.*;
 
@@ -143,13 +143,8 @@ public class DefaultPutAction extends Action {
             session.getWorkspace().getVersionManager().checkpoint(node.getPath());
         }
 
-        String sessionID = "";
-        HttpSession httpSession = req.getSession(false);
-        if (httpSession != null) {
-            sessionID = httpSession.getId();
-        }
         if (loggingService.isEnabled()) {
-            loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
+            loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), SessionIdHashingUtils.getHashedSessionId(req),
                     node.getIdentifier(), urlResolver.getPath(), primaryNodeTypeName, "nodeUpdated",
                     new JSONObject(req.getParameterMap()).toString());
         }

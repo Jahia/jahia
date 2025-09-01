@@ -69,6 +69,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.LimiterExecutor;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.jahia.utils.Url;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -268,14 +269,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     renderContext.getContentType() != null ? renderContext.getContentType() : getDefaultContentType(resource.getTemplateType()));
             resp.getWriter().print(out);
         }
-        String sessionID = "";
-        HttpSession httpSession = req.getSession(false);
-        if (httpSession != null) {
-            sessionID = httpSession.getId();
-        }
+
         loggingService.stopProfiler("MAIN");
         if (loggingService.isEnabled()) {
-            loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
+            loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), SessionIdHashingUtils.getHashedSessionId(req),
                     resource.getNode().getIdentifier(), resource.getNode().getPath(), resource.getNode().getPrimaryNodeType().getName(), "pageViewed",
                     req.getHeader("User-Agent"), req.getHeader("Referer"), Long.toString(System.currentTimeMillis() - startTime));
         }
@@ -919,12 +916,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             return null;
         }
         long startTime = System.currentTimeMillis();
-        String sessionId = null;
         try {
             final HttpSession session = req.getSession();
-            if (logger.isInfoEnabled()) {
-                sessionId = session.getId();
-            }
             URLResolver urlResolver = urlResolverFactory.createURLResolver(req.getPathInfo(), req.getServerName(), workspace, req);
 
             req.setAttribute("urlResolver", urlResolver);
@@ -1073,7 +1066,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     sb.append("] user=[").append(jcrSessionFactory.getCurrentUser().getUsername());
                 }
                 sb.append("] ip=[").append(req.getRemoteAddr()).append("] sessionID=[")
-                        .append(sessionId).append("] in [")
+                        .append(SessionIdHashingUtils.getHashedSessionId(req)).append("] in [")
                         .append(System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }

@@ -44,6 +44,7 @@ package org.jahia.bin;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bin.listeners.JahiaContextLoaderListener.HttpSessionDestroyedEvent;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -65,7 +66,7 @@ public abstract class SessionNamedDataStorageSupport<T> implements SessionNamedD
             removeIfExists(sessionID);
         } catch (Exception e) {
             // We still want to let other listeners receive the event, so just log to not interrupt general events processing.
-            logger.error("Error cleaning up HTTP session data, session ID: {}", sessionID);
+            logger.error("Error cleaning up HTTP session data, session ID: {}", SessionIdHashingUtils.getHashedSessionId(event));
         }
     }
 }

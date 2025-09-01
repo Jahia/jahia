@@ -44,6 +44,7 @@ package org.jahia.bin.errors;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -332,7 +333,7 @@ public class ErrorLoggingFilter implements Filter {
                     request.getRemoteAddr()).append("\nRemote port: ")
                     .append(request.getRemotePort()).append("\nRemote user: ")
                     .append(request.getRemoteUser()).append("\nSession ID: ")
-                    .append(request.getRequestedSessionId()).append("\nSession user: ")
+                    .append(SessionIdHashingUtils.getHashedSessionId(request, true)).append("\nSession user: ")
                     .append(getUserInfo(request)).append("\nRequest headers: ");
 
             @SuppressWarnings("unchecked")

@@ -53,6 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
@@ -124,11 +125,7 @@ public abstract class BaseFindController extends JahiaController {
             return null;
         }
         long startTime = System.currentTimeMillis();
-        String sessionId = null;
         try {
-            if (logger.isInfoEnabled()) {
-                sessionId = request.getSession().getId();
-            }
             if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
                 handle(request, response);
             } else if (request.getMethod().equals("OPTIONS")) {
@@ -147,7 +144,7 @@ public abstract class BaseFindController extends JahiaController {
                     sb.append("] user=[").append(user.getUsername());
                 }
                 sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[").append(
-                        sessionId).append("] in [").append(
+                        SessionIdHashingUtils.getHashedSessionId(request)).append("] in [").append(
                         System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }

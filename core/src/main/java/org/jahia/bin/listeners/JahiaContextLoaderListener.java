@@ -64,6 +64,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.Patcher;
 import org.jahia.utils.Patterns;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.jahia.utils.WebAppPathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -447,7 +448,7 @@ public class JahiaContextLoaderListener extends ContextLoaderListener implements
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        logger.debug("HTTP session created: {}", se.getSession().getId());
+        logger.debug("HTTP session created: {}", SessionIdHashingUtils.getHashedSessionId(se));
         sessionCount++;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
             HttpSessionCreatedEvent event = new HttpSessionCreatedEvent(se.getSession());
@@ -462,7 +463,7 @@ public class JahiaContextLoaderListener extends ContextLoaderListener implements
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        logger.debug("HTTP session destroyed: {}", se.getSession().getId());
+        logger.debug("HTTP session destroyed: {}", SessionIdHashingUtils.getHashedSessionId(se));
         sessionCount--;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
             HttpSessionDestroyedEvent event = new HttpSessionDestroyedEvent(se.getSession());

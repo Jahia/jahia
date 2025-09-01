@@ -43,6 +43,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -86,9 +87,9 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
  * Created : 8 mars 2010
  */
 public class Initializers extends JahiaController {
-    
+
     private static final String CONTROLLER_MAPPING = "/initializers";
-    
+
     private transient static Logger logger = LoggerFactory.getLogger(Initializers.class);
 
     public static String getInitializersServletPath() {
@@ -224,11 +225,7 @@ public class Initializers extends JahiaController {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long startTime = System.currentTimeMillis();
-        String sessionId = null;
         try {
-            if (logger.isInfoEnabled()) {
-                sessionId = request.getSession().getId();
-            }
             if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
                 handle(request, response);
             } else if (request.getMethod().equals("OPTIONS")) {
@@ -247,7 +244,7 @@ public class Initializers extends JahiaController {
                     sb.append("] user=[").append(user.getUsername());
                 }
                 sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[")
-                        .append(sessionId).append("] in [")
+                        .append(SessionIdHashingUtils.getHashedSessionId(request)).append("] in [")
                         .append(System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }

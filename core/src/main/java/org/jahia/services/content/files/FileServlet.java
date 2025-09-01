@@ -57,13 +57,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import net.sf.ehcache.Element;
 import org.apache.catalina.servlets.RangeUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
@@ -71,15 +68,13 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.observation.JahiaEventService;
-import org.jahia.services.render.SiteInfo;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -543,11 +538,9 @@ public class FileServlet extends HttpServlet {
         if (loggingService == null || !loggingService.isEnabled()) {
             return;
         }
-
-        HttpSession httpSession = req.getSession(false);
-        String sessionID = httpSession != null ? httpSession.getId() : req.getRequestedSessionId();
+        String hashedSessionId = SessionIdHashingUtils.getHashedSessionId(req, true);
         loggingService.logContentEvent(sessionFactory.getCurrentUser().getName(),
-                req.getRemoteAddr(), sessionID, "", fileKey.getPath(), "", "fileAccessed",
+                req.getRemoteAddr(), hashedSessionId, "", fileKey.getPath(), "", "fileAccessed",
                 status);
     }
 

@@ -60,6 +60,7 @@ import org.atmosphere.interceptor.SuspendTrackerInterceptor;
 import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -133,12 +134,12 @@ public class ManagedGWTResource {
             JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
             String userName = user != null ? user.getUsername() : null;
             logger.info("User's AtmosphereResource unexpectedly disconnected! user=[{}] session=[{}]", userName,
-                    session.getId());
+                    SessionIdHashingUtils.getHashedSessionId(session));
         } else if (event.isClosedByClient() && logger.isDebugEnabled()) {
             HttpSession session = event.getResource().getRequest().getSession();
             JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
             logger.debug("User closed the connection for AtmosphereResource! user=[{}] session=[{}]",
-                    user != null ? user.getUsername() : null, session.getId());
+                    user != null ? user.getUsername() : null, SessionIdHashingUtils.getHashedSessionId(session));
         }
         SpringContextSingleton.getInstance().publishEvent(new AtmosphereClientDisconnectedEvent(event.getResource()));
     }

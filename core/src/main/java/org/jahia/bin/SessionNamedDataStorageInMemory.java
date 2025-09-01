@@ -42,6 +42,8 @@
  */
 package org.jahia.bin;
 
+import org.jahia.utils.SessionIdHashingUtils;
+
 import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -76,7 +78,7 @@ public class SessionNamedDataStorageInMemory<T> extends SessionNamedDataStorageS
     public T getRequired(String sessionID, String name) {
         T data = get(sessionID, name);
         if (data == null) {
-            throw new IllegalArgumentException(MessageFormat.format("No session data found, session ID: {0}, name: {1}", sessionID, name));
+            throw new IllegalArgumentException(MessageFormat.format("No session data found, session ID: {0}, name: {1}", SessionIdHashingUtils.hashSessionId(sessionID), name));
         }
         return data;
     }
@@ -85,7 +87,7 @@ public class SessionNamedDataStorageInMemory<T> extends SessionNamedDataStorageS
     public void remove(String sessionID, String name) {
         ConcurrentHashMap<String, T> dataByName = sessionByID.get(sessionID);
         if (dataByName == null || dataByName.remove(name) == null) {
-            throw new IllegalArgumentException(MessageFormat.format("No session data found, session ID: {0}, name: {1}", sessionID, name));
+            throw new IllegalArgumentException(MessageFormat.format("No session data found, session ID: {0}, name: {1}", SessionIdHashingUtils.hashSessionId(sessionID), name));
         }
     }
 

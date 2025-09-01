@@ -52,13 +52,13 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Patterns;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.json.JSONObject;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -85,7 +85,7 @@ public class DefaultPostAction extends Action {
     public void setLoggingService(MetricsLoggingService loggingService) {
         this.loggingService = loggingService;
     }
-    
+
     protected JCRNodeWrapper resolveParent(JCRSessionWrapper session, URLResolver urlResolver, String missingParentType, boolean createMissingParents) throws RepositoryException {
         String[] subPaths = Patterns.SLASH.split(urlResolver.getPath());
         JCRNodeWrapper node = null;
@@ -210,18 +210,13 @@ public class DefaultPostAction extends Action {
             }
         }
 
-        String sessionID = "";
-        HttpSession httpSession = req.getSession(false);
-        if (httpSession != null) {
-            sessionID = httpSession.getId();
-        }
         String nodeIdentifier = null;
         if (newNode != null) {
             nodeIdentifier = newNode.getIdentifier();
         }
         if (loggingService.isEnabled()) {
             loggingService.logContentEvent(renderContext.getUser().getName(), req
-                    .getRemoteAddr(), sessionID, nodeIdentifier, urlResolver.getPath(), parameters.get(Render.NODE_TYPE).get(0), "nodeCreated", new JSONObject(parameters).toString());
+                    .getRemoteAddr(), SessionIdHashingUtils.getHashedSessionId(req), nodeIdentifier, urlResolver.getPath(), parameters.get(Render.NODE_TYPE).get(0), "nodeCreated", new JSONObject(parameters).toString());
         }
 
         if (newNode != null) {

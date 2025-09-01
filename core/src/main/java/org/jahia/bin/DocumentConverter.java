@@ -56,6 +56,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
@@ -199,7 +200,7 @@ public class DocumentConverter extends JahiaController {
             return null;
         }
 
-        ModelAndView result = null;
+        ModelAndView result;
 
         if (ServletFileUpload.isMultipartContent(request) || "get".equalsIgnoreCase(request.getMethod())) {
             long startTime = System.currentTimeMillis();
@@ -216,7 +217,7 @@ public class DocumentConverter extends JahiaController {
                                 jcrSessionFactory.getCurrentUser().getUsername());
                     }
                     sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[")
-                            .append(request.getSession().getId()).append("] in [")
+                            .append(SessionIdHashingUtils.getHashedSessionId(request)).append("] in [")
                             .append(System.currentTimeMillis() - startTime).append("ms]");
                     logger.info(sb.toString());
                 }

@@ -46,9 +46,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.profiler.Profiler;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * MetricsLoggingFilter
@@ -87,20 +86,15 @@ public class MetricsLoggingFilter extends AbstractFilter {
 
         String profilerName = "render module " + resource.getNodePath();
 
-        String sessionID = "";
-        HttpSession session = context.getRequest().getSession(false);
-        if (session != null) {
-            sessionID = session.getId();
-        }
 
         if (loggingService.isEnabled()) {
             if (resource.isNodeLoaded()) {
                 // The resource has its node loaded from JCR, so node properties are available immediately and can be accessed safely.
                 JCRNodeWrapper node = resource.getNode();
-                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate(), "the full render chain");
+                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), SessionIdHashingUtils.getHashedSessionId(context), node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate(), "the full render chain");
             } else {
                 // The resource does not have its node loaded from JCR, so we avoid accessing node properties to avoid loading it from JCR for better performance.
-                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, "", resource.getNodePath(), "", "moduleViewed", resource.getResolvedTemplate(), "the cache filter");
+                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), SessionIdHashingUtils.getHashedSessionId(context), "", resource.getNodePath(), "", "moduleViewed", resource.getResolvedTemplate(), "the cache filter");
             }
         }
 

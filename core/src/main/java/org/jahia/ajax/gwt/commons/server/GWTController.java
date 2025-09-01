@@ -42,40 +42,37 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.RPCRequest;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
-
 import com.google.gwt.user.server.rpc.impl.SerializabilityUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.bin.JahiaControllerUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RPC;
-import com.google.gwt.user.server.rpc.RPCRequest;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Spring MVC controller implementation to dispatch requests to GWT services.
@@ -123,23 +120,20 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     }
 
     @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
+    @Override
     public ModelAndView handleRequest(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+                                      HttpServletResponse response) throws Exception {
         long startTime = System.currentTimeMillis();
         if (allowPostMethodOnly && !"POST".equals(request.getMethod())) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        if (requireAuthenticatedUser
-                && JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())
-                || StringUtils.isNotEmpty(requiredPermission) && !isAllowed(request)) {
-            if (logger.isDebugEnabled()) {
-                JCRNodeWrapper targetNodeForPermissionCheck = getTargetNodeForPermissionCheck(request);
-                logger.debug("Access rejected to {}, authentication is required {} and user is {} or user is not allowed to access {} with permission {}",
-                        remoteServiceName, requireAuthenticatedUser,
-                        JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())?"guest":"not guest",
-                        targetNodeForPermissionCheck!=null?targetNodeForPermissionCheck.getPath():"no target node found for this request: "+request.getRequestURI(), requiredPermission);
-            }
+        if (JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())
+                || !isAllowed(request)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }
@@ -169,8 +163,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     /**
      * Checks the required permission to access the GWT service.
      *
-     * @param request
-     *            current HTTP request
+     * @param request current HTTP request
      * @return <code>true</code> if the current user is permitted to access the GWT service
      */
     private boolean isAllowed(HttpServletRequest request) {
@@ -183,14 +176,30 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             }
         }
 
-        boolean debugEnabled = logger.isDebugEnabled();
-        long startTime = debugEnabled ? System.currentTimeMillis() : 0;
         boolean allowed = false;
         try {
-            JCRNodeWrapper targetNode = getTargetNodeForPermissionCheck(request);
             JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
-            allowed = targetNode != null
-                    && JahiaControllerUtils.hasRequiredPermission(targetNode, currentUser, requiredPermission);
+            // Check on given site
+            String siteId = request.getParameter("site");
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+            if (StringUtils.isNotEmpty(siteId)) {
+                if (siteId.startsWith("/")) {
+                    allowed = JahiaControllerUtils.hasRequiredPermission(currentUserSession.getNode(siteId), currentUser, requiredPermission);
+                } else {
+                    allowed = JahiaControllerUtils.hasRequiredPermission(currentUserSession.getNodeByUUID(siteId), currentUser, requiredPermission);
+                }
+            }
+            // Check that the user has read access and required permission at least to one site
+            if (!allowed) {
+                for (JCRSiteNode siteNode : JahiaSitesService.getInstance().getSitesNodeList(currentUserSession)) {
+                    if (JahiaControllerUtils.hasRequiredPermission(siteNode, currentUser, requiredPermission)) {
+                        // One site match
+                        allowed = true;
+                        break;
+                    }
+                }
+            }
+
             if (session != null) {
                 if (allowed) {
                     session.setAttribute(SESSION_ATTRIBUTE_PERMISSION_CHECK, Boolean.TRUE);
@@ -198,57 +207,27 @@ public class GWTController extends RemoteServiceServlet implements Controller,
                     session.removeAttribute(SESSION_ATTRIBUTE_PERMISSION_CHECK);
                 }
             }
-            if (debugEnabled) {
-                logger.debug(
-                        "Checked permission for GWT service access and target node {} in {} ms."
-                                + " User {} with session {} is {}allowed to access it.",
-                        targetNode != null ? targetNode.getPath() : null,
-                        System.currentTimeMillis() - startTime, currentUser.getUsername(),
-                        session != null ? session.getId() : "undefined", allowed ? "" : "NOT ");
-            }
-        } catch (ItemNotFoundException e) {
-            // ignore
+        } catch (ItemNotFoundException | PathNotFoundException e) {
+            logger.debug("Item not found for User: {}, Site: {}, Path: {}",
+                    getCurrentUserSafely(),
+                    request.getParameter("site"),
+                    e.getMessage());
         } catch (RepositoryException e) {
-            logger.warn(e.getMessage(), e);
+            logger.warn("Repository error during permission check for user: {}, set this class in debug for more detail", getCurrentUserSafely());
+            logger.debug("site: {}. Error: {}",
+                    request.getParameter("site"),
+                    e.getMessage(), e);
         }
         return allowed;
     }
 
-    /**
-     * Detects the target JCR node for permission check.
-     *
-     * @param request
-     *            current HTTP request
-     *
-     * @return the detected target JCR node for permission check
-     */
-    private JCRNodeWrapper getTargetNodeForPermissionCheck(HttpServletRequest request) {
-        String siteId = request.getParameter("site");
-
+    private String getCurrentUserSafely() {
         try {
-            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (StringUtils.isNotEmpty(siteId)) {
-                if (siteId.startsWith("/")) {
-                    return currentUserSession.getNode(siteId);
-                } else {
-                    return currentUserSession.getNodeByUUID(siteId);
-                }
-            } else {
-                JahiaSitesService siteService = JahiaSitesService.getInstance();
-                JahiaSite defaultSite = siteService.getDefaultSite();
-                if (defaultSite != null) {
-                    return (JCRSiteNode) defaultSite;
-                }
-            }
-
-            return currentUserSession.getRootNode();
-        } catch (ItemNotFoundException e) {
-            // no access
-        } catch (RepositoryException e) {
-            logger.warn("Unable to find target JCR node for permission check", e);
+            JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+            return user != null ? user.getUsername() : "<unknown>";
+        } catch (Exception e) {
+            return "<error-getting-user>";
         }
-
-        return null;
     }
 
     @Override
@@ -290,7 +269,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     @Override
     protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL,
-                                                                     String strongName) {
+                                                           String strongName) {
         SerializationPolicy policy = super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
         if (policy == null) {
             // NEVER use or cache a legacy serializer
@@ -322,8 +301,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     /**
      * Injects the target GWT service to be called.
      *
-     * @param remoteServiceName
-     *            the Spring bean ID for the target GWT service to be called
+     * @param remoteServiceName the Spring bean ID for the target GWT service to be called
      */
     public void setRemoteServiceName(String remoteServiceName) {
         this.remoteServiceName = remoteServiceName;
@@ -335,11 +313,6 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             service.setRequest(cleanUp ? null : getThreadLocalRequest());
             service.setResponse(cleanUp ? null : getThreadLocalResponse());
         }
-    }
-
-    @Override
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
     }
 
     @Override
@@ -368,8 +341,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     /**
      * Sets a permission, required to access the GWT services. A <code>null</code> or an empty value means no permission check is done.
      *
-     * @param requiredPermission
-     *            a permission, required to access the GWT services
+     * @param requiredPermission a permission, required to access the GWT services
      */
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
@@ -378,8 +350,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     /**
      * Set it to <code>true</code> if we allow to cache the successful required permission check in a session.
      *
-     * @param requiredPermissionCheckCache
-     *            <code>true</code> if we allow to cache the successful required permission check in a session; <code>false</code> otherwise
+     * @param requiredPermissionCheckCache <code>true</code> if we allow to cache the successful required permission check in a session; <code>false</code> otherwise
      */
     public void setRequiredPermissionCheckCache(boolean requiredPermissionCheckCache) {
         this.requiredPermissionCheckCache = requiredPermissionCheckCache;

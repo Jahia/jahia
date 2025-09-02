@@ -184,11 +184,6 @@
     </tag-file>
 
     <tag-file>
-        <name>categorySelector</name>
-        <path>/META-INF/tags/categorySelector.tag</path>
-    </tag-file>
-
-    <tag-file>
         <name>ckeditor</name>
         <path>/META-INF/tags/ckeditor.tag</path>
         <example>

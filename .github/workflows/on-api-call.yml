@@ -57,7 +57,7 @@ jobs:
           if [ "${{ github.event_name }}" != "pull_request" ]; then
             cp jahia.version image.tag
           else
-            echo `cat jahia.version`-"${{ steps.branch-name.outputs.current_branch}}" > image.tag
+            echo `cat jahia.version`-pr-${{ github.event.pull_request.number }} > image.tag
           fi
       - id: tags
         name: Set Output variables

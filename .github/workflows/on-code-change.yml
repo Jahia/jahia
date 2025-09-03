@@ -68,7 +68,7 @@ jobs:
           if [ "${{ github.event_name }}" != "pull_request" ]; then
             cp jahia.version image.tag
           else
-            echo `cat jahia.version`-"${{ steps.branch-name.outputs.current_branch}}" > image.tag
+            echo `cat jahia.version`-pr-${{ github.event.pull_request.number }} > image.tag
           fi
       - id: tags
         name: Set Output variables
@@ -171,7 +171,6 @@ jobs:
         with:
           image: jahia/jahia-core-dev:${{needs.build.outputs.image_tag}}
           fail-build: false
-          acs-report-enable: true
       - name: Print content from the SARIF file
         shell: bash
         run: cat ${{ steps.scan-build-sbom.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text'

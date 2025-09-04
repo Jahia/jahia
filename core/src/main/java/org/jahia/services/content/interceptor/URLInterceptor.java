@@ -103,10 +103,11 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
     private HtmlTagAttributeTraverser urlTraverser;
 
-    private String escape(String s) {
-        s = s.replace("{", "\\{");
-        s = s.replace("}", "\\}");
-        return s;
+    /** Escape curly braces and allow percent-encoded curly braces. */
+    private String escapeCurlyBraces(String s) {
+        return s
+                .replace("{", "(?:\\{|%7[bB])")
+                .replace("}", "(?:\\}|%7[dD])");
     }
 
     /**
@@ -391,12 +392,12 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         cmsContext = Jahia.getContextPath() + "/cms/";
 
         String pattern = "(((render|edit|live|contribute)/[a-zA-Z]+)|" +
-                escape(ContextPlaceholdersReplacer.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
-                escape(ContextPlaceholdersReplacer.LANG_PLACEHOLDER) + ")/(.*)";
+                escapeCurlyBraces(ContextPlaceholdersReplacer.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
+                escapeCurlyBraces(ContextPlaceholdersReplacer.LANG_PLACEHOLDER) + ")/(.*)";
 
         refPattern = Pattern.compile("/##ref:link([0-9]+)##(.*)");
         cmsPattern = Pattern.compile(cmsContext + pattern);
-        cmsPatternWithContextPlaceholder = Pattern.compile(escape(CMS_CONTEXT_PLACEHOLDER) + pattern);
+        cmsPatternWithContextPlaceholder = Pattern.compile(CMS_CONTEXT_PLACEHOLDER + pattern);
     }
 
     public void setUrlReplacers(List<URLReplacer> urlReplacers) {

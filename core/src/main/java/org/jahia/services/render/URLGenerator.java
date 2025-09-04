@@ -52,6 +52,7 @@ import org.jahia.params.valves.LogoutConfig;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -169,7 +170,7 @@ public class URLGenerator {
     }
 
     public String getFilesPlaceholders() {
-        return "/files/{workspace}";
+        return "/files/" + ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER;
     }
 
     public String getBase() {
@@ -177,7 +178,9 @@ public class URLGenerator {
     }
 
     public String getBasePlaceholders() {
-        return StringUtils.substringBeforeLast(context.getServletPath(), "/") + "/{mode}/{lang}";
+        return StringUtils.substringBeforeLast(context.getServletPath(), "/") + "/"
+                + ContextPlaceholdersReplacer.CURRENT_CONTEXT_PLACEHOLDER + "/"
+                + ContextPlaceholdersReplacer.LANG_PLACEHOLDER;
     }
 
     public String getLive() {

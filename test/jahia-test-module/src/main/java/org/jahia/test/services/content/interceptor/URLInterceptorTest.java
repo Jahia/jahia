@@ -153,6 +153,8 @@ public class URLInterceptorTest extends JahiaTestCase {
                 + "/contents/refContent.html\">test</a>" + "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}" + SITEPATH
                 + "/contents/testContent.html\">test</a>");
         validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/default" + SITEPATH + "/contents/refContent\">");
+        validateEncodeAndDecode(
+                "<a href=\"" + Jahia.getContextPath() + "/cms/%7bmode%7d/%7Blang%7D" + SITEPATH + "/contents/refContent.html\">test</a>");
     }
 
     private void validateEncodeAndDecode(String value) throws RepositoryException {

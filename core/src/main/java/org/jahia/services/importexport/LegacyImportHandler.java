@@ -67,6 +67,7 @@ import org.jahia.services.importexport.DefinitionsMapping.Action;
 import org.jahia.services.importexport.DefinitionsMapping.AddMixin;
 import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
+import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.settings.SettingsBean;
@@ -1210,7 +1211,9 @@ public class LegacyImportHandler extends DefaultHandler {
                                     String ref = buf.substring(from, to);
                                     if (ref.startsWith("###/webdav")) {
                                         ref = StringUtils.substringAfter(ref, "###/webdav");
-                                        buf.replace(from, to, "##doc-context##/{workspace}/##ref:link" + count + "##");
+                                        buf.replace(from, to,
+                                                "##doc-context##/" + ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER
+                                                        + "/##ref:link" + count + "##");
                                     } else if (ref.startsWith("###file:")) {
                                         ref = StringUtils.substringAfter(ref, "###file:");
                                         final int qmPos = ref.indexOf('?');
@@ -1223,7 +1226,9 @@ public class LegacyImportHandler extends DefaultHandler {
                                             else ref = StringUtils.substringBefore(ref, "?");
                                         }
                                         if (!isUuid) ref = correctFilename(ref);
-                                        buf.replace(from, to, "##doc-context##/{workspace}/##ref:link" + count + "##");
+                                        buf.replace(from, to,
+                                                "##doc-context##/" + ContextPlaceholdersReplacer.WORKSPACE_PLACEHOLDER
+                                                        + "/##ref:link" + count + "##");
                                     } else {
                                         ref = StringUtils.substringAfterLast(ref, "/");
                                         // we keep the URL parameters if any
@@ -1236,7 +1241,11 @@ public class LegacyImportHandler extends DefaultHandler {
                                             params = ref.substring(pos);
                                             ref = ref.substring(0, pos);
                                         }
-                                        buf.replace(from, to, "##cms-context##/{mode}/{lang}/##ref:link" + count + "##.html" + params);
+                                        buf.replace(from, to,
+                                                "##cms-context##/"
+                                                        + ContextPlaceholdersReplacer.CURRENT_CONTEXT_PLACEHOLDER + "/"
+                                                        + ContextPlaceholdersReplacer.LANG_PLACEHOLDER + "/##ref:link"
+                                                        + count + "##.html" + params);
                                     }
                                     try {
                                         ref = URLDecoder.decode(ref, "UTF-8");

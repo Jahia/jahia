@@ -48,7 +48,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.interceptor.URLInterceptor;
 import org.jahia.test.utils.TestHelper;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.jahia.bin.Jahia;
@@ -146,6 +145,7 @@ public class URLInterceptorIT extends AbstractJUnitTest {
         validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>" +
                 "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/testContent.html\">test</a>");
         validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/default/sites/"+site.getSiteKey()+"/contents/refContent\">");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/%7bmode%7d/%7Blang%7D/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
     }
 
     private void validateEncodeAndDecode(String value) throws RepositoryException {

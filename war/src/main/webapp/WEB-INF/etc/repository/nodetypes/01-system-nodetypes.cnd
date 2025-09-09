@@ -465,7 +465,7 @@
  * @since 1.0
  */
 [nt:query]
-  - jcr:statement (STRING) indexed=no
+  - jcr:statement (STRING, textarea) indexed=no
   - jcr:language (STRING, choicelist) = 'JCR-SQL2' nofulltext < 'JCR-SQL2', 'xpath', 'sql'
 
 //------------------------------------------------------------------------------

@@ -55,6 +55,7 @@
     
     <properties>
         <parent.tag>${project.version}</parent.tag>
+        <image.registry>ghcr.io/</image.registry>        
         <image.repo.classifier>-dev</image.repo.classifier>
         <image.repo />
         <image.tag>${project.version}</image.tag>
@@ -180,7 +181,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                    <name>${image.registry}jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
                                     <build>
                                         <contextDir>${project.basedir}</contextDir>
                                         <buildx>
@@ -193,6 +194,7 @@
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <PARENT_TAG>${parent.tag}</PARENT_TAG>
+                                            <IMAGE_REGISTRY>${image.registry}</IMAGE_REGISTRY>
                                             <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
@@ -232,7 +234,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                    <name>${image.registry}jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
                                     <build>
                                         <contextDir>${project.basedir}</contextDir>
                                         <buildx>
@@ -244,6 +246,7 @@
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <PARENT_TAG>${parent.tag}</PARENT_TAG>
+                                            <IMAGE_REGISTRY>${image.registry}</IMAGE_REGISTRY>
                                             <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
@@ -279,13 +282,14 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                    <name>${image.registry}jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
                                     <build>
                                         <contextDir>${project.basedir}</contextDir>
                                         <dockerFile>Dockerfile</dockerFile>
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <PARENT_TAG>${parent.tag}</PARENT_TAG>
+                                            <IMAGE_REGISTRY>${image.registry}</IMAGE_REGISTRY>
                                             <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>

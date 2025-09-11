@@ -10,9 +10,24 @@ jobs:
     name: Remove old Docker images
     runs-on: ubuntu-latest
     steps:
-      - uses: jahia/jahia-modules-action/docker-images-cleanup@v2
+      # Delete all images not attached to a tag
+      - uses: actions/delete-package-versions@v5
         with:
-          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          docker_delete_token: ${{ secrets.DOCKERHUB_DELETE_TOKEN }}
-          docker_repository: "jahia-core-dev"
-          dry_run: false
+          token: ${{ secrets.GH_PACKAGES_TOKEN }}
+          package-name: 'jahia-core-dev'
+          package-type: 'container'
+          delete-only-untagged-versions: 'true'
+
+      # Delete all images that do not match the pattern W.X.Y.Z or W.X.Y.Z-SNAPSHOT
+      # while keeping a minimum of 50 versions
+      - uses: actions/delete-package-versions@v5
+        with:
+          token: ${{ secrets.GH_PACKAGES_TOKEN }}
+          package-name: 'jahia-core-dev'
+          package-type: 'container'
+          # Never delete snapshots nor released tags
+          ignore-versions: '^\d+\.\d+\.\d+\.\d+(-SNAPSHOT)?$'
+          # Only keep 50 versions not matching ignore-version;
+          # Since the action does not provide a mechanism to filter out tags to 
+          # delete that are older than X days, this provides a reasonable alternative
+          min-versions-to-keep: 50

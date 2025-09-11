@@ -90,12 +90,12 @@ jobs:
         with:
           src_registry: github
           src_repository: jahia/jahia-core-dev
-          src_username: ${{ github.actor }}
-          src_secret: ${{ secrets.GITHUB_TOKEN }}
+          src_username: ${{ secrets.GH_PACKAGES_USERNAME }}
+          src_secret: ${{ secrets.GH_PACKAGES_TOKEN }}
           dst_registry: github
           dst_repository: jahia/jahia-core-dev
-          dst_username: ${{ github.actor }}
-          dst_secret: ${{ secrets.GITHUB_TOKEN }}
+          dst_username: ${{ secrets.GH_PACKAGES_USERNAME }}
+          dst_secret: ${{ secrets.GH_PACKAGES_TOKEN }}
           dry_run: false
       - uses: jahia/jahia-modules-action/slack-jahia@v2
         if: ${{ failure() }}

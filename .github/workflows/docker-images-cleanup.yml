@@ -1,5 +1,9 @@
 name: Docker images cleanup
 
+# The official GitHub image has not been updated for 2 years, and is not compatible
+# with multi-arch images. See: https://github.com/actions/delete-package-versions/issues/90#issuecomment-2023951984
+# This action was suggested as an alternative: https://github.com/dataaxiom/ghcr-cleanup-action
+
 on:
   schedule:
     - cron: '0 0 1 * *'
@@ -10,24 +14,19 @@ jobs:
     name: Remove old Docker images
     runs-on: ubuntu-latest
     steps:
+      # Image: jahia-ee-dev
       # Delete all images not attached to a tag
-      - uses: actions/delete-package-versions@v5
+      # Delete images older than 1 month if they are 
+      - uses: dataaxiom/ghcr-cleanup-action@244b3e8a35c266981a44b7e35da0c0e6a29b48a0 # Current main
         with:
           token: ${{ secrets.GH_PACKAGES_TOKEN }}
-          package-name: 'jahia-core-dev'
-          package-type: 'container'
-          delete-only-untagged-versions: 'true'
-
-      # Delete all images that do not match the pattern W.X.Y.Z or W.X.Y.Z-SNAPSHOT
-      # while keeping a minimum of 50 versions
-      - uses: actions/delete-package-versions@v5
-        with:
-          token: ${{ secrets.GH_PACKAGES_TOKEN }}
-          package-name: 'jahia-core-dev'
-          package-type: 'container'
-          # Never delete snapshots nor released tags
-          ignore-versions: '^\d+\.\d+\.\d+\.\d+(-SNAPSHOT)?$'
-          # Only keep 50 versions not matching ignore-version;
-          # Since the action does not provide a mechanism to filter out tags to 
-          # delete that are older than X days, this provides a reasonable alternative
-          min-versions-to-keep: 50
+          owner: jahia
+          repository: jahia-private
+          packages: jahia-core-dev
+          exclude-tags: '^\d+\.\d+\.\d+\.\d+(-SNAPSHOT)?$'
+          delete-untagged: true
+          delete-ghost-images: true
+          delete-partial-images: true
+          older-than: 1 month
+          validate: true
+          dry-run: false

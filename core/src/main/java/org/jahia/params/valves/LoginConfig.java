@@ -42,6 +42,7 @@
  */
 package org.jahia.params.valves;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,13 +79,20 @@ public class LoginConfig implements ApplicationListener<ApplicationEvent> {
     private LinkedList<LoginUrlProvider> loginUrlProviders = new LinkedList<>();
 
     /**
-     * Returns custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
+     * Retrieves the first non-blank custom login URL from the registered {@link LoginUrlProvider} instances.
+     * <p>
+     * Iterates through the {@link LoginUrlProvider} list and returns the custom login URL from the first provider
+     * that both supports a custom login URL and returns a non-blank value for the given request.
+     * If no such provider is found, this method returns {@code null}.
+     * </p>
      *
-     * @param request current servlet request
-     * @return custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
+     * @param request the current {@link HttpServletRequest}, used to generate the login URL
+     * @return the first non-blank custom login URL provided by a matching {@link LoginUrlProvider}, or {@code null} if none is found
      */
     public String getCustomLoginUrl(HttpServletRequest request) {
-        return loginUrlProviders.isEmpty() ? null : loginUrlProviders.getFirst().getLoginUrl(request);
+        return loginUrlProviders.stream()
+                .filter(loginUrlProvider -> loginUrlProvider.hasCustomLoginUrl() && StringUtils.isNotBlank(loginUrlProvider.getLoginUrl(request)))
+                .findFirst().map(lup -> lup.getLoginUrl(request)).orElse(null);
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
@@ -108,15 +116,15 @@ public class LoginConfig implements ApplicationListener<ApplicationEvent> {
     }
 
     public void osgiBind(LoginUrlProvider provider) {
-        if (provider != null && provider.hasCustomLoginUrl()) {
-            logger.info("Using login URL provider {}", provider);
+        if (provider != null) {
+            logger.info("Binding login URL provider {}", provider);
             loginUrlProviders.addFirst(provider);
         }
     }
 
     public void osgiUnbind(LoginUrlProvider provider) {
-        if (provider != null && provider.hasCustomLoginUrl()) {
-            logger.info("Using login URL provider {}", provider);
+        if (provider != null) {
+            logger.info("Unbinding login URL provider {}", provider);
             loginUrlProviders.remove(provider);
         }
     }

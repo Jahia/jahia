@@ -44,6 +44,7 @@ package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.EditConfiguration;
 import org.jahia.bin.Jahia;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -52,7 +53,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.filter.cache.ClientCachePolicy;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;

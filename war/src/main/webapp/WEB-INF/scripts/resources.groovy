@@ -26,15 +26,15 @@ if (renderContext.mainResource.contextConfiguration == 'page' && targetTag == 'H
 
     print "<script type=\"application/json\" id=\"jahia-data-ck\">"
     if (slangmap[renderContext.mainResource.locale.language] != null) {
-        print "{\"path\":\"${contextPath}/modules/ckeditor/javascript/\",\"lng\":\"${slangmap[renderContext.mainResource.locale.language]}\"}";
+        print "{\"path\":\"${contextPath}/modules/ckeditor/javascript/\",\"lng\":\"${slangmap[renderContext.mainResource.locale.language]}\"}"
     } else {
-        print "{\"path\":\"${contextPath}/modules/ckeditor/javascript/\"}";
+        print "{\"path\":\"${contextPath}/modules/ckeditor/javascript/\"}"
     }
     println "</script>"
 }
 
 if(loadJahiaContext || renderContext.editMode){
-    println "<script src=\"${contextPath}/javascript/initJahiaContext.js\"></script>";
+    println "<script src=\"${contextPath}/javascript/initJahiaContext.js\"></script>"
 }
 
 renderContext.request.getAttribute("staticAssets").each { resource ->
@@ -74,7 +74,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                     if (condition != null) println("<!--[" + condition + "]>")
                     def rel = html.value.get("rel")
                     def url = renderContext.response.encodeURL(html.key)
-                    println "<link id=\"staticAssetHTML${targetTag == 'HEAD' ? '' : targetTag}${i}\" rel=\"${rel != null ? rel : "import"}\" href=\"${url}\" />";
+                    println "<link id=\"staticAssetHTML${targetTag == 'HEAD' ? '' : targetTag}${i}\" rel=\"${rel != null ? rel : "import"}\" href=\"${url}\" />"
                     if (condition != null) println("<![endif]-->")
                 }
                 break

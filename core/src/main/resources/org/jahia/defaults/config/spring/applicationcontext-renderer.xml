@@ -483,4 +483,5 @@
     </bean>
 
     <bean id="JahiaMappingJackson2HttpMessageConverter" class="org.jahia.utils.spring.http.converter.json.JahiaMappingJackson2HttpMessageConverter"/>
+
 </beans>

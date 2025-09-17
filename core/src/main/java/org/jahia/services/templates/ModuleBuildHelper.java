@@ -73,7 +73,7 @@ import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.util.ModuleUtils;
-import org.jahia.services.notification.ToolbarWarningsService;
+import org.jahia.services.ui.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.ProcessHelper;
@@ -90,6 +90,7 @@ import javax.jcr.Value;
 import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -411,7 +412,7 @@ public class ModuleBuildHelper implements InitializingBean {
             String[] installParams = new String[]{mavenReleasePlugin + ":prepare", mavenReleasePlugin + ":stage", mavenReleasePlugin + ":clean",
                     "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag, "-DreleaseVersion=" + releaseVersion,
                     "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=" + ignoreSnapshotsFlag,
-                    "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode"};
+                    "-DstagingRepository=tmp::default::" + tmpRepo.toURI(), "--batch-mode"};
             StringBuilder out = new StringBuilder();
             ret = ProcessHelper.execute(mavenExecutable, installParams, null, sources, out, out);
 
@@ -493,7 +494,14 @@ public class ModuleBuildHelper implements InitializingBean {
                     }
                 }
                 if (res > 0 || resultOut.length() == 0) {
-                    res = ProcessHelper.execute(mavenExecutable, args, null, null, resultOut, null);
+                    try {
+                        res = ProcessHelper.execute(mavenExecutable, args, null, null, resultOut, null);
+                    } catch (Throwable e) {
+                        // cannot use maven
+                        logger.warn("Maven execution failed with error: {}", e.getMessage());
+                        logger.debug("Stacktrace", e);
+                        res = 1;
+                    }
                 }
                 if (res > 0) {
                     toolbarWarningsService.addMessage("warning.maven.missing");
@@ -971,7 +979,7 @@ public class ModuleBuildHelper implements InitializingBean {
             Matcher m = UNICODE_PATTERN.matcher(s);
             int start = 0;
             while (m.find(start)) {
-                String replacement = new String(new byte[]{(byte) Integer.parseInt(m.group(1), 16), (byte) Integer.parseInt(m.group(2), 16)}, "UTF-16");
+                String replacement = new String(new byte[]{(byte) Integer.parseInt(m.group(1), 16), (byte) Integer.parseInt(m.group(2), 16)}, StandardCharsets.UTF_16);
                 if (charset.decode(charset.encode(replacement)).toString().equals(replacement)) {
                     s = m.replaceFirst(replacement);
                 }

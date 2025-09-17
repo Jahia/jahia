@@ -71,6 +71,8 @@ public class PublicationInfo implements Serializable {
 
     private static final Map<Integer, String> statusToLabel = new HashMap<>();
 
+    private String title;
+
     static {
         statusToLabel.put(PublicationInfo.PUBLISHED, "published");
         statusToLabel.put(PublicationInfo.MARKED_FOR_DELETION, "markedfordeletion");
@@ -89,7 +91,7 @@ public class PublicationInfo implements Serializable {
         return statusToLabel.get(status);
     }
 
-    private transient Map<String, List<String>> allUuidsCache = new HashMap<String, List<String>>();
+    private final transient Map<String, List<String>> allUuidsCache = new HashMap<String, List<String>>();
 
 
     private PublicationInfoNode root;
@@ -154,7 +156,7 @@ public class PublicationInfo implements Serializable {
     }
 
     private String getKey(boolean includeDeleted, boolean includePublished) {
-        return String.valueOf(includeDeleted) + String.valueOf(includePublished);
+        return String.valueOf(includeDeleted) + includePublished;
     }
 
     public List<PublicationInfo> getAllReferences() {
@@ -274,6 +276,14 @@ public class PublicationInfo implements Serializable {
         return result;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     /**
      * true by default, if false means no live node exists for the current publication info
      */
@@ -301,7 +311,7 @@ public class PublicationInfo implements Serializable {
 
         PublicationInfo that = (PublicationInfo) o;
 
-        return root == that.root || root != null && root.equals(that.root);
+        return Objects.equals(root, that.root);
     }
 
     @Override

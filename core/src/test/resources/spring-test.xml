@@ -6,18 +6,17 @@
         ">
 
     <import resource="classpath:/spring-init-digital-factory-test.xml" />
-    
+
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-text-extraction.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-seo.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-renderer.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-notification.xml" />
-    <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-gwt-helpers.xml" />
-    
+
     <bean id="MailService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.jahia.services.mail.MailServiceImpl" />
-    </bean>    
+    </bean>
 
     <context:annotation-config />
     <context:spring-configured />
-        
-</beans>    
+
+</beans>

@@ -42,10 +42,6 @@
  */
 package org.jahia.bundles.blueprint.extender.config;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.eclipse.gemini.blueprint.context.DelegatedExecutionOsgiBundleApplicationContext;
 import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
 import org.eclipse.gemini.blueprint.extender.OsgiApplicationContextCreator;
@@ -63,14 +59,17 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.namespace.extender.ExtenderNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Jahia module application context creator implementation that sets core Jahia Spring context as a parent and also uses
  * <code>modules-applicationcontext-registry.xml</code> resource in the configuration locations to load common bean definitions for module.
- * 
+ *
  * If the bundle is not detected as a Jahia module bundle or any other kind of Jahia bundle, than default context creation scheme is used.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContextCreator {
@@ -87,7 +86,10 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
                 return cfgArray;
             }
             List<String> cfgs = new LinkedList<>(Arrays.asList(cfgArray));
+            // Note that each path must be define individually,
+            // Ant-style such as  classpath:org/jahia/**/spring/modules-applicationcontext-*.xml does not work
             cfgs.add(0, "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry.xml");
+            cfgs.add(0, "classpath:org/jahia/defaults/config/spring/modules-applicationcontext-registry-gwt.xml");
             return cfgs.toArray(new String[] {});
         }
 

@@ -45,8 +45,6 @@ package org.jahia.services.workflow.jbpm.custom.email;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
@@ -58,10 +56,7 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
-import org.jahia.services.workflow.Workflow;
-import org.jahia.services.workflow.WorkflowComment;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.*;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
@@ -84,7 +79,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.script.*;
-
 import java.io.File;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -104,7 +98,6 @@ public class JBPMMailProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(JBPMMailProducer.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("(assignableFor\\([^)]+\\))|([^,;\\s]+)");
-    public static final String CUSTOM_WORKFLOW_INFO = "customWorkflowInfo";
     protected ScriptEngine scriptEngine;
     protected Bindings bindings;
 
@@ -145,7 +138,7 @@ public class JBPMMailProducer {
 
         if (templateKey != null) {
             if (locale != null) {
-                template = (mailTemplateRegistry.getTemplate(templateKey + "." + locale.toString()));
+                template = (mailTemplateRegistry.getTemplate(templateKey + "." + locale));
                 if (template == null) {
                     template = (mailTemplateRegistry.getTemplate(templateKey + "." + locale.getLanguage()));
                 }
@@ -553,9 +546,9 @@ public class JBPMMailProducer {
     private void processPublicationWorkFlow(JCRSessionWrapper session, WorkflowDefinition workflowDefinition,
                                             Workflow workflow, final Bindings bindings, Locale locale) throws RepositoryException {
         Map<String, Object> variables = workflow.getVariables();
-        if (variables.containsKey(CUSTOM_WORKFLOW_INFO) && variables.get(CUSTOM_WORKFLOW_INFO) instanceof PublicationWorkflow) {
-            @SuppressWarnings("unchecked") PublicationWorkflow publicationWorkflow = (PublicationWorkflow) variables.get(CUSTOM_WORKFLOW_INFO);
-            List<GWTJahiaPublicationInfo> publicationInfoList = publicationWorkflow.getPublicationInfos();
+        if (variables.containsKey("processedWorkflowInfo") && variables.get("processedWorkflowInfo") instanceof ProcessedPublicationWorkflow) {
+            @SuppressWarnings("unchecked") ProcessedPublicationWorkflow publicationWorkflow = (ProcessedPublicationWorkflow) variables.get("processedWorkflowInfo");
+            List<ProcessedPublicationInfo> publicationInfoList = publicationWorkflow.getPublicationInfos();
             int publicationCount = publicationInfoList.size();
             bindings.put("publicationCount", publicationCount);
             JCRUserNode workflowUser = userManagerService.lookupUserByPath(workflow.getStartUser());
@@ -575,16 +568,16 @@ public class JBPMMailProducer {
     }
 
     private Map<String, List<Map<String, Object>>> processPublicationInfoList(JCRSessionWrapper session, Locale locale,
-                                                                              List<GWTJahiaPublicationInfo> publicationInfoList) throws RepositoryException {
+                                                                              List<ProcessedPublicationInfo> publicationInfoList) throws RepositoryException {
         Map<String, List<Map<String, Object>>> publications = new LinkedHashMap<>();
         initPublicationsMap(publications, locale);
-        for (GWTJahiaPublicationInfo publicationInfo : publicationInfoList) {
+        for (ProcessedPublicationInfo publicationInfo : publicationInfoList) {
             Map<String, Object> node = new HashMap<>();
             node.put("status", publicationInfo.getStatus());
             //For a deleted node populate with information from workflow
             if (publicationInfo.getStatus() == PublicationInfo.DELETED) {
                 node.put("path", publicationInfo.getPath());
-                node.put("type", publicationInfo.getNodetype());
+                node.put("type", publicationInfo.getNodeType());
                 String displayableName = publicationInfo.getTitle();
                 if (displayableName.length() > 100) {
                     displayableName = String.format("%s...", displayableName.substring(0, 100));
@@ -595,7 +588,7 @@ public class JBPMMailProducer {
                 JCRNodeWrapper nodeByUUID = session.getNodeByUUID(publicationInfo.getUuid());
                 node.put("node", nodeByUUID);
                 node.put("path", publicationInfo.getPath());
-                node.put("type", publicationInfo.getNodetype());
+                node.put("type", publicationInfo.getNodeType());
                 String displayableName = nodeByUUID.getDisplayableName();
                 if (displayableName.length() > 100) {
                     displayableName = String.format("%s...", displayableName.substring(0, 100));

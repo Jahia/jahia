@@ -43,11 +43,11 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.EditConfiguration;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;

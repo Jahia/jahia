@@ -42,45 +42,6 @@
  */
 package org.jahia.test.services.content;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.lock.Lock;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-import javax.jcr.version.VersionException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
@@ -90,22 +51,29 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.NavigationHelper;
 import org.jahia.ajax.gwt.helper.SearchHelper;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.test.TestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
+
+import javax.jcr.*;
+import javax.jcr.lock.Lock;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.query.*;
+import javax.jcr.version.VersionException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * This test unit tests all basic content operations on all connected providers. This is useful to test common functionality across the
@@ -113,7 +81,7 @@ import org.slf4j.Logger;
  */
 @RunWith(Parameterized.class)
 public class ContentTest {
-    private static final transient Logger logger = org.slf4j.LoggerFactory
+    private static final Logger logger = org.slf4j.LoggerFactory
             .getLogger(ContentTest.class);
     private final static String TESTSITE_NAME = "contentTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/"
@@ -144,9 +112,9 @@ public class ContentTest {
         return data;
     }
 
-    private String providerRoot;
+    private final String providerRoot;
 
-    private static List<String> nodes = new ArrayList<String>();
+    private static final List<String> nodes = new ArrayList<String>();
 
     private JCRSessionWrapper session;
 
@@ -271,7 +239,7 @@ public class ContentTest {
         String value = "This is a test";
         String mimeType = "text/plain";
 
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+        InputStream is = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
 
         String name = "test" + System.currentTimeMillis() + ".txt";
         JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
@@ -304,7 +272,7 @@ public class ContentTest {
         is = testFile.getFileContent().downloadFile();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         IOUtils.copy(is, baos);
-        String checkString = new String(baos.toByteArray(), "UTF-8");
+        String checkString = baos.toString(StandardCharsets.UTF_8);
         assertEquals(providerRoot + " : File content is different", value,
                 checkString);
     }
@@ -391,7 +359,7 @@ public class ContentTest {
         String value = "This is a test";
         String mimeType = "text/plain";
 
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+        InputStream is = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
 
         String name = "test" + System.currentTimeMillis() + ".txt";
         JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
@@ -445,7 +413,7 @@ public class ContentTest {
         String value = "This is a test";
         String mimeType = "text/plain";
 
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+        InputStream is = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
 
         String name = "test" + System.currentTimeMillis() + ".txt";
         JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
@@ -506,7 +474,7 @@ public class ContentTest {
         String value = "This is a test";
         String mimeType = "text/plain";
 
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+        InputStream is = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
 
         String name = "test" + System.currentTimeMillis() + ".txt";
         JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
@@ -560,7 +528,7 @@ public class ContentTest {
             String value = "123456789abcd 123abc 456bcd 789def 123456789abcd";
             String mimeType = "text/plain";
 
-            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+            InputStream is = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
 
             String name = "testSearch" + System.currentTimeMillis() + ".txt";
             testFile = rootNode.uploadFile(name, is, mimeType);
@@ -706,7 +674,7 @@ public class ContentTest {
         String value = "This is a test";
         String mimeType = "text/plain";
 
-        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+        InputStream is = new ByteArrayInputStream(value.getBytes(StandardCharsets.UTF_8));
 
         String name1 = "test1_" + System.currentTimeMillis() + ".txt";
         JCRNodeWrapper testFile1 = rootNode.uploadFile(name1, is, mimeType);
@@ -831,11 +799,8 @@ public class ContentTest {
         for (int i = 0; i < resultingMultipleRefValues.length; i++) {
             Value resultingMultipleRefValue = resultingMultipleRefValues[i];
             Value multipleRefValue = multipleRefValues[i];
-            assertTrue(
-                    providerRoot
-                            + " : Read multiple reference values not equal to set values",
-                    multipleRefValue.getString().equals(
-                            resultingMultipleRefValue.getString()));
+            assertEquals(providerRoot
+                    + " : Read multiple reference values not equal to set values", multipleRefValue.getString(), resultingMultipleRefValue.getString());
         }
 
         // now we remove one of the two references.
@@ -854,11 +819,8 @@ public class ContentTest {
         for (int i = 0; i < resultingSingleRefValues.length; i++) {
             Value resultingSingleRefValue = resultingSingleRefValues[i];
             Value singleRefValue = singleRefValues[i];
-            assertTrue(
-                    providerRoot
-                            + " : Read single reference values not equal to set values",
-                    singleRefValue.getString().equals(
-                            resultingSingleRefValue.getString()));
+            assertEquals(providerRoot
+                    + " : Read single reference values not equal to set values", singleRefValue.getString(), resultingSingleRefValue.getString());
         }
 
         // now let's remove everything and make sure that it looks ok.
@@ -964,9 +926,8 @@ public class ContentTest {
     }
 
     @Test
-    public void testNodeCache() throws LockException, PathNotFoundException,
-            ConstraintViolationException, VersionException,
-            ItemExistsException, RepositoryException {
+    public void testNodeCache() throws
+            RepositoryException {
         JCRNodeWrapper root = session.getNode(SITECONTENT_ROOT_NODE).addNode(
                 "testNodeCache-" + System.currentTimeMillis(),
                 "jnt:contentFolder");

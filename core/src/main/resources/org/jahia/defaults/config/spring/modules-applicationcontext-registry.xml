@@ -31,33 +31,6 @@
         <value>rootclasspath*:jahia/jahia-modules-*.properties</value>
     </util:list>
 
-    <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-        <property name="customEditors">
-            <map>
-                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.ColumnPropertyEditor"/>
-                </entry>
-                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.RepositoryPropertyEditor"/>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
-    <bean name="editmodeEditorConfigurerModules"
-          class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-        <property name="customEditors">
-            <map>
-                <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
-                </entry>
-                <entry key="org.jahia.services.uicomponents.bean.Visibility">
-                    <bean class="org.jahia.services.uicomponents.bean.VisibilityPropertyEditor"/>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
     <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader">
         <property name="jbpm6WorkflowProvider" ref="jBPMProvider"/>
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>

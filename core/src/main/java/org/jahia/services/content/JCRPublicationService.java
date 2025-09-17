@@ -99,7 +99,7 @@ public class JCRPublicationService extends JahiaService {
 
     private Set<String> excludedVersionedTypes;
 
-    private Set<PublicationEventListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<PublicationEventListener, Boolean>());
+    private final Set<PublicationEventListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<PublicationEventListener, Boolean>());
 
     private JCRPublicationService() {
         super();
@@ -475,7 +475,7 @@ public class JCRPublicationService extends JahiaService {
                     logger.warn("Already deleted : " + nodeWrapper.getPath());
                 }
             }
-            JCRNodeWrapper trash = toDelete.isEmpty() ? null : destinationSession.getNode("/").addNode("trash-" + UUID.randomUUID().toString(), Constants.NT_UNSTRUCTURED);
+            JCRNodeWrapper trash = toDelete.isEmpty() ? null : destinationSession.getNode("/").addNode("trash-" + UUID.randomUUID(), Constants.NT_UNSTRUCTURED);
             for (String nodeUuid : toDelete) {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
@@ -663,8 +663,8 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private CloneResult ensureNodeInDestinationWorkspace(final JCRNodeWrapper node,
-                                                         JCRSessionWrapper destinationSession, final Set<JCRNodeWrapper> toCheckpoint) throws AccessDeniedException,
-            NoSuchWorkspaceException, RepositoryException {
+                                                         JCRSessionWrapper destinationSession, final Set<JCRNodeWrapper> toCheckpoint) throws
+            RepositoryException {
         if (!destinationSession.isSystem()) {
             final String nodePath = node.getPath();
             final String destinationWorkspace = destinationSession.getWorkspace().getName();
@@ -1364,7 +1364,7 @@ public class JCRPublicationService extends JahiaService {
      * Get the publication status of a specific node
      */
     public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages) throws RepositoryException {
-        return getStatus(node, destinationSession, languages, Collections.<String>emptySet());
+        return getStatus(node, destinationSession, languages, Collections.emptySet());
     }
 
     /**
@@ -1607,7 +1607,7 @@ public class JCRPublicationService extends JahiaService {
             System.out.print(" " + pred.getName());
         }
         System.out.print(")");
-        System.out.println("");
+        System.out.println();
         Version[] succ = v.getSuccessors();
         for (Version version : succ) {
             print(version, indent + 2);

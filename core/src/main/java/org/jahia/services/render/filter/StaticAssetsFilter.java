@@ -53,10 +53,8 @@ import org.apache.commons.collections.map.TransformedSortedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.AgeFileFilter;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.stream.Streams;
-import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -67,8 +65,8 @@ import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.CKEditorUtils;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
@@ -77,7 +75,6 @@ import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -91,8 +88,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
-import java.util.Calendar;
 import java.util.*;
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 /**
@@ -562,7 +559,7 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
 
         Map<String, Map<String, String>> js = assets.get(JS_TYPE);
         if (js != null && js.containsKey(ckeditorJavaScript)) {
-            String customCkeditorConfig = GWTInitializer.getCustomCKEditorConfig(ctx);
+            String customCkeditorConfig = CKEditorUtils.getCustomCKEditorConfig(ctx);
             if (customCkeditorConfig != null) {
                 params.append(",\"ckeCfg\":\"").append(customCkeditorConfig).append("\"");
             }

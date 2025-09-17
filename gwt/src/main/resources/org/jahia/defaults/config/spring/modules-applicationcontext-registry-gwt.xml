@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors">
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.ColumnPropertyEditor"/>
+                </entry>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.RepositoryPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="editmodeEditorConfigurerModules"
+          class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors">
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
+                </entry>
+                <entry key="org.jahia.services.uicomponents.bean.Visibility">
+                    <bean class="org.jahia.services.uicomponents.bean.VisibilityPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+</beans>

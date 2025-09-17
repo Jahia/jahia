@@ -118,8 +118,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private static final Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     public static final String MODULE_TYPE_MODULE = "module";
-    public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
-    public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
+    public static final String MODULE_TYPE_SYSTEM = "system";
+    public static final String MODULE_TYPE_TEMPLATES_SET = "templatesSet";
 
     public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_NAME_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
 

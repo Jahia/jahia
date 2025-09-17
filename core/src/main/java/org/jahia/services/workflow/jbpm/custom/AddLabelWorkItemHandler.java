@@ -42,18 +42,20 @@
  */
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.ajax.gwt.helper.VersioningHelper;
-import org.jahia.services.content.*;
-import org.jahia.services.usermanager.JahiaUser;
+import org.apache.commons.lang.time.FastDateFormat;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.JCRVersionService;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import javax.jcr.RepositoryException;
-
 import java.util.List;
 
 public class AddLabelWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
+
+    public static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyy_MM_dd_HH_mm_ss");
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -62,14 +64,12 @@ public class AddLabelWorkItemHandler extends AbstractWorkItemHandler implements 
         String workspace = (String) workItem.getParameter("workspace");
         final String label = (String) workItem.getParameter("label");
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (String id : nodeIds) {
-                        JCRNodeWrapper node = session.getNodeByIdentifier(id);
-                        JCRVersionService.getInstance().addVersionLabel(node, label + "_at_" + VersioningHelper.formatForLabel(System.currentTimeMillis()));
-                    }
-                    return null;
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, session -> {
+                for (String id : nodeIds) {
+                    JCRNodeWrapper node = session.getNodeByIdentifier(id);
+                    JCRVersionService.getInstance().addVersionLabel(node, label + "_at_" + DATE_FORMAT.format(System.currentTimeMillis()));
                 }
+                return null;
             });
         } catch (RepositoryException e) {
             throw new RuntimeException(e);

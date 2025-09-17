@@ -57,7 +57,6 @@ import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;

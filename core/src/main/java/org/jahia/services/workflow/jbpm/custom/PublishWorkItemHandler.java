@@ -42,7 +42,6 @@
  */
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;

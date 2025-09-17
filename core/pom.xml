@@ -75,11 +75,6 @@
             <version>8.2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-gwt</artifactId>
-            <version>8.2.3.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.jahia.configuration</groupId>
             <artifactId>deployers</artifactId>
             <version>${jahia.deployers.version}</version>
@@ -90,6 +85,7 @@
             <version>${jahia.commons.version}</version>
         </dependency>
 
+        <!-- test dependencies -->
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>core-test-framework</artifactId>
@@ -1029,18 +1025,6 @@
             <version>1.3.4-jahia6</version>
         </dependency>
 
-        <!-- gwt -->
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-            <version>${gwt.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${gwt.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>net.htmlparser.jericho</groupId>
             <artifactId>jericho-html</artifactId>
@@ -1694,33 +1678,6 @@
             <version>${atmosphere.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.atmosphere.extensions</groupId>
-            <artifactId>atmosphere-gwt20-client</artifactId>
-            <version>${atmosphere.gwt.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>gwt-servlet</artifactId>
-                    <groupId>com.google.gwt</groupId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.atmosphere.client</groupId>
-                    <artifactId>javascript</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.atmosphere.extensions</groupId>
-            <artifactId>atmosphere-gwt20-managed</artifactId>
-            <version>${atmosphere.gwt.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>gwt-servlet</artifactId>
-                    <groupId>com.google.gwt</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -1908,19 +1865,6 @@
                     <releaseProfiles>
                         do-attach-javadocs,aggregate-javadocs,attach-taglibdoc,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe,no-source-folders,unit-tests
                     </releaseProfiles>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <additionalDependencies>
-                        <additionalDependency>
-                            <groupId>com.google.gwt</groupId>
-                            <artifactId>gwt-dev</artifactId>
-                            <version>${gwt.version}</version>
-                        </additionalDependency>
-                    </additionalDependencies>
                 </configuration>
             </plugin>
             <plugin>

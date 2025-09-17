@@ -60,6 +60,7 @@
         <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</contentManagerModuleName>
         <emptyModuleName>org.jahia.ajax.gwt.module.empty.Empty</emptyModuleName>
         <gwtJavascriptStyle>OBF</gwtJavascriptStyle>
+        <jahia.gwt.skip>false</jahia.gwt.skip>
         <packagingExcludes>
             /gwt/manager/css/**,
             /gwt/manager/images/**,
@@ -72,15 +73,36 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>${parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwt.version}</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwt.version}</version>
         </dependency>
         <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
             <version>2.3.1a-gwt22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.atmosphere.extensions</groupId>
+            <artifactId>atmosphere-gwt20-managed</artifactId>
+            <version>${atmosphere.gwt.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>gwt-servlet</artifactId>
+                    <groupId>com.google.gwt</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.atmosphere.extensions</groupId>
@@ -111,7 +133,7 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
             <version>8.2.3.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -155,7 +177,6 @@
                         <localWorkers>5</localWorkers>
                         <noServer>true</noServer>
                         <style>${gwtJavascriptStyle}</style>
-                        <soyc>false</soyc>
                         <extraJvmArgs>-Xmx1280m -Xss2048k
                             -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
                         </extraJvmArgs>
@@ -271,6 +292,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+                <additionalDependencies>
+                    <additionalDependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <version>${gwt.version}</version>
+                    </additionalDependency>
+                </additionalDependencies>
+            </configuration>
+        </plugin>
         </plugins>
     </build>
     <reporting>

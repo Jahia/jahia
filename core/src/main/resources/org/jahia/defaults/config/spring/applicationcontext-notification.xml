@@ -88,7 +88,4 @@
 
     <bean id="sitePublisherSubscriber" class="org.jahia.services.atmosphere.service.PublisherSubscriberService"/>
 
-    <bean id="toolbarNotificationService" class="org.jahia.services.notification.ToolbarWarningsService" factory-method="getInstance">
-
-    </bean>
 </beans>

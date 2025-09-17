@@ -58,11 +58,12 @@ public class PublicationInfoNode implements Serializable {
     private String uuid;
     private String path;
     private int status;
+    private String nodeType;
     private boolean locked;
     private boolean workInProgress = false;
     private boolean workInProgressChild = false;
-    private List<PublicationInfoNode> child = new LinkedList<PublicationInfoNode>();
-    private List<PublicationInfo> references = new LinkedList<PublicationInfo>();
+    private final List<PublicationInfoNode> child = new LinkedList<PublicationInfoNode>();
+    private final List<PublicationInfo> references = new LinkedList<PublicationInfo>();
 
     private boolean subtreeProcessed;
 
@@ -140,6 +141,14 @@ public class PublicationInfoNode implements Serializable {
         this.subtreeProcessed = subtreeProcessed;
     }
 
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -154,11 +163,7 @@ public class PublicationInfoNode implements Serializable {
         if (!path.equals(that.path)) {
             return false;
         }
-        if (!uuid.equals(that.uuid)) {
-            return false;
-        }
-
-        return true;
+        return uuid.equals(that.uuid);
     }
 
     @Override

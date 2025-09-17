@@ -60,6 +60,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaControllerUtils;
+import org.jahia.bin.BaseManagerConfiguration;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
@@ -70,7 +71,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
-import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -226,9 +226,9 @@ public class ContentManagerAccessCheckFilter implements Filter,
             mapping = new HashMap<String, String>();
             for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
                 if (aPackage.getContext() != null) {
-                    for (Map.Entry<String, ManagerConfiguration> cfg : BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                    for (Map.Entry<String, BaseManagerConfiguration> cfg : BeanFactoryUtils.beansOfTypeIncludingAncestors(
                                     aPackage.getContext(),
-                                    ManagerConfiguration.class).entrySet()) {
+                                    BaseManagerConfiguration.class).entrySet()) {
                         mapping.put(cfg.getKey(), cfg.getValue().getRequiredPermission());
                     }
                 }

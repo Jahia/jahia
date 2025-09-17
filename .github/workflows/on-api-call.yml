@@ -96,6 +96,7 @@ jobs:
           dst_repository: jahia/jahia-core-dev
           dst_username: ${{ secrets.GH_PACKAGES_USERNAME }}
           dst_secret: ${{ secrets.GH_PACKAGES_TOKEN }}
+          version_digits_count: 4
           dry_run: false
       - uses: jahia/jahia-modules-action/slack-jahia@v2
         if: ${{ failure() }}

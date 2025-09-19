@@ -56,7 +56,9 @@ import org.jahia.services.usermanager.JahiaUser;
 /**
  * Valve that uses tokens to authenticate the user.
  * @author toto
+ * @deprecated not used, we don't recommend this valve for security reasons, use PAT (personal api token) module instead
  */
+@Deprecated(since = "8.2.3.0", forRemoval = true)
 public class TokenAuthValveImpl extends BaseAuthValve {
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();

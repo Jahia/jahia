@@ -11,7 +11,9 @@
                 <bean id="HttpBasicAuthValve" class="org.jahia.params.valves.HttpBasicAuthValveImpl">
                     <property name="userManagerService" ref="JahiaUserManagerService"/>
                 </bean>
-                <bean id="TokenAuthValve" class="org.jahia.params.valves.TokenAuthValveImpl" />
+                <bean id="TokenAuthValve" class="org.jahia.params.valves.TokenAuthValveImpl">
+                    <property name="enabled" value="${auth.token.enabled:false}"/>
+                </bean>
                 <bean id="LoginEngineAuthValve" class="org.jahia.params.valves.LoginEngineAuthValveImpl">
                     <property name="userManagerService" ref="JahiaUserManagerService"/>
                 	  <property name="cookieAuthConfig" ref="cookieAuthConfig"/>

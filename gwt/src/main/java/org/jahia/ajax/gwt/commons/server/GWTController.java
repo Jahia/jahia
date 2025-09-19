@@ -183,10 +183,20 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             String siteId = request.getParameter("site");
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
             if (StringUtils.isNotEmpty(siteId)) {
-                if (siteId.startsWith("/")) {
-                    allowed = JahiaControllerUtils.hasRequiredPermission(currentUserSession.getNode(siteId), currentUser, requiredPermission);
-                } else {
-                    allowed = JahiaControllerUtils.hasRequiredPermission(currentUserSession.getNodeByUUID(siteId), currentUser, requiredPermission);
+                try {
+                    if (siteId.startsWith("/")) {
+                        allowed = JahiaControllerUtils.hasRequiredPermission(currentUserSession.getNode(siteId), currentUser, requiredPermission);
+                    } else {
+                        allowed = JahiaControllerUtils.hasRequiredPermission(currentUserSession.getNodeByUUID(siteId), currentUser, requiredPermission);
+                    }
+                } catch (ItemNotFoundException e) {
+                    // User has no access to current site
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Site not found for User: {}, Site: {}, Path: {}",
+                                getCurrentUserSafely(),
+                                siteId,
+                                e.getMessage());
+                    }
                 }
             }
             // Check that the user has read access and required permission at least to one site
@@ -208,10 +218,12 @@ public class GWTController extends RemoteServiceServlet implements Controller,
                 }
             }
         } catch (ItemNotFoundException | PathNotFoundException e) {
-            logger.debug("Item not found for User: {}, Site: {}, Path: {}",
-                    getCurrentUserSafely(),
-                    request.getParameter("site"),
-                    e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Item not found for User: {}, Site: {}, Path: {}",
+                        getCurrentUserSafely(),
+                        request.getParameter("site"),
+                        e.getMessage());
+            }
         } catch (RepositoryException e) {
             logger.warn("Repository error during permission check for user: {}, set this class in debug for more detail", getCurrentUserSafely());
             logger.debug("site: {}. Error: {}",

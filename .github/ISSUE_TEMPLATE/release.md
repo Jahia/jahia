@@ -78,6 +78,6 @@ After Testing
 - [ ] If the module is included in Jahia distribution, [jahia-pack-private](https://github.com/Jahia/jahia-pack-private/blob/master/core-modules/pom.xml) was updated with the released version
 - [ ] If applicable, corresponding academy pages were published
 - [ ] The module was published on the store
-- [ ] The [modules releases log page](https://edit.jahia.com/jahia/page-composer/default/en/sites/academy/home/customer-center/modules-releases-log.html) on the Academy was updated
+- [ ] The [modules releases log page](https://edit.jahia.com/jahia/jcontent/academy/en/pages/home/customer-center/jahia/release-notes/modules-releases-log?params=(sub:!f)) on the Academy was updated
 - [ ] A message was published on slack #releases channel
 - [ ] The milestone on GitHub was closed

@@ -154,12 +154,19 @@ public class URLInterceptorTest extends JahiaTestCase {
                 + "/contents/testContent.html\">test</a>");
         validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/default" + SITEPATH + "/contents/refContent\">");
         validateEncodeAndDecode(
-                "<a href=\"" + Jahia.getContextPath() + "/cms/%7bmode%7d/%7Blang%7D" + SITEPATH + "/contents/refContent.html\">test</a>");
+                "<a href=\"" + Jahia.getContextPath() + "/cms/%7bmode%7d/%7Blang%7D" + SITEPATH + "/contents/refContent.html\">test</a>",
+                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}" + SITEPATH + "/contents/refContent.html\">test</a>"
+        );
     }
 
     private void validateEncodeAndDecode(String value) throws RepositoryException {
+        validateEncodeAndDecode(value, value);
+    }
+
+    /** Allows specifying different input/output values when encoded braces are normalized */
+    private void validateEncodeAndDecode(String value, String expected) throws RepositoryException {
         JCRNodeWrapper n = localizedSession.getNode(SITEPATH + "/contents/testContent");
         n.setProperty("body", value);
-        assertEquals("Not the same value after get", value, n.getProperty("body").getString());
+        assertEquals("Not the same value after get", expected, n.getProperty("body").getString());
     }
 }

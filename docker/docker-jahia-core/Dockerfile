@@ -1,7 +1,8 @@
 # ==============================================================================
 # STAGE 1: Base image with GraalVM
 # ==============================================================================
-FROM tomcat:9-jdk21-temurin as base
+ARG BASE_IMAGE="tomcat:9-jdk17-temurin"
+FROM ${BASE_IMAGE} as base
 
 # Build feature flags
 ARG DEBUG_TOOLS="false"
@@ -10,6 +11,7 @@ ARG LIBREOFFICE="false"
 ARG IMAGEMAGICK="false"
 
 # GraalVM configuration
+ARG GRAALVM="false"
 ARG GRAALVM_VERSION
 ARG GRAALVM_ARCH
 ARG GRAALVM_URL
@@ -18,60 +20,67 @@ ARG GRAALVM_URL
 RUN apt-get update \
     && apt-get upgrade -y \
     && packages="apt-utils curl ncat wget unzip logrotate" \
-    && if ${DEBUG_TOOLS}; then \
-        packages="${packages} vim binutils less procps iputils-ping htop"; \
-       fi \
-    && if ${IMAGEMAGICK}; then \
-        packages="${packages} libfontconfig1 libx11-6 libharfbuzz0b libfribidi0 imagemagick"; \
-       fi \
-    && if ${LIBREOFFICE}; then \
-        packages="${packages} libreoffice"; \
-       fi \
-    && if ${FFMPEG}; then \
-        packages="${packages} ffmpeg"; \
-       fi \
-    && apt-get install -y --no-install-recommends ${packages} \
+    && if [ "$DEBUG_TOOLS" = "true" ]; then \
+        packages="$packages vim binutils less procps iputils-ping htop"; \
+    fi \
+    && if [ "$IMAGEMAGICK" = "true" ]; then \
+        packages="$packages libfontconfig1 libx11-6 libharfbuzz0b libfribidi0 imagemagick"; \
+    fi \
+    && if [ "$LIBREOFFICE" = "true" ]; then \
+        packages="$packages libreoffice"; \
+    fi \
+    && if [ "$FFMPEG" = "true" ]; then \
+        packages="$packages ffmpeg"; \
+    fi \
+    && apt-get install -y --no-install-recommends $packages \
     && set -ux \
-    && if [ -z "${GRAALVM_ARCH+x}" ]; then \
-        GRAALVM_DL_ARCH="$(uname -m)" && \
-        if [ "$GRAALVM_DL_ARCH" = "x86_64" ]; then \
-            GRAALVM_DL_ARCH="x64" ;\
-        else  \
-            GRAALVM_DL_ARCH="aarch64" ; \
-        fi ; \
-    else  \
-        GRAALVM_DL_ARCH=$GRAALVM_ARCH ; \
+    && if [ "$GRAALVM" = "true" ]; then \
+        if [ -z "${GRAALVM_ARCH+x}" ]; then \
+            GRAALVM_DL_ARCH="$(uname -m)"; \
+            if [ "$GRAALVM_DL_ARCH" = "x86_64" ]; then \
+                GRAALVM_DL_ARCH="x64"; \
+            else \
+                GRAALVM_DL_ARCH="aarch64"; \
+            fi; \
+        else \
+            GRAALVM_DL_ARCH=$GRAALVM_ARCH; \
+        fi; \
+        if [ -z "${GRAALVM_URL+x}" ]; then \
+            # GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAALVM_VERSION}/graalvm-community-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
+            GRAALVM_DL_URL=https://download.oracle.com/graalvm/${GRAALVM_VERSION%.*.*}/archive/graalvm-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
+        else \
+            GRAALVM_DL_URL=$GRAALVM_URL; \
+        fi; \
+        echo "GraalVM download url ${GRAALVM_DL_URL}"; \
+        cd /usr/local; \
+        GRAALVM_SHA256="$(curl --no-progress-meter -L "$GRAALVM_DL_URL".sha256)"; \
+        curl --no-progress-meter -L --output /tmp/graalvm.tgz "$GRAALVM_DL_URL"; \
+        echo "$GRAALVM_SHA256" /tmp/graalvm.tgz | sha256sum -c; \
+        mkdir -p "/usr/local/graalvm"; \
+        tar --extract --file /tmp/graalvm.tgz --directory "/usr/local/graalvm" --strip-components 1; \
+        /usr/local/graalvm/bin/gu install js; \
+        # Clean up GraalVM installation and remove openjdk \
+        rm -f /tmp/graalvm.tgz; \
+        rm -rf /usr/local/openjdk-17/; \
+        rm -rf /opt/java/openjdk; \
+        # Cleanup JDK /jmods and /lib/src.zip not needed for runtime \
+        rm -rf /usr/local/graalvm/jmods; \
+        rm -rf /usr/local/graalvm/lib/src.zip; \
+        # Set symbolic link towards GraalVM \
+        ln -s /usr/local/graalvm /opt/java/jdk; \
+    else \
+        # Set symbolic link towards OpenJDK \
+        ln -s /opt/java/openjdk /opt/java/jdk; \
     fi \
-    && if [ -z "${GRAALVM_URL+x}" ]; then \
-        # GRAALVM_DL_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAALVM_VERSION}/graalvm-community-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
-        GRAALVM_DL_URL=https://download.oracle.com/graalvm/${GRAALVM_VERSION%.*.*}/archive/graalvm-jdk-${GRAALVM_VERSION}_linux-${GRAALVM_DL_ARCH}_bin.tar.gz; \
-    else  \
-        GRAALVM_DL_URL=$GRAALVM_URL ; \
-    fi \
-    && echo "GraalVM download url ${GRAALVM_DL_URL}" \
-    && cd /usr/local \
-    && GRAALVM_SHA256="$(curl --no-progress-meter -L "$GRAALVM_DL_URL".sha256)" \
-    && curl --no-progress-meter -L --output /tmp/graalvm.tgz "$GRAALVM_DL_URL" \
-    && echo "$GRAALVM_SHA256" /tmp/graalvm.tgz | sha256sum -c \
-    && mkdir -p "/usr/local/graalvm" \
-    && tar --extract --file /tmp/graalvm.tgz --directory "/usr/local/graalvm" --strip-components 1 \
-    && /usr/local/graalvm/bin/gu install js \
-    # Clean up GraalVM installation and remove openjdk
-    && rm -f /tmp/graalvm.tgz \
-    && rm -rf /usr/local/openjdk-21/ \
-    && rm -rf /opt/java/openjdk \
-    # Clean up apt cache and temporary files
+    # Clean up apt cache and temporary files \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    # Clean up Tomcat webapps examples
-    && rm -rf /usr/local/tomcat/webapps.dist \
-    # Cleanup JDK /jmods and /lib/src.zip not needed for runtime
-    && rm -rf /usr/local/graalvm/jmods \
-    && rm -rf /usr/local/graalvm/lib/src.zip
+    # Clean up Tomcat webapps examples \
+    && rm -rf /usr/local/tomcat/webapps.dist
 
-# Set up environment variables for GraalVM
-ENV PATH="/usr/local/graalvm/bin:${PATH}" \
-    JAVA_HOME="/usr/local/graalvm"
+# Set up JDK environment variables
+ENV PATH="/opt/java/jdk/bin:${PATH}" \
+    JAVA_HOME="/opt/java/jdk"
 
 # ==============================================================================
 # STAGE 2: Final application image
@@ -94,6 +103,7 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 ARG C_USER="tomcat"
 ARG C_GROUP="tomcat"
+ARG GRAALVM="false"
 
 ENV RESTORE_MODULE_STATES="false" \
     RESTORE_PERSISTED_CONFIGURATION="false" \
@@ -114,8 +124,8 @@ ENV RESTORE_MODULE_STATES="false" \
     CATALINA_CONTEXT="ROOT" \
     MAVEN_OPTS="-Xmx256m" \
     MAVEN_VER="${MAVEN_VER}" \
-    PATH="/usr/local/graalvm/bin:${PATH}" \
-    JAVA_HOME="/usr/local/graalvm" \
+    PATH="/opt/java/jdk/bin:${PATH}" \
+    JAVA_HOME="/opt/java/jdk" \
     LOG_MAX_DAYS="${LOG_MAX_DAYS}" \
     LOG_MAX_SIZE="500M" \
     CATALINA_OPTS="" \
@@ -135,7 +145,8 @@ ENV RESTORE_MODULE_STATES="false" \
     DS_PATH="" \
     SSL_ENABLED="false" \
     SSL_CERTIFICATE_PASSWD="changeit" \
-    YOURKIT_ACTIVATED="false"
+    YOURKIT_ACTIVATED="false" \
+    GRAALVM=${GRAALVM}
 
 # System setup and application preparation
 RUN printf "I'm building for TARGETPLATFORM=${TARGETPLATFORM}" \
@@ -167,8 +178,8 @@ RUN printf "I'm building for TARGETPLATFORM=${TARGETPLATFORM}" \
 COPY --chown=${C_USER}:${C_GROUP} settings.xml /home/${C_USER}/.m2/settings.xml
 COPY conf/* ${CATALINA_HOME}/conf/
 COPY bin/* /usr/local/bin/
-COPY setenv.sh ${CATALINA_HOME}/bin
-RUN chmod +x /usr/local/bin/* ${CATALINA_HOME}/bin/setenv.sh
+COPY setenv.sh setenv.graalvm.sh ${CATALINA_HOME}/bin/
+RUN chmod +x /usr/local/bin/* ${CATALINA_HOME}/bin/setenv.sh ${CATALINA_HOME}/bin/setenv.graalvm.sh
 COPY target/dependency/shared-libraries ${CATALINA_HOME}/lib
 COPY target/dependency/jdbc-drivers ${CATALINA_HOME}/lib
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package ${CATALINA_HOME}/digital-factory-data
@@ -185,7 +196,7 @@ WORKDIR /tmp
 USER ${C_USER}
 
 # Port definitions
-# 9229: GraalVM Chrome debugger
+# 9229: GraalVM Chrome debugger (only useful when GRAALVM="true")
 # 10001: YourKit profiling
 EXPOSE 8000 8080 8101 8443 9229 10001
 

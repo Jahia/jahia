@@ -3,7 +3,7 @@
 # GC setup
 export CATALINA_OPTS="${CATALINA_OPTS} -XX:+UseG1GC -XX:+DisableExplicitGC -XX:+UseStringDeduplication -XX:MaxTenuringThreshold=7"
 export CATALINA_OPTS="${CATALINA_OPTS} -XX:+ParallelRefProcEnabled -XshowSettings:vm -XX:+UnlockDiagnosticVMOptions "
-export CATALINA_OPTS="${CATALINA_OPTS} -XX:GuaranteedSafepointInterval=0 -XX:-UseBiasedLocking -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=100"
+export CATALINA_OPTS="${CATALINA_OPTS} -XX:GuaranteedSafepointInterval=0 -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=100"
 export CATALINA_OPTS="${CATALINA_OPTS} -XX:+SafepointTimeout -XX:SafepointTimeoutDelay=1000"
 
 # Log/debug info
@@ -28,7 +28,7 @@ export CATALINA_OPTS="${CATALINA_OPTS} -Dkaraf.handle.sigterm=false"
 export CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.connector.RECYCLE_FACADES=false"
 
 # Module system flags better use JDK_JAVA_OPTIONS (processed at JVM startup)
-# Set JVM modules access for some modules specific to Jahia/Karaf/GraalVM/etc...
+# Set JVM modules access for some modules specific to Jahia/Karaf/etc...
 export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-modules=java.se"
 export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED"
 export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/java.net=ALL-UNNAMED"
@@ -38,13 +38,7 @@ export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.base/sun.nio.ch=AL
 export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=java.management/sun.management=ALL-UNNAMED"
 export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED"
 export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.instrumentation=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.object=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.interop=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.strings=ALL-UNNAMED"
-export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.library=ALL-UNNAMED"
+
+
+# GraalVM-specific setenv
+. "$(dirname "$0")/setenv.graalvm.sh"

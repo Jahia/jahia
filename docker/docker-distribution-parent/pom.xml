@@ -50,18 +50,18 @@
     </parent>
     <artifactId>docker-distribution-parent</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <packaging>pom</packaging>
-    
+
     <properties>
         <parent.tag>${project.version}</parent.tag>
-        <image.registry>ghcr.io/</image.registry>        
+        <image.registry>ghcr.io/</image.registry>
         <image.repo.classifier>-dev</image.repo.classifier>
         <image.repo />
         <image.tag>${project.version}</image.tag>
         <image.alias />
     </properties>
-    
+
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -76,7 +76,7 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -122,7 +122,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -198,9 +198,6 @@
                                             <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
-                                        <env>
-                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
-                                        </env>
                                         <skip>${build.skip}</skip>
                                     </build>
                                 </image>
@@ -250,9 +247,6 @@
                                             <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
-                                        <env>
-                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
-                                        </env>
                                         <skip>${build.skip}</skip>
                                     </build>
                                 </image>
@@ -293,9 +287,6 @@
                                             <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
-                                        <env>
-                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
-                                        </env>
                                         <skip>${build.skip}</skip>
                                     </build>
                                 </image>

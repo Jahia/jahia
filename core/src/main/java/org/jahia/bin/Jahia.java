@@ -251,7 +251,8 @@ public final class Jahia {
                                 "\ninitialization parameter in the WEB-INF/web.xml\n\n" +
                                 "\n\nPlease note that if you deactivate this check or use unsupported versions\n\n" +
                                 "\nYou might run into serious problems and we cannot offer support for these.\n\n" +
-                                "\nYou may download a supported JDK from Oracle site: http://www.oracle.com/technetwork/java/javase/downloads/index.html" +
+                                "\nYou may download a supported JDK from Oracle site: https://www.oracle"
+                                + ".com/technetwork/java/javase/downloads/index.html" +
                                 "\n\n&nbsp;\n";
                         JahiaInitializationException e = new JahiaInitializationException(jemsg);
                         logger.error("Invalid JDK version", e);

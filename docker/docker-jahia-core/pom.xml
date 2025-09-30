@@ -149,9 +149,6 @@
                                         <args>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
                                         </args>
-                                        <env>
-                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
-                                        </env>
                                     </build>
                                 </image>
                             </images>
@@ -196,9 +193,6 @@
                                         <args>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
                                         </args>
-                                        <env>
-                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
-                                        </env>
                                     </build>
                                 </image>
                             </images>
@@ -234,9 +228,6 @@
                                         <args>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
                                         </args>
-                                        <env>
-                                            <JAVA_HOME>/opt/java/openjdk</JAVA_HOME>
-                                        </env>
                                     </build>
                                 </image>
                             </images>

@@ -185,7 +185,7 @@ jobs:
         id: scan-build-sbom
         uses: anchore/scan-action@v3
         with:
-          image: jahia/jahia-core-dev:${{needs.build.outputs.image_tag}}
+          image: ghcr.io/jahia/jahia-core-dev:${{needs.build.outputs.image_tag}}
           fail-build: false
       - name: Print content from the SARIF file
         shell: bash

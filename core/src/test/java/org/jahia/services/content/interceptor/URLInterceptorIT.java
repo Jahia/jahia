@@ -145,17 +145,17 @@ public class URLInterceptorIT extends AbstractJUnitTest {
         validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>" +
                 "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/testContent.html\">test</a>");
         validateEncodeAndDecode("<img src=\"" + Jahia.getContextPath() + "/files/default/sites/"+site.getSiteKey()+"/contents/refContent\">");
-        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/%7bmode%7d/%7Blang%7D/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
+        validateEncodeAndDecode("<a href=\"" + Jahia.getContextPath() + "/cms/%7bmode%7d/%7Blang%7D/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>",
+                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/sites/"+site.getSiteKey()+"/contents/refContent.html\">test</a>");
     }
 
     private void validateEncodeAndDecode(String value) throws RepositoryException {
-        JCRNodeWrapper n = localizedSession.getNode("/sites/"+site.getSiteKey()+"/contents/testContent");
-        n.setProperty("body", value);
-        assertEquals("Not the same value after get",value, n.getProperty("body").getString());
+        validateEncodeAndDecode(value, value);
     }
 
-
-
-
-
+    private void validateEncodeAndDecode(String value, String expected) throws RepositoryException {
+        JCRNodeWrapper n = localizedSession.getNode("/sites/"+site.getSiteKey()+"/contents/testContent");
+        n.setProperty("body", value);
+        assertEquals("Not the same value after get", expected, n.getProperty("body").getString());
+    }
 }

@@ -155,8 +155,8 @@
         <eclipse.plugin.version>2.9</eclipse.plugin.version>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
         <dependency.plugin.version>2.8</dependency.plugin.version>
-        <sonar.plugin.version>5.1.0.4751</sonar.plugin.version>
-        <dependency.check.plugin.version>12.1.3</dependency.check.plugin.version>
+        <sonar.plugin.version>5.2.0.4988</sonar.plugin.version>
+        <dependency.check.plugin.version>12.1.6</dependency.check.plugin.version>
         <fabric8.docker.plugin.version>0.46.0</fabric8.docker.plugin.version>
         <gmaven-plus.version>4.1.1</gmaven-plus.version>
         <!-- OSGi versions -->

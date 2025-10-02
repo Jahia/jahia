@@ -194,11 +194,11 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
 
     private List<Map<String, EngineConfiguration>> getParentConfigurationMap(Object parent) {
         List<Map<String, EngineConfiguration>> results = new ArrayList<>();
-        if (parent instanceof EditConfiguration) {
-            results.add(((EditConfiguration) parent).getEngineConfigurations());
+        if (parent instanceof GWTEditConfiguration) {
+            results.add(((GWTEditConfiguration) parent).getEngineConfigurations());
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, EditConfiguration.class).entrySet()) {
-                if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, GWTEditConfiguration.class).entrySet()) {
+                if (entry.getKey().startsWith(((GWTEditConfiguration) parent).getName() + "-")) {
                     results.addAll(getParentConfigurationMap(entry.getValue()));
                 }
             }

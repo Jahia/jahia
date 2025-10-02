@@ -65,9 +65,9 @@ import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.uicomponents.bean.contentmanager.Repository;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
+import org.jahia.services.uicomponents.bean.editmode.GWTEditConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
 import org.jahia.services.uicomponents.bean.toolbar.Item;
 import org.jahia.services.uicomponents.bean.toolbar.Menu;
@@ -597,10 +597,10 @@ public class UIConfigHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTEditConfiguration getGWTEditConfiguration(String name, String contextPath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration getGWTEditConfiguration(String name, String contextPath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
 
-            EditConfiguration config = (EditConfiguration) getThemedConfiguration(name, request);
+            GWTEditConfiguration config = (GWTEditConfiguration) getThemedConfiguration(name, request);
 
             if (config != null) {
                 org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration gwtConfig = new org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration();
@@ -700,7 +700,7 @@ public class UIConfigHelper {
                 // configsList will define the list of modes that share the same configuration to avoid reloading the main resource
                 // when switching from edit to preview or live or any mode that has the same default location.
                 // An exception has been added for system site that is used for dashboard or administration.
-                for (GWTEditConfiguration configuration : SpringContextSingleton.getBeansOfType(GWTEditConfiguration.class).values()) {
+                for (org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration configuration : SpringContextSingleton.getBeansOfType(org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration.class).values()) {
                     if (StringUtils.equals(configuration.getSitesLocation(), config.getSitesLocation()) && !StringUtils.equals(config.getSitesLocation(), "/sites/systemsite")) {
                         configsList.add(configuration.getName());
                     }
@@ -710,7 +710,7 @@ public class UIConfigHelper {
 
                 if (config.isLoadSitesList()) {
                     List<GWTJahiaNode> sites = navigation.retrieveRoot(Collections.singletonList(config.getSitesLocation()), Collections.singletonList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITEMAP_FIELDS, null, null, site, session, uiLocale, false, false, null, null);
-                    String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
+                    String permission = ((GWTEditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
                     Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
                     for (GWTJahiaNode aSite : sites) {
                         if (session.getNodeByUUID(aSite.getUUID()).hasPermission(permission)) {

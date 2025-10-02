@@ -141,7 +141,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         this.visibility = visibility;
     }
 
-    public void setParentEditConfiguration(EditConfiguration config) {
+    public void setParentEditConfiguration(GWTEditConfiguration config) {
         this.parentEditConfiguration = config;
     }
 
@@ -266,15 +266,15 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         }
         List<EngineTab> tabs = null;
 
-        if (parent instanceof EditConfiguration) {
-            tabs = ((EditConfiguration) parent).getDefaultEditConfiguration().getEngineTabs();
+        if (parent instanceof GWTEditConfiguration) {
+            tabs = ((GWTEditConfiguration) parent).getDefaultEditConfiguration().getEngineTabs();
             if (tabs == null) {
                 tabs = new LinkedList<EngineTab>();
-                ((EditConfiguration) parent).getDefaultEditConfiguration().setEngineTabs(tabs);
+                ((GWTEditConfiguration) parent).getDefaultEditConfiguration().setEngineTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, EditConfiguration.class).entrySet()) {
-                if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, GWTEditConfiguration.class).entrySet()) {
+                if (entry.getKey().startsWith(((GWTEditConfiguration) parent).getName() + "-")) {
                     results.addAll(getEngineTabs(entry.getValue()));
                 }
             }

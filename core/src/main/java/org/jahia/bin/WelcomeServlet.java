@@ -57,6 +57,7 @@ import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -93,7 +94,7 @@ public class WelcomeServlet extends HttpServlet {
      */
     private static final long serialVersionUID = -2055161334153523152L;
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(WelcomeServlet.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(WelcomeServlet.class);
 
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
     private static final String DASHBOARD_HOME = "/jahia/dashboard";

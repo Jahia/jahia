@@ -44,7 +44,6 @@ package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.bin.EditConfiguration;
 import org.jahia.bin.Jahia;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -53,6 +52,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.filter.cache.ClientCachePolicy;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -70,17 +70,17 @@ import java.util.*;
  * @author toto
  */
 public class RenderContext {
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
     private HttpServletResponse response;
     private Resource mainResource;
-    private JahiaUser user;
+    private final JahiaUser user;
     private JCRSiteNode site;
     private URLGenerator URLGenerator;
     private Locale uiLocale;
 
     // TODO: BACKLOG-6496, this stack is not need anymore with new AggregateFilter that handle the stack of fragments generated
-    private Stack<Resource> resourcesStack = new Stack<Resource>();
-    private Set<String> renderedPaths = new HashSet<String>();
+    private final Stack<Resource> resourcesStack = new Stack<Resource>();
+    private final Set<String> renderedPaths = new HashSet<String>();
 
     private boolean isContributionMode = false;
     private boolean isEditMode = false;
@@ -88,13 +88,13 @@ public class RenderContext {
     private String servletPath;
     private String workspace = "default";
 
-    private Set<String> displayedModules = new HashSet<String>();
+    private final Set<String> displayedModules = new HashSet<String>();
 
     private String redirect;
 
     private String contentType;
 
-    private Map<String, Map<String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String, Integer>>();
+    private final Map<String, Map<String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String, Integer>>();
 
     private boolean ajaxRequest = false;
     private Resource ajaxResource = null;
@@ -357,9 +357,7 @@ public class RenderContext {
 
             if (editModeConfig.getNonVisibleTypes() != null && !editModeConfig.getNonVisibleTypes().isEmpty() && isNodeOfType(node, editModeConfig.getNonVisibleTypes())) {
                 return false;
-            } else if (editModeConfig.getVisibleTypes() != null && !editModeConfig.getVisibleTypes().isEmpty() && !isNodeOfType(node, editModeConfig.getVisibleTypes())) {
-                return false;
-            }
+            } else return editModeConfig.getVisibleTypes() == null || editModeConfig.getVisibleTypes().isEmpty() || isNodeOfType(node, editModeConfig.getVisibleTypes());
         }
         return true;
     }
@@ -377,10 +375,7 @@ public class RenderContext {
 
             if (editModeConfig.getNonEditableTypes() != null && !editModeConfig.getNonEditableTypes().isEmpty() && isNodeOfType(node, editModeConfig.getNonEditableTypes())) {
                 return false;
-            } else if (editModeConfig.getEditableTypes() != null && !editModeConfig.getEditableTypes().isEmpty() && !isNodeOfType(node, editModeConfig.getEditableTypes())) {
-                return false;
-            }
-            return true;
+            } else return editModeConfig.getEditableTypes() == null || editModeConfig.getEditableTypes().isEmpty() || isNodeOfType(node, editModeConfig.getEditableTypes());
         }
         return false;
     }

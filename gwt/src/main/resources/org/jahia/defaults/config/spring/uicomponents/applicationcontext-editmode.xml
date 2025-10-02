@@ -102,7 +102,7 @@
         <property name="displayWorkflowCounter" value="${jahia.ui.displayWorkflowCounter:true}"/>
     </bean>
 
-    <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+    <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.GWTEditConfiguration">
         <property name="requiredPermission" value="pageComposerAccess"/>
         <property name="nodeCheckPermission" value="$site"/>
         <property name="defaultLocation" value="$defaultSiteHome.html"/>

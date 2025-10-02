@@ -49,7 +49,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
+import org.jahia.services.uicomponents.bean.editmode.GWTEditConfiguration;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -398,7 +398,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
             String beanId = StringUtils.substringBefore(parentPath, ".");
             Object bean = SpringContextSingleton.getBean(beanId);
             String propertyPath = StringUtils.substringAfter(parentPath, ".");
-            if (bean instanceof EditConfiguration || bean instanceof ManagerConfiguration) {
+            if (bean instanceof GWTEditConfiguration || bean instanceof ManagerConfiguration) {
                 for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, bean.getClass()).entrySet()) {
                     if (entry.getKey().startsWith(beanId + "-")) {
                         results.addAll(getItems(resolveProperty(parentPath, entry.getValue(), propertyPath)));

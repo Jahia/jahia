@@ -6,7 +6,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="adminmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+    <bean id="adminmode" class="org.jahia.services.uicomponents.bean.editmode.GWTEditConfiguration">
         <property name="requiredPermission" value="administrationAccess"/>
         <property name="nodeCheckPermission" value="/"/>
         <property name="supportChannelsDisplay" value="false"/>

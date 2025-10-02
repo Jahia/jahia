@@ -48,6 +48,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Dashboard extends Render {
     private static final long serialVersionUID = -6197445426874881037L;
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Dashboard.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Dashboard.class);
 
     private EditConfiguration editConfiguration;
 

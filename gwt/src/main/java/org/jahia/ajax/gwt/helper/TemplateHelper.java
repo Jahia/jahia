@@ -59,7 +59,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
+import org.jahia.services.uicomponents.bean.editmode.GWTEditConfiguration;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 
@@ -166,9 +166,9 @@ public class TemplateHelper {
             }
             renderContext.setMainResource(r);
 
-            EditConfiguration editConfiguration = null;
+            GWTEditConfiguration editConfiguration = null;
             if (configName != null) {
-                editConfiguration = (EditConfiguration) SpringContextSingleton.getBean(configName);
+                editConfiguration = (GWTEditConfiguration) SpringContextSingleton.getBean(configName);
             }
             renderContext.setEditModeConfig(editConfiguration);
 

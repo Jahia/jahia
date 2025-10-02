@@ -60,11 +60,9 @@ import java.util.*;
  * Time: 12:26:47 PM
  * @deprecated
  */
-public class EditConfiguration implements org.jahia.bin.EditConfiguration, Serializable, BeanNameAware {
+public class GWTEditConfiguration extends EditConfiguration implements Serializable, BeanNameAware {
 
     private static final long serialVersionUID = -5469841056796249203L;
-
-    private String name;
 
     private List<Toolbar> topToolbars;
     private Toolbar sidePanelToolbar;
@@ -75,8 +73,6 @@ public class EditConfiguration implements org.jahia.bin.EditConfiguration, Seria
 
     private Map<String, EngineConfiguration> engineConfigurations;
 
-    private String defaultLocation;
-
     private String sitesLocation;
     private String forcedSite;
 
@@ -85,23 +81,9 @@ public class EditConfiguration implements org.jahia.bin.EditConfiguration, Seria
     private boolean refreshEnabled = true;
     private int createChildrenDirectButtonsLimit;
 
-    private String requiredPermission;
-    private String nodeCheckPermission;
-    private String defaultUrlMapping;
-
     private List<String> componentsPaths = Collections.singletonList("$site/components/*");
 
-    private Set<String> editableTypes;
-    private Set<String> nonEditableTypes;
-    private Set<String> visibleTypes;
-    private Set<String> nonVisibleTypes;
     private Set<String> excludedNodeTypes;
-
-    private Set<String> bypassModeForTypes;
-
-    private Set<String> skipMainModuleTypesDomParsing;
-
-    private boolean forceHeaders = false;
 
     private boolean loadSitesList = true;
 
@@ -124,10 +106,6 @@ public class EditConfiguration implements org.jahia.bin.EditConfiguration, Seria
     @Override
     public void setBeanName(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
@@ -245,24 +223,12 @@ public class EditConfiguration implements org.jahia.bin.EditConfiguration, Seria
         this.createChildrenDirectButtonsLimit = createChildrenDirectButtonsLimit;
     }
 
-    public String getRequiredPermission() {
-        return requiredPermission;
-    }
-
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
     }
 
-    public String getNodeCheckPermission() {
-        return nodeCheckPermission;
-    }
-
     public void setNodeCheckPermission(String nodeCheckPermission) {
         this.nodeCheckPermission = nodeCheckPermission;
-    }
-
-    public String getDefaultUrlMapping() {
-        return defaultUrlMapping;
     }
 
     public void setDefaultUrlMapping(String defaultUrlMapping) {
@@ -291,56 +257,22 @@ public class EditConfiguration implements org.jahia.bin.EditConfiguration, Seria
         this.componentsPaths = componentsPaths;
     }
 
-    /**
-     * @return Set of editable types
-     */
-    public Set<String> getEditableTypes() {
-        return editableTypes;
-    }
-
     public void setEditableTypes(Set<String> editableTypes) {
         this.editableTypes = editableTypes;
-    }
-
-    /**
-     * @return Set of non editable types
-     */
-    public Set<String> getNonEditableTypes() {
-        return nonEditableTypes;
     }
 
     public void setNonEditableTypes(Set<String> nonEditableTypes) {
         this.nonEditableTypes = nonEditableTypes;
     }
 
-    /**
-     * @return Set of types on witch we avoid to parse dom for module lookup (ex javascript, css, etc ..)
-     */
-    public Set<String> getSkipMainModuleTypesDomParsing() {
-        return skipMainModuleTypesDomParsing;
-    }
-
     public void setSkipMainModuleTypesDomParsing(Set<String> skipMainModuleTypesDomParsing) {
         this.skipMainModuleTypesDomParsing = skipMainModuleTypesDomParsing;
-    }
-
-    /**
-     * @return Set of visible Types
-     */
-    public Set<String> getVisibleTypes() {
-        return visibleTypes;
     }
 
     public void setVisibleTypes(Set<String> visibleTypes) {
         this.visibleTypes = visibleTypes;
     }
 
-    /**
-     * @return Set of types to hide
-     */
-    public Set<String> getNonVisibleTypes() {
-        return nonVisibleTypes;
-    }
 
     public void setNonVisibleTypes(Set<String> nonVisibleTypes) {
         this.nonVisibleTypes = nonVisibleTypes;
@@ -358,24 +290,12 @@ public class EditConfiguration implements org.jahia.bin.EditConfiguration, Seria
         this.excludedNodeTypes = excludedNodeTypes;
     }
 
-    public Set<String> getBypassModeForTypes() {
-        return bypassModeForTypes;
-    }
-
     public void setBypassModeForTypes(Set<String> bypassModeForTypes) {
         this.bypassModeForTypes = bypassModeForTypes;
     }
 
-    public boolean isForceHeaders() {
-        return forceHeaders;
-    }
-
     public void setForceHeaders(boolean forceHeaders) {
         this.forceHeaders = forceHeaders;
-    }
-
-    public String getDefaultLocation() {
-        return defaultLocation;
     }
 
     public void setDefaultLocation(String defaultLocation) {

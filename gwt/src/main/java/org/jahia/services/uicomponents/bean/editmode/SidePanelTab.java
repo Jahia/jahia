@@ -312,15 +312,15 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
         }
         List<SidePanelTab> tabs = null;
 
-        if (parent instanceof EditConfiguration) {
-            tabs = ((EditConfiguration) parent).getTabs();
+        if (parent instanceof GWTEditConfiguration) {
+            tabs = ((GWTEditConfiguration) parent).getTabs();
             if (tabs == null) {
                 tabs = new LinkedList<>();
-                ((EditConfiguration) parent).setTabs(tabs);
+                ((GWTEditConfiguration) parent).setTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, EditConfiguration.class).entrySet()) {
-                if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, GWTEditConfiguration.class).entrySet()) {
+                if (entry.getKey().startsWith(((GWTEditConfiguration) parent).getName() + "-")) {
                     results.addAll(getSidePanelTabs(entry.getValue()));
                 }
             }

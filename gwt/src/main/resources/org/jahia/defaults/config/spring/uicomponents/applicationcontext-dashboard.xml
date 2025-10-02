@@ -6,7 +6,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="dashboardmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+    <bean id="dashboardmode" class="org.jahia.services.uicomponents.bean.editmode.GWTEditConfiguration">
         <property name="requiredPermission" value="actions"/>
         <property name="nodeCheckPermission" value="$user"/>
         <property name="defaultUrlMapping" value="/cms/dashboard"/>

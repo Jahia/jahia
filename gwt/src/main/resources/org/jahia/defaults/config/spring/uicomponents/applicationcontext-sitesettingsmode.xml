@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 
-    <bean id="sitesettingsmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
+    <bean id="sitesettingsmode" class="org.jahia.services.uicomponents.bean.editmode.GWTEditConfiguration">
         <property name="requiredPermission" value="pageComposerAccess"/>
         <property name="nodeCheckPermission" value="$site"/>
         <property name="defaultLocation" value="$defaultSiteHome.html"/>

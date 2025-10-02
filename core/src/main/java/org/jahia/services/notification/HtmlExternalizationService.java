@@ -72,7 +72,10 @@ import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttribu
  * CSS.
  *
  * @author Sergiy Shyrkov
+ * @deprecated and will be replaced by a more generic solution in the future
+ * <a href="https://github.com/Jahia/jahia-private/issues/4283">new implementation for rendering HTML for external usage</a>
  */
+@Deprecated(since = "8.2.3.0", forRemoval = true)
 public class HtmlExternalizationService {
 
     protected static final Pattern CSS_URL_PATTERN = Pattern.compile("url *\\( *\"?([^\\:\" )]*)\"? *\\)");

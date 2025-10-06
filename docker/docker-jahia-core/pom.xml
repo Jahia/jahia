@@ -148,6 +148,7 @@
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
+                                            <GRAALVM>true</GRAALVM>
                                         </args>
                                     </build>
                                 </image>
@@ -192,6 +193,7 @@
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
+                                            <GRAALVM>true</GRAALVM>
                                         </args>
                                     </build>
                                 </image>
@@ -227,6 +229,7 @@
                                         <tags>${image.alias}</tags>
                                         <args>
                                             <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
+                                            <GRAALVM>true</GRAALVM>
                                         </args>
                                     </build>
                                 </image>

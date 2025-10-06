@@ -4,9 +4,6 @@
 if [ "$GRAALVM" = "true" ]; then
   echo "Setting GraalVM-specific environment variables..."
 
-  # Option UseBiasedLocking was deprecated in version 15.0 of OpenJDK but not in GraalVM
-  export CATALINA_OPTS="${CATALINA_OPTS} -XX:-UseBiasedLocking"
-
   # Set JVM modules access for some modules specific to GraalVM
   export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED"
   export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-exports=org.graalvm.truffle/com.oracle.truffle.api.instrumentation=ALL-UNNAMED"

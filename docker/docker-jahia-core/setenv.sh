@@ -3,7 +3,7 @@
 # GC setup
 export CATALINA_OPTS="${CATALINA_OPTS} -XX:+UseG1GC -XX:+DisableExplicitGC -XX:+UseStringDeduplication -XX:MaxTenuringThreshold=7"
 export CATALINA_OPTS="${CATALINA_OPTS} -XX:+ParallelRefProcEnabled -XshowSettings:vm -XX:+UnlockDiagnosticVMOptions "
-export CATALINA_OPTS="${CATALINA_OPTS} -XX:GuaranteedSafepointInterval=0 -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=100"
+export CATALINA_OPTS="${CATALINA_OPTS} -XX:GuaranteedSafepointInterval=0 -XX:-UseBiasedLocking -XX:+UseCountedLoopSafepoints -XX:LoopStripMiningIter=100"
 export CATALINA_OPTS="${CATALINA_OPTS} -XX:+SafepointTimeout -XX:SafepointTimeoutDelay=1000"
 
 # Log/debug info

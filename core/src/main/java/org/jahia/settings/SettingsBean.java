@@ -138,6 +138,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean useRelativeSiteURLs; // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     private String defaultLanguageCode; // Default language code for multi-language system
     private long jahiaJCRUserCountLimit = -1; // limit for reading JCR users (in administration)
+    private boolean userPasswordUpdatesRequirePreviousPassword;
+    private long userPasswordUpdateAuthorizationTimeoutMs;
     private int mail_maxRegroupingOfPreviousException = 500;
     private String characterEncoding;
     private String tmpContentDiskPath;
@@ -387,6 +389,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);
 
             jahiaJCRUserCountLimit = getLong ("jahiaJCRUserCountLimit", -1);
+            userPasswordUpdatesRequirePreviousPassword = getBoolean("jahia.user.passwordUpdate.currentPasswordRequired", true);
+            userPasswordUpdateAuthorizationTimeoutMs = getLong("jahia.user.passwordUpdate.authorizationTimeoutMs", 30000L);
 
             // base URL (schema, host, port) to call the web apps deployer service.
             jahiaWebAppsDeployerBaseURL = getString ("jahiaWebAppsDeployerBaseURL", "http://127.0.0.1:8080/manager");
@@ -1612,6 +1616,24 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     @Override
     public CookieAuthConfig getCookieAuthConfig() {
         return cookieAuthConfig;
+    }
+
+    @Override
+    public boolean isUserPasswordUpdateRequiringPreviousPassword() {
+        return userPasswordUpdatesRequirePreviousPassword;
+    }
+
+    @Override
+    public long getUserPasswordUpdateAuthorizationTimeoutMs() {
+        return userPasswordUpdateAuthorizationTimeoutMs;
+    }
+
+    public void setUserPasswordUpdateRequiringPreviousPassword(boolean userPasswordUpdatesRequirePreviousPassword) {
+        this.userPasswordUpdatesRequirePreviousPassword = userPasswordUpdatesRequirePreviousPassword;
+    }
+
+    public void setUserPasswordUpdateAuthorizationTimeoutMs(long userPasswordUpdateAuthorizationTimeoutMs) {
+        this.userPasswordUpdateAuthorizationTimeoutMs = userPasswordUpdateAuthorizationTimeoutMs;
     }
 
     public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {

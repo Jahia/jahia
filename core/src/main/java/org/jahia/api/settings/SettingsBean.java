@@ -352,4 +352,8 @@ public interface SettingsBean {
     long getStudioMaxDisplayableFileSize();
 
     CookieAuthConfig getCookieAuthConfig();
+
+    boolean isUserPasswordUpdateRequiringPreviousPassword();
+
+    long getUserPasswordUpdateAuthorizationTimeoutMs();
 }

@@ -526,6 +526,19 @@ public class TextUtilsTest {
         assertTrue(result);
     }
 
+    @Test
+    public void testReplaceBoundedStringWithLotsOfTags() throws Exception {
+        String resourcePath = "/org/jahia/utils/lotsOfTags.html";
+        String content;
+        try (java.io.InputStream is = getClass().getResourceAsStream(resourcePath)) {
+            assertNotNull("Resource not found: " + resourcePath, is);
+            content = new String(is.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        }
+        String result = TextUtils.replaceBoundedString(content, "<", ">", "");
+        assertFalse("Result should not contain <h3> tag", result.contains("<h3>"));
+        assertTrue("Result should contain extracted text", result.contains("quisgiat"));
+    }
+
     private static interface ReplacementStrategy {
         String replace(String initial);
 

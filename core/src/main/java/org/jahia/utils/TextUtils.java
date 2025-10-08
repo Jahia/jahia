@@ -275,7 +275,8 @@ public class TextUtils {
          * @param stringAsCharArray  the String on which the matching is performed as a char[]
          */
         private T visitMatches(Matches matches, T previousResult, final char[] stringAsCharArray) {
-            if (!matches.isEmpty()) {
+            T result = previousResult;
+            while (!matches.isEmpty()) {
                 final Match match = matches.firstMatch();
                 int pairPrefix = match.start;
                 int pairSuffix = match.end;
@@ -290,16 +291,15 @@ public class TextUtils {
                     prefixPosition = pairPrefix + prefixLength;
                     suffixPosition = pairSuffix;
                 }
-                T result = visitor.visit(prefix, suffix, prefixPosition, suffixPosition, stringAsCharArray);
+                result = visitor.visit(prefix, suffix, prefixPosition, suffixPosition, stringAsCharArray);
 
                 // remove current match
                 this.matches.remove(pairPrefix);
 
-                // repeat on all the pairs that are after the currently matched suffix since all in between pairs are replaced
-                return visitMatches(matches.after(pairSuffix), result, stringAsCharArray);
-            } else {
-                return previousResult;
+                // move to next matches after the current suffix
+                matches = matches.after(pairSuffix);
             }
+            return result;
         }
 
         private int ensureSuffixIndex(int potentialNextSuffix) {

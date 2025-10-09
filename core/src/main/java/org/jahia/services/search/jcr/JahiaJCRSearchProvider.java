@@ -55,6 +55,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.*;
 import org.jahia.services.search.SearchCriteria.DateValue;
@@ -1112,6 +1113,10 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     public Query buildQuery(SearchCriteria criteria, JCRSessionWrapper session) throws InvalidQueryException,
             RepositoryException {
         Query query = null;
+        // validate the optional node type passed as parameter
+        if (StringUtils.isNotEmpty(criteria.getNodeType()) && !NodeTypeRegistry.getInstance().hasNodeType(criteria.getNodeType())) {
+            throw new InvalidQueryException("Node type '" + criteria.getNodeType() + "' is not a registered node type");
+        }
         String xpathQuery = buildXpathQuery(criteria, session);
         String sql = buildSQLQuery(criteria, session);
         if (!StringUtils.isEmpty(xpathQuery)) {

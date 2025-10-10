@@ -42,9 +42,8 @@
  */
 package org.jahia.services.content.interceptor;
 
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.content.decorator.JCRUserPasswordUpdateAuthorizationException;
 import org.jahia.services.content.decorator.JCRUserPasswordUpdatePolicyException;
 import org.jahia.services.content.decorator.JCRUserPasswordUpdateVerificationException;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
@@ -55,8 +54,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.jcr.RepositoryException;
-import java.util.Properties;
+import javax.jcr.Value;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -454,8 +453,9 @@ public class UserPasswordUpdateInterceptorTest extends AbstractJUnitTest {
             // Enable password protection
             SettingsBean.getInstance().setUserPasswordUpdateRequiringPreviousPassword(true);
 
-            JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-                JCRUserNode user = (JCRUserNode) session.getNode(testUser.getPath());
+            JCRSessionWrapper adminSession = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            JCRTemplate.getInstance().doExecute(((JCRUserNode)adminSession.getNode(testUser.getPath())).getJahiaUser(), null, null, session -> {
+                JCRUserNode user =session.getUserNode();
 
                 // Ensure no authorization is present (clean slate)
                 UserPasswordUpdateInterceptor.clearPasswordUpdateAuthorization();
@@ -483,6 +483,7 @@ public class UserPasswordUpdateInterceptorTest extends AbstractJUnitTest {
             // Restore original setting
             SettingsBean.getInstance().setUserPasswordUpdateRequiringPreviousPassword(originalSetting);
             UserPasswordUpdateInterceptor.clearPasswordUpdateAuthorization();
+            JCRSessionFactory.getInstance().closeAllSessions();
         }
     }
 
@@ -518,6 +519,57 @@ public class UserPasswordUpdateInterceptorTest extends AbstractJUnitTest {
             });
         } finally {
             SettingsBean.getInstance().setUserPasswordUpdateRequiringPreviousPassword(originalSetting);
+        }
+    }
+
+    /**
+     * Test that setPassword works when user has setUsersPassword permission.
+     * This test creates a user with the permission and verifies bypass functionality.
+     */
+    @Test
+    public void testSetPasswordWithSetUsersPasswordPermission() throws Exception {
+        // Save original setting
+        UserPasswordUpdateInterceptor.clearPasswordUpdateAuthorization();
+        boolean originalSetting = SettingsBean.getInstance().isUserPasswordUpdateRequiringPreviousPassword();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+
+        final String privilegedUsername = "privilegedTestUser";
+        JCRUserNode privilegedUser = null;
+
+        try {
+            // Enable password protection
+            SettingsBean.getInstance().setUserPasswordUpdateRequiringPreviousPassword(true);
+
+            // Create a server administrator
+            privilegedUser = userManager.createUser(privilegedUsername, INITIAL_PASSWORD, new Properties(), session);
+            session.getNode("/").grantRoles("u:" + privilegedUsername, Collections.singleton("server-administrator"));
+            session.save();
+
+            // Check that by default server administrator cannot change other users' passwords
+            assertFalse("server-administrator should not be allowed to setPassword by default",
+                    JCRTemplate.getInstance().doExecute(privilegedUser.getJahiaUser(), null, null,
+                            testSession -> ((JCRUserNode) testSession.getNode(testUser.getPath())).setPassword(NEW_PASSWORD)));
+
+            // Now add setUsersPassword permission to server-administrator role
+            JCRNodeWrapper serverAdminRole = session.getNode("/roles/server-administrator");
+            JCRValueWrapper[] originalValues = serverAdminRole.getProperty("j:permissionNames").getValues();
+            List<Value> newValuesList = new ArrayList<>(Arrays.asList(originalValues));
+            newValuesList.add(session.getValueFactory().createValue("setUsersPassword"));
+            serverAdminRole.setProperty("j:permissionNames",  newValuesList.toArray(new Value[0]));
+            session.save();
+
+            // Now the privileged user should be able to change testUser's password
+            assertTrue("server-administrator should be allowed to setPassword if they have setUsersPassword permission",
+                    JCRTemplate.getInstance().doExecute(privilegedUser.getJahiaUser(), null, null,
+                            testSession -> ((JCRUserNode) testSession.getNode(testUser.getPath())).setPassword(NEW_PASSWORD)));
+        } finally {
+            if (privilegedUser != null) {
+                userManager.deleteUser(privilegedUser.getPath(), session);
+            }
+            ((JCRUserNode) session.getNode(testUser.getPath())).setPassword(INITIAL_PASSWORD);
+            SettingsBean.getInstance().setUserPasswordUpdateRequiringPreviousPassword(originalSetting);
+            UserPasswordUpdateInterceptor.clearPasswordUpdateAuthorization();
+            JCRSessionFactory.getInstance().closeAllSessions();
         }
     }
 }

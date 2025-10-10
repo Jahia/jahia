@@ -187,5 +187,9 @@
         <provisioningApi jcr:primaryType="jnt:permission">
             <provisioningAccess jcr:primaryType="jnt:permission" />
         </provisioningApi>
+
+        <unsecure-permissions jcr:primaryType="jnt:permission">
+            <setUsersPassword jcr:primaryType="jnt:permission"/>
+        </unsecure-permissions>
     </permissions>
 </content>

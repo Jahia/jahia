@@ -182,7 +182,9 @@ public class UserPasswordUpdateInterceptor extends BaseInterceptor {
         // Only intercept if :
         // - the SettingsBean requires previous password for updates
         // - the node is not new (new users can have password set freely)
-        if (node.isNew() || !SettingsBean.getInstance().isUserPasswordUpdateRequiringPreviousPassword()) {
+        // - the user does not have setUsersPassword permission (bypass for admins)
+        if (node.isNew() || !SettingsBean.getInstance().isUserPasswordUpdateRequiringPreviousPassword() ||
+                node.hasPermission("setUsersPassword")) {
             return;
         }
 

@@ -117,7 +117,7 @@
                               jcr:language="en"
                               jcr:primaryType="jnt:translation"
                               jcr:title="System administrator"/>
-            <rootNode-access j:path="/"
+            <root-access j:path="/"
                              j:permissionNames="systemToolsAccess provisioningAccess"
                              jcr:primaryType="jnt:externalPermissions"/>
         </system-administrator>

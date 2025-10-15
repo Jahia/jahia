@@ -1,7 +1,9 @@
-import org.jahia.services.content.JCRTemplate
 import org.jahia.settings.JahiaPropertiesUtils
 
+log.info("Migration script to add passwordUpdate security settings")
+
 // Add new props to existing jahia.properties file
+log.info("Add 'jahia.user.passwordUpdate.currentPasswordRequired' entry to jahia.properties")
 JahiaPropertiesUtils.addEntry("jahia.user.passwordUpdate.currentPasswordRequired", "true",
         "# Enforces current password validation for user password changes.\n" +
                 "# When enabled (recommended), password updates are only allowed through the secure\n" +
@@ -22,6 +24,7 @@ JahiaPropertiesUtils.addEntry("jahia.user.passwordUpdate.currentPasswordRequired
                 "Please manually add the following line into your jahia.properties file if you need to change the default value\n" +
                 "jahia.user.passwordUpdate.currentPasswordRequired = true")
 
+log.info("Add 'jahia.user.passwordUpdate.authorizationTimeoutMs' entry to jahia.properties")
 JahiaPropertiesUtils.addEntry("jahia.user.passwordUpdate.authorizationTimeoutMs", "10000",
         "# Specifies the duration (in milliseconds) for which password update authorization remains valid\n" +
                 "# after successful password verification. This timeout controls the thread-local authorization window\n" +
@@ -36,13 +39,4 @@ JahiaPropertiesUtils.addEntry("jahia.user.passwordUpdate.authorizationTimeoutMs"
                 "Please manually add the following line into your jahia.properties file if you need to change the default value\n" +
                 "jahia.user.passwordUpdate.authorizationTimeoutMs = 10000")
 
-// Create the setUsersPassword permission to allow password updates without current password verification (for admins)
-JCRTemplate.instance.doExecuteWithSystemSession { session ->
-    def node = session.getNode("/permissions")
-    if (!node.hasNode("unsecure-permissions")) {
-        def parent = node.addNode("unsecure-permissions", "jnt:permission")
-        parent.addNode("setUsersPassword", "jnt:permission")
-        session.save()
-    }
-    return null
-}
+log.info("End of passwordUpdate security settings set up")

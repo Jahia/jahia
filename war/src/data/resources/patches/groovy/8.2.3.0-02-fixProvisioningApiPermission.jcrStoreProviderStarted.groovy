@@ -13,7 +13,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() 
         // Add missing permission if needed
         log.info("Add provisioningAccess permission")
         if (!session.nodeExists("/permissions/provisioningApi")) {
-            sesion.getNode("/permissions").addNode("provisioningApi", "jnt:permission")
+            session.getNode("/permissions").addNode("provisioningApi", "jnt:permission")
         }
         if (!session.nodeExists("/permissions/provisioningApi/provisioningAccess")) {
             session.getNode("/permissions/provisioningApi").addNode("provisioningAccess", "jnt:permission")

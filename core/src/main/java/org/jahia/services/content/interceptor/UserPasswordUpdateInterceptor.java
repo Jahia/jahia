@@ -44,6 +44,8 @@ package org.jahia.services.content.interceptor;
 
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.decorator.JCRUserPasswordUpdateAuthorizationException;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -182,10 +184,22 @@ public class UserPasswordUpdateInterceptor extends BaseInterceptor {
         // Only intercept if :
         // - the SettingsBean requires previous password for updates
         // - the node is not new (new users can have password set freely)
-        // - the user does not have setUsersPassword permission (bypass for admins)
-        if (node.isNew() || !SettingsBean.getInstance().isUserPasswordUpdateRequiringPreviousPassword() ||
-                node.hasPermission("setUsersPassword")) {
+        if (node.isNew() || !SettingsBean.getInstance().isUserPasswordUpdateRequiringPreviousPassword()) {
             return;
+        }
+
+        // Check if the current session has the 'setUsersPassword' permission
+        try {
+            // force the usage of a NON system session by always using real current user session.
+           if (JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode().hasPermission("setUsersPassword")) {
+               return;
+           }
+        } catch (RepositoryException e) {
+            // ignore and proceed to thread-local check
+            logger.warn("Error checking 'setUsersPassword' permission during password update on user: {}, (More details in debug)", node.getPath());
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            }
         }
 
         // If not authorized via thread-local flag, block the modification

@@ -546,9 +546,14 @@ public class UserPasswordUpdateInterceptorTest extends AbstractJUnitTest {
             session.save();
 
             // Check that by default server administrator cannot change other users' passwords
+            // Do some session gymnastics to simulate http request thread
+            JCRSessionFactory.getInstance().setCurrentUser(privilegedUser.getJahiaUser());
+            JCRSessionWrapper privilegedSession = JCRSessionFactory.getInstance().getCurrentUserSession();
             assertFalse("server-administrator should not be allowed to setPassword by default",
-                    JCRTemplate.getInstance().doExecute(privilegedUser.getJahiaUser(), null, null,
-                            testSession -> ((JCRUserNode) testSession.getNode(testUser.getPath())).setPassword(NEW_PASSWORD)));
+                    ((JCRUserNode) privilegedSession.getNode(testUser.getPath())).setPassword(NEW_PASSWORD));
+            JCRSessionFactory.getInstance().setCurrentUser(null);
+            privilegedSession.setCurrentUserSession(false);
+            privilegedSession.logout();
 
             // Now add setUsersPassword permission to server-administrator role
             JCRNodeWrapper serverAdminRole = session.getNode("/roles/server-administrator");
@@ -559,9 +564,14 @@ public class UserPasswordUpdateInterceptorTest extends AbstractJUnitTest {
             session.save();
 
             // Now the privileged user should be able to change testUser's password
+            // Do some session gymnastics to simulate http request thread
+            JCRSessionFactory.getInstance().setCurrentUser(privilegedUser.getJahiaUser());
+            privilegedSession = JCRSessionFactory.getInstance().getCurrentUserSession();
             assertTrue("server-administrator should be allowed to setPassword if they have setUsersPassword permission",
-                    JCRTemplate.getInstance().doExecute(privilegedUser.getJahiaUser(), null, null,
-                            testSession -> ((JCRUserNode) testSession.getNode(testUser.getPath())).setPassword(NEW_PASSWORD)));
+                    ((JCRUserNode) privilegedSession.getNode(testUser.getPath())).setPassword(NEW_PASSWORD));
+            JCRSessionFactory.getInstance().setCurrentUser(null);
+            privilegedSession.setCurrentUserSession(false);
+            privilegedSession.logout();
         } finally {
             if (privilegedUser != null) {
                 userManager.deleteUser(privilegedUser.getPath(), session);

@@ -76,7 +76,6 @@ public class JCRUserPasswordUpdateAuthorizationException extends JCRUserPassword
      * @param username the username for which the unauthorized password update was attempted
      */
     public JCRUserPasswordUpdateAuthorizationException(String username) {
-        super(username, "Direct password modification is not allowed for user: " + username +
-              ". Use the secured setPassword(currentPassword, newPassword) method.");
+        super(username, "Direct password modification is not allowed on user: " + username);
     }
 }

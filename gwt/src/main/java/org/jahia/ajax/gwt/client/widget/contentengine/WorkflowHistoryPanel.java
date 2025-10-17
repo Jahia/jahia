@@ -60,6 +60,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -184,12 +185,13 @@ public class WorkflowHistoryPanel extends ContentPanel {
             @Override public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
                     Grid<GWTJahiaWorkflowHistoryItem> grid) {
+                String displayName = SafeHtmlUtils.htmlEscape(historyItem.get("displayName"));
                 if (dashboard && historyItem instanceof GWTJahiaWorkflowHistoryTask) {
                     final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid<GWTJahiaWorkflowHistoryItem>) grid)
                             .getTreeStore().getParent(historyItem);
                     for (final GWTJahiaWorkflowTask task : parent.getAvailableTasks()) {
                         if (task.getId().equals(historyItem.getId())) {
-                            Button b = new Button(historyItem.<String>get("displayName"));
+                            Button b = new Button(displayName);
                             b.addStyleName("button-details");
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override public void componentSelected(ButtonEvent ce) {
@@ -226,7 +228,7 @@ public class WorkflowHistoryPanel extends ContentPanel {
                         }
                     }
                 }
-                return new Label(historyItem.<String>get("displayName"));
+                return new Label(displayName);
             }
         });
         config.add(column);
@@ -268,7 +270,7 @@ public class WorkflowHistoryPanel extends ContentPanel {
                 final GWTJahiaNode wrapper = (GWTJahiaNode) model.getProperties().get("nodeWrapper");
 
                 if (wrapper != null) {
-                    return new Label(wrapper.getDisplayName() + " (" + wrapper.getPath() + ")");
+                    return new Label(SafeHtmlUtils.htmlEscape(wrapper.getDisplayName()) + " (" + wrapper.getPath() + ")");
                 }
                 List<GWTJahiaWorkflowHistoryItem> models = store.getModels();
                 for (final GWTJahiaWorkflowHistoryItem historyItem : models) {
@@ -351,13 +353,13 @@ public class WorkflowHistoryPanel extends ContentPanel {
                     if (time < 1000) {
                         display = time + " " + Messages.get("label.milliseconds", "ms");
                     } else if (time < 1000 * 60L) {
-                        display = ((long) (time / 1000)) + " " + Messages.get("label.seconds", "sec");
+                        display = (time / 1000) + " " + Messages.get("label.seconds", "sec");
                     } else if (time < 1000 * 60 * 60L) {
-                        display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label.minutes", "min") + " " + ((long) (
-                                (time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
+                        display = (time / (1000 * 60L)) + " " + Messages.get("label.minutes", "min") + " " + (
+                                (time % (1000 * 60L)) / 1000) + " " + Messages.get("label.seconds", "sec");
                     } else {
-                        display = ((long) (time / (1000 * 60 * 60L))) + " " + Messages.get("label_hours", "h") + " " + ((long) (
-                                (time % (1000 * 60 * 60L)) / (1000 * 60L))) + " " + Messages.get("label.minutes", "min");
+                        display = (time / (1000 * 60 * 60L)) + " " + Messages.get("label_hours", "h") + " " + (
+                                (time % (1000 * 60 * 60L)) / (1000 * 60L)) + " " + Messages.get("label.minutes", "min");
                     }
                 }
                 return new Label(display);
@@ -372,7 +374,7 @@ public class WorkflowHistoryPanel extends ContentPanel {
                 @Override public Object render(final GWTJahiaWorkflowHistoryItem model, String property, ColumnData config, int rowIndex,
                         int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
                         Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
-                    if (model instanceof GWTJahiaWorkflowHistoryProcess && !((GWTJahiaWorkflowHistoryProcess) model).isFinished()) {
+                    if (model instanceof GWTJahiaWorkflowHistoryProcess && !model.isFinished()) {
                         Button button = new Button(Messages.get("label.abort", "Abort"));
                         button.addStyleName("button-abort");
 

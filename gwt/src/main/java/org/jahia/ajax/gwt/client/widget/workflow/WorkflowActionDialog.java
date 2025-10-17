@@ -80,26 +80,26 @@ import java.util.*;
  */
 public class WorkflowActionDialog extends LayoutContainer {
 
-    private JahiaContentManagementServiceAsync contentManagement;
+    private final JahiaContentManagementServiceAsync contentManagement;
     private WorkflowDashboardEngine workflowDashboard;
-    private TabPanel tabPanel;
+    private final TabPanel tabPanel;
     private TabItem actionTab;
     private TabItem commentsTab;
-    private EngineContainer container;
-    private String title;
+    private final EngineContainer container;
+    private final String title;
     private List<GWTJahiaWorkflowComment> comments;
 
-    private String nodePath;
-    private GWTJahiaWorkflow workflow;
+    private final String nodePath;
+    private final GWTJahiaWorkflow workflow;
 
     private int numberOfWorkflows;
 
     private transient GWTJahiaWorkflowDefinition wfDefinition;
     private transient CustomWorkflow customWorkflow;
 
-    private Linker linker;
+    private final Linker linker;
     private PropertiesEditor propertiesEditor;
-    private ButtonBar buttonsBar;
+    private final ButtonBar buttonsBar;
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container, int numberOfWorkflows) {
@@ -113,7 +113,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(String nodePath, final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
                                 CustomWorkflow custom, EngineContainer container) {
-        this(nodePath, linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"),workflow, false);
+        this(nodePath, linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, task.get("formResourceName"),workflow, false);
         initExecuteActionDialog(task);
         if (custom != null) {
             custom.initExecuteActionDialog(workflow, this);
@@ -224,7 +224,7 @@ public class WorkflowActionDialog extends LayoutContainer {
             nodeTypeCreationCaller.add(new BaseAsyncCallback<NodeTypeCreationInfo>() {
                 @Override
                 public void onSuccess(NodeTypeCreationInfo result) {
-                    propertiesEditor = new PropertiesEditor(Arrays.asList(result.getNodeType()), variables, Arrays.asList(GWTJahiaItemDefinition.CONTENT));
+                    propertiesEditor = new PropertiesEditor(Collections.singletonList(result.getNodeType()), variables, Collections.singletonList(GWTJahiaItemDefinition.CONTENT));
                     propertiesEditor.setChoiceListInitializersValues(result.getEngine().getChoiceListInitializersValues());
                     propertiesEditor.setViewInheritedItems(true);
                     propertiesEditor.renderNewFormPanel();
@@ -346,7 +346,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     public void disableButtons() {
         for (Component component : buttonsBar.getItems()) {
             if (component instanceof Button) {
-                ((Button) component).setEnabled(false);
+                component.setEnabled(false);
             }
         }
     }
@@ -354,7 +354,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     public void enableButtons() {
         for (Component component : buttonsBar.getItems()) {
             if (component instanceof Button) {
-                ((Button) component).setEnabled(true);
+                component.setEnabled(true);
             }
         }
     }
@@ -409,7 +409,8 @@ public class WorkflowActionDialog extends LayoutContainer {
         List<GWTJahiaWorkflowOutcome> outcomes = task.getOutcomes();
         final List<Button> allButtons = new ArrayList<Button>();
         for (final GWTJahiaWorkflowOutcome outcome : outcomes) {
-            Button button = new Button(outcome.getLabel());
+            Button button = new Button();
+            button.setText(outcome.getLabel());
             if (outcome.getIcon() != null) {
                 button.setIcon(ToolbarIconProvider.getInstance().getIcon(outcome.getIcon()));
             }
@@ -525,7 +526,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     class NodeTypeCreationCaller {
         private NodeTypeCreationInfo result;
-        private List<AsyncCallback<NodeTypeCreationInfo>> deferredCallbacks = new ArrayList<AsyncCallback<NodeTypeCreationInfo>>();
+        private final List<AsyncCallback<NodeTypeCreationInfo>> deferredCallbacks = new ArrayList<AsyncCallback<NodeTypeCreationInfo>>();
 
         public NodeTypeCreationCaller(String nodeTypeName, final String path) {
             contentManagement.getWFFormForNodeAndNodeType(nodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {

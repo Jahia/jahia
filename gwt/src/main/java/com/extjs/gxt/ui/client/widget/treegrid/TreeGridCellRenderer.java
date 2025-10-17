@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel.Joint;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
@@ -91,8 +92,6 @@ public class TreeGridCellRenderer<M extends ModelData> implements GridCellRender
     }
 
     protected String getText(TreeGrid<M> grid, M model, String property, int rowIndex, int colIndex) {
-        // Jahia GWT 2.8 fix
-        // return String.valueOf(model.get(property));
-        return model.get(property);
+        return SafeHtmlUtils.htmlEscape(model.get(property));
     }
 }

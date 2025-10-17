@@ -52,7 +52,6 @@ import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
@@ -84,7 +83,7 @@ public class EngineWindow extends Window implements EngineContainer {
     public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, final Linker linker) {
         removeAll();
         add(component);
-        setHeadingHtml(header);
+        setHeadingText(header);
         if (buttonsBar != null) {
             setBottomComponent(buttonsBar);
         }

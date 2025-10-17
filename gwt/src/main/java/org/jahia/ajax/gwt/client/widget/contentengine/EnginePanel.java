@@ -84,7 +84,7 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
         removeAll();
         add(component);
         head.setStyleAttribute("height", "20px");
-        setHeadingHtml(header);
+        setHeadingText(header);
         if (buttonsBar != null) {
             setBottomComponent(buttonsBar);
         }

@@ -46,9 +46,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.helper.UIConfigHelper;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
-import org.springframework.beans.factory.BeanNameAware;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -60,9 +58,7 @@ import java.util.*;
  * Time: 12:26:47 PM
  * @deprecated
  */
-public class GWTEditConfiguration extends EditConfiguration implements Serializable, BeanNameAware {
-
-    private static final long serialVersionUID = -5469841056796249203L;
+public class GWTEditConfiguration extends EditConfiguration {
 
     private List<Toolbar> topToolbars;
     private Toolbar sidePanelToolbar;
@@ -101,15 +97,6 @@ public class GWTEditConfiguration extends EditConfiguration implements Serializa
 
     public void addTab(int index, SidePanelTab tab) {
         tabs.add(index, tab);
-    }
-
-    @Override
-    public void setBeanName(String name) {
-        this.name = name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Toolbar getTopToolbar() {
@@ -223,18 +210,6 @@ public class GWTEditConfiguration extends EditConfiguration implements Serializa
         this.createChildrenDirectButtonsLimit = createChildrenDirectButtonsLimit;
     }
 
-    public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
-    }
-
-    public void setNodeCheckPermission(String nodeCheckPermission) {
-        this.nodeCheckPermission = nodeCheckPermission;
-    }
-
-    public void setDefaultUrlMapping(String defaultUrlMapping) {
-        this.defaultUrlMapping = defaultUrlMapping;
-    }
-
     public void removeTab(String tabKey) {
         if (tabKey != null && tabKey.length() > 0) {
             for (Iterator<SidePanelTab> iterator = getTabs().iterator(); iterator.hasNext();) {
@@ -256,28 +231,6 @@ public class GWTEditConfiguration extends EditConfiguration implements Serializa
     public void setComponentsPaths(List<String> componentsPaths) {
         this.componentsPaths = componentsPaths;
     }
-
-    public void setEditableTypes(Set<String> editableTypes) {
-        this.editableTypes = editableTypes;
-    }
-
-    public void setNonEditableTypes(Set<String> nonEditableTypes) {
-        this.nonEditableTypes = nonEditableTypes;
-    }
-
-    public void setSkipMainModuleTypesDomParsing(Set<String> skipMainModuleTypesDomParsing) {
-        this.skipMainModuleTypesDomParsing = skipMainModuleTypesDomParsing;
-    }
-
-    public void setVisibleTypes(Set<String> visibleTypes) {
-        this.visibleTypes = visibleTypes;
-    }
-
-
-    public void setNonVisibleTypes(Set<String> nonVisibleTypes) {
-        this.nonVisibleTypes = nonVisibleTypes;
-    }
-
     /**
      * Excluded node types from creation
      * @return
@@ -288,18 +241,6 @@ public class GWTEditConfiguration extends EditConfiguration implements Serializa
 
     public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {
         this.excludedNodeTypes = excludedNodeTypes;
-    }
-
-    public void setBypassModeForTypes(Set<String> bypassModeForTypes) {
-        this.bypassModeForTypes = bypassModeForTypes;
-    }
-
-    public void setForceHeaders(boolean forceHeaders) {
-        this.forceHeaders = forceHeaders;
-    }
-
-    public void setDefaultLocation(String defaultLocation) {
-        this.defaultLocation = defaultLocation;
     }
 
     public boolean isLoadSitesList() {

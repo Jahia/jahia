@@ -52,6 +52,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
+import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -66,6 +67,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -269,6 +272,40 @@ public class ErrorServlet extends HttpServlet {
         if (errorCode == HttpServletResponse.SC_UNAUTHORIZED) {
             String redirectUrl = LoginConfig.getInstance().getCustomLoginUrl(request);
             if (redirectUrl != null) {
+                try {
+                    // Add referer as query parameter if present
+                    // If the error servlet has been called from the Render servlet (/cms/**), the urlResolver is present in the request
+                    URLResolver urlResolver = (URLResolver) request.getAttribute("urlResolver");
+                    if (urlResolver != null) {
+                        String returnUrl = urlResolver.getUrlPathInfo();
+                        if (StringUtils.isNotBlank(returnUrl)) {
+                            String queryString = request.getQueryString();
+                            UrlRewriteService urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
+                            // Switch back to "/cms" servlet
+                            String fullReturnUrl = urlRewriteService.rewriteOutbound(request.getContextPath() + "/cms" + returnUrl, request, response);
+                            if (StringUtils.isNotBlank(queryString)) {
+                                fullReturnUrl += "?" + queryString;
+                            }
+
+                            // Limit URL length to prevent potential DoS attacks
+                            if (fullReturnUrl.length() <= 2048) {
+                                try {
+                                    String encodedReturnUrl = URLEncoder.encode(fullReturnUrl, StandardCharsets.UTF_8);
+                                    String separator = redirectUrl.contains("?") ? "&" : "?";
+                                    redirectUrl = redirectUrl + separator + "redirect=" + encodedReturnUrl;
+                                } catch (Exception e) {
+                                    logger.warn("Failed to encode return URL: {}", fullReturnUrl);
+                                    logger.debug("Full error", e);
+                                }
+                            } else {
+                                logger.warn("Return URL too long, skipping redirect parameter: {}", fullReturnUrl.length());
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    // Ignore any issue in resolving redirect url
+                    logger.debug("An error occurred while computing the redirect URL", t);
+                }
                 redirectUrl = response.encodeRedirectURL(redirectUrl);
                 if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
                     redirectUrl = SessionidRemovalResponseWrapper.removeJsessionId(redirectUrl);

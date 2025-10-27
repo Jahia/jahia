@@ -1003,10 +1003,6 @@
                     <artifactId>jul-to-slf4j</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.jsoup</groupId>
-                    <artifactId>jsoup</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.jdom</groupId>
                     <artifactId>jdom2</artifactId>
                 </exclusion>

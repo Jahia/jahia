@@ -19,7 +19,7 @@
                 <mime>application/msword</mime>
                 <mime>application/vnd.ms-outlook</mime>
         </parser>
-        
+
         <parser name="parse-ooxml" class="org.apache.tika.parser.microsoft.ooxml.OOXMLParser">
                 <mime>application/x-tika-ooxml</mime>
                 <mime>application/vnd.openxmlformats-officedocument.presentationml.presentation</mime>
@@ -39,13 +39,13 @@
                 <mime>application/vnd.ms-word.template.macroenabled.12</mime>
         </parser>
 
-        <parser name="parse-html" class="org.apache.tika.parser.html.HtmlParser">
+        <parser name="parse-html" class="org.apache.tika.parser.html.JSoupParser">
                 <mime>text/html</mime>
                 <mime>application/xhtml+xml</mime>
                 <mime>application/x-asp</mime>
         </parser>
 
-        <parser mame="parse-rtf" class="org.apache.tika.parser.microsoft.rtf.RTFParser">
+        <parser name="parse-rtf" class="org.apache.tika.parser.microsoft.rtf.RTFParser">
                 <mime>application/rtf</mime>
         </parser>
 
@@ -108,7 +108,7 @@
                 <mime>image/jpeg</mime>
         </parser>
 
-<!-- 
+<!--
         <parser name="parse-zip" class="org.apache.tika.parser.pkg.ZipParser">
                 <mime>application/zip</mime>
         </parser>

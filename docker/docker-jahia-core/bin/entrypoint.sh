@@ -119,8 +119,6 @@ if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     # Create or overwrite install.properties file
     PROPERTIES_FILE="/tmp/install.properties"
     echo "# Generated install.properties file" > $PROPERTIES_FILE
-
-    # Extract values from the command arguments, removing -Djahia.configure prefix
     echo "targetServerDirectory=${CATALINA_HOME}" >> $PROPERTIES_FILE
     echo "databaseType=${DB_VENDOR}" >> $PROPERTIES_FILE
     echo "jahiaVarDiskPath=${DATA_FOLDER}" >> $PROPERTIES_FILE
@@ -137,14 +135,21 @@ if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     echo "overwritedb=${OVERWRITEDB}" >> $PROPERTIES_FILE
     echo "webAppDirName=${CONTEXT}" >> $PROPERTIES_FILE
     echo "jahiaProperties={${JAHIA_PROPERTIES}}" >> $PROPERTIES_FILE
+
     # Handle external opts
+    # Parse -Djahia.configure.*, -Djahia.data.*, -Djahia.deploy.* options
+    # Transform them from: -Djahia.configure.key=value to: key=value
     echo "processing OPTS: ${JAHIA_CONFIGURE_OPTS}"
-    echo ${JAHIA_CONFIGURE_OPTS} | sed -E 's/-Djahia\.[configure,data,deploy]+\.([^=]+)=/\n\1=/g'  >> $PROPERTIES_FILE
+    if [ -n "${JAHIA_CONFIGURE_OPTS}" ]; then
+        echo "${JAHIA_CONFIGURE_OPTS}" | tr -s '[:blank:]' '\n' | \
+            grep -E '^-Djahia\.(configure|data|deploy)\.' | \
+            sed -E 's/^-Djahia\.(configure|data|deploy)\.//g' >> $PROPERTIES_FILE
+    fi
 
     if [ "${JAHIA_LICENSE}" != "" ]; then
       echo "decoding license"
       echo "${JAHIA_LICENSE}" | base64 --decode > ${DATA_FOLDER}/license.xml
-     echo "licenseFile=${DATA_FOLDER}/license.xml" >> $PROPERTIES_FILE
+      echo "licenseFile=${DATA_FOLDER}/license.xml" >> $PROPERTIES_FILE
     else
       echo "No license provided via environment variable"
     fi

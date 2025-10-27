@@ -11,7 +11,9 @@
     <bean id="noCacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider"/>
 
     <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" depends-on="jahiaProperties">
-        <property name="configurationResource" value="#{jahiaProperties['jahia.cache.configuration.resource'] != null ? jahiaProperties['jahia.cache.configuration.resource'] : ('classpath:/ehcache-jahia' + (jahiaProperties['cluster.activated'] == 'true' ? '-cluster.xml' : '.xml'))}"/>
+        <property name="configurationResource" value="#{jahiaProperties['jahia.cache.configuration.resource']}"/>
+        <property name="defaultClusteredConfigurationResource" value="classpath:/ehcache-jahia-cluster.xml"/>
+        <property name="defaultNotClusteredConfigurationResource" value="classpath:/ehcache-jahia.xml"/>
         <!-- This property allows to fix a limit for cache entries dependencies management,
 if an entry have more than this value of dependencies then
 when we flush this entry we will flush the whole cache
@@ -24,7 +26,9 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="bigEhCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" depends-on="jahiaProperties">
-        <property name="configurationResource" value="#{jahiaProperties['jahia.cache.html.configuration.resource'] != null ? jahiaProperties['jahia.cache.html.configuration.resource'] : ('classpath:/ehcache-jahia-html' + (jahiaProperties['cluster.activated'] == 'true' ? '-cluster.xml' : '.xml'))}"/>
+        <property name="configurationResource" value="#{jahiaProperties['jahia.cache.html.configuration.resource']}"/>
+        <property name="defaultClusteredConfigurationResource" value="classpath:/ehcache-jahia-html-cluster.xml"/>
+        <property name="defaultNotClusteredConfigurationResource" value="classpath:/ehcache-jahia-html.xml"/>
         <!-- This property allows to fix a limit for cache entries dependencies management,
 if an entry have more than this value of dependencies then
 when we flush this entry we will flush the whole cache

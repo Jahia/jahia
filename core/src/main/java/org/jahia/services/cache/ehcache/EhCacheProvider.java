@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * EHCache based cache provider implementation.
@@ -79,6 +80,8 @@ public class EhCacheProvider implements CacheProvider {
     private CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
     private Resource configurationResource;
+    private Resource defaultNotClusteredConfigurationResource;
+    private Resource defaultClusteredConfigurationResource;
     private boolean statisticsEnabled;
     private boolean jmxActivated = true;
     private boolean initialized = false;
@@ -87,8 +90,15 @@ public class EhCacheProvider implements CacheProvider {
         if (initialized) {
             return;
         }
+
         try {
-            try (InputStream is = configurationResource.getInputStream()) {
+            // Resolve the configuration resource: custom one has precedence over the default ones
+            Resource resourceToUse = Optional.ofNullable(configurationResource)
+                    .filter(Resource::exists)
+                    .orElse(settingsBean.isClusterActivated()
+                            ? defaultClusteredConfigurationResource
+                            : defaultNotClusteredConfigurationResource);
+            try (InputStream is = resourceToUse.getInputStream()) {
                 try (InputStream interpolatedInputStream = PlaceholderUtils.resolvePlaceholders(is, settingsBean, true)) {
                     cacheManager = CacheManager.newInstance(interpolatedInputStream);
                 }
@@ -132,6 +142,14 @@ public class EhCacheProvider implements CacheProvider {
 
     public void setConfigurationResource(Resource configurationResource) {
         this.configurationResource = configurationResource;
+    }
+
+    public void setDefaultNotClusteredConfigurationResource(Resource defaultNotClusteredConfigurationResource) {
+        this.defaultNotClusteredConfigurationResource = defaultNotClusteredConfigurationResource;
+    }
+
+    public void setDefaultClusteredConfigurationResource(Resource defaultClusteredConfigurationResource) {
+        this.defaultClusteredConfigurationResource = defaultClusteredConfigurationResource;
     }
 
     public void setJmxActivated(boolean jmxActivated) {

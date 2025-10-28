@@ -3,13 +3,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	
+
     <bean id="authPipeline" class="org.jahia.pipelines.impl.GenericPipeline" init-method="initialize">
         <property name="name" value="authPipeline" />
         <property name="valves">
             <list>
                 <bean id="HttpBasicAuthValve" class="org.jahia.params.valves.HttpBasicAuthValveImpl">
                     <property name="userManagerService" ref="JahiaUserManagerService"/>
+                    <property name="enabled" value="${auth.valve.basicAccess.enabled:true}"/>
                 </bean>
                 <bean id="TokenAuthValve" class="org.jahia.params.valves.TokenAuthValveImpl">
                     <property name="enabled" value="${auth.token.enabled:false}"/>
@@ -19,12 +20,15 @@
                 	  <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                     <property name="fireLoginEvent" value="${fireLoginEvent:true}"/>
                     <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogin:wemSessionId}" />
+                    <property name="enabled" value="${auth.valve.loginEngine.enabled:true}"/>
                 </bean>
                 <bean id="SessionAuthValve" class="org.jahia.params.valves.SessionAuthValveImpl">
                     <property name="userManagerService" ref="JahiaUserManagerService"/>
+                    <property name="enabled" value="${auth.valve.session.enabled:true}"/>
                 </bean>
                 <bean id="CookieAuthValve" class="org.jahia.params.valves.CookieAuthValveImpl">
-                	  <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
+                    <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
+                    <property name="enabled" value="${auth.valve.cookie.enabled:true}"/>
                 </bean>
                 <bean id="ContainerAuthValve" class="org.jahia.params.valves.ContainerAuthValveImpl">
                     <property name="enabled" value="${auth.container.enabled}"/>
@@ -32,7 +36,7 @@
             </list>
         </property>
     </bean>
-    
+
     <bean class="org.jahia.params.valves.AuthPipelineInitializer">
         <property name="authPipeline" ref="authPipeline"/>
     </bean>

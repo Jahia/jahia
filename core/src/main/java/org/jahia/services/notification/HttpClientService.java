@@ -79,6 +79,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,8 +130,8 @@ public class HttpClientService implements ServletContextAware {
 
         HttpHost proxy = new HttpHost(protocol, host, port);
         builder.setProxy(proxy);
-
-        String key = host + ':' + port;
+        final InetSocketAddress unresolvedAddress = InetSocketAddress.createUnresolved(host, port);
+        final String key = unresolvedAddress.toString();
 
         BasicCredentialsProvider credsProvider = null;
         String user = System.getProperty(protocol + ".proxyUser");

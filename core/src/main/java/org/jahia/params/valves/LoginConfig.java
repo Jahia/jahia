@@ -91,8 +91,11 @@ public class LoginConfig implements ApplicationListener<ApplicationEvent> {
      */
     public String getCustomLoginUrl(HttpServletRequest request) {
         return loginUrlProviders.stream()
-                .filter(loginUrlProvider -> loginUrlProvider.hasCustomLoginUrl() && StringUtils.isNotBlank(loginUrlProvider.getLoginUrl(request)))
-                .findFirst().map(lup -> lup.getLoginUrl(request)).orElse(null);
+                .filter(LoginUrlProvider::hasCustomLoginUrl)
+                .map(provider -> provider.getLoginUrl(request))
+                .filter(StringUtils::isNotBlank)
+                .findFirst()
+                .orElse(null);
     }
 
     public void onApplicationEvent(ApplicationEvent event) {

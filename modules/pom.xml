@@ -119,9 +119,58 @@
             <version>8.2.3.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
+                <!--
+                    The following exclusions are libraries that are not exported by Jahia in OSGI
+                    In order to reflect what is really available in modules, from jahia-impl we exclude them here.
+                    Benefit: no IDE autocomplete for those libraries, no accidental usage.
+                    Future: we are considering excluding everything and explicitly force modules to declare their dependencies.
+                 -->
                 <exclusion>
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- In Jahia 8.2.3.0, Tika upgrades from 2.x to 3.x bring new transitives, excluding them right away -->
+                    <groupId>org.jsoup</groupId>
+                    <artifactId>jsoup</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- In Jahia 8.2.3.0, Tika upgrades from 2.x to 3.x bring new transitives, excluding them right away -->
+                    <groupId>info.picocli</groupId>
+                    <artifactId>picocli</artifactId>
+                </exclusion>
+                <!--
+                    The following exclusions are runtime librairies we don't want module to use directly.
+                    Previously they were defined as war dependencies, but for centralizing dependency management, they have been moved to jahia-impl.
+                    Excluding them here to avoid accidental usage in modules.
+                 -->
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-1.2-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-jcl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>concurrent</groupId>
+                    <artifactId>concurrent</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib-nodep</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>org.apache.felix.http.proxy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.karaf.diagnostic</groupId>
+                    <artifactId>org.apache.karaf.diagnostic.boot</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

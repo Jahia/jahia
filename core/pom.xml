@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>8.2.3.0-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.configuration</groupId>
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>core-test-framework</artifactId>
-            <version>8.2.3.0-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -432,7 +432,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.15</version>
+            <version>4.4.16</version>
         </dependency>
 
         <dependency>
@@ -513,6 +513,14 @@
             </exclusions>
         </dependency>
         <dependency>
+            <!-- Java concurrent library for pre Java-5, mostly needed by Jackrabbit -->
+            <groupId>concurrent</groupId>
+            <artifactId>concurrent</artifactId>
+            <version>1.3.4-jahia6</version>
+        </dependency>
+        <!-- End Jackrabbit dependencies -->
+
+        <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
             <version>${felix.framework.version}</version>
@@ -587,24 +595,35 @@
             <artifactId>log4j-web</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>1.8.6</version>
         </dependency>
-
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-oracle</artifactId>
             <version>1.8.6</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.taglibs</groupId>
-            <artifactId>taglibs-standard-impl</artifactId>
-            <version>1.2.5</version>
         </dependency>
 
         <!-- Spring framework dependencies -->
@@ -663,6 +682,13 @@
                     <artifactId>ognl</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <!-- Required for Eclipse Gemini Blueprint when proxying classes rather then interfaces -->
+            <artifactId>cglib-nodep</artifactId>
+            <groupId>cglib</groupId>
+            <version>2.2.2</version>
+            <scope>runtime</scope>
         </dependency>
         <!-- Spring framework optional dependencies-->
 
@@ -759,16 +785,22 @@
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.12.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>serializer</artifactId>
-            <version>2.7.3</version>
+            <version>${xalan.version}</version>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>2.7.3</version>
+            <version>${xalan.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>xml-apis</artifactId>
@@ -1016,12 +1048,6 @@
         </dependency>
 
         <dependency>
-            <groupId>concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-            <version>1.3.4-jahia6</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.htmlparser.jericho</groupId>
             <artifactId>jericho-html</artifactId>
             <version>${jericho.version}</version>
@@ -1249,6 +1275,11 @@
                     <groupId>dom4j</groupId>
                     <artifactId>dom4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <!-- jakarta.annotation-api:1.3.5 is the newer, maintained version and is a superset of what's in jsr250-api:1.0 -->
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1368,6 +1399,11 @@
                     <groupId>org.hibernate.javax.persistence</groupId>
                     <artifactId>hibernate-jpa-2.0-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <!-- jakarta.annotation-api:1.3.5 is the newer, maintained version and is a superset of what's in jsr250-api:1.0 -->
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!--<dependency>-->
@@ -1451,6 +1487,13 @@
             <artifactId>cdi-api</artifactId>
             <groupId>javax.enterprise</groupId>
             <version>1.1</version>
+            <exclusions>
+                <exclusion>
+                    <!-- jakarta.annotation-api:1.3.5 is the newer, maintained version and is a superset of what's in jsr250-api:1.0 -->
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -1532,9 +1575,14 @@
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
             <exclusions>
+                <!-- org.glassfish.jaxb:jaxb-runtime is here to provide jaxb libs   -->
                 <exclusion>
                     <groupId>com.sun.xml.bind</groupId>
                     <artifactId>jaxb-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1695,11 +1743,23 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.diagnostic</groupId>
+            <artifactId>org.apache.karaf.diagnostic.boot</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
             <version>${felix.configadmin.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Felix HTTP bridge -->
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.proxy</artifactId>
+            <version>${felix.http.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Dependencies for jdk 11 -->
@@ -1806,12 +1866,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Build>${buildNumber}</Implementation-Build>
-                        </manifestEntries>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
                 </configuration>
                 <executions>
@@ -1894,6 +1949,32 @@
                         <usedDependency>com.fasterxml.jackson.dataformat:jackson-dataformat-cbor</usedDependency>
                         <usedDependency>org.apache.velocity:velocity</usedDependency>
                     </usedDependencies>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!--
+                    This manifest is reused by war building Jahia framework system export-package.
+                 -->
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            org.jahia.*,
+                            name.fraser.neil.plaintext,
+                            org.springframework.orm.hibernate5.support;version=3.2.18,
+                            org.springframework.orm.hibernate5;version=3.2.18
+                        </Export-Package>
+                    </instructions>
                 </configuration>
             </plugin>
         </plugins>

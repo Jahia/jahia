@@ -421,164 +421,53 @@
     </profiles>
 
     <dependencies>
+        <!--
+            IMPORTANT: DO NOT ADD DEPENDENCIES HERE.
+            ALL DEPENDENCIES MUST BE DECLARED IN THE jahia-impl POM.XML
+            if not needed at compile time, use <scope>runtime</scope>
+            This will help centralize Jahia core webapp dependencies in a single place.
+         -->
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>8.2.3.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-api</artifactId>
-            <version>8.2.3.0-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>8.2.3.0-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <!--
+                Needed to make the system framework packages scan in GWT
+                Deprecated: should be removed in 8.3.0.0 (No GWT packages should be export in OSGI)
+             -->
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-gwt</artifactId>
+            <version>${project.parent.version}</version>
+            <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>8.2.3.0-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
             <type>war</type>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.websocket</groupId>
-            <artifactId>javax.websocket-api</artifactId>
-            <version>1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-compiler</artifactId>
-            <version>${drools.version}</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.drools</groupId>
-                    <artifactId>drools-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-1.2-api</artifactId>
-            <version>${log4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jcl</artifactId>
-            <version>${log4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-web</artifactId>
-            <version>${log4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax</artifactId>
-            <version>1.2.0</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>stax</groupId>
-                    <artifactId>stax-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.12.2</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- JSTL -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet.jstl</groupId>
-            <artifactId>jboss-jstl-api_1.2_spec</artifactId>
-            <version>1.1.4.Final</version>
-        </dependency>
-
-
-        <dependency>
-            <!-- Required for Eclipse Gemini Blueprint when proxying classes rather then interfaces -->
-            <artifactId>cglib-nodep</artifactId>
-            <groupId>cglib</groupId>
-            <version>2.2.2</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <!-- Felix HTTP bridge -->
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.http.proxy</artifactId>
-            <version>${felix.http.version}</version>
-        </dependency>
-
-        <dependency>
-            <!-- Karaf dependency -->
-            <groupId>org.apache.karaf.diagnostic</groupId>
-            <artifactId>org.apache.karaf.diagnostic.boot</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+        <!--
+            IMPORTANT: DO NOT ADD DEPENDENCIES HERE.
+            ALL DEPENDENCIES MUST BE DECLARED IN THE jahia-impl POM.XML
+            if not needed at compile time, use <scope>runtime</scope>
+            This will help centralize Jahia core webapp dependencies in a single place.
+         -->
     </dependencies>
 
     <build>
         <finalName>jahia</finalName>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -791,12 +680,9 @@
                             <addTransitiveFeatures>true</addTransitiveFeatures>
                             <descriptors>
                                 <descriptor>mvn:org.jahia.features/dx-core/${project.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features
-                                </descriptor>
-                                <descriptor>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features
-                                </descriptor>
-                                <descriptor>mvn:org.jahia.features/dx-standard/${project.version}/xml/features
-                                </descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-gemini-blueprint/${project.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-standard/${project.version}/xml/features</descriptor>
                             </descriptors>
                             <features>
                                 <feature>dx-standard</feature>
@@ -808,42 +694,10 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <supportedProjectTypes>
-                        <supportedProjectType>jar</supportedProjectType>
-                        <supportedProjectType>bundle</supportedProjectType>
-                        <supportedProjectType>war</supportedProjectType>
-                    </supportedProjectTypes>
-                    <instructions>
-                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
-                        <Embed-Transitive>*</Embed-Transitive>
-                        <_nodefaultversion>true</_nodefaultversion>
-                        <_removeheaders>
-                            Include-Resource,
-                            Private-Package,
-                            Embed-Dependency,
-                            Embed-Transitive
-                        </_removeheaders>
-                    </instructions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>generate-exports</id>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <warSourceExcludes>*Resources*.properties,**/custom.properties</warSourceExcludes>
+                    <warSourceExcludes>*Resources*.properties,**/custom-jahia.system.capabilities.generated.properties</warSourceExcludes>
                     <webResources>
                         <resource>
                             <directory>${project.build.directory}/native2ascii</directory>
@@ -871,17 +725,95 @@
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>generate-package-export</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>jahia-system-packages-check</goal>
+                        </goals>
+                        <configuration>
+                            <artifactExcludes>
+                                <!-- OSGI Karaf/Felix framework and transitives, already handled by Karaf directly, do not repeat in Jahia specific system export -->
+                                <artifactExclude>org.osgi:*</artifactExclude>
+                                <artifactExclude>org.apache.karaf:*</artifactExclude>
+                                <artifactExclude>org.apache.karaf.diagnostic:*</artifactExclude>
+                                <artifactExclude>org.apache.karaf.jaas:*</artifactExclude>
+                                <artifactExclude>org.apache.felix:*</artifactExclude>
+                                <artifactExclude>net.java.dev.jna:*</artifactExclude>
+                                <!-- Jahia core libraries already available as real bundles: -->
+                                <artifactExclude>org.bouncycastle:*</artifactExclude>
+                                <artifactExclude>commons-io:*</artifactExclude>
+                                <artifactExclude>com.google.guava:*</artifactExclude>
+                                <artifactExclude>com.google.errorprone:*</artifactExclude> <!-- Guava transitive -->
+                                <artifactExclude>org.checkerframework:checker-qual</artifactExclude> <!-- Guava transitive -->
+                                <artifactExclude>com.google.j2objc:j2objc-annotations</artifactExclude> <!-- Guava transitive -->
+                                <artifactExclude>org.jahia.server:jahia-taglib</artifactExclude>
+                                <artifactExclude>org.jboss.spec.javax.servlet.jstl:*</artifactExclude>  <!-- handle by pax-web  -->
+                                <artifactExclude>org.jboss.spec.javax.servlet.jsp:*</artifactExclude>  <!-- handle by pax-web  -->
+                                <artifactExclude>taglibs:taglibs-unstandard</artifactExclude> <!-- handle by pax-web  -->
+                                <artifactExclude>javax.xml.bind:*</artifactExclude> <!-- Jaxb -->
+                                <artifactExclude>com.fasterxml.jackson.core:*</artifactExclude> <!-- Jackson -->
+                                <artifactExclude>com.fasterxml.jackson.dataformat:*</artifactExclude> <!-- Jackson -->
+                                <!-- Library we just don't want to export from Jahia core runtime -->
+                                <artifactExclude>concurrent:concurrent</artifactExclude> <!-- Pre Java-5 concurrent lib, needed by Jackrabbit, recent java does not need it, don't export it -->
+                                <artifactExclude>org.apache.ws.commons.axiom:*</artifactExclude> <!-- Camel transitive -->
+                                <artifactExclude>org.apache.abdera:*</artifactExclude> <!-- Camel transitive -->
+                                <artifactExclude>org.jsoup:jsoup</artifactExclude> <!-- Tika transitive -->
+                                <artifactExclude>info.picocli:picocli</artifactExclude> <!-- Tika transitive -->
+                                <artifactExclude>org.apache.logging.log4j:*</artifactExclude>
+                                <artifactExclude>org.slf4j:*</artifactExclude>
+                            </artifactExcludes>
+                            <packageExcludes>
+                                <packageExclude>javax.activation</packageExclude>
+                                <packageExclude>org.apache.jackrabbit.api.jmx</packageExclude>
+                                <packageExclude>org.codehaus.groovy.ast*</packageExclude>
+                                <packageExclude>org.eclipse*</packageExclude>
+                                <packageExclude>org.hibernate*</packageExclude>
+                                <packageExclude>org.jahia.services.security.shiro</packageExclude>
+                                <packageExclude>org.jahia.services.ui</packageExclude>
+                                <packageExclude>org.springframework.http.converter*</packageExclude>
+                                <packageExclude>org.springframework.web.client*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.config*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.i18n*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.resource*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.support*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.tags*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.theme*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet.view*</packageExclude>
+                                <packageExclude>org.springframework.web.servlet</packageExclude>
+                                <packageExclude>org.springframework.web.util*</packageExclude>
+                                <packageExclude>org.xml.sax*</packageExclude>
+                                <!-- Not real class packages, detected by our .jar scanner -->
+                                <packageExclude>icons</packageExclude>
+                                <packageExclude>license</packageExclude>
+                                <packageExclude>licenses</packageExclude>
+                                <packageExclude>macros</packageExclude>
+                                <packageExclude>mozilla</packageExclude>
+                                <packageExclude>org.publicsuffix.list</packageExclude>
+                                <packageExclude>rc.icons</packageExclude>
+                                <packageExclude>trax</packageExclude>
+                            </packageExcludes>
+                            <packageVersionOverrides>
+                                <!-- Xalan jar manifest is broken, does not detect proper version -->
+                                <packageVersionOverride>org.apache.xalan*:${xalan.version}</packageVersionOverride>
+                            </packageVersionOverrides>
+                            <propertyFilePropertyName>jahia.system.packages.generated</propertyFilePropertyName>
+                            <referencePropertiesFile>${project.build.directory}/filtered-resources/custom-jahia.system.packages.generated.properties</referencePropertiesFile>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>generate-system-capabilities</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>dependencies</goal>
                         </goals>
                         <configuration>
                             <propertiesInputFile>
-                                ${project.build.directory}/filtered-resources/custom.properties
+                                ${project.build.directory}/filtered-resources/custom-jahia.system.capabilities.generated.properties
                             </propertiesInputFile>
                             <propertiesOutputFile>
-                                ${project.build.directory}/generated-resources/custom.properties
+                                ${project.build.directory}/generated-resources/custom-jahia.system.capabilities.generated.properties
                             </propertiesOutputFile>
+                            <systemExtraCapabilitiesPropertyName>jahia.system.capabilities.generated</systemExtraCapabilitiesPropertyName>
                         </configuration>
                     </execution>
                     <execution>
@@ -995,13 +927,13 @@
             <resource>
                 <directory>src/data/resources/karaf/etc</directory>
                 <includes>
-                    <include>custom.properties</include>
+                    <include>custom-jahia.system.capabilities.generated.properties</include>
+                    <include>custom-jahia.system.packages.generated.properties</include>
                 </includes>
                 <filtering>true</filtering>
                 <targetPath>${project.build.directory}/filtered-resources</targetPath>
             </resource>
         </resources>
-
     </build>
 
     <reporting>

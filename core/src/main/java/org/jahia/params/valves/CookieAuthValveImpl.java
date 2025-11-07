@@ -138,6 +138,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                 logger.debug("Auth cookie found. Searching users...");
                 foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null, JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null));
                 if (foundUsers.size() == 1) {
+
                     jahiaUser = foundUsers.iterator().next();
                     if (markSessionToBeInvalidated(jahiaUser.getInvalidatedSessionTime(), authContext)) {
                         // Clean up cookie
@@ -192,6 +193,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         logger.debug("Cookie auth invoked");
     }
 
+    // TODO create a helper and delegate this method to the helper
     public static void createAndSendCookie(AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
         // now let's look for a free random cookie value key.
         String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(cookieAuthConfig);

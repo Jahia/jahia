@@ -42,28 +42,19 @@
  */
 package org.jahia.params.valves;
 
-import org.jahia.api.Constants;
 import org.jahia.bin.Login;
-import org.jahia.osgi.FrameworkService;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.security.spi.LicenseCheckUtil;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.observation.JahiaEventService;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.security.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.settings.SettingsBean;
-import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author Thomas Draier
@@ -81,18 +72,26 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     public static final String VALVE_RESULT = "login_valve_result";
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoginEngineAuthValveImpl.class);
+    private static final AuthenticationOptions AUTH_OPTIONS = AuthenticationOptions.Builder.withDefaults()
+            // the check is performed later in the SessionAuthValveImpl
+            .sessionValidityCheckEnabled(false).build();
 
-    private CookieAuthConfig cookieAuthConfig;
-    private boolean fireLoginEvent = false;
-    private String preserveSessionAttributes = null;
-    private JahiaUserManagerService userManagerService;
-
+    /**
+     *
+     * @deprecated not used anymore
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setFireLoginEvent(boolean fireLoginEvent) {
-        this.fireLoginEvent = fireLoginEvent;
+        // ignored
     }
 
+    /**
+     *
+     * @deprecated not used anymore
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setPreserveSessionAttributes(String preserveSessionAttributes) {
-        this.preserveSessionAttributes = preserveSessionAttributes;
+        // ignored
     }
 
     @Override
@@ -106,127 +105,41 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
 
-        JCRUserNode theUser = getJcrUserNode(httpServletRequest, authContext);
-
-        if (theUser != null) {
-
-            logger.debug("User {} logged in.", theUser);
-
-            // if there are any attributes to conserve between session, let's copy them into a map first
-            Map<String, Object> savedSessionAttributes = preserveSessionAttributes(httpServletRequest);
-
-            JahiaUser jahiaUser = theUser.getJahiaUser();
-
-            if (httpServletRequest.getSession(false) != null) {
-                httpServletRequest.getSession().invalidate();
-            }
-
-            // if there were saved session attributes, we restore them here.
-            restoreSessionAttributes(httpServletRequest, savedSessionAttributes);
-
-            httpServletRequest.setAttribute(VALVE_RESULT, OK);
-            authContext.getSessionFactory().setCurrentUser(jahiaUser);
-
-            // set UI locale to the user's preferred locale after login
-            Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
-            httpServletRequest.getSession().setAttribute(Constants.SESSION_UI_LOCALE, preferredUserLocale);
-
-            // do a switch to the user's preferred language
-            if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                httpServletRequest.getSession().setAttribute(Constants.SESSION_LOCALE, preferredUserLocale);
-            }
-
-            String useCookie = httpServletRequest.getParameter(USE_COOKIE);
-            if (!SettingsBean.getInstance().isFullReadOnlyMode() && "on".equals(useCookie)) {
-                // the user has indicated he wants to use cookie authentication
-                CookieAuthValveImpl.createAndSendCookie(authContext, theUser, cookieAuthConfig);
-            }
-
-            if (fireLoginEvent) {
-                LoginEvent event = new LoginEvent(this, jahiaUser, authContext);
-                SpringContextSingleton.getInstance().publishEvent(event);
-                ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
-
-                Map<String, Object> m = new HashMap<>();
-                m.put("user", jahiaUser);
-                m.put("authContext", authContext);
-                m.put("source", this);
-                FrameworkService.sendEvent("org/jahia/usersgroups/login/LOGIN", m, false);
-            }
-
-        } else {
-            valveContext.invokeNext(context);
-        }
-    }
-
-    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest, AuthValveContext valveContext) {
         if (isLoginRequested(httpServletRequest)) {
-            final String username = httpServletRequest.getParameter("username");
-            final String password = httpServletRequest.getParameter("password");
-            final String site = httpServletRequest.getParameter("site");
+            String username = httpServletRequest.getParameter("username");
+            String password = httpServletRequest.getParameter("password");
+            String site = httpServletRequest.getParameter("site");
+            boolean rememberMe = "on".equals(httpServletRequest.getParameter(USE_COOKIE));
 
             if ((username != null) && (password != null)) {
-                // Check if the user has site access ( even though it is not a user of this site )
-                return getJcrUserNode(httpServletRequest, username, password, site, valveContext);
-            }
-        }
-        return null;
-    }
-
-    private JCRUserNode getJcrUserNode(HttpServletRequest httpServletRequest, String username, String password, String site, AuthValveContext valveContext) {
-        JCRUserNode theUser = userManagerService.lookupUser(username, site);
-        if (theUser != null) {
-            if (theUser.verifyPassword(password)) {
-                if (!theUser.isAccountLocked()) {
-                    if (!theUser.isRoot() && LicenseCheckUtil.isLoggedInUsersLimitReached()) {
-                        logger.warn("The number of logged in users has reached the authorized limit.");
-                        httpServletRequest.setAttribute(VALVE_RESULT, LOGGED_IN_USERS_LIMIT_REACHED);
-                    } else {
-                        return theUser;
-                    }
-                } else {
-                    logger.warn("Login failed: account for user {} is locked.", theUser.getName());
+                AuthenticationService authenticationService = BundleUtils.getOsgiService(AuthenticationService.class, null);
+                AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, password, site, true, rememberMe);
+                try {
+                    authenticationService.authenticate(authenticationRequest, AUTH_OPTIONS, httpServletRequest, authContext.getResponse());
+                    httpServletRequest.setAttribute(VALVE_RESULT, OK);
+                    return;
+                } catch (AccountNotFoundException e) {
+                    httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
+                } catch (AccountLockedException e) {
                     httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
-                }
-            } else {
-                logger.warn("Login failed: password verification failed for user {}", theUser.getName());
-                httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
-            }
-        } else {
-            logger.debug("Login failed. Unknown username {}", username);
-            httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
-        }
-        return null;
-    }
-
-    private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {
-        Map<String, Object> savedSessionAttributes = new HashMap<String, Object>();
-        if ((preserveSessionAttributes != null) && (httpServletRequest.getSession(false) != null) && (preserveSessionAttributes.length() > 0)) {
-            String[] sessionAttributeNames = Patterns.TRIPLE_HASH.split(preserveSessionAttributes);
-            HttpSession session = httpServletRequest.getSession(false);
-            for (String sessionAttributeName : sessionAttributeNames) {
-                Object attributeValue = session.getAttribute(sessionAttributeName);
-                if (attributeValue != null) {
-                    savedSessionAttributes.put(sessionAttributeName, attributeValue);
+                } catch (FailedLoginException e) {
+                    httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
+                } catch (ConcurrentLoggedInUsersLimitExceededLoginException e) {
+                    httpServletRequest.setAttribute(VALVE_RESULT, LOGGED_IN_USERS_LIMIT_REACHED);
+                } catch (InvalidSessionLoginException e) {
+                    // should not happen as the check is disabled
+                    throw new IllegalStateException("Unexpected InvalidSessionLoginException", e);
                 }
             }
         }
-        return savedSessionAttributes;
-    }
-
-    private void restoreSessionAttributes(HttpServletRequest httpServletRequest, Map<String, Object> savedSessionAttributes) {
-        if (savedSessionAttributes.size() > 0) {
-            HttpSession session = httpServletRequest.getSession();
-            for (Map.Entry<String, Object> savedSessionAttribute : savedSessionAttributes.entrySet()) {
-                session.setAttribute(savedSessionAttribute.getKey(), savedSessionAttribute.getValue());
-            }
-        }
+        // at this point, the user is not authenticated. We continue to the next valve
+        valveContext.invokeNext(context);
     }
 
     protected boolean isLoginRequested(HttpServletRequest request) {
         String doLogin = request.getParameter(LOGIN_TAG_PARAMETER);
         if (doLogin != null) {
-            return Boolean.valueOf(doLogin) || "1".equals(doLogin);
+            return Boolean.parseBoolean(doLogin) || "1".equals(doLogin);
         } else if ("/cms".equals(request.getServletPath())) {
             return Login.getMapping().equals(request.getPathInfo());
         }
@@ -234,15 +147,31 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         return false;
     }
 
+    /**
+     *
+     * @deprecated not used anymore
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
-        this.cookieAuthConfig = cookieAuthConfig;
+        // ignored
     }
 
+    /**
+     *
+     * @deprecated not used anymore
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
+        // ignored
     }
 
-    public class LoginEvent extends BaseLoginEvent {
+    /**
+     * @deprecated to be replaced by an implementation of {@link BaseLoginEvent} in the "core-services" bundle, see
+     * <a href="https://github.com/Jahia/jahia-private/issues/4453">#4453</a>
+     *
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
+    public static class LoginEvent extends BaseLoginEvent {
         private static final long serialVersionUID = -7356560804745397662L;
 
         public LoginEvent(Object source, JahiaUser jahiaUser, AuthValveContext authValveContext) {

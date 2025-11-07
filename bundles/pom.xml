@@ -57,6 +57,7 @@
 
     <modules>
         <module>blueprint-extender-config</module>
+        <module>core-services</module>
         <module>http-bridge</module>
         <module>jahia-extends-OSGI-registry</module>
         <module>jahiamodule-extender</module>

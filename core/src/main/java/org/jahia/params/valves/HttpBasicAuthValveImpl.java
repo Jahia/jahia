@@ -40,27 +40,41 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
- package org.jahia.params.valves;
+package org.jahia.params.valves;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.jackrabbit.server.JahiaBasicCredentialsProvider;
-import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.services.security.AuthenticationOptions;
+import org.jahia.services.security.AuthenticationRequest;
+import org.jahia.services.security.AuthenticationService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Valve that uses Basic authentication to authenticate the user.
+ *
  * @author toto
  */
 public class HttpBasicAuthValveImpl extends BaseAuthValve {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpBasicAuthValveImpl.class);
-    private JahiaUserManagerService userManagerService;
+    private static final AuthenticationOptions AUTH_OPTIONS = AuthenticationOptions.Builder.withDefaults()
+            // Do not store HTTP Basic auth into session
+            .stateless()
+            // the check is performed later in the SessionAuthValveImpl
+            .sessionValidityCheckEnabled(false)
+            // do not fire login event
+            .triggerLoginEventEnabled(false).build();
 
     @Override
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
@@ -76,38 +90,33 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
         if (auth != null && auth.startsWith("Basic ")) {
             try {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Header found : "+auth);
+                    logger.debug("Header found : {}", auth);
                 }
                 auth = auth.substring(6).trim();
                 Base64 decoder = new Base64();
-                String cred = new String(decoder.decode(auth.getBytes("UTF-8")));
+                String cred = new String(decoder.decode(auth.getBytes(StandardCharsets.UTF_8)));
                 int colonInd = cred.indexOf(':');
-                String user = cred.substring(0,colonInd);
-                if (user != null && !user.contains(JahiaBasicCredentialsProvider.IMPERSONATOR)) {
-                    String pass = cred.substring(colonInd+1);
-                    JCRUserNode jcrUserNode = userManagerService.lookupUser(user);
-                    if (jcrUserNode != null) {
-                        if (jcrUserNode.verifyPassword(pass)) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("User " + user + " authenticated.");
-                            }
-                            if (jcrUserNode.isAccountLocked()) {
-                                logger.debug("Login failed. Account is locked for user " + user);
-                                return;
-                            }
-                            authContext.getSessionFactory().setCurrentUser(jcrUserNode.getJahiaUser());
-                            // Do not store HTTP Basic auth into session
-                            authContext.setShouldStoreAuthInSession(false);
-                            return;
-                        } else {
-                            logger.debug("User found but password verification failed for user : " + user);
-                        }
-                    } else {
-                        logger.debug("User not found : "+user);
+                String user = cred.substring(0, colonInd);
+                if (!user.contains(JahiaBasicCredentialsProvider.IMPERSONATOR)) {
+                    String pass = cred.substring(colonInd + 1);
+                    AuthenticationService authenticationService = BundleUtils.getOsgiService(AuthenticationService.class, null);
+                    try {
+                        AuthenticationRequest authenticationRequest = new AuthenticationRequest(user, pass);
+                        authenticationService.authenticate(authenticationRequest, AUTH_OPTIONS, null, null);
+                        // update the valve context for JcrSessionFilter
+                        authContext.setShouldStoreAuthInSession(AUTH_OPTIONS.isStateful());
+                        return;
+                    } catch (AccountNotFoundException e) {
+                        logger.debug("User not found : {}", user);
+                    } catch (AccountLockedException e) {
+                        logger.debug("Login failed. Account is locked for user {}", user);
+                        return;
+                    } catch (FailedLoginException e) {
+                        logger.debug("User found but password verification failed for user : {}", user);
                     }
                 }
             } catch (Exception e) {
-                logger.debug("Exception thrown",e);
+                logger.debug("Exception thrown", e);
             }
         } else {
             logger.debug("No authorization header found");
@@ -115,7 +124,12 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
         valveContext.invokeNext(context);
     }
 
+    /**
+     *
+     * @deprecated not used anymore
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
+        // ignored
     }
 }

@@ -2,7 +2,7 @@ package org.jahia.services.security;
 
 public class AuthenticationOptions {
     private final boolean sessionUsed;
-    private final boolean rememberMeSupported;
+    private final boolean shouldRememberMe;
     private final boolean triggerLoginEventEnabled;
     private final boolean updateCurrentLocaleEnabled;
     private final boolean updateUILocaleEnabled;
@@ -11,7 +11,7 @@ public class AuthenticationOptions {
 
     AuthenticationOptions(Builder builder) {
         this.sessionUsed = builder.sessionUsed;
-        this.rememberMeSupported = builder.rememberMeSupported;
+        this.shouldRememberMe = builder.shouldRememberMe;
         this.triggerLoginEventEnabled = builder.triggerLoginEventEnabled;
         this.updateCurrentLocaleEnabled = builder.updateCurrentLocaleEnabled;
         this.updateUILocaleEnabled = builder.updateUILocaleEnabled;
@@ -28,7 +28,7 @@ public class AuthenticationOptions {
     }
 
     public boolean shouldRememberMe() {
-        return rememberMeSupported;
+        return shouldRememberMe;
     }
 
     public boolean isTriggerLoginEventEnabled() {
@@ -53,7 +53,7 @@ public class AuthenticationOptions {
 
     public static final class Builder {
         private boolean sessionUsed = true;
-        private boolean rememberMeSupported = true;
+        private boolean shouldRememberMe = true;
         private boolean updateCurrentLocaleEnabled = true;
         private boolean updateUILocaleEnabled = true;
         private boolean sessionAttributesPreserved = true;
@@ -108,7 +108,7 @@ public class AuthenticationOptions {
             this.sessionUsed = sessionUsed;
             if (!sessionUsed) {
                 // turn off the session-related options
-                this.rememberMeSupported = false;
+                this.shouldRememberMe = false;
                 this.updateCurrentLocaleEnabled = false;
                 this.updateUILocaleEnabled = false;
                 this.sessionAttributesPreserved = false;
@@ -130,7 +130,7 @@ public class AuthenticationOptions {
          * @return this builder
          */
         public Builder shouldRememberMe(boolean flag) {
-            this.rememberMeSupported = flag;
+            this.shouldRememberMe = flag;
             return this;
         }
 
@@ -201,7 +201,7 @@ public class AuthenticationOptions {
         public AuthenticationOptions build() {
             if (!sessionUsed) {
                 // check the session-related options are not used when being stateless
-                if (rememberMeSupported) {
+                if (shouldRememberMe) {
                     throw new IllegalStateException("Cannot use both stateless and rememberMeEnabled");
                 }
                 if (updateCurrentLocaleEnabled) {

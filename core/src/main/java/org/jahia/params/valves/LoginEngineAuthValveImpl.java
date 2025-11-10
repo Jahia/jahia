@@ -49,7 +49,6 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.security.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.slf4j.Logger;
 
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
@@ -70,11 +69,6 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     public static final String UNKNOWN_USER = "unknown_user";
     public static final String USE_COOKIE = "useCookie";
     public static final String VALVE_RESULT = "login_valve_result";
-
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoginEngineAuthValveImpl.class);
-    private static final AuthenticationOptions AUTH_OPTIONS = AuthenticationOptions.Builder.withDefaults()
-            // the check is performed later in the SessionAuthValveImpl
-            .sessionValidityCheckEnabled(false).build();
 
     /**
      *
@@ -113,9 +107,15 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
             if ((username != null) && (password != null)) {
                 AuthenticationService authenticationService = BundleUtils.getOsgiService(AuthenticationService.class, null);
-                AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, password, site, true, rememberMe);
+                AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, password, site, true);
+                AuthenticationOptions authenticationOptions = AuthenticationOptions.Builder.withDefaults()
+                        // the check is performed later in the SessionAuthValveImpl
+                        .sessionValidityCheckEnabled(false)
+                        // pass the "remember me" flag
+                        .shouldRememberMe(rememberMe).build();
                 try {
-                    authenticationService.authenticate(authenticationRequest, AUTH_OPTIONS, httpServletRequest, authContext.getResponse());
+                    authenticationService.authenticate(authenticationRequest, authenticationOptions, httpServletRequest,
+                            authContext.getResponse());
                     httpServletRequest.setAttribute(VALVE_RESULT, OK);
                     return;
                 } catch (AccountNotFoundException e) {

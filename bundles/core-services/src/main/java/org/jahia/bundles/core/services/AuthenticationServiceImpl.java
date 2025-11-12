@@ -154,12 +154,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
         }
 
+        JCRSessionFactory.getInstance().setCurrentUser(jahiaUser);
+
         // trigger login event if requested
         if (authenticationOptions.isTriggerLoginEventEnabled()) {
             triggerLoginEvent(httpServletRequest, httpServletResponse, jahiaUser);
         }
 
-        JCRSessionFactory.getInstance().setCurrentUser(jahiaUser);
     }
 
     /**

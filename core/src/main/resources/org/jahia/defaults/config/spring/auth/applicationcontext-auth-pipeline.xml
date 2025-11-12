@@ -28,7 +28,7 @@
                 </bean>
                 <bean id="CookieAuthValve" class="org.jahia.params.valves.CookieAuthValveImpl">
                     <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
-                    <property name="enabled" value="${auth.valve.cookie.enabled:true}"/>
+                    <!-- the 'enabled' property is set in initialize() based on the 'enabled' flag of the 'cookieAuthConfig' bean -->
                 </bean>
                 <bean id="ContainerAuthValve" class="org.jahia.params.valves.ContainerAuthValveImpl">
                     <property name="enabled" value="${auth.container.enabled}"/>

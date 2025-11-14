@@ -54,9 +54,9 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
-import org.jahia.services.render.filter.AggregateFilter;
 import org.jahia.services.render.filter.TemplateAttributesFilter;
 import org.jahia.services.render.filter.TemplateNodeFilter;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -616,14 +616,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
         HttpServletRequest request = renderContext.getRequest();
-        Boolean oldSkipAggregation = (Boolean) request.getAttribute(AggregateFilter.SKIP_AGGREGATION);
+        Boolean oldSkipAggregation = (Boolean) request.getAttribute(AggregateCacheFilter.SKIP_AGGREGATION);
         try {
             JCRSiteNode previousSite = renderContext.getSite();
             if (contextSite != null) {
                 renderContext.setSite(contextSite);
             }
             if (skipAggregation) {
-                request.setAttribute(AggregateFilter.SKIP_AGGREGATION, skipAggregation);
+                request.setAttribute(AggregateCacheFilter.SKIP_AGGREGATION, skipAggregation);
                 resource.getRegexpDependencies().add(resource.getNodePath() + "/.*");
             }
             builder.append(RenderService.getInstance().render(resource, renderContext));
@@ -643,7 +643,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 throw e;
             }
         } finally {
-            request.setAttribute(AggregateFilter.SKIP_AGGREGATION, oldSkipAggregation);
+            request.setAttribute(AggregateCacheFilter.SKIP_AGGREGATION, oldSkipAggregation);
         }
     }
 

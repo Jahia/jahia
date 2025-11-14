@@ -45,6 +45,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -71,6 +72,7 @@ import org.springframework.context.ApplicationListener;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -91,6 +93,8 @@ import static org.jahia.api.Constants.TO_CACHE_WITH_PARENT_FRAGMENT;
  * Created : 8 janv. 2010
  */
 public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent> {
+    // if this parameter is set to true in the request attributes, the aggregation is skipped
+    public static final String SKIP_AGGREGATION = "aggregateFilter.skip";
     protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
 
     public static final String CACHE_PER_USER = "cache.perUser";
@@ -159,6 +163,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         });
     }
 
+    /**
+     * Utility method to check if the aggregation is skipped.
+     * @param request is the current request
+     * @return true if the aggregation should be skipped
+     */
+    public static boolean skipAggregation(ServletRequest request) {
+        return BooleanUtils.isTrue((Boolean)request.getAttribute(SKIP_AGGREGATION));
+    }
+
     public void setDependenciesLimit(int dependenciesLimit) {
         this.dependenciesLimit = dependenciesLimit;
     }
@@ -205,6 +218,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+
+        if (skipAggregation(renderContext.getRequest())) {
+            // Don't create separate cache entry, let it be part of parent fragment
+            return null;
+        }
+
         final boolean debugEnabled = logger.isDebugEnabled();
         // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
         // (resource and context) and the cache properties. The generated key will contains temporary placeholders
@@ -411,6 +430,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
+        if (skipAggregation(renderContext.getRequest())) {
+            // Return content directly without caching separately
+            return previousOut;
+        }
+
         return execute(previousOut, renderContext, resource, chain, false);
     }
 

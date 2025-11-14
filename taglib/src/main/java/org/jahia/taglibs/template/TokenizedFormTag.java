@@ -49,7 +49,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.noggit.JSONUtil;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.filter.AggregateFilter;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -81,9 +81,9 @@ public class TokenizedFormTag extends BodyTagSupport {
         pageContext.setAttribute("currentFormId", id,PageContext.REQUEST_SCOPE);
 
         // Skip the aggregation in the body of the tag
-        if(!AggregateFilter.skipAggregation(pageContext.getRequest())) {
+        if(!AggregateCacheFilter.skipAggregation(pageContext.getRequest())) {
             skipAggregation = true;
-            pageContext.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, true);
+            pageContext.getRequest().setAttribute(AggregateCacheFilter.SKIP_AGGREGATION, true);
         }
 
         return EVAL_BODY_BUFFERED;
@@ -147,7 +147,7 @@ public class TokenizedFormTag extends BodyTagSupport {
 
         // Restore the aggregation for the following fragments
         if (skipAggregation) {
-            pageContext.getRequest().removeAttribute(AggregateFilter.SKIP_AGGREGATION);
+            pageContext.getRequest().removeAttribute(AggregateCacheFilter.SKIP_AGGREGATION);
             skipAggregation = false;
         }
         return super.doEndTag();

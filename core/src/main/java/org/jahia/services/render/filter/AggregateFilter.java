@@ -42,7 +42,6 @@
  */
 package org.jahia.services.render.filter;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionFactory;
@@ -51,6 +50,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
 import org.jahia.settings.SettingsBean;
@@ -127,14 +127,14 @@ public class AggregateFilter extends AbstractFilter {
     public static final String RESOURCES_STACK = "aggregateFilter.resourcesStack";
 
     // if this parameter is set to true in the request attributes, the aggregation is skipped
-    public static final String SKIP_AGGREGATION = "aggregateFilter.skip";
+    public static final String SKIP_AGGREGATION = AggregateCacheFilter.SKIP_AGGREGATION;
 
     private CacheKeyGenerator keyGenerator;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        if (skipAggregation(renderContext.getRequest())) {
+        if (AggregateCacheFilter.skipAggregation(renderContext.getRequest())) {
             return null;
         }
 
@@ -201,7 +201,7 @@ public class AggregateFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        if (skipAggregation(renderContext.getRequest())) {
+        if (AggregateCacheFilter.skipAggregation(renderContext.getRequest())) {
             return previousOut;
         }
 
@@ -233,7 +233,7 @@ public class AggregateFilter extends AbstractFilter {
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
 
-        if (skipAggregation(renderContext.getRequest())) {
+        if (AggregateCacheFilter.skipAggregation(renderContext.getRequest())) {
             return;
         }
 
@@ -345,10 +345,10 @@ public class AggregateFilter extends AbstractFilter {
     /**
      * Utility method to check if the aggregation is skipped.
      * @param request is the current request
-     * @return
+     * @return true if the aggregation should be skipped
      */
     public static boolean skipAggregation(ServletRequest request) {
-        return BooleanUtils.isTrue((Boolean)request.getAttribute(SKIP_AGGREGATION));
+        return AggregateCacheFilter.skipAggregation(request);
     }
 
 }

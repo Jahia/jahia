@@ -45,6 +45,7 @@ package org.jahia.services.render.filter;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.bin.errors.StackTraceFilter;
 import org.jahia.services.render.*;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -125,16 +126,16 @@ public class TemplateScriptFilter extends AbstractFilter {
 
             }
             boolean skipAggregation = false;
-            if(!AggregateFilter.skipAggregation(request) && Boolean.valueOf(script.getView().getProperties().getProperty("skip.aggregation"))) {
+            if(!AggregateCacheFilter.skipAggregation(request) && Boolean.valueOf(script.getView().getProperties().getProperty("skip.aggregation"))) {
                 skipAggregation = true;
-                request.setAttribute(AggregateFilter.SKIP_AGGREGATION, true);
+                request.setAttribute(AggregateCacheFilter.SKIP_AGGREGATION, true);
                 resource.getRegexpDependencies().add(resource.getNodePath() + "/.*");
             }
 
             outputString = script.execute(resource, renderContext);
 
             if(skipAggregation) {
-                request.removeAttribute(AggregateFilter.SKIP_AGGREGATION);
+                request.removeAttribute(AggregateCacheFilter.SKIP_AGGREGATION);
             }
 
             if (logger.isDebugEnabled()) {

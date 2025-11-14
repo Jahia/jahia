@@ -70,13 +70,10 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     public static final String USE_COOKIE = "useCookie";
     public static final String VALVE_RESULT = "login_valve_result";
 
-    /**
-     *
-     * @deprecated not used anymore
-     */
-    @Deprecated(since = "8.2.3.0", forRemoval = true)
+    private boolean fireLoginEvent = false;
+
     public void setFireLoginEvent(boolean fireLoginEvent) {
-        // ignored
+        this.fireLoginEvent = fireLoginEvent;
     }
 
     /**
@@ -109,6 +106,8 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                 AuthenticationService authenticationService = BundleUtils.getOsgiService(AuthenticationService.class, null);
                 AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, password, site, true);
                 AuthenticationOptions authenticationOptions = AuthenticationOptions.Builder.withDefaults()
+                        // pass whether the login event should be fired
+                        .triggerLoginEventEnabled(fireLoginEvent)
                         // the check is performed later in the SessionAuthValveImpl
                         .sessionValidityCheckEnabled(false)
                         // pass the "remember me" flag

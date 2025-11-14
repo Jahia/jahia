@@ -219,12 +219,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 }
             }
 
-            existingSession.invalidate();
             if (authenticationOptions.areSessionAttributesPreserved()) {
-                preservedSessionAttributes = preserveSessionAttributes(request);
+                preservedSessionAttributes = preserveSessionAttributes(existingSession);
             } else {
                 preservedSessionAttributes = Collections.emptyMap();
             }
+            existingSession.invalidate();
         }
         HttpSession newSession = request.getSession(true);
         // restore preserved attributes into the new session
@@ -324,16 +324,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     // TODO review this duplicated method (see Logout). To be refactored.
-    private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {
+    private Map<String, Object> preserveSessionAttributes(HttpSession httpSession) {
         Map<String, Object> savedSessionAttributes = new HashMap<>();
-        HttpSession existingSession = httpServletRequest.getSession(false);
-        if (existingSession != null) {
-            String[] sessionAttributes = getPreservedSessionAttributes();
-            for (String attributeName : sessionAttributes) {
-                Object attributeValue = existingSession.getAttribute(attributeName);
-                if (attributeValue != null) {
-                    savedSessionAttributes.put(attributeName, attributeValue);
-                }
+        String[] sessionAttributes = getPreservedSessionAttributes();
+        for (String attributeName : sessionAttributes) {
+            Object attributeValue = httpSession.getAttribute(attributeName);
+            if (attributeValue != null) {
+                savedSessionAttributes.put(attributeName, attributeValue);
             }
         }
         return savedSessionAttributes;

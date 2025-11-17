@@ -528,7 +528,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                             try {
                                 s.doLogout();
                             } catch (Exception e) {
-                                logger.warn("Error performing JCR session logout for sesison " + s, e);
+                                logger.warn("Error performing JCR session logout for session " + s, e);
                             }
                         }
                     }

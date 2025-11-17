@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  *
  * @see AuthenticationService#authenticate(AuthenticationRequest, AuthenticationOptions, HttpServletRequest, HttpServletResponse)
- * @see AuthenticationService#getUserNodeFromCredentials(AuthenticationRequest)
+ * @see AuthenticationService#getUserFromCredentials(AuthenticationRequest)
  */
 public class AuthenticationRequest {
     private final String username;

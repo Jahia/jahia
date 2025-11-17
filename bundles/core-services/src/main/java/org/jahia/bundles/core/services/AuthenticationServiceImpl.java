@@ -14,7 +14,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.observation.JahiaEventService;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.security.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -33,10 +32,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Component(service = AuthenticationService.class, immediate = true)
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -46,28 +42,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private SettingsBean settingsBean;
 
     @Override
-    public JCRUserNode authenticate(AuthenticationRequest authenticationRequest, AuthenticationOptions authenticationOptions,
+    public void authenticate(AuthenticationRequest authenticationRequest, AuthenticationOptions authenticationOptions,
             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws AccountNotFoundException, AccountLockedException, FailedLoginException,
             ConcurrentLoggedInUsersLimitExceededLoginException, InvalidSessionLoginException, IllegalArgumentException {
         validateAuthenticationRequest(authenticationRequest);
         validateAuthenticationOptions(authenticationOptions, httpServletRequest, httpServletResponse);
 
-        JCRUserNode jcrUserNode = validate(authenticationRequest);
+        UserDetails userDetails = validate(authenticationRequest);
 
         // at this point, the user is valid
-        performAuthentication(jcrUserNode, authenticationOptions, httpServletRequest, httpServletResponse);
-        return jcrUserNode;
-
+        performAuthentication(userDetails, authenticationOptions, httpServletRequest, httpServletResponse);
     }
 
     @Override
-    public JCRUserNode authenticate(AuthenticationRequest authenticationRequest)
+    public void authenticate(AuthenticationRequest authenticationRequest)
             throws AccountNotFoundException, AccountLockedException, FailedLoginException,
             ConcurrentLoggedInUsersLimitExceededLoginException, IllegalArgumentException {
         AuthenticationOptions authenticationOptions = AuthenticationOptions.Builder.withDefaults().stateless().build();
         try {
-            return authenticate(authenticationRequest, authenticationOptions, null, null);
+            authenticate(authenticationRequest, authenticationOptions, null, null);
         } catch (InvalidSessionLoginException e) {
             // should not happen as we are in stateless mode
             throw new IllegalStateException("Unexpected InvalidSessionLoginException", e);
@@ -75,31 +69,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public JCRUserNode authenticate(JCRUserNode jcrUserNode, AuthenticationOptions authenticationOptions,
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+    public void authenticate(String userNodePath, AuthenticationOptions authenticationOptions, HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse)
             throws InvalidSessionLoginException, IllegalArgumentException, AccountNotFoundException {
-        if (jcrUserNode == null) {
-            throw new IllegalArgumentException("JCR user node cannot be null");
+        if (userNodePath == null) {
+            throw new IllegalArgumentException("User node path cannot be null");
         }
         validateAuthenticationOptions(authenticationOptions, httpServletRequest, httpServletResponse);
 
-        JCRUserNode refreshedJcrUserNode = userManagerService.lookupUserByPath(jcrUserNode.getPath());
+        JCRUserNode refreshedJcrUserNode = userManagerService.lookupUserByPath(userNodePath);
         if (refreshedJcrUserNode == null) {
-            throw new AccountNotFoundException("Not user found at " + jcrUserNode.getPath());
+            throw new AccountNotFoundException("Not user found at " + userNodePath);
         }
 
         // at this point, the user is valid
-        performAuthentication(refreshedJcrUserNode, authenticationOptions, httpServletRequest, httpServletResponse);
-        return refreshedJcrUserNode;
+        performAuthentication(new UserDetails(refreshedJcrUserNode), authenticationOptions, httpServletRequest, httpServletResponse);
     }
 
     @Override
-    public JCRUserNode getUserNodeFromCredentials(AuthenticationRequest authenticationRequest)
+    public JahiaUser getUserFromCredentials(AuthenticationRequest authenticationRequest)
             throws AccountNotFoundException, AccountLockedException, FailedLoginException,
             ConcurrentLoggedInUsersLimitExceededLoginException, IllegalArgumentException {
         validateAuthenticationRequest(authenticationRequest);
 
-        return validate(authenticationRequest);
+        return validate(authenticationRequest).getJahiaUser();
     }
 
     /**
@@ -140,41 +133,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    private void performAuthentication(JCRUserNode jcrUserNode, AuthenticationOptions authenticationOptions,
+    private void performAuthentication(UserDetails userDetails, AuthenticationOptions authenticationOptions,
             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws InvalidSessionLoginException {
-        JahiaUser jahiaUser = jcrUserNode.getJahiaUser();
+
         if (authenticationOptions.isStateful()) {
-            HttpSession session = getOrCreateSession(authenticationOptions, httpServletRequest, jcrUserNode);
+            HttpSession session = getOrCreateSession(authenticationOptions, httpServletRequest, userDetails);
             // Store the authenticated user in the session, next requests will use it (SessionAuthValveImpl)
-            session.setAttribute(Constants.SESSION_USER, jahiaUser);
-            updateLocalesInSession(authenticationOptions, httpServletRequest, jcrUserNode, session);
+            session.setAttribute(Constants.SESSION_USER, userDetails.getJahiaUser());
+            updateLocalesInSession(authenticationOptions, httpServletRequest, userDetails, session);
             if (httpServletResponse != null) {
                 // only available if an HTTP servlet response is passed as param
-                updateRememberMeFlagInSession(authenticationOptions, httpServletRequest, httpServletResponse, jcrUserNode);
+                updateRememberMeFlagInSession(authenticationOptions, httpServletRequest, httpServletResponse, userDetails);
             }
         }
 
-        JCRSessionFactory.getInstance().setCurrentUser(jahiaUser);
+        JCRSessionFactory.getInstance().setCurrentUser(userDetails.getJahiaUser());
 
         // trigger login event if requested
         if (authenticationOptions.isTriggerLoginEventEnabled()) {
-            triggerLoginEvent(httpServletRequest, httpServletResponse, jahiaUser);
+            triggerLoginEvent(httpServletRequest, httpServletResponse, userDetails.getJahiaUser());
         }
 
     }
 
     /**
      * Processes the given authentication request and performs necessary checks such as verifying the username,
-     * password, account status, and login user limits. It returns the corresponding JCRUserNode object if authentication is successful.
+     * password, account status, and login user limits. It returns a {@link UserDetails} object if authentication is successful, that
+     * contains all the information needed to complete the authentication.
      *
      * @param authenticationRequest the authentication request containing credentials and related details
-     * @return the authenticated {@link JCRUserNode} if the authentication is successful
+     * @return a {@link UserDetails} if the authentication request is valid, {@code null} otherwise
      * @throws AccountNotFoundException                           if the user account is not found
      * @throws FailedLoginException                               if the password verification fails
      * @throws AccountLockedException                             if the user account is locked
      * @throws ConcurrentLoggedInUsersLimitExceededLoginException if the maximum number of concurrent logged-in users is exceeded
      */
-    private JCRUserNode validate(AuthenticationRequest authenticationRequest)
+    private UserDetails validate(AuthenticationRequest authenticationRequest)
             throws AccountNotFoundException, FailedLoginException, AccountLockedException,
             ConcurrentLoggedInUsersLimitExceededLoginException {
         JCRUserNode jcrUserNode = userManagerService.lookupUser(authenticationRequest.getUsername(), authenticationRequest.getSite(),
@@ -198,10 +192,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.warn("The number of logged in users has reached the authorized limit.");
             throw new ConcurrentLoggedInUsersLimitExceededLoginException();
         }
-        return jcrUserNode;
+        // Extract user details into a separate object to avoid JCR session issues.
+        // The HTTP session may be invalidated (in getOrCreateSession()), which closes associated JCR sessions.
+        // If the authenticated user is already in the session, accessing the JCRUserNode after invalidation
+        // would throw "javax.jcr.RepositoryException: This session has been closed".
+        return new UserDetails(jcrUserNode);
     }
 
-    private HttpSession getOrCreateSession(AuthenticationOptions authenticationOptions, HttpServletRequest request, JCRUserNode jcrUserNode)
+    private HttpSession getOrCreateSession(AuthenticationOptions authenticationOptions, HttpServletRequest request, UserDetails userDetails)
             throws InvalidSessionLoginException {
         // if there are any attributes to conserve between session, let's copy them into a map first
         HttpSession existingSession = request.getSession(false);
@@ -213,7 +211,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             // check if the session is still valid
             if (authenticationOptions.isSessionValidityCheckEnabled()) {
-                long invalidateSessionTime = jcrUserNode.getInvalidatedSessionTime();
+                long invalidateSessionTime = userDetails.getInvalidatedSessionTime();
                 if (invalidateSessionTime > 0 && existingSession.getCreationTime() < invalidateSessionTime) {
                     throw new InvalidSessionLoginException();
                 }
@@ -243,13 +241,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      *
      * @param authenticationOptions the authentication options that control which locale updates are performed
      * @param httpServletRequest    the HTTP servlet request used to resolve the guest locale
-     * @param jcrUserNode           the authenticated user node whose preferences are used
+     * @param userDetails           the user details extracted from the JCR user node
      * @param session               the HTTP session where locale attributes will be set
      */
-    void updateLocalesInSession(AuthenticationOptions authenticationOptions, HttpServletRequest httpServletRequest, JCRUserNode jcrUserNode,
+    void updateLocalesInSession(AuthenticationOptions authenticationOptions, HttpServletRequest httpServletRequest, UserDetails userDetails,
             HttpSession session) {
-        Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(jcrUserNode,
-                LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
+        Locale preferredUserLocale = Optional.ofNullable(userDetails.getPreferredLanguageProperty())
+                .map(LanguageCodeConverters::languageCodeToLocale).orElse(LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
 
         // set UI locale to the user's preferred locale after login
         if (authenticationOptions.isUpdateUILocaleEnabled()) {
@@ -263,12 +261,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void updateRememberMeFlagInSession(AuthenticationOptions authenticationOptions, HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse, JCRUserNode jcrUserNode) {
+            HttpServletResponse httpServletResponse, UserDetails userDetails) {
         // handle "remember me" feature
         if (authenticationOptions.shouldRememberMe() && !settingsBean.isFullReadOnlyMode()) {
             // the user has indicated he wants to use cookie authentication
             CookieAuthConfig cookieAuthConfig = settingsBean.getCookieAuthConfig();
-            createAndSendCookie(httpServletRequest, httpServletResponse, jcrUserNode, cookieAuthConfig);
+            createAndSendCookie(httpServletRequest, httpServletResponse, userDetails, cookieAuthConfig);
         }
     }
 
@@ -288,16 +286,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private static void createAndSendCookie(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-            JCRUserNode jcrUserNode, CookieAuthConfig cookieAuthConfig) {
+            UserDetails userDetails, CookieAuthConfig cookieAuthConfig) {
         // now let's look for a free random cookie value key.
         String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(cookieAuthConfig);
         // let's save the identifier for the user in the database
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, session -> {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Saving cookie auth for user: {}...", jcrUserNode.getPath());
+                    logger.debug("Saving cookie auth for user: {}...", userDetails.getPath());
                 }
-                JCRUserNode innerUserNode = (JCRUserNode) session.getNode(jcrUserNode.getPath());
+                JCRUserNode innerUserNode = (JCRUserNode) session.getNode(userDetails.getPath());
                 innerUserNode.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
                 session.save();
                 return null;
@@ -305,13 +303,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        sendCookie(cookieUserKey, httpServletRequest, httpServletResponse, jcrUserNode, cookieAuthConfig);
+        sendCookie(cookieUserKey, httpServletRequest, httpServletResponse, userDetails, cookieAuthConfig);
     }
 
     private static void sendCookie(String cookieUserKey, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-            JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
+            UserDetails userDetails, CookieAuthConfig cookieAuthConfig) {
         // now let's save the same identifier in the cookie.
-        String realm = theUser.getRealm();
+        String realm = userDetails.getRealm();
         if (realm != null && logger.isDebugEnabled()) {
             logger.debug("Found realm: {}", realm);
         }
@@ -352,6 +350,48 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Reference
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
+    }
+
+    /**
+     * Holds essential user details extracted from a {@link JCRUserNode} for authentication purposes.
+     * This class is used to preserve user information before session invalidation, as the JCR
+     * session linked to the {@link JCRUserNode} may be closed during the authentication process.
+     */
+    private static class UserDetails {
+        private final JahiaUser jahiaUser;
+        private final String path;
+        private final long invalidatedSessionTime;
+        private final String realm;
+        private final String preferredLanguageProperty;
+
+        public UserDetails(JCRUserNode jcrUserNode) {
+            this.jahiaUser = jcrUserNode.getJahiaUser();
+            this.path = jcrUserNode.getPath();
+            this.invalidatedSessionTime = jcrUserNode.getInvalidatedSessionTime();
+            this.realm = jcrUserNode.getRealm();
+            this.preferredLanguageProperty = jcrUserNode.getPropertyAsString("preferredLanguage");
+
+        }
+
+        public JahiaUser getJahiaUser() {
+            return jahiaUser;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public long getInvalidatedSessionTime() {
+            return invalidatedSessionTime;
+        }
+
+        public String getRealm() {
+            return realm;
+        }
+
+        public String getPreferredLanguageProperty() {
+            return preferredLanguageProperty;
+        }
     }
 }
 

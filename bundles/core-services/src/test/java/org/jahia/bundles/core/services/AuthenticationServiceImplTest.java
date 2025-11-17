@@ -20,7 +20,8 @@ import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 @RunWith(JUnitParamsRunner.class)
@@ -246,10 +247,10 @@ public class AuthenticationServiceImplTest {
         when(userNodeRetrieved.verifyPassword(password)).thenReturn(true);
 
         // WHEN:
-        JCRUserNode result = authenticationService.authenticate(authenticationRequest, authenticationOptions, httpRequest, httpResponse);
+        authenticationService.authenticate(authenticationRequest, authenticationOptions, httpRequest, httpResponse);
 
         // THEN:
-        assertSame(result, userNodeRetrieved);
+        // no exception has been thrown
 
         // verify the mocked methods have been called:
         verify(userManagerService).lookupUser(username, site, globalSearchIncluded);
@@ -293,47 +294,50 @@ public class AuthenticationServiceImplTest {
     @Test
     public void GIVEN_a_null_JCR_user_node_WHEN_authenticating_THEN_IllegalArgumentException() {
         // GIVEN:
-        JCRUserNode jcrUserNode = null;
+        String userNodePath = null;
 
         // WHEN:
-        ThrowingRunnable runnable = () -> authenticationService.authenticate(jcrUserNode, authenticationOptions, httpRequest, httpResponse);
+        ThrowingRunnable runnable = () -> authenticationService.authenticate(userNodePath, authenticationOptions, httpRequest,
+                httpResponse);
 
         // THEN:
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, runnable);
-        assertEquals("JCR user node cannot be null", exception.getMessage());
+        assertEquals("User node path cannot be null", exception.getMessage());
     }
 
     @Test
     public void GIVEN_a_user_node_not_found_in_JCR_WHEN_authenticating_THEN_AccountNotFoundException() {
         // GIVEN:
-        when(userNodeRequest.getPath()).thenReturn("/path/to/user/node");
-        when(userManagerService.lookupUserByPath("/path/to/user/node")).thenReturn(null);
+        String userNodePath = "/path/to/user/node";
+        when(userNodeRequest.getPath()).thenReturn(userNodePath);
+        when(userManagerService.lookupUserByPath(userNodePath)).thenReturn(null);
 
         // WHEN:
-        ThrowingRunnable runnable = () -> authenticationService.authenticate(userNodeRequest, authenticationOptions, httpRequest,
+        ThrowingRunnable runnable = () -> authenticationService.authenticate(userNodePath, authenticationOptions, httpRequest,
                 httpResponse);
 
         // THEN:
         AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, runnable);
         assertEquals("Not user found at /path/to/user/node", exception.getMessage());
 
-        verify(userManagerService).lookupUserByPath("/path/to/user/node");
+        verify(userManagerService).lookupUserByPath(userNodePath);
     }
 
     @Test
     public void GIVEN_a_valid_JCR_user_node_WHEN_authenticating_THEN_success()
             throws InvalidSessionLoginException, AccountNotFoundException {
         // GIVEN:
-        when(userNodeRequest.getPath()).thenReturn("/path/to/user/node");
-        when(userManagerService.lookupUserByPath("/path/to/user/node")).thenReturn(userNodeRetrieved);
+        String userNodePath = "/path/to/user/node";
+        when(userNodeRequest.getPath()).thenReturn(userNodePath);
+        when(userManagerService.lookupUserByPath(userNodePath)).thenReturn(userNodeRetrieved);
 
         // WHEN:
-        JCRUserNode result = authenticationService.authenticate(userNodeRequest, authenticationOptions, httpRequest, httpResponse);
+        authenticationService.authenticate(userNodePath, authenticationOptions, httpRequest, httpResponse);
 
         // THEN:
-        assertSame(result, userNodeRetrieved);
+        // no exception has been thrown
 
-        verify(userManagerService).lookupUserByPath("/path/to/user/node");
+        verify(userManagerService).lookupUserByPath(userNodePath);
     }
 
 }

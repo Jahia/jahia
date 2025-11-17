@@ -159,7 +159,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public AggregateCacheFilter() {
         addCondition((renderContext, resource) -> {
             Object toCacheWithParentFragment = resource.getModuleParams().get(TO_CACHE_WITH_PARENT_FRAGMENT);
-            return toCacheWithParentFragment == null || !((Boolean) toCacheWithParentFragment);
+            return !Boolean.TRUE.equals(toCacheWithParentFragment) && !skipAggregation(renderContext.getRequest());
         });
     }
 
@@ -218,11 +218,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-
-        if (skipAggregation(renderContext.getRequest())) {
-            // Don't create separate cache entry, let it be part of parent fragment
-            return null;
-        }
 
         final boolean debugEnabled = logger.isDebugEnabled();
         // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
@@ -430,11 +425,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        if (skipAggregation(renderContext.getRequest())) {
-            // Return content directly without caching separately
-            return previousOut;
-        }
-
         return execute(previousOut, renderContext, resource, chain, false);
     }
 

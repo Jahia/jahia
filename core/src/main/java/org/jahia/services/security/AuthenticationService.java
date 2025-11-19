@@ -107,4 +107,14 @@ public interface AuthenticationService {
             throws AccountNotFoundException, AccountLockedException, FailedLoginException,
             ConcurrentLoggedInUsersLimitExceededLoginException, IllegalArgumentException;
 
+    /**
+     * Validates a user from their path in the JCR to ensure their account is not locked, and the maximum
+     * number of concurrent logged-in users has not been reached (based on the license).
+     *
+     * @param userNodePath the path of the user node to validate, typically retrieved with
+     *                     {@link org.jahia.services.content.decorator.JCRUserNode#getPath()}
+     * @throws AccountLockedException                             if the user's account is locked
+     * @throws ConcurrentLoggedInUsersLimitExceededLoginException if the user has exceeded the allowed limit of concurrent logins
+     */
+    void validateUserNode(String userNodePath) throws AccountLockedException, ConcurrentLoggedInUsersLimitExceededLoginException;
 }

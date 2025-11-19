@@ -2,7 +2,6 @@ package org.jahia.bundles.core.services;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.jahia.api.settings.SettingsBean;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.security.AuthenticationOptions;
 import org.jahia.services.security.AuthenticationRequest;
@@ -36,7 +35,6 @@ public class AuthenticationServiceImplTest {
 
     private JCRUserNode userNodeRetrieved;
     private JahiaUserManagerService userManagerService;
-    private SettingsBean settingsBean;
 
     private final AuthenticationServiceImpl authenticationService = new AuthenticationServiceImpl();
 
@@ -52,8 +50,6 @@ public class AuthenticationServiceImplTest {
         userNodeRetrieved = mock(JCRUserNode.class);
         userManagerService = mock(JahiaUserManagerService.class);
         authenticationService.setUserManagerService(userManagerService);
-        settingsBean = mock(SettingsBean.class);
-        authenticationService.setSettingsBean(settingsBean);
     }
 
     @Test
@@ -212,6 +208,8 @@ public class AuthenticationServiceImplTest {
         when(userNodeRetrieved.verifyPassword("pwd")).thenReturn(true);
         // locked account:
         when(userNodeRetrieved.isAccountLocked()).thenReturn(true);
+        // username for the error message:
+        when(userNodeRetrieved.getName()).thenReturn("user");
 
         // WHEN:
         ThrowingRunnable runnable = () -> authenticationService.authenticate(authenticationRequest, authenticationOptions, httpRequest,
@@ -219,9 +217,13 @@ public class AuthenticationServiceImplTest {
 
         // THEN:
         AccountLockedException exception = assertThrows(AccountLockedException.class, runnable);
+        assertEquals("Account is locked for user user", exception.getMessage());
+
+        // verify the mocked methods have been called:
         verify(userManagerService).lookupUser("user", null, false);
         verify(userNodeRetrieved).verifyPassword("pwd");
-        assertEquals("Account is locked for user user", exception.getMessage());
+        verify(userNodeRetrieved).isAccountLocked();
+        verify(userNodeRetrieved).getName();
     }
 
     @Test

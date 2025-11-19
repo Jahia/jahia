@@ -51,10 +51,10 @@ import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.observation.JahiaEventService;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.security.CookieUtils;
 import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -73,7 +73,6 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 
-import static org.jahia.params.valves.CookieAuthValveImpl.removeAuthCookie;
 
 /**
  * Logout controller.
@@ -274,7 +273,7 @@ public class Logout implements Controller {
 
         if (cookieAuthConfig.isActivated()) {
             JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
-            removeAuthCookie(request, response, cookieAuthConfig, curUser);
+            CookieUtils.clearRememberMeCookieForUser(curUser, request, response);
         }
         Locale uiLocale = (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE);
         Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);

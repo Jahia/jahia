@@ -43,25 +43,23 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.security.*;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.security.SecureRandom;
 import java.util.Properties;
 import java.util.Set;
@@ -90,7 +88,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
 
         logger.debug("Invoking cookie auth...");
         AuthValveContext authContext = (AuthValveContext) context;
-        JCRUserNode jahiaUser = null;
+        JCRUserNode jcrUserNode;
 
         // now lets look for a cookie in case we are using cookie-based
         // authentication.
@@ -133,39 +131,47 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                 return;
             }
             searchCriterias.setProperty(userPropertyName, value);
-            Set<JCRUserNode> foundUsers = null;
+            Set<JCRUserNode> foundUsers;
             try {
                 logger.debug("Auth cookie found. Searching users...");
-                foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null, JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null));
+                foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null,
+                        JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null));
                 if (foundUsers.size() == 1) {
 
-                    jahiaUser = foundUsers.iterator().next();
-                    if (markSessionToBeInvalidated(jahiaUser.getInvalidatedSessionTime(), authContext)) {
-                        // Clean up cookie
-                        removeAuthCookie(authContext.getRequest(), authContext.getResponse(), cookieAuthConfig, jahiaUser.getJahiaUser());
-                        logger.debug("Login failed. Session expired for user " + jahiaUser.getName());
-                        jahiaUser = null;
-                    }
-                    if (jahiaUser == null || jahiaUser.isAccountLocked()) {
-                        logger.debug("Account locked");
-                        jahiaUser = null;
-                    } else {
-                        HttpSession session = authContext.getRequest().getSession(false);
-                        if (session != null) {
-                            logger.debug("Attaching user to session");
-                            session.setAttribute(Constants.SESSION_USER, jahiaUser.getJahiaUser());
-                        }
+                    jcrUserNode = foundUsers.iterator().next();
+                    AuthenticationService authenticationService = BundleUtils.getOsgiService(AuthenticationService.class, null);
 
+                    try {
+                        // first validate the user node
+                        authenticationService.validateUserNode(jcrUserNode.getUserKey());
+
+                        // then authenticate the user
+                        logger.debug("User found");
+                        boolean rememberMe = false;
                         if (cookieAuthConfig.isRenewalActivated()) {
-                            logger.debug("Renewal activated. Recreating cookie..");
-                            sendCookie(value, authContext, jahiaUser, cookieAuthConfig);
+                            logger.debug("Renewal activated. Recreating cookie...");
+                            rememberMe = true;
                         }
+                        AuthenticationOptions authOptions = AuthenticationOptions.Builder.withDefaults().shouldRememberMe(rememberMe)
+                                .build();
+                        authenticationService.authenticate(jcrUserNode.getUserKey(), authOptions, authContext.getRequest(),
+                                authContext.getResponse());
+                        return;
+                    } catch (AccountLockedException e) {
+                        logger.debug("Account locked");
+                    } catch (ConcurrentLoggedInUsersLimitExceededLoginException e) {
+                        logger.debug("Login failed. Maximum number of logged in users reached for {}", jcrUserNode.getName());
+                    } catch (InvalidSessionLoginException e) {
+                        logger.debug("Login failed. Session expired for user {}", jcrUserNode.getName());
+                    } catch (AccountNotFoundException e) {
+                        logger.debug("Account not found");
                     }
                 } else {
                     logger.debug("Creating deleted cookie...");
                     authCookie = new Cookie(cookieAuthConfig.getCookieName(), "deleted");
                     authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
-                            authContext.getRequest().getContextPath() : "/");
+                            authContext.getRequest().getContextPath() :
+                            "/");
                     authCookie.setMaxAge(0);
                     authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
                     authCookie.setSecure(cookieAuthConfig.isSecure());
@@ -178,86 +184,25 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             logger.debug("Cookie auth not found");
         }
 
-        if (jahiaUser == null) {
-            logger.debug("No user found");
-            valveContext.invokeNext(context);
-        } else {
-            logger.debug("User found");
-            JahiaUser user = jahiaUser.getJahiaUser();
-            if (authContext.getRequest().getSession(false) != null) {
-                logger.debug("Invalidated session");
-                authContext.getRequest().getSession().invalidate();
-            }
-            authContext.getSessionFactory().setCurrentUser(user);
-        }
+        // at this point, the user is not authenticated. We continue to the next valve
+        valveContext.invokeNext(context);
+
         logger.debug("Cookie auth invoked");
     }
 
-    // TODO create a helper and delegate this method to the helper
+    /**
+     * @see CookieUtils#createRememberMeCookieForUser(org.jahia.services.usermanager.JahiaUser, HttpServletRequest, HttpServletResponse)
+     * @deprecated use {@link CookieUtils#createRememberMeCookieForUser(org.jahia.services.usermanager.JahiaUser, HttpServletRequest, HttpServletResponse)} instead.
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public static void createAndSendCookie(AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
-        // now let's look for a free random cookie value key.
-        String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(cookieAuthConfig);
-        // let's save the identifier for the user in the database
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, session -> {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Saving cookie auth for user: {}...", theUser.getPath());
-                }
-                JCRUserNode innerUserNode = (JCRUserNode) session.getNode(theUser.getPath());
-                innerUserNode.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                session.save();
-                return null;
-            });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        sendCookie(cookieUserKey, authContext, theUser, cookieAuthConfig);
+        CookieUtils.createRememberMeCookieForUser(theUser.getJahiaUser(), authContext.getRequest(), authContext.getResponse());
     }
 
-    protected static void sendCookie(String cookieUserKey, AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
-        // now let's save the same identifier in the cookie.
-        String realm = theUser.getRealm();
-        if (realm != null && logger.isDebugEnabled()) {
-            logger.debug("Found realm: {}", realm);
-        }
-        Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey + (realm != null ? (":"+realm) : ""));
-        authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
-                authContext.getRequest().getContextPath() : "/");
-        authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
-        authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
-        authCookie.setSecure(cookieAuthConfig.isSecure());
-        authContext.getResponse().addCookie(authCookie);
-    }
-
-    static public void removeAuthCookie(HttpServletRequest request, HttpServletResponse response, CookieAuthConfig cookieAuthConfig, JahiaUser curUser) {
-        // now let's destroy the cookie authentication if there was one
-        // set for this user.
-        JCRPropertyWrapper cookieAuthKey = null;
-        try {
-            if (!JahiaUserManagerService.isGuest(curUser)) {
-                JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(curUser.getLocalPath());
-                String userPropertyName = cookieAuthConfig.getUserPropertyName();
-                if (userNode != null && userNode.hasProperty(userPropertyName)) {
-                    cookieAuthKey = userNode.getProperty(userPropertyName);
-                }
-            }
-            if (cookieAuthKey != null) {
-                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey.getString());
-                authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
-                authCookie.setMaxAge(0); // means we want it deleted now !
-                authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
-                authCookie.setSecure(cookieAuthConfig.isSecure());
-                response.addCookie(authCookie);
-                if (!SettingsBean.getInstance().isFullReadOnlyMode()) {
-                    cookieAuthKey.remove();
-                    cookieAuthKey.getSession().save();
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
+    /**
+     * @deprecated no longer used, use {@link UUID#randomUUID()} directly instead if a unique cookie key is needed.
+     */
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     public static String getAvailableCookieKey(CookieAuthConfig cookieAuthConfig) {
         return UUID.randomUUID().toString();
     }
@@ -267,7 +212,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
     }
 
     /**
-     * @deprecated the mechanism to generate a random string is now using the {@link UUID} class, so this method is of no use any more
+     * @deprecated the mechanism to generate a random string is now using the {@link UUID} class, so this method is of no use anymore
      */
     @Deprecated(since = "7.2.2.0")
     public static String generateRandomString(int length) {

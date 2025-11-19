@@ -725,7 +725,15 @@ public class ErrorFileDumper {
     private static boolean exceptionShouldBeIgnored(Throwable exception) {
         return Stream.of("java.net.SocketException", "org.apache.catalina.connector.ClientAbortException").anyMatch(s -> {
             try {
-                return Class.forName(s).isInstance(exception);
+                // Resolve main cause of the exception
+                Throwable cause = exception;
+                while (cause != null) {
+                    if (Class.forName(s).isInstance(cause)) {
+                        return true;
+                    }
+                    cause = cause.getCause();
+                }
+                return false;
             } catch (ClassNotFoundException e) {
                 return false;
             }

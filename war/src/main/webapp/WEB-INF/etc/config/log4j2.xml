@@ -138,6 +138,8 @@
             level="ERROR"/>
         <Logger name="org.atmosphere.handler" level="ERROR"/>
         <Logger name="org.apache.poi" level="WARN" />
+        <!--    Logger HttpRequestHandlerImpl set in ERROR as the INFO is displaying a full stack exception    -->
+        <Logger name="graphql.kickstart.servlet.HttpRequestHandlerImpl" level="ERROR"/>
         <Root level="info">
             <AppenderRef ref="RollingJahiaLog"/>
             <AppenderRef ref="Console"/>

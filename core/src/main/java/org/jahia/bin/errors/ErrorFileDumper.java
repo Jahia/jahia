@@ -723,7 +723,7 @@ public class ErrorFileDumper {
     }
 
     private static boolean exceptionShouldBeIgnored(Throwable exception) {
-        return Stream.of("java.net.SocketException", "org.apache.catalina.connector.ClientAbortException").anyMatch(s -> {
+        return Stream.of("java.net.SocketException","java.net.SocketTimeoutException", "org.apache.catalina.connector.ClientAbortException").anyMatch(s -> {
             try {
                 // Resolve main cause of the exception
                 Throwable cause = exception;

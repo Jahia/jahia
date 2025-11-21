@@ -63,6 +63,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
+import org.jahia.ajax.gwt.client.widget.grid.EscapingRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,6 +209,11 @@ public class UserGroupSelect extends Window {
 
         ColumnModel cm = new ColumnModel(columns);
 
+        // Add escaping renderer for all columns
+        for (ColumnConfig cc : columns) {
+            cc.setRenderer(EscapingRenderer.getInstance());
+        }
+
         final PagingToolBar toolBar = new PagingToolBar(15);
         toolBar.bind(loader);
 
@@ -288,14 +294,19 @@ public class UserGroupSelect extends Window {
             ComboBox<GWTJahiaSite> siteMenu = createMenu(loader);
             panel.add(siteMenu);
         }
-        ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>(loader);
+        ListStore<GWTJahiaNode> store = new ListStore<>(loader);
 
-        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+        List<ColumnConfig> columns = new ArrayList<>();
         columns.add(new ColumnConfig("displayName", "Group name", 240));
         columns.add(new ColumnConfig("siteKey", "Site name", 120));
         columns.add(new ColumnConfig("providerKey", "Provider", 120));
 
         ColumnModel cm = new ColumnModel(columns);
+
+        // Add escaping renderer for all columns
+        for (ColumnConfig cc : columns) {
+            cc.setRenderer(EscapingRenderer.getInstance());
+        }
 
         final PagingToolBar toolBar = new PagingToolBar(15);
         toolBar.bind(loader);

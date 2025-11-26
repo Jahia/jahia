@@ -42,6 +42,7 @@
  */
 package org.jahia.bin;
 
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.HistoryTrackerBean;
 import org.springframework.web.servlet.ModelAndView;
@@ -68,12 +69,17 @@ public class StoreHistory extends JahiaController {
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        HttpSession session = request.getSession();
-        String name = getParameter(request, "h", "historyTracker");
+        try {
+            HttpSession session = request.getSession();
+            String name = getParameter(request, "h", "historyTracker");
 
-        HistoryTrackerBean bean = (HistoryTrackerBean) SpringContextSingleton.getBean("org.jahia.services.render.filter.HistoryTrackerBean." + name);
-        String identifier = getParameter(request, "i");
-        bean.addHistoryNode(session,identifier);
+            HistoryTrackerBean bean = (HistoryTrackerBean) SpringContextSingleton.getBean("org.jahia.services.render.filter.HistoryTrackerBean." + name);
+            String identifier = getParameter(request, "i");
+            bean.addHistoryNode(session, identifier);
+        } catch (Exception e) {
+                DefaultErrorHandler.getInstance().handle(e, request, response);
+        }
+
         return null;
     }
 }

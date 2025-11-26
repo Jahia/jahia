@@ -58,6 +58,7 @@ import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor;
 import org.atmosphere.interceptor.IdleResourceInterceptor;
 import org.atmosphere.interceptor.SuspendTrackerInterceptor;
 import org.jahia.api.Constants;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.SessionIdHashingUtils;
@@ -114,6 +115,14 @@ public class ManagedGWTResource {
         r.suspend();
         BroadcasterFactory broadcasterFactory = r.getAtmosphereConfig().getBroadcasterFactory();
         broadcasterFactory.lookup(GWT_BROADCASTER_ID, true).addAtmosphereResource(r);
+        if (r.getResponse().isCommitted()) {
+            // Work around to avoid NPE when the response has been commited (like when a sendError has been called)
+            if (logger.isDebugEnabled()) {
+                logger.debug("Response is already committed");
+                logger.debug("Current stack", new Throwable());
+            }
+            return StringUtils.EMPTY;
+        }
         JahiaUser user = (JahiaUser) r.getRequest().getSession(true).getAttribute(Constants.SESSION_USER);
         if (user != null) {
             broadcasterFactory.lookup(GWT_BROADCASTER_ID + user.getName(), true).addAtmosphereResource(r);

@@ -45,6 +45,7 @@ package org.jahia.bin;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.params.valves.CookieAuthConfig;
@@ -83,46 +84,20 @@ import java.util.*;
 public class Logout implements Controller {
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
     private static final transient Logger logger = LoggerFactory.getLogger(Logout.class);
+    protected CookieAuthConfig cookieAuthConfig;
+    protected URLResolverFactory urlResolverFactory;
+    protected UrlRewriteService urlRewriteService;
     private JahiaUserManagerService userManagerService;
+    private boolean fireLogoutEvent = false;
+    private String preserveSessionAttributes = null;
 
     public static String getLogoutServletPath() {
         // TODO move this into configuration
         return "/cms/logout";
     }
 
-    protected CookieAuthConfig cookieAuthConfig;
-
-    protected URLResolverFactory urlResolverFactory;
-
-    protected UrlRewriteService urlRewriteService;
-
-    private boolean fireLogoutEvent = false;
-
-    private String preserveSessionAttributes = null;
-
     public void setFireLogoutEvent(boolean fireLogoutEvent) {
         this.fireLogoutEvent = fireLogoutEvent;
-    }
-
-    public class LogoutEvent extends ApplicationEvent {
-
-        private static final long serialVersionUID = 7031797336948851970L;
-        private HttpServletRequest request;
-        private HttpServletResponse response;
-
-        public LogoutEvent(Object source, HttpServletRequest request, HttpServletResponse response) {
-            super(source);
-            this.request = request;
-            this.response = response;
-        }
-
-        public HttpServletRequest getRequest() {
-            return request;
-        }
-
-        public HttpServletResponse getResponse() {
-            return response;
-        }
     }
 
     public void setPreserveSessionAttributes(String preserveSessionAttributes) {
@@ -178,7 +153,7 @@ public class Logout implements Controller {
                     @Override
                     public String getPathInfo() {
                         if (r.startsWith(getContextPath() + "/cms/")) {
-                            return StringUtils.substringAfter(r,getContextPath() + "/cms");
+                            return StringUtils.substringAfter(r, getContextPath() + "/cms");
                         }
                         return null;
                     }
@@ -191,7 +166,7 @@ public class Logout implements Controller {
                     }
                 }
             } catch (Exception e) {
-                logger.error("Cannot rewrite redirection url",e);
+                logger.error("Cannot rewrite redirection url", e);
             }
 
             String prefix = request.getContextPath() + "/cms/";
@@ -208,20 +183,20 @@ public class Logout implements Controller {
                 List<String> urls = new ArrayList<String>();
                 urls.add(url);
                 if (url.startsWith("/edit/")) {
-                    url = "/render/" + StringUtils.substringAfter(url,"/edit/");
+                    url = "/render/" + StringUtils.substringAfter(url, "/edit/");
                     urls.add(url);
                 } else if (url.startsWith("/editframe/default/")) {
-                    url = "/render/live/" + StringUtils.substringAfter(url,"/editframe/default/");
+                    url = "/render/live/" + StringUtils.substringAfter(url, "/editframe/default/");
                     urls.add(url);
                 } else if (url.startsWith("/contribute/")) {
-                    url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
+                    url = "/render/" + StringUtils.substringAfter(url, "/contribute/");
                     urls.add(url);
                 } else if (url.startsWith("/contributeframe/default/")) {
-                    url = "/render/live/" + StringUtils.substringAfter(url,"/contributeframe/default/");
+                    url = "/render/live/" + StringUtils.substringAfter(url, "/contributeframe/default/");
                     urls.add(url);
                 }
                 if (url.startsWith("/render/default/")) {
-                    url = "/render/live/" + StringUtils.substringAfter(url,"/render/default/");
+                    url = "/render/live/" + StringUtils.substringAfter(url, "/render/default/");
                     urls.add(url);
                 }
                 for (String currentUrl : urls) {
@@ -237,8 +212,8 @@ public class Logout implements Controller {
                                 // this can occur if the homepage of the site is not set
                                 redirect = request.getContextPath() + "/";
                             } else {
-                            redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
-                                    + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
+                                redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
+                                        + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
                             }
                         } else {
                             redirect = request.getContextPath() + "/";
@@ -247,7 +222,7 @@ public class Logout implements Controller {
                         response.sendRedirect(filterRedirectUrl(response.encodeRedirectURL(redirect)));
                         return;
                     } catch (Exception e) {
-                        logger.debug("Cannot redirect to "+currentUrl, e);
+                        logger.debug("Cannot redirect to " + currentUrl, e);
                     }
                 }
                 response.sendRedirect(filterRedirectUrl(response.encodeRedirectURL(request.getContextPath() + "/")));
@@ -270,41 +245,45 @@ public class Logout implements Controller {
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            if (cookieAuthConfig.isActivated()) {
+                JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
+                CookieUtils.clearRememberMeCookieForUser(curUser, request, response);
+            }
+            Locale uiLocale = (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE);
+            Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
 
-        if (cookieAuthConfig.isActivated()) {
-            JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
-            CookieUtils.clearRememberMeCookieForUser(curUser, request, response);
-        }
-        Locale uiLocale = (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE);
-        Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
+            if (fireLogoutEvent) {
+                LogoutEvent event = new LogoutEvent(this, request, response);
+                SpringContextSingleton.getInstance().publishEvent(event);
+                ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
 
-        if (fireLogoutEvent) {
-            LogoutEvent event = new LogoutEvent(this, request, response);
-            SpringContextSingleton.getInstance().publishEvent(event);
-            ((JahiaEventService) SpringContextSingleton.getBean("jahiaEventService")).publishEvent(event);
+                Map<String, Object> m = new HashMap<>();
+                m.put("request", request);
+                m.put("response", response);
+                FrameworkService.sendEvent("org/jahia/usersgroups/login/LOGOUT", m, false);
+            }
 
-            Map<String, Object> m = new HashMap<>();
-            m.put("request", request);
-            m.put("response", response);
-            FrameworkService.sendEvent("org/jahia/usersgroups/login/LOGOUT", m, false);
-        }
+            Map<String, Object> savedSessionAttributes = preserveSessionAttributes(request);
 
-        Map<String,Object> savedSessionAttributes = preserveSessionAttributes(request);
+            request.getSession().invalidate();
 
-        request.getSession().invalidate();
+            restoreSessionAttributes(request, savedSessionAttributes);
 
-        restoreSessionAttributes(request, savedSessionAttributes);
+            JCRSessionFactory.getInstance().closeAllSessions();
+            JCRSessionFactory.getInstance()
+                    .setCurrentUser(JahiaUserManagerService.getInstance().lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
 
-        JCRSessionFactory.getInstance().closeAllSessions();
-        JCRSessionFactory.getInstance()
-                .setCurrentUser(JahiaUserManagerService.getInstance().lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
+            request.getSession().setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
+            request.getSession().setAttribute(Constants.SESSION_LOCALE, locale);
 
-        request.getSession().setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
-        request.getSession().setAttribute(Constants.SESSION_LOCALE, locale);
+            String redirectActiveStr = request.getParameter("redirectActive");
+            if (redirectActiveStr == null || Boolean.parseBoolean(redirectActiveStr)) {
+                doRedirect(request, response);
+            }
 
-        String redirectActiveStr = request.getParameter("redirectActive");
-        if (redirectActiveStr == null || Boolean.parseBoolean(redirectActiveStr)) {
-            doRedirect(request, response);
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
         }
 
         return null;
@@ -324,7 +303,7 @@ public class Logout implements Controller {
 
         // retrieve the browser locales
         for (@SuppressWarnings("unchecked") Iterator<Locale> browserLocales = new EnumerationIterator(request.getLocales()); browserLocales
-                .hasNext();) {
+                .hasNext(); ) {
             final Locale curLocale = browserLocales.next();
             if (siteLanguages.contains(curLocale)) {
                 addLocale(site, newLocaleList, curLocale);
@@ -339,7 +318,7 @@ public class Logout implements Controller {
         String language = DEFAULT_LOCALE;
         if (!newLocaleList.isEmpty()) {
             language = newLocaleList.get(0).toString();
-        } else if (site!=null){
+        } else if (site != null) {
             language = site.getDefaultLanguage();
         } else if (!StringUtils.isEmpty(SettingsBean.getInstance().getDefaultLanguageCode())) {
             language = SettingsBean.getInstance().getDefaultLanguageCode();
@@ -364,9 +343,9 @@ public class Logout implements Controller {
     }
 
     private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {
-        Map<String,Object> savedSessionAttributes = new HashMap<String,Object>();
+        Map<String, Object> savedSessionAttributes = new HashMap<String, Object>();
         if ((preserveSessionAttributes != null) &&
-            (httpServletRequest.getSession(false) != null) &&
+                (httpServletRequest.getSession(false) != null) &&
                 (preserveSessionAttributes.length() > 0)) {
             String[] sessionAttributeNames = Patterns.TRIPLE_HASH.split(preserveSessionAttributes);
             HttpSession session = httpServletRequest.getSession(false);
@@ -383,7 +362,7 @@ public class Logout implements Controller {
     private void restoreSessionAttributes(HttpServletRequest httpServletRequest, Map<String, Object> savedSessionAttributes) {
         if (savedSessionAttributes.size() > 0) {
             HttpSession session = httpServletRequest.getSession();
-            for (Map.Entry<String,Object> savedSessionAttribute : savedSessionAttributes.entrySet()) {
+            for (Map.Entry<String, Object> savedSessionAttribute : savedSessionAttributes.entrySet()) {
                 session.setAttribute(savedSessionAttribute.getKey(), savedSessionAttribute.getValue());
             }
         }
@@ -394,6 +373,27 @@ public class Logout implements Controller {
             redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
         }
         return redirect;
+    }
+
+    public class LogoutEvent extends ApplicationEvent {
+
+        private static final long serialVersionUID = 7031797336948851970L;
+        private HttpServletRequest request;
+        private HttpServletResponse response;
+
+        public LogoutEvent(Object source, HttpServletRequest request, HttpServletResponse response) {
+            super(source);
+            this.request = request;
+            this.response = response;
+        }
+
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public HttpServletResponse getResponse() {
+            return response;
+        }
     }
 
 }

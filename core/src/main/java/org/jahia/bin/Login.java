@@ -43,15 +43,19 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Pattern;
@@ -64,6 +68,7 @@ import java.util.regex.Pattern;
  */
 public class Login implements Controller {
 
+    private static final Logger logger = LoggerFactory.getLogger(Login.class);
     // TODO move this into configuration
     private static final String CONTROLLER_MAPPING = "/login";
     private static final String LOGIN_ERR_PARAM_NAME = "loginError";
@@ -79,114 +84,6 @@ public class Login implements Controller {
     public static String getServletPath() {
         // TODO move this into configuration
         return "/cms" + CONTROLLER_MAPPING;
-    }
-
-    protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
-        // Method only called when the login is successful
-        String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
-                request.getContextPath() + "/welcome");
-        redirect = response.encodeRedirectURL(Login.removeErrorParameter(redirect));
-        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
-            redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
-        }
-        return redirect;
-    }
-
-    /**
-     * Process the request and return a ModelAndView object which the DispatcherServlet
-     * will render. A <code>null</code> return value is not an error: It indicates that
-     * this object completed request processing itself, thus there is no ModelAndView
-     * to render.
-     *
-     * @param request  current HTTP request
-     * @param response current HTTP response
-     * @return a ModelAndView to render, or <code>null</code> if handled directly
-     * @throws Exception in case of errors
-     */
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean restMode = Boolean.valueOf(request.getParameter("restMode"));
-        boolean redirectActive = !restMode;
-        if (redirectActive) {
-            String redirectActiveStr = request.getParameter("redirectActive");
-            if (redirectActiveStr != null) {
-                redirectActive = Boolean.parseBoolean(redirectActiveStr);
-            }
-        }
-
-        String result = (String) request.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
-        if (LoginEngineAuthValveImpl.OK.equals(result)) {
-            // Create one session at login to initialize external user
-            JCRSessionFactory.getInstance().getCurrentUserSession();
-
-            if (redirectActive && isAuthorizedRedirect(request, request.getParameter("redirect"), true)) {
-                response.sendRedirect(getRedirectUrl(request, response));
-            } else {
-                response.getWriter().append("OK");
-            }
-        } else {
-            if (!restMode) {
-                if (isAuthorizedRedirect(request, request.getParameter(FAIL_REDIRECT_PARAM), false)) {
-                    if ("bad_password".equals(result)) {
-                        result = "unknown_user";
-                    }
-                    //[QA-7582] FIXME: we need to sanitize the URL a dirty quick fix to avoid working on jsp templates that depend on this Servlet
-                    String failureRedirectUrl = sanitizeRedirectURL(request);
-                    StringBuilder url = new StringBuilder(64);
-                    url.append(failureRedirectUrl);
-                    if (failureRedirectUrl.indexOf('?') == -1) {
-                        url.append("?" + LOGIN_ERR_PARAM_NAME + "=").append(result);
-                    } else if (failureRedirectUrl.indexOf("?" + LOGIN_ERR_PARAM_NAME + "=") == -1
-                            && failureRedirectUrl.indexOf("&loginError=") == -1) {
-                        url.append("&" + LOGIN_ERR_PARAM_NAME + "=").append(result);
-                    }
-                    response.sendRedirect(url.toString());
-                } else {
-                    if (request.getParameter("redirect") != null) {
-                        request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
-                    }
-                    String theme = "jahia-anthracite";
-                    String pathToCheck = "/errors/" + theme + "/error_401.jsp";
-                    request.setCharacterEncoding("UTF-8");
-                    response.setCharacterEncoding("UTF-8");
-                    response.setContentType("text/html; charset=UTF-8");
-                    if (request.getServletContext().getResource(pathToCheck) != null) {
-                        request.getRequestDispatcher("/errors/" + theme + "/error_401.jsp").forward(request, response);
-                        return null;
-                    }
-
-                    request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
-                }
-            } else {
-                response.getWriter().append("unauthorized");
-            }
-        }
-        return null;
-    }
-
-    private String sanitizeRedirectURL(HttpServletRequest request) {
-        String failureRedirectUrl = request.getParameter(FAIL_REDIRECT_PARAM);
-        if (StringUtils.isNotEmpty(failureRedirectUrl) && failureRedirectUrl.indexOf(LOGIN_ERR_PARAM_NAME) > -1) {
-            // remove failure redirect param before we add it again
-            String[] urlParts = StringUtils.split(failureRedirectUrl, "\\?");
-            StringBuilder sanitizedUrlSb = new StringBuilder(urlParts[0]);
-            if (urlParts.length > 1) {
-                String[] urlParams = StringUtils.split(urlParts[1], "&");
-                StringBuilder paramSb = new StringBuilder();
-                for (int i = 0; i < urlParams.length; i++) {
-                    if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAME) == -1) {
-                        paramSb.append(urlParams[i]);
-                    }
-                }
-                if (StringUtils.isNotEmpty(paramSb.toString())) {
-                    sanitizedUrlSb.append("?").append(paramSb.toString());
-                }
-
-            }
-
-            failureRedirectUrl = sanitizedUrlSb.toString();
-        }
-        return failureRedirectUrl;
     }
 
     protected static boolean isAuthorizedRedirect(HttpServletRequest request, String redirectUrl, boolean authorizeNullRedirect) {
@@ -224,5 +121,117 @@ public class Login implements Controller {
         redirect = ERR_PARAM_ALONE_PATTERN.matcher(redirect).replaceAll("");
         redirect = ERR_PARAM_END_PATTERN.matcher(redirect).replaceAll("");
         return redirect;
+    }
+
+    protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
+        // Method only called when the login is successful
+        String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
+                request.getContextPath() + "/welcome");
+        redirect = response.encodeRedirectURL(Login.removeErrorParameter(redirect));
+        if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+            redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
+        }
+        return redirect;
+    }
+
+    /**
+     * Process the request and return a ModelAndView object which the DispatcherServlet
+     * will render. A <code>null</code> return value is not an error: It indicates that
+     * this object completed request processing itself, thus there is no ModelAndView
+     * to render.
+     *
+     * @param request  current HTTP request
+     * @param response current HTTP response
+     * @return a ModelAndView to render, or <code>null</code> if handled directly
+     * @throws Exception in case of errors
+     */
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            boolean restMode = Boolean.valueOf(request.getParameter("restMode"));
+            boolean redirectActive = !restMode;
+            if (redirectActive) {
+                String redirectActiveStr = request.getParameter("redirectActive");
+                if (redirectActiveStr != null) {
+                    redirectActive = Boolean.parseBoolean(redirectActiveStr);
+                }
+            }
+
+            String result = (String) request.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
+            if (LoginEngineAuthValveImpl.OK.equals(result)) {
+                // Create one session at login to initialize external user
+                JCRSessionFactory.getInstance().getCurrentUserSession();
+
+                if (redirectActive && isAuthorizedRedirect(request, request.getParameter("redirect"), true)) {
+                    response.sendRedirect(getRedirectUrl(request, response));
+                } else {
+                    response.getWriter().append("OK");
+                }
+            } else {
+                if (!restMode) {
+                    if (isAuthorizedRedirect(request, request.getParameter(FAIL_REDIRECT_PARAM), false)) {
+                        if ("bad_password".equals(result)) {
+                            result = "unknown_user";
+                        }
+                        //[QA-7582] FIXME: we need to sanitize the URL a dirty quick fix to avoid working on jsp templates that depend on this Servlet
+                        String failureRedirectUrl = sanitizeRedirectURL(request);
+                        StringBuilder url = new StringBuilder(64);
+                        url.append(failureRedirectUrl);
+                        if (failureRedirectUrl.indexOf('?') == -1) {
+                            url.append("?" + LOGIN_ERR_PARAM_NAME + "=").append(result);
+                        } else if (failureRedirectUrl.indexOf("?" + LOGIN_ERR_PARAM_NAME + "=") == -1
+                                && failureRedirectUrl.indexOf("&loginError=") == -1) {
+                            url.append("&" + LOGIN_ERR_PARAM_NAME + "=").append(result);
+                        }
+                        response.sendRedirect(url.toString());
+                    } else {
+                        if (request.getParameter("redirect") != null) {
+                            request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
+                        }
+                        String theme = "jahia-anthracite";
+                        String pathToCheck = "/errors/" + theme + "/error_401.jsp";
+                        request.setCharacterEncoding("UTF-8");
+                        response.setCharacterEncoding("UTF-8");
+                        response.setContentType("text/html; charset=UTF-8");
+                        if (request.getServletContext().getResource(pathToCheck) != null) {
+                            request.getRequestDispatcher("/errors/" + theme + "/error_401.jsp").forward(request, response);
+                            return null;
+                        }
+
+                        request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
+                    }
+                } else {
+                    response.getWriter().append("unauthorized");
+                }
+            }
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
+        }
+
+        return null;
+    }
+
+    private String sanitizeRedirectURL(HttpServletRequest request) {
+        String failureRedirectUrl = request.getParameter(FAIL_REDIRECT_PARAM);
+        if (StringUtils.isNotEmpty(failureRedirectUrl) && failureRedirectUrl.indexOf(LOGIN_ERR_PARAM_NAME) > -1) {
+            // remove failure redirect param before we add it again
+            String[] urlParts = StringUtils.split(failureRedirectUrl, "\\?");
+            StringBuilder sanitizedUrlSb = new StringBuilder(urlParts[0]);
+            if (urlParts.length > 1) {
+                String[] urlParams = StringUtils.split(urlParts[1], "&");
+                StringBuilder paramSb = new StringBuilder();
+                for (int i = 0; i < urlParams.length; i++) {
+                    if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAME) == -1) {
+                        paramSb.append(urlParams[i]);
+                    }
+                }
+                if (StringUtils.isNotEmpty(paramSb.toString())) {
+                    sanitizedUrlSb.append("?").append(paramSb.toString());
+                }
+
+            }
+
+            failureRedirectUrl = sanitizedUrlSb.toString();
+        }
+        return failureRedirectUrl;
     }
 }

@@ -44,6 +44,7 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
@@ -65,27 +66,31 @@ public class WorkflowImageController implements Controller {
     private WorkflowService workflowService;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String wfKey = request.getParameter("workflowKey");
-        String basePath = "/" + StringUtils.substringBefore(wfKey, ":").replaceAll("\\.", "/") + "/";
-        wfKey = StringUtils.substringAfter(wfKey, ":");
-        WorklowTypeRegistration workflowRegistration = workflowService.getWorkflowRegistration(wfKey);
-        JahiaTemplatesPackage module = workflowRegistration.getModule();
+        try {
+            String wfKey = request.getParameter("workflowKey");
+            String basePath = "/" + StringUtils.substringBefore(wfKey, ":").replaceAll("\\.", "/") + "/";
+            wfKey = StringUtils.substringAfter(wfKey, ":");
+            WorklowTypeRegistration workflowRegistration = workflowService.getWorkflowRegistration(wfKey);
+            JahiaTemplatesPackage module = workflowRegistration.getModule();
 
-        String language = request.getParameter("language");
+            String language = request.getParameter("language");
 
-        Resource resource = module.getResource(basePath + wfKey + "_" + language + ".png");
-        if (resource == null) {
-            resource = module.getResource(basePath + wfKey + ".png");
+            Resource resource = module.getResource(basePath + wfKey + "_" + language + ".png");
+            if (resource == null) {
+                resource = module.getResource(basePath + wfKey + ".png");
+            }
+            if (resource != null) {
+                response.setContentType("image/png");
+
+                ServletOutputStream out = response.getOutputStream();
+
+                IOUtils.copy(resource.getInputStream(), out);
+                out.flush();
+            }
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            DefaultErrorHandler.getInstance().handle(e, request, response);
         }
-        if (resource != null) {
-            response.setContentType("image/png");
-
-            ServletOutputStream out = response.getOutputStream();
-
-            IOUtils.copy(resource.getInputStream(), out);
-            out.flush();
-        }
-        response.setStatus(HttpServletResponse.SC_OK);
         return null;
     }
 

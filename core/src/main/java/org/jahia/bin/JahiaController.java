@@ -192,4 +192,5 @@ public abstract class JahiaController implements Controller {
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = StringUtils.defaultIfBlank(requiredPermission, null);
     }
+
 }

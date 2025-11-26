@@ -47,6 +47,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
+import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
@@ -84,58 +85,61 @@ public class TextExtractor extends JahiaController {
      * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        if (!textExtractionService.isEnabled()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Text extraction service is not enabled.");
-            return null;
-        }
-
-        if (!ServletFileUpload.isMultipartContent(request)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No file was submitted");
-            return null;
-        }
-
-        FileUpload upload = new FileUpload(request, settingsBean.getTmpContentDiskPath(), Integer.MAX_VALUE);
-        if (upload.getFileItems().size() == 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No file was submitted");
-            return null;
-        }
-
-        DiskFileItem inputFile = upload.getFileItems().values().iterator().next();
-        InputStream stream = null;
         try {
-            stream = inputFile.getInputStream();
-            Metadata metadata = new Metadata();
-            metadata.set(Metadata.CONTENT_TYPE, inputFile.getContentType());
-            metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, inputFile.getName());
-
-            long startTime = System.currentTimeMillis();
-
-            String content = textExtractionService.parse(stream, metadata);
-
-            Map<String, Object> model = new HashMap<String, Object>();
-
-            Map<String, Object> properties = new HashMap<String, Object>();
-            for (String name : metadata.names()) {
-                properties.put(name, metadata.isMultiValued(name) ? metadata.getValues(name) : metadata.get(name));
+            if (!textExtractionService.isEnabled()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Text extraction service is not enabled.");
+                return null;
             }
-            model.put("metadata", properties);
-            model.put("content", content);
-            model.put("file", inputFile);
-            model.put("extracted", Boolean.TRUE);
-            model.put("extractionTime", Long.valueOf(System.currentTimeMillis() - startTime));
 
-            return new ModelAndView(view, model);
+            if (!ServletFileUpload.isMultipartContent(request)) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No file was submitted");
+                return null;
+            }
 
+            FileUpload upload = new FileUpload(request, settingsBean.getTmpContentDiskPath(), Integer.MAX_VALUE);
+            if (upload.getFileItems().size() == 0) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No file was submitted");
+                return null;
+            }
+
+            DiskFileItem inputFile = upload.getFileItems().values().iterator().next();
+            InputStream stream = null;
+            try {
+                stream = inputFile.getInputStream();
+                Metadata metadata = new Metadata();
+                metadata.set(Metadata.CONTENT_TYPE, inputFile.getContentType());
+                metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, inputFile.getName());
+
+                long startTime = System.currentTimeMillis();
+
+                String content = textExtractionService.parse(stream, metadata);
+
+                Map<String, Object> model = new HashMap<String, Object>();
+
+                Map<String, Object> properties = new HashMap<String, Object>();
+                for (String name : metadata.names()) {
+                    properties.put(name, metadata.isMultiValued(name) ? metadata.getValues(name) : metadata.get(name));
+                }
+                model.put("metadata", properties);
+                model.put("content", content);
+                model.put("file", inputFile);
+                model.put("extracted", Boolean.TRUE);
+                model.put("extractionTime", Long.valueOf(System.currentTimeMillis() - startTime));
+
+                return new ModelAndView(view, model);
+
+            } catch (Exception e) {
+                logger.error("Error extracting text for uploaded file " + inputFile.getFieldName() + ". Cause: "
+                        + e.getMessage(), e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception occurred: " + e.getMessage());
+            } finally {
+                IOUtils.closeQuietly(stream);
+                for (DiskFileItem file : upload.getFileItems().values()) {
+                    file.delete();
+                }
+            }
         } catch (Exception e) {
-            logger.error("Error extracting text for uploaded file " + inputFile.getFieldName() + ". Cause: "
-                    + e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception occurred: " + e.getMessage());
-        } finally {
-            IOUtils.closeQuietly(stream);
-            for (DiskFileItem file : upload.getFileItems().values()) {
-                file.delete();
-            }
+            DefaultErrorHandler.getInstance().handle(e, request, response);
         }
 
         return null;

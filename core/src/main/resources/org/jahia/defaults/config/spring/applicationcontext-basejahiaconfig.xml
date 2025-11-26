@@ -272,6 +272,15 @@
         <property name="filters">
             <list>
                 <bean class="org.jahia.bin.filters.ServletFilter">
+                    <property name="filterName" value="ChainedErrorHandlerFilter"/>
+                    <property name="filter">
+                        <bean class="org.jahia.bin.filters.ChainedErrorHandlerFilter"/>
+                    </property>
+                    <property name="order" value="-7"/>
+                    <property name="matchAllUrls" value="true"/>
+                </bean>
+
+                <bean class="org.jahia.bin.filters.ServletFilter">
                     <property name="filterName" value="CharacterEncodingFilter"/>
                     <property name="filter">
                         <bean class="org.springframework.web.filter.CharacterEncodingFilter"/>

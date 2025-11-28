@@ -50,12 +50,15 @@ import org.jahia.params.valves.AuthValveContext;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 public class JahiaAuthenticationFilter extends AuthenticatingFilter {
+    private static final Logger logger = LoggerFactory.getLogger(JahiaAuthenticationFilter.class);
     private Pipeline authPipeline;
     private JCRSessionFactory sessionFactory;
 
@@ -76,6 +79,13 @@ public class JahiaAuthenticationFilter extends AuthenticatingFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         AuthValveContext authValveContext = new AuthValveContext(WebUtils.toHttp(request), WebUtils.toHttp(response), sessionFactory);
         authPipeline.invoke(authValveContext);
+        if (response.isCommitted()) {
+            // if the response is committed, it won't be possible to access the session anymore to set the user.
+            // The response can be commited if any call to sendError() happen before reaching this point.
+            logger.warn("Unable to log the user as the response is already committed");
+            return false;
+        }
+
         // Invalidate session if valves say so.
         if (authValveContext.invalidateHttpSession()) {
             WebUtils.toHttp(request).getSession().invalidate();

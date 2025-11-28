@@ -58,7 +58,7 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
  */
 public class ErrorEventFilter implements Filter {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorEventFilter.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorEventFilter.class);
 
     private int minimalErrorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
@@ -99,8 +99,7 @@ public class ErrorEventFilter implements Filter {
     protected void handle(HttpServletRequest request,
             HttpServletResponse response) {
 
-        int code = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
+        int code = ErrorServlet.getErrorCode(request);
         code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
         if (code >= minimalErrorCode) {
             Throwable ex = getException(request);

@@ -61,6 +61,7 @@ import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -116,11 +117,16 @@ public class ErrorServlet extends HttpServlet {
         }
     }
 
-    protected int getErrorCode(HttpServletRequest request) {
-        int errorCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-
-        return errorCode != 0 ? errorCode : SC_INTERNAL_SERVER_ERROR;
-
+    public static int getErrorCode(HttpServletRequest request) {
+        try {
+            return (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        } catch (Throwable e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Full stack", e);
+                logger.debug("Unable to process error code {} from request", request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
+            }
+            return SC_INTERNAL_SERVER_ERROR;
+        }
     }
 
     protected String getErrorPagePath(HttpServletRequest request) throws IOException {
@@ -331,7 +337,7 @@ public class ErrorServlet extends HttpServlet {
         WebUtils.setNoCacheHeaders(response);
 
         // check if the Basic Authentication is required
-        Integer errorCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+        Integer errorCode = getErrorCode(request);
 
         if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
                 && StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,

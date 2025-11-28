@@ -104,7 +104,7 @@ public class ErrorLoggingFilter implements Filter {
         }
         try {
             Throwable t = getException(request);
-            int code = (Integer) request.getAttribute("javax.servlet.error.status_code");
+            int code = ErrorServlet.getErrorCode(request);
             code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
             if (code < 500) {
                 logger.debug("Status code below 500, will not dump error to file");
@@ -157,7 +157,7 @@ public class ErrorLoggingFilter implements Filter {
 
         Throwable ex = getException(request);
         String message = (String) request.getAttribute("javax.servlet.error.message");
-        Integer code = (Integer) request.getAttribute("javax.servlet.error.status_code");
+        Integer code = ErrorServlet.getErrorCode(request);
 
         switch (code.intValue()) {
             case SC_NOT_FOUND:
@@ -213,11 +213,11 @@ public class ErrorLoggingFilter implements Filter {
 
         // add request information
         request.setAttribute("org.jahia.exception.requestInfo", getRequestInfo(request));
+        int errorCode = ErrorServlet.getErrorCode(request);
 
         logDebugInfo(request, response);
 
-        if (HttpServletResponse.SC_SERVICE_UNAVAILABLE == (Integer) request
-                .getAttribute("javax.servlet.error.status_code")
+        if (HttpServletResponse.SC_SERVICE_UNAVAILABLE == errorCode
                 && (StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,
                         (String) request.getAttribute("javax.servlet.error.message")) || StringUtils
                         .equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE,
@@ -265,7 +265,7 @@ public class ErrorLoggingFilter implements Filter {
                     + "]:"
                     + "\n"
                     + "Status code: "
-                    + request.getAttribute("javax.servlet.error.status_code")
+                    + ErrorServlet.getErrorCode(request)
                     + "\n"
                     + "Error message: "
                     + request.getAttribute("javax.servlet.error.message")
@@ -284,8 +284,7 @@ public class ErrorLoggingFilter implements Filter {
 
         Throwable ex = getException(request);
 
-        int code = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
+        int code = ErrorServlet.getErrorCode(request);
         code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
 
         String message = getLogMessage(request);

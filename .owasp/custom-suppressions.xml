@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes><![CDATA[
+        file name: brace-expansion:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/brace-expansion@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: cross-spawn:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/cross-spawn@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: js-yaml:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/js-yaml@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: tmp:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/tmp@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: validator:* - not used in production code
+        ]]></notes>
+        <packageUrl regex="true">^pkg:npm/validator@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+</suppressions>

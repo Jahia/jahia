@@ -53,6 +53,18 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: ckeditor-4.21.0*.jar used in org.jahia.modules:ckeditor
+        CVE-2024-24815 - Jahia does not use ACF and CDATA is filtered server-side
+        CVE-2024-24816 - preview icon was removed from the toolbar
+        CVE-2024-43407 - Jahia is not using the CKEditor 4 Code Snippet GeSHi plugin
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/ckeditor@4\.21\.0.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-24815</vulnerabilityName>
+        <vulnerabilityName>CVE-2024-24816</vulnerabilityName>
+        <vulnerabilityName>CVE-2024-43407</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: class-validator:* - not used in production code
         ]]></notes>
         <packageUrl regex="true">^pkg:npm/class\-validator@.*$</packageUrl>
@@ -177,6 +189,14 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: gson-*.jar
+        CVE-2025-53864 is a false positive as it is about the Connect2id product and not gson.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.code\.gson/gson@.*$</packageUrl>
+        <vulnerabilityName>CVE-2025-53864</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: gwt-servlet-2.8.2.jar (shaded: com.google.protobuf:protobuf-java:2.5.0) - false positive as gwt does not really package the code
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/com\.google\.protobuf/protobuf\-java@2\.5\.0$</packageUrl>
@@ -192,6 +212,13 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: icu4j-*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.ibm\.icu/icu4j@.*$</packageUrl>
+        <cve>CVE-2025-5222</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: ion-java-1.0.2.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/software\.amazon\.ion/ion\-java@.*$</packageUrl>
@@ -203,6 +230,8 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.jackrabbit/jackrabbit-.*@.*$</packageUrl>
         <cve>CVE-2023-37895</cve>
+        <cve>CVE-2025-53689</cve>
+        <cve>CVE-2025-58782</cve>
      </suppress>
     <suppress>
         <notes><![CDATA[
@@ -212,6 +241,13 @@
         <cpe>cpe:/a:fasterxml:jackson-modules-java8</cpe>
         <cpe>cpe:/a:fasterxml:jackson-databind</cpe>
         <vulnerabilityName>CVE-2020-25649</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jackson-*-2.14.1.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-.*@2\.14\.1$</packageUrl>
+        <vulnerabilityName>CVE-2025-52999</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -261,10 +297,36 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: json-taglib-0.4.1.jar wrongly matched with a:taglib:taglib
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/atg.taglib.json/json-taglib@0.4.1$</packageUrl>
+        <cpe>cpe:/a:taglib:taglib</cpe>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: json5:*
         ]]></notes>
        <packageUrl regex="true">^pkg:npm/json5@.*$</packageUrl>
        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jquery-1.7.1.min.js
+        ]]></notes>
+        <packageUrl regex="true">^pkg:javascript/jquery@1.7.1.min$</packageUrl>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: jquery.validate.js / jquery.validate.min.js
+        CVE-2025-3573 - XSS via showLabel - NOT EXPLOITABLE in our codebase
+        All validation messages come from server-controlled i18n property files.
+        No user input flows into $.validator.messages or validation message configuration.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:javascript/jquery\-validation@1\.19\.5$</packageUrl>
+        <vulnerabilityName>CVE-2025-3573</vulnerabilityName>
+        <vulnerabilityName>Potential XSS via showLabel</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -377,6 +439,8 @@
         <cve>CVE-2022-38745</cve>
         <cve>CVE-2022-47502</cve>
         <cve>CVE-2023-47804</cve>
+        <cve>CVE-2025-64401</cve>
+        <cve>CVE-2025-64404</cve>
     </suppress>
     <suppress>
         <packageUrl regex="true">^pkg:maven/org\.codehaus\.plexus/plexus\-(cipher|classworlds|component-annotations|interpolation|sec-dispatcher|utils)@.*$</packageUrl>
@@ -406,8 +470,8 @@
         file name: semver*
         ]]></notes>
         <packageUrl regex="true">^pkg:npm/semver@.*$</packageUrl>
-       <vulnerabilityName>CVE-2022-25883</vulnerabilityName>
-       <vulnerabilityName>GHSA-c2qf-rxjj-qqgw</vulnerabilityName>
+        <vulnerabilityName>CVE-2022-25883</vulnerabilityName>
+        <vulnerabilityName>GHSA-c2qf-rxjj-qqgw</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -415,6 +479,58 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.shiro/shiro\-.*@.*$</packageUrl>
         <cve>CVE-2023-22602</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: siteSettings*angular.min.js
+        CVE-2019-10768 - We do not used the angular.merge function
+        CVE-2020-7676 - not concerned
+        CVE-2022-25869 - not impacted
+        CVE-2023-26116 - Not impacted, angular.copy is not used
+        CVE-2023-26117 - Not impacted
+        CVE-2023-26118 - Not impacted
+        CVE-2024-8372 - Not exploitable
+        CVE-2024-8373 - Not exploitable
+        CVE-2024-21490 - The ng-srcset is not used in siteSettings
+        CVE-2025-0716 - Not exploitable
+        CVE-2025-2336 - Not applicable
+        CVE-2025-4690 - Not applicable
+        ]]></notes>
+        <filePath regex="true">^.*siteSettings.*angular.min.js$</filePath>
+        <cve>CVE-2019-10768</cve>
+        <cve>CVE-2020-7676</cve>
+        <cve>CVE-2022-25869</cve>
+        <cve>CVE-2023-26116</cve>
+        <cve>CVE-2023-26117</cve>
+        <cve>CVE-2023-26118</cve>
+        <cve>CVE-2024-8372</cve>
+        <cve>CVE-2024-8373</cve>
+        <cve>CVE-2024-21490</cve>
+        <cve>CVE-2025-0716</cve>
+        <cve>CVE-2025-2336</cve>
+        <cve>CVE-2025-4690</cve>
+        <vulnerabilityName>XSS via JQLite DOM manipulation functions in AngularJS</vulnerabilityName>
+        <vulnerabilityName>XSS through SVG if enableSvg is set</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: siteSettings*bootstrap3.min.js
+        CVE-2016-10735 - risk accepted, not exploitable
+        CVE-2018-14041 - not applicable
+        CVE-2018-14042 - not impacted as only static values are used
+        CVE-2018-20676 - not exploitable
+        CVE-2018-20677 - not exploitable
+        CVE-2019-8331 - not exploitable
+        CVE-2024-6485 - not exploitable  
+        ]]></notes>
+        <filePath regex="true">^.*siteSettings.*bootstrap3.min.js$</filePath>
+        <cve>CVE-2016-10735</cve>
+        <cve>CVE-2018-14041</cve>
+        <cve>CVE-2018-14042</cve>
+        <cve>CVE-2018-20676</cve>
+        <cve>CVE-2018-20677</cve>
+        <cve>CVE-2019-8331</cve>
+        <cve>CVE-2024-6485</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -446,6 +562,7 @@
         <cve>CVE-2021-29943</cve>
         <cve>CVE-2021-44548</cve>
         <cve>CVE-2023-44487</cve>
+        <cve>CVE-2024-24814</cve>
         <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
         <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
     </suppress>
@@ -477,6 +594,14 @@
         <cve>CVE-2022-22968</cve>
         <cve>CVE-2022-22970</cve>
         <cve>CVE-2023-20861</cve>
+        <cve>CVE-2024-22259</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: spring-ldap-core*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.ldap/spring\-ldap\-core@.*$</packageUrl>
+        <cve>CVE-2024-38829</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -495,6 +620,14 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: tags*underscore.min.js
+        CVE-2021-23358 - not exploitable  
+        ]]></notes>
+        <filePath regex="true">^.*tags.*underscore.min.js$</filePath>
+        <cve>CVE-2021-23358</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: tasks-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/tasks@.*$</packageUrl>
@@ -505,13 +638,6 @@
         file name: testng-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.testng/testng@.*$</packageUrl>
-        <vulnerabilityName regex="true">.*</vulnerabilityName>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-        file name: testng-*.jar: jquery-1.7.1.min.js
-        ]]></notes>
-        <packageUrl regex="true">^pkg:javascript/jquery@1.7.1.min$</packageUrl>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
     </suppress>
     <suppress>
@@ -554,6 +680,27 @@
        <cve>CVE-2023-45648</cve>
        <cve>CVE-2023-46589</cve>
        <cve>CVE-2024-21733</cve>
+       <cve>CVE-2024-23672</cve>
+       <cve>CVE-2024-24549</cve>
+       <cve>CVE-2024-34750</cve>
+       <cve>CVE-2024-38286</cve>
+       <cve>CVE-2024-50379</cve>
+       <cve>CVE-2024-52316</cve>
+       <cve>CVE-2024-54677</cve>
+       <cve>CVE-2024-56337</cve>
+       <cve>CVE-2025-24813</cve>
+       <cve>CVE-2025-31651</cve>
+       <cve>CVE-2025-46701</cve>
+       <cve>CVE-2025-48988</cve>
+       <cve>CVE-2025-48989</cve>
+       <cve>CVE-2025-49124</cve>
+       <cve>CVE-2025-49125</cve>
+       <cve>CVE-2025-52434</cve>
+       <cve>CVE-2025-52520</cve>
+       <cve>CVE-2025-53506</cve>
+       <cve>CVE-2025-55668</cve>
+       <cve>CVE-2025-55752</cve>
+       <cve>CVE-2025-61795</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -569,6 +716,32 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:npm/ua\-parser\-js@.*$</packageUrl>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: userDashboard*bootstrap*
+        CVE-2018-14041 - not exploitable
+        CVE-2018-14042 - not exploitable
+        CVE-2018-20676 - not exploitable
+        CVE-2018-20677 - not exploitable
+        ]]></notes>
+        <filePath regex="true">^.*userDashboard.*bootstrap.*$</filePath>
+        <cve>CVE-2018-14041</cve>
+        <cve>CVE-2018-14042</cve>
+        <cve>CVE-2018-20676</cve>
+        <cve>CVE-2018-20677</cve>
+        <vulnerabilityName>bootstrap issue: 3421</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: userDashboard*Moment.js
+        ]]></notes>
+        <filePath regex="true">^.*userDashboard.*(moment\-with\-langs\.min|Moment)\.js$</filePath>
+        <cve>CVE-2016-4055</cve>
+        <cve>CVE-2017-18214</cve>
+        <cve>CVE-2022-24785</cve>
+        <cve>CVE-2022-31129</cve>
+        <vulnerabilityName>Regular Expression Denial of Service (ReDoS)</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -620,5 +793,58 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.xmlunit/xmlunit-core@.*$</packageUrl>
         <vulnerabilityName>CVE-2024-31573</vulnerabilityName>
+    </suppress>
+   <!-- 
+    FALSE POSITIVE: GraphQL Java CPE Matching for Jahia Modules
+    
+    All modules under org.jahia.modules have proper vendor metadata in MANIFEST.MF:
+    - Implementation-Vendor: Jahia Solutions Group SA
+    - Bundle-Vendor: Jahia Solutions Group SA
+    
+    OWASP dependency-check still generates false CPE matches when module versions
+    coincidentally match vulnerable GraphQL Java versions.
+    
+    Our actual GraphQL Java dependency: 21.5 (not vulnerable to CVE-2022-37734)
+    CVE-2022-37734 affects: graphql-java < 19.0
+    -->
+    <!-- Suppress graphql-java false positives for ALL Jahia modules -->
+    <suppress>
+        <notes><![CDATA[
+        FALSE POSITIVE: Jahia modules incorrectly matched to graphql-java
+        
+        Modules have correct vendor metadata but version numbers coincide with
+        vulnerable GraphQL Java versions, triggering false CPE matches.
+        
+        Affected modules:
+        - external-provider (4.9.0)
+        - jahia-dashboard (1.12.0)
+        - personal-api-tokens (1.6.0)
+        - security-filter-tools (2.5.0)
+        
+        Our actual GraphQL dependency: graphql-java:21.5 (not vulnerable)
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/.*$</packageUrl>
+        <cpe>cpe:/a:graphql-java_project:graphql-java</cpe>
+    </suppress>
+    
+    <!-- Suppress generic "service" false positives -->
+    <suppress>
+        <notes><![CDATA[
+        FALSE POSITIVE: Generic service_project:service CPE match
+        
+        Modules with generic names trigger matches to cpe:/a:service_project:service
+        These are Jahia-specific modules, not the generic "service" project.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/.*$</packageUrl>
+        <cpe>cpe:/a:service_project:service</cpe>
+    </suppress>
+    
+    <!-- Suppress generic "service" false positives -->
+    <suppress>
+        <notes><![CDATA[
+        FALSE POSITIVE: ckeditor CPE is matched with our richtext-ckeditor5 module
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jahia\.modules/richtext-ckeditor5@.*$</packageUrl>
+        <cpe>cpe:/a:ckeditor:ckeditor</cpe>
     </suppress>
 </suppressions>

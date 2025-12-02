@@ -240,7 +240,7 @@ jobs:
             -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
             -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html
             -DdataDirectory=~/.owasp/dependency-check-data
-            -DsuppressionFile=.owasp/suppressions.xml,.owasp/custom-suppressions.xml
+            -DsuppressionFiles=.owasp/suppressions.xml,.owasp/custom-suppressions.xml
         run: |
           if [[ "${{ steps.branch-name.outputs.current_branch }}" == "master" ]];
           then

@@ -558,6 +558,31 @@
                                         ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/ops4j/pax/logging/pax-logging-log4j2/${pax.logging.version}
                                     </outputDirectory>
                                 </artifactItem>
+                                <!-- Bouncycastle overrides to be removed once Karaf is updated to  -->
+                                <artifactItem>
+                                    <groupId>org.bouncycastle</groupId>
+                                    <artifactId>bcutil-jdk18on</artifactId>
+                                    <version>${bouncycastle.jdk18.version}</version>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/bouncycastle/bcutil-jdk18on/${bouncycastle.jdk18.version}
+                                    </outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.bouncycastle</groupId>
+                                    <artifactId>bcprov-jdk18on</artifactId>
+                                    <version>${bouncycastle.jdk18.version}</version>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/bouncycastle/bcprov-jdk18on/${bouncycastle.jdk18.version}
+                                    </outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.bouncycastle</groupId>
+                                    <artifactId>bcpkix-jdk18on</artifactId>
+                                    <version>${bouncycastle.jdk18.version}</version>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/bouncycastle/bcpkix-jdk18on/${bouncycastle.jdk18.version}
+                                    </outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>

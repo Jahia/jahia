@@ -73,8 +73,11 @@ import static org.jahia.params.valves.LoginEngineAuthValveImpl.*;
  *
  * @author Pascal Aubry
  * @version 1.0
+ * @deprecated use <a href="https://github.com/Jahia/jahia-authentication/blob/master/src/main/java/org/jahia/modules/jahiaauth/valves/SSOValve.java"><code>org.jahia.modules.jahiaauth.valves.SSOValve</code></a>
+ * from the <i>jahia-authentication</i> module instead
  */
 
+@Deprecated(since = "8.2.3.0", forRemoval = true)
 public abstract class SsoValve extends BaseAuthValve {
 
     private boolean fireLoginEvent = false;

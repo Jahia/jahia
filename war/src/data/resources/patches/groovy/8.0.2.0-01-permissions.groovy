@@ -5,6 +5,7 @@ import org.jahia.services.query.ScrollableQuery
 import org.jahia.services.query.ScrollableQueryCallback
 import javax.jcr.Node
 import javax.jcr.query.Query
+import javax.jcr.RepositoryException
 
 def log = log
 def SCROLL_SIZE = 25

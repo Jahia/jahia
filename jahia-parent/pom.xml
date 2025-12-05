@@ -113,7 +113,7 @@
         <log4j.version>2.23.1</log4j.version>
         <jahia.tomcat.version>9.0.110</jahia.tomcat.version>
         <protobuf.java.version>3.25.5</protobuf.java.version>
-        <bouncycastle.jdk18.version>1.78.1</bouncycastle.jdk18.version>
+        <bouncycastle.jdk18.version>1.83</bouncycastle.jdk18.version>
 
         <driver.derby.version>10.14.2.0</driver.derby.version>
         <driver.mssql.version>12.8.1.jre11</driver.mssql.version>

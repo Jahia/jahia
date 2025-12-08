@@ -194,7 +194,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private long dbJournalJanitorBatchLimit;
     private int dbJournalJanitorHourOfDay;
     private int maxSearchLimit;
-    private boolean introspectionCheckEnabled;
 
     // Timeout (in seconds) waiting for a bean to be available when using SpringContextSingleton.
     // Mostly used during startup when a module needs to access beans from another module starting independently.
@@ -401,7 +400,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
 
             considerDefaultJVMLocale = getBoolean("considerDefaultJVMLocale", false);
-            introspectionCheckEnabled = getBoolean("introspectionCheckEnabled", false);
 
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
@@ -1652,9 +1650,5 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getMaxSearchLimit() {
         return maxSearchLimit;
-    }
-
-    public boolean isIntrospectionCheckEnabled() {
-        return introspectionCheckEnabled;
     }
 }

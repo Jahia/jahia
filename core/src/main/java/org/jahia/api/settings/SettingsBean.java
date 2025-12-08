@@ -356,6 +356,4 @@ public interface SettingsBean {
     boolean isUserPasswordUpdateRequiringPreviousPassword();
 
     long getUserPasswordUpdateAuthorizationTimeoutMs();
-
-    boolean isIntrospectionCheckEnabled();
 }

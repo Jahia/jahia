@@ -143,7 +143,7 @@
         <javadoc.plugin.version>3.12.0</javadoc.plugin.version>
         <assembly.plugin.version>2.6</assembly.plugin.version>
         <site.plugin.version>3.21.0</site.plugin.version>
-        <war.plugin.version>2.6</war.plugin.version>
+        <war.plugin.version>3.5.1</war.plugin.version>
         <enforcer.plugin.version>1.4.1</enforcer.plugin.version>
         <compiler.plugin.version>3.14.1</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
@@ -701,7 +701,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${surefire.plugin.version}</version>
                         <configuration>
-                            <argLine>-Xmx2048m</argLine>
+                            <!-- JDK 17 compatibility: Open java.lang module for Drools ASM bytecode generation -->
+                            <argLine>-Xmx2048m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
                             <skipTests>false</skipTests>
                             <threadCount>1</threadCount>
                         </configuration>
@@ -718,7 +719,8 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${failsafe.plugin.version}</version>
                         <configuration>
-                            <argLine>-Xmx2048m</argLine>
+                            <!-- JDK 17 compatibility: Open java.lang module for Drools ASM bytecode generation -->
+                            <argLine>-Xmx2048m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
                             <skipTests>false</skipTests>
                             <threadCount>1</threadCount>
                             <includes>
@@ -1066,8 +1068,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin.version}</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <release>11</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

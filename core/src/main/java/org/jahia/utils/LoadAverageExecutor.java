@@ -62,8 +62,19 @@ public class LoadAverageExecutor {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService executor;
     private final Map<String, ScheduledFuture<?>> schedules = new HashMap<>();
+
+    /**
+     * Get or create the executor. This is necessary because in JDK 17+, once an executor
+     * is shutdown, it cannot be reused. This method ensures we have a valid executor.
+     */
+    private synchronized ScheduledExecutorService getValidExecutor() {
+        if (executor == null || executor.isShutdown() || executor.isTerminated()) {
+            executor = Executors.newSingleThreadScheduledExecutor();
+        }
+        return executor;
+    }
 
     public void addLoadAverage(LoadAverage loadAverage) {
         LOGGER.info("Adding load average: {}", loadAverage.getClass().getName());
@@ -72,7 +83,7 @@ public class LoadAverageExecutor {
             schedules.remove(loadAverage.getClass().getName());
         }
         ScheduledFuture<?> scheduledFuture =
-                executor.scheduleAtFixedRate(loadAverage, 0, loadAverage.calcFreqMillis, TimeUnit.MILLISECONDS);
+                getValidExecutor().scheduleAtFixedRate(loadAverage, 0, loadAverage.calcFreqMillis, TimeUnit.MILLISECONDS);
         schedules.put(loadAverage.getClass().getName(), scheduledFuture);
     }
 

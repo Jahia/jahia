@@ -42,7 +42,6 @@
  */
 package org.jahia.services.notification;
 
-import org.apache.hc.core5.http.HttpException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,13 +51,30 @@ import static org.junit.Assert.assertNull;
 
 /**
  * Unit test for the {@link ProxyAddressSelector}.
+ * <p>
+ * Note: The expected proxy address format differs between JDK 11 and JDK 17.
+ * JDK 11 returns addresses in the format "hostname:port" (e.g., "httpProxy:9090"),
+ * while JDK 17 returns "hostname/&lt;unresolved&gt;:port" (e.g., "httpProxy/&lt;unresolved&gt;:9090")
+ * when the proxy hostname cannot be resolved.
  *
  * @author Sergiy Shyrkov
  */
 public class ProxyAddressSelectorTest {
 
+    /**
+     * Asserts that the actual proxy address matches the expected value for the current JDK version.
+     *
+     * @param expected the expected value
+     * @param actual   the actual value returned by {@link ProxyAddressSelector#getProxyForUrl(String)}
+     */
+    private static void assertProxyEquals(String expected, String actual) {
+        // the /<unresolved> suffix is just a JDK implementation (present with JDK 17 for instance) detail that doesn't affect functionality.
+        String actualNormalized = actual.replaceAll("/<unresolved>", "");
+        assertEquals(expected, actualNormalized);
+    }
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // cleanup the properties
         System.setProperty("http.proxyHost", "");
         System.setProperty("http.proxyPort", "");
@@ -78,59 +94,58 @@ public class ProxyAddressSelectorTest {
     }
 
     @Test
-    public void testBothProxiesDefined() throws HttpException {
+    public void testBothProxiesDefined() {
         System.setProperty("http.proxyHost", "httpProxy");
         System.setProperty("http.proxyPort", "9090");
         System.setProperty("https.proxyHost", "httpsProxy");
         System.setProperty("https.proxyPort", "9443");
 
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
-        assertEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://localhost:8080"));
-        assertEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://localhost:8080"));
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("www.jahia.com:9090"));
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("localhost:9090"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
+        assertProxyEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://localhost:8080"));
+        assertProxyEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://localhost:8080"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("www.jahia.com:9090"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("localhost:9090"));
         assertNull(ProxyAddressSelector.getProxyForUrl("/aaa.html"));
     }
 
     @Test
-    public void testHttpProxyDefined() throws HttpException {
+    public void testHttpProxyDefined() {
         System.setProperty("http.proxyHost", "httpProxy");
         System.setProperty("http.proxyPort", "9090");
 
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
         assertNull(ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://localhost:8080"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://localhost:8080"));
         assertNull(ProxyAddressSelector.getProxyForUrl("https://localhost:8080"));
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("www.jahia.com:9090"));
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("localhost:9090"));
-        assertEquals("httpProxy:9090",
-                ProxyAddressSelector.getProxyForUrl("localhost:9090/aaa/bb/test.jsp?a=aaa&b=bbb"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("www.jahia.com:9090"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("localhost:9090"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("localhost:9090/aaa/bb/test.jsp?a=aaa&b=bbb"));
         assertNull(ProxyAddressSelector.getProxyForUrl("/aaa.html"));
 
         System.setProperty("http.proxyPort", "");
-        assertEquals("httpProxy:80", ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
+        assertProxyEquals("httpProxy:80", ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
     }
 
     @Test
-    public void testHttpsProxyDefined() throws HttpException {
+    public void testHttpsProxyDefined() {
         System.setProperty("https.proxyHost", "httpsProxy");
         System.setProperty("https.proxyPort", "9443");
 
         assertNull(ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
-        assertEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
+        assertProxyEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
         assertNull(ProxyAddressSelector.getProxyForUrl("http://localhost:8080"));
-        assertEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://localhost:8080"));
+        assertProxyEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://localhost:8080"));
         assertNull(ProxyAddressSelector.getProxyForUrl("www.jahia.com:9090"));
         assertNull(ProxyAddressSelector.getProxyForUrl("localhost:9090"));
         assertNull(ProxyAddressSelector.getProxyForUrl("/aaa.html"));
 
         System.setProperty("https.proxyPort", "");
-        assertEquals("httpsProxy:443", ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
+        assertProxyEquals("httpsProxy:443", ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
     }
 
     @Test
-    public void testNonProxyHostsDefined() throws HttpException {
+    public void testNonProxyHostsDefined() {
         System.setProperty("http.proxyHost", "httpProxy");
         System.setProperty("http.proxyPort", "9090");
         System.setProperty("https.proxyHost", "httpsProxy");
@@ -145,12 +160,12 @@ public class ProxyAddressSelectorTest {
         assertNull(ProxyAddressSelector.getProxyForUrl("localhost:9090"));
         assertNull(ProxyAddressSelector.getProxyForUrl("/aaa.html"));
 
-        assertEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://www.google.com"));
-        assertEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://www.google.com"));
+        assertProxyEquals("httpProxy:9090", ProxyAddressSelector.getProxyForUrl("http://www.google.com"));
+        assertProxyEquals("httpsProxy:9443", ProxyAddressSelector.getProxyForUrl("https://www.google.com"));
     }
 
     @Test
-    public void testNoProxySettingsDefined() throws HttpException {
+    public void testNoProxySettingsDefined() {
         assertNull(ProxyAddressSelector.getProxyForUrl("http://www.jahia.com"));
         assertNull(ProxyAddressSelector.getProxyForUrl("https://www.jahia.com"));
         assertNull(ProxyAddressSelector.getProxyForUrl("http://localhost:8080"));
@@ -159,4 +174,5 @@ public class ProxyAddressSelectorTest {
         assertNull(ProxyAddressSelector.getProxyForUrl("localhost:9090"));
         assertNull(ProxyAddressSelector.getProxyForUrl("/aaa.html"));
     }
+
 }

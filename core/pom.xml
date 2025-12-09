@@ -1857,7 +1857,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.plugin.version}</version>
                 <configuration>
-                    <argLine>-Xmx1024m</argLine>
+                    <!-- JDK 17 compatibility: Open java.lang module for Drools ASM bytecode generation -->
+                    <argLine>-Xmx1024m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
@@ -2036,7 +2037,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${surefire.plugin.version}</version>
                         <configuration>
-                            <argLine>-Xmx2048m</argLine>
+                            <!-- JDK 17 compatibility: Open java.lang module for Drools ASM bytecode generation -->
+                            <argLine>-Xmx2048m --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
                             <skipTests>false</skipTests>
                         </configuration>
                     </plugin>

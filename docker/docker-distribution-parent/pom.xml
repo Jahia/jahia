@@ -60,6 +60,7 @@
         <image.repo />
         <image.tag>${project.version}</image.tag>
         <image.alias />
+        <base.image.repo />
     </properties>
 
     <repositories>
@@ -193,9 +194,7 @@
                                         </buildx>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <PARENT_TAG>${parent.tag}</PARENT_TAG>
-                                            <IMAGE_REGISTRY>${image.registry}</IMAGE_REGISTRY>
-                                            <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
+                                            <BASE_IMAGE>${image.registry}jahia/${base.image.repo}${image.repo.classifier}:${parent.tag}</BASE_IMAGE>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
                                         <skip>${build.skip}</skip>
@@ -242,9 +241,7 @@
                                         <dockerFile>Dockerfile</dockerFile>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <PARENT_TAG>${parent.tag}</PARENT_TAG>
-                                            <IMAGE_REGISTRY>${image.registry}</IMAGE_REGISTRY>
-                                            <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
+                                            <BASE_IMAGE>${image.registry}jahia/${base.image.repo}${image.repo.classifier}:${parent.tag}</BASE_IMAGE>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
                                         <skip>${build.skip}</skip>
@@ -282,9 +279,7 @@
                                         <dockerFile>Dockerfile</dockerFile>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <PARENT_TAG>${parent.tag}</PARENT_TAG>
-                                            <IMAGE_REGISTRY>${image.registry}</IMAGE_REGISTRY>
-                                            <IMAGE_REPO_CLASSIFIER>${image.repo.classifier}</IMAGE_REPO_CLASSIFIER>
+                                            <BASE_IMAGE>${image.registry}jahia/${base.image.repo}${image.repo.classifier}:${parent.tag}</BASE_IMAGE>
                                             <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
                                         </args>
                                         <skip>${build.skip}</skip>

@@ -28,7 +28,7 @@ public class AuthenticationRequest {
      *
      * @param username             the username to authenticate
      * @param password             the user's password
-     * @param site                 the site context for user lookup, or {@code null} to search globally
+     * @param site                 the site name for user lookup, or {@code null} to search globally
      * @param globalSearchIncluded {@code true} to search global users if site search fails, {@code false} to search only in the specified site
      */
     public AuthenticationRequest(String username, String password, String site, boolean globalSearchIncluded) {

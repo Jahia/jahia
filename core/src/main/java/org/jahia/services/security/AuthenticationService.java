@@ -18,6 +18,140 @@ import javax.servlet.http.HttpServletResponse;
  * Depending on the authentication options and HTTP context, this service may update the HTTP session,
  * set properties in the JCR for the user node, set some cookies ("remember me" feature), and trigger login events.
  * </p>
+ *
+ * <h2>Usage Examples</h2>
+ *
+ * <h3>Example 1: Standard Web Login Form</h3>
+ * <p>Typical authentication for a web login form with full session management:</p>
+ * <pre>{@code
+ * // Extract form parameters
+ * String username = request.getParameter("username");
+ * String password = request.getParameter("password");
+ * String site = request.getParameter("site");
+ * boolean rememberMe = "on".equals(request.getParameter("rememberMe"));
+ *
+ * // Create authentication request
+ * AuthenticationRequest authRequest = new AuthenticationRequest(
+ *     username, password, site, true
+ * );
+ *
+ * // Configure authentication options
+ * AuthenticationOptions authOptions = AuthenticationOptions.Builder.withDefaults()
+ *     .shouldRememberMe(rememberMe)
+ *     .build();
+ *
+ * try {
+ *     // Authenticate the user
+ *     authService.authenticate(authRequest, authOptions, request, response);
+ *
+ *     // Success - redirect to home page
+ *     response.sendRedirect("/home");
+ *
+ * } catch (AccountNotFoundException e) {
+ *     // Display "unknown user" error
+ *     request.setAttribute("error", "UNKNOWN_USER");
+ * } catch (FailedLoginException e) {
+ *     // Display "invalid password" error
+ *     // While technically different errors, it's a good security practice to render `AccountNotFoundException` and `FailedLoginException` errors with the exact same client-facing code: it prevents leaking your user base using brute-force.
+ *     request.setAttribute("error", "BAD_PASSWORD");
+ * } catch (AccountLockedException e) {
+ *     // Display "account locked" error
+ *     request.setAttribute("error", "ACCOUNT_LOCKED");
+ * } catch (ConcurrentLoggedInUsersLimitExceededLoginException e) {
+ *     // Display "too many users" error
+ *     request.setAttribute("error", "USER_LIMIT_REACHED");
+ * }
+ * }</pre>
+ *
+ * <h3>Example 2: HTTP Basic Authentication (Stateless)</h3>
+ * <p>Stateless authentication for HTTP Basic Auth (no session creation):</p>
+ * <pre>{@code
+ * // Parse HTTP Basic Auth header
+ * String authHeader = request.getHeader("Authorization");
+ * if (authHeader != null && authHeader.startsWith("Basic ")) {
+ *     String base64Credentials = authHeader.substring("Basic ".length());
+ *     String credentials = new String(Base64.decodeBase64(base64Credentials));
+ *     String[] parts = credentials.split(":", 2);
+ *
+ *     String username = parts[0];
+ *     String password = parts[1];
+ *
+ *     // Create authentication request
+ *     AuthenticationRequest authRequest = new AuthenticationRequest(username, password);
+ *
+ *     try {
+ *         // Authenticate without session
+ *         authService.authenticate(authRequest);
+ *
+ *         // User is now authenticated for this request only
+ *         // No session or cookies are created
+ *
+ *     } catch (Exception e) {
+ *         // Send 401 Unauthorized
+ *         response.setHeader("WWW-Authenticate", "Basic realm=\"Jahia\"");
+ *         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+ *     }
+ * }
+ * }</pre>
+ *
+ * <h3>Example 3: Credential Validation Only</h3>
+ * <p>Validate credentials without performing full authentication:</p>
+ * <pre>{@code
+ * String username = request.getParameter("username");
+ * String password = request.getParameter("password");
+ *
+ * AuthenticationRequest authRequest = new AuthenticationRequest(username, password);
+ *
+ * try {
+ *     // Get user without full authentication
+ *     JahiaUser user = authService.getUserFromCredentials(authRequest);
+ *
+ *     // Credentials are valid - perform custom logic
+ *     if (user.getProperty("customProperty") != null) {
+ *         // Now perform full authentication
+ *         AuthenticationOptions authOptions = AuthenticationOptions.Builder.withDefaults()
+ *             .build();
+ *         authService.authenticate(authRequest, authOptions, request, response);
+ *     }
+ *
+ * } catch (FailedLoginException e) {
+ *     // Invalid credentials
+ * }
+ * }</pre>
+ *
+ * <h3>Example 4: Custom Login Flow with Selective Options</h3>
+ * <p>Authentication with custom configuration for a specific use case:</p>
+ * <pre>{@code
+ * String username = request.getParameter("username");
+ * String password = request.getParameter("password");
+ *
+ * AuthenticationRequest authRequest = new AuthenticationRequest(username, password);
+ *
+ * // Custom authentication options:
+ * // - Don't trigger login events (will be triggered manually later)
+ * // - Don't check session validity (checking done elsewhere)
+ * // - Update locales normally
+ * AuthenticationOptions authOptions = AuthenticationOptions.Builder.withDefaults()
+ *     .triggerLoginEventEnabled(false)
+ *     .sessionValidityCheckEnabled(false)
+ *     .shouldRememberMe(false)
+ *     .build();
+ *
+ * try {
+ *     authService.authenticate(authRequest, authOptions, request, response);
+ *
+ *     // Perform custom post-login logic
+ *     performCustomPostLoginActions(request, response);
+ *
+ *     // Manually trigger login event if needed
+ *     publishCustomLoginEvent(username);
+ *
+ * } catch (InvalidSessionLoginException e) {
+ *     // This won't be thrown because we disabled session validity check
+ * } catch (Exception e) {
+ *     // Handle other exceptions
+ * }
+ * }</pre>
  */
 public interface AuthenticationService {
 

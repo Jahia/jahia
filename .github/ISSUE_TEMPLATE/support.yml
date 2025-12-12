@@ -19,7 +19,13 @@ body:
   - type: textarea
     attributes:
       label: Context / Problem
-      description: A description of the problem for which you need assistance.
+      description: A description of the problem for which you need assistance and an explanation about why it is hard to qualify.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expectations
+      description: What do you expect from the product team?
     validations:
       required: true
   - type: textarea
@@ -38,3 +44,10 @@ body:
         1. environment used (docker, installer, browser version)
         2. logs (server-side, browser) & stack trace
         3. screenshots/videos
+  - type: markdown
+    attributes:
+      label: Next steps
+      value: |
+        Section to be filled by the developer with the detailed next steps and their owners (who and what) as an outcome of the beetles week
+    validations:
+      required: false

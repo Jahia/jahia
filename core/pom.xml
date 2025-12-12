@@ -427,7 +427,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
+            <version>4.5.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -1513,13 +1513,6 @@
             <groupId>org.nokogiri</groupId>
             <artifactId>nekohtml</artifactId>
             <version>1.9.22.noko2</version>
-        </dependency>
-
-        <dependency>
-            <!-- jodconverter transitive dependency, upgraded due to vulnerability -->
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.9</version>
         </dependency>
 
         <dependency>

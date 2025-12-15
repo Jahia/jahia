@@ -563,6 +563,7 @@
         <cve>CVE-2021-44548</cve>
         <cve>CVE-2023-44487</cve>
         <cve>CVE-2024-24814</cve>
+        <cve>CVE-2025-24814</cve>
         <vulnerabilityName>CVE-2014-3628</vulnerabilityName>
         <vulnerabilityName>CVE-2017-7660</vulnerabilityName>
     </suppress>
@@ -639,6 +640,14 @@
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.testng/testng@.*$</packageUrl>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: tika*.jar
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tika/tika\-.*@.*$</packageUrl>
+        <cve>CVE-2025-54988</cve>
+        <cve>CVE-2025-66516</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[

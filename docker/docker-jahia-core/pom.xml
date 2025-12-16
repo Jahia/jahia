@@ -15,6 +15,7 @@
         <image.repo.classifier>-dev</image.repo.classifier>
         <image.tag>${project.version}</image.tag>
         <image.alias />
+        <graalvm.version>17.0.12</graalvm.version>
     </properties>
 
     <repositories>
@@ -147,7 +148,7 @@
                                         </buildx>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
+                                            <GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
                                         </args>
                                     </build>
                                 </image>
@@ -191,7 +192,7 @@
                                         </buildx>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
+                                            <GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
                                         </args>
                                     </build>
                                 </image>
@@ -226,7 +227,7 @@
                                         <contextDir>${project.basedir}</contextDir>
                                         <tags>${image.alias}</tags>
                                         <args>
-                                            <GRAALVM_VERSION>${graalvm.sdk.version}</GRAALVM_VERSION>
+                                            <GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
                                         </args>
                                     </build>
                                 </image>

@@ -53,23 +53,6 @@ public class AuthenticationServiceImplTest {
     }
 
     @Test
-    @Parameters(method = "invalidCredentialRequests")
-    public void GIVEN_an_invalid_credential_request_WHEN_authenticating_THEN_IllegalArgumentException(String username, String password,
-            String expectedMessage) {
-        // GIVEN:
-        when(authenticationRequest.getUsername()).thenReturn(username);
-        when(authenticationRequest.getPassword()).thenReturn(password);
-
-        // WHEN:
-        ThrowingRunnable runnable = () -> authenticationService.authenticate(authenticationRequest, authenticationOptions, httpRequest,
-                httpResponse);
-
-        // THEN:
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, runnable);
-        assertEquals(expectedMessage, exception.getMessage());
-    }
-
-    @Test
     public void GIVEN_a_null_authentication_request_WHEN_authenticating_THEN_IllegalArgumentException() {
         // GIVEN:
         AuthenticationRequest authReq = null;
@@ -173,16 +156,18 @@ public class AuthenticationServiceImplTest {
     }
 
     @Test
-    public void GIVEN_invalid_credentials_WHEN_authenticating_THEN_AccountNotFoundException() {
+    //    ee
+    @Parameters(method = "wrongCredentials")
+    public void GIVEN_wrong_credentials_WHEN_authenticating_THEN_AccountNotFoundException(String username, String password) {
         // GIVEN:
         // valid authentication request:
-        when(authenticationRequest.getUsername()).thenReturn("myUser");
-        when(authenticationRequest.getPassword()).thenReturn("wrongPassword");
+        when(authenticationRequest.getUsername()).thenReturn(username);
+        when(authenticationRequest.getPassword()).thenReturn(password);
         when(authenticationRequest.isGlobalSearchIncluded()).thenReturn(false);
         // existing account:
-        when(userManagerService.lookupUser("myUser", null, false)).thenReturn(userNodeRetrieved);
+        when(userManagerService.lookupUser(username, null, false)).thenReturn(userNodeRetrieved);
         // wrong password:
-        when(userNodeRetrieved.verifyPassword("wrongPassword")).thenReturn(false);
+        when(userNodeRetrieved.verifyPassword(password)).thenReturn(false);
 
         // WHEN:
         ThrowingRunnable runnable = () -> authenticationService.authenticate(authenticationRequest, authenticationOptions, httpRequest,
@@ -190,9 +175,9 @@ public class AuthenticationServiceImplTest {
 
         // THEN:
         FailedLoginException exception = assertThrows(FailedLoginException.class, runnable);
-        verify(userManagerService).lookupUser("myUser", null, false);
-        verify(userNodeRetrieved).verifyPassword("wrongPassword");
-        assertEquals("Authentication failed for user myUser", exception.getMessage());
+        verify(userManagerService).lookupUser(username, null, false);
+        verify(userNodeRetrieved).verifyPassword(password);
+        assertEquals("Authentication failed for user " + username, exception.getMessage());
     }
 
     @Test
@@ -260,27 +245,6 @@ public class AuthenticationServiceImplTest {
     }
 
     @Test
-    @Parameters(method = "invalidCredentialRequests")
-    public void GIVEN_an_invalid_credential_request_WHEN_authenticating_with_minimal_params_THEN_IllegalArgumentException(String username,
-            String password, String expectedMessage) {
-        // GIVEN:
-        when(authenticationRequest.getUsername()).thenReturn(username);
-        when(authenticationRequest.getPassword()).thenReturn(password);
-
-        // WHEN:
-        ThrowingRunnable runnable = () -> authenticationService.authenticate(authenticationRequest);
-
-        // THEN:
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, runnable);
-        assertEquals(expectedMessage, exception.getMessage());
-    }
-
-    private Object[] invalidCredentialRequests() {
-        return new Object[] { new Object[] { null, "pass", "Username cannot be empty" },
-                new Object[] { "user", null, "Password cannot be empty" }, new Object[] { null, null, "Username cannot be empty" } };
-    }
-
-    @Test
     public void GIVEN_a_null_authentication_request_WHEN_authenticating_with_minimal_params_THEN_IllegalArgumentException() {
         // GIVEN:
         AuthenticationRequest authReq = null;
@@ -342,4 +306,23 @@ public class AuthenticationServiceImplTest {
         verify(userManagerService).lookupUserByPath(userNodePath);
     }
 
+    private Object[] wrongCredentials() {
+        return new Object[] {
+                // wrong credentials
+                new Object[] { "myUser", "wrongPassword" },
+                // null username
+                new Object[] { null, "pass" },
+                // empty username
+                new Object[] { "", "pass" },
+                // null password
+                new Object[] { "myUser", null },
+                // empty password
+                new Object[] { "myUser", "" },
+                // both null username and password
+                new Object[] { null, null },
+                // both empty username and password
+                new Object[] { "", "" }
+
+        };
+    }
 }

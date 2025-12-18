@@ -105,12 +105,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (authenticationRequest == null) {
             throw new IllegalArgumentException("Authentication request cannot be null");
         }
-        if (StringUtils.isEmpty(authenticationRequest.getUsername())) {
-            throw new IllegalArgumentException("Username cannot be empty");
-        }
-        if (StringUtils.isEmpty(authenticationRequest.getPassword())) {
-            throw new IllegalArgumentException("Password cannot be empty");
-        }
     }
 
     /**

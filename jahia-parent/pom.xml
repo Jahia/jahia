@@ -193,8 +193,8 @@
         <client-cache-control.version>9.0.0-SNAPSHOT</client-cache-control.version>
         <!-- End of OSGi versions -->
 
-        <jahia.commons.version>1.1.0-SNAPSHOT</jahia.commons.version>
-        <jahia.plugin.version>6.14.0-SNAPSHOT</jahia.plugin.version>
+        <jahia.commons.version>1.1.0</jahia.commons.version>
+        <jahia.plugin.version>6.14.0</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>

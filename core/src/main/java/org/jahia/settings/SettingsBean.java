@@ -541,8 +541,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         if (DatabaseUtils.isDatabaseStructureInitialized()) {
             logger.info("Database structure is initialized");
         } else {
-            if (isProcessingServer() && getBoolean("db.init.auto", false)) {
-                logger.info("Database structure is not initialized. Initalizing...");
+            boolean processingServer = isProcessingServer();
+            boolean shouldInitializeDatabase = getBoolean("db.init.auto", false);
+            if (processingServer && shouldInitializeDatabase) {
+                logger.info("Database structure is not initialized. Initializing...");
                 try {
                     DatabaseUtils.initializeDatabaseStructure(getJahiaVarDiskPath(), applicationContext);
                 } catch (Exception e) {
@@ -551,7 +553,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 }
                 logger.info("Finished initializing database structure");
             } else {
-                logger.error("Database structure is not initialized. Leaving...");
+                logger.error("Database structure is not initialized(processing server?: {}, should initialize DB?: {}). Leaving...",
+                        processingServer, shouldInitializeDatabase);
                 throw new JahiaRuntimeException("Database structure is not initialized");
             }
         }

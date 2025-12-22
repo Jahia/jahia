@@ -190,7 +190,7 @@
         <hk2-osgi-resource-locator.version>1.0.3</hk2-osgi-resource-locator.version> <!-- version of osgi-resource-locator embedded by Jersey (https://github.com/eclipse-ee4j/jersey/blob/2.47/pom.xml#L1619). To review when updating ${jersey.version} -->
         <jersey.deprecated.repack.version>2.18</jersey.deprecated.repack.version>
         <hk2.deprecated.repack.version>2.5.0-b25</hk2.deprecated.repack.version>
-        <client-cache-control.version>9.0.0-SNAPSHOT</client-cache-control.version>
+        <client-cache-control.version>9.0.1</client-cache-control.version>
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.1.0</jahia.commons.version>

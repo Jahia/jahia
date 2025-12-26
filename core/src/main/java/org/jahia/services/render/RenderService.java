@@ -277,14 +277,22 @@ public class RenderService {
     }
 
     public Template resolveTemplate(Resource resource, RenderContext renderContext) throws RepositoryException {
-        Template template = null;
+        Template selectedTemplate = null;
+        int highestPriority = Integer.MIN_VALUE;
+        // Loop over templates resolvers to find the matching templates
         for (TemplateResolver templateResolver : templateResolvers) {
-            template = templateResolver.resolveTemplate(resource, renderContext);
+            Template template = templateResolver.resolveTemplate(resource, renderContext);
             if (template != null) {
-                return template;
+                int priority = template.getPriority();
+                // Track the template with the highest priority across all resolvers
+                if (priority > highestPriority) {
+                    highestPriority = priority;
+                    selectedTemplate = template;
+                }
             }
         }
-        return template;
+
+        return selectedTemplate;
     }
 
     public void flushCache(String modulePath) {

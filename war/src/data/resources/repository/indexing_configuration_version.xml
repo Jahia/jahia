@@ -5,5 +5,5 @@
     <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
 
     <index-rule nodeType="nt:base"/>
-            
+
 </configuration>

@@ -288,6 +288,7 @@ jobs:
       - build
       - unit-tests-jdk11
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
       - uses: jahia/jahia-modules-action/dependencies-check-java@v2

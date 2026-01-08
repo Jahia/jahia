@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE configuration SYSTEM "https://devtools.jahia.com/nexus/content/sites/jahia-site/dtd/indexing-configuration-1.2.1-jahia.dtd">
 <configuration xmlns:j="http://www.jahia.org/jahia/1.0"
-               xmlns:jcr="http://www.jcp.org/jcr/1.0"
-               xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-               xmlns:jnt='http://www.jahia.org/jahia/nt/1.0'
+               xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0'
                xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
 
     <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
@@ -25,10 +23,6 @@ The following example creates an index aggregate on jnt:file that includes the c
     <index-rule nodeType="mix:title">
         <property boost="2.0">jcr:title</property>
         <property isRegexp="true">.*:.*</property>
-    </index-rule>
-
-    <index-rule nodeType="nt:base">
-        <property isRegexp="false" nodeScopeIndex="false">jnt:contentTemplate</property>
     </index-rule>
 
     <!--
@@ -60,7 +54,7 @@ The following example creates an index aggregate on jnt:file that includes the c
     </i18ncopy>
     <hierarchical>
         <nodetype>jnt:category</nodetype>
-    </hierarchical>
+    </hierarchical>       
     <analyzers>
         <analyzer class="org.apache.lucene.analysis.KeywordAnalyzer">
             <property>jcr:primaryType</property>

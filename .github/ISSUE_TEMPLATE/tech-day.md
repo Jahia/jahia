@@ -73,9 +73,11 @@ This checklist is there to help you but is not exaustive, if some items are not 
 - [ ] 🔝 Spring is not used in the module
 ### Security
 - [ ] 🚨 SBOM is generated (configuration available [here](https://jahia-confluence.atlassian.net/wiki/spaces/PR/pages/2071358/3rd-party+libraries+-+Ref+ISPOL08.A14024#%5BinlineExtension%5DSBOM-creation-and-OWASP-Dependency-Track)) and uploaded to [Dependency Track](https://dependency-track-prod.jahia.com/)
+- [ ] 🚨 I've checked that inputs validation are applied on both client and server sides
 - [ ] 🔝 I've reviewed the security [vulnerabilities](https://sonarqube.jahia.com/issues?resolved=false&types=VULNERABILITY) and [hotspots](https://sonarqube.jahia.com/security_hotspots?id=org.jahia.server%3Ajahia-root) affecting this codebase and discussed it with the Security lead before taking action (Create a [SECURITY](https://support.jahia.com/browse/SECURITY) ticket, Close as false-positive, etc.)
 - [ ] 🔝 I've reviewed the [vulnerabilities](https://dependency-track-prod.jahia.com/login?redirect=%2Fprojects) affecting the libraries used by the module (related [documentation](https://jahia-confluence.atlassian.net/wiki/spaces/PR/pages/2079156/Analyzing+vulnerabilities+in+3rd+party+libraries)) and discussed it with the Security lead before taking action (Create a [SECURITY](https://support.jahia.com/browse/SECURITY) ticket, Close as false-positive, etc.)
 - [ ] 🔝 A job running Sonar checks (including OWASP Dependency Check) is executed regularly
+- [ ] 🔝 I've tested security controls and checked requirements for secure development from [Jahia Application Security Verification Standard](https://jahia-confluence.atlassian.net/wiki/spaces/PR/pages/2074184/Jahia+Application+Security+Verification+Standard)
 ### QA / Automated Tests
 - [ ] 🚨 The codebase is compatible with the latest release of Jahia
 - [ ] 🔝 Automated tests are using jahia-cypress for all utils functions

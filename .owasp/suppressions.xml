@@ -204,6 +204,30 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        file name: java10-shim-20240325.1.jar
+        Jahia's default out-of-the-box configuration does not allow noscript or style tags with allowTextIn inside the style tag. It rather is an edge case and most likely will never be configured with Jahia.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.googlecode\.owasp\-java\-html\-sanitizer/java10\-shim@20240325\.1$</packageUrl>
+        <vulnerabilityName>CVE-2025-66021</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: java8-shim-20240325.1.jar
+        Jahia's default out-of-the-box configuration does not allow noscript or style tags with allowTextIn inside the style tag. It rather is an edge case and most likely will never be configured with Jahia.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.googlecode\.owasp\-java\-html\-sanitizer/java8\-shim@20240325\.1$</packageUrl>
+        <vulnerabilityName>CVE-2025-66021</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        file name: owasp-java-html-sanitizer-20240325.1.jar
+        Jahia's default out-of-the-box configuration does not allow noscript or style tags with allowTextIn inside the style tag. It rather is an edge case and most likely will never be configured with Jahia.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.googlecode\.owasp\-java\-html\-sanitizer/owasp\-java\-html\-sanitizer@20240325\.1$</packageUrl>
+        <vulnerabilityName>CVE-2025-66021</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         file name: httpclient-*.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpclient@.*$</packageUrl>

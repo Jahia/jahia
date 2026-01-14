@@ -2,6 +2,7 @@ package org.jahia.services.security;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -22,16 +23,18 @@ import java.util.UUID;
 public class CookieUtils {
     private static final Logger logger = LoggerFactory.getLogger(CookieUtils.class);
 
+    private CookieUtils() {
+        // utility class
+    }
+
     /**
      * Creates and sends a "remember me" authentication cookie for the specified user.
      * Stores a new property (defined by {@link CookieAuthConfig#getUserPropertyName()}) in the user's JCR node to associate the cookie value.
      *
      * @param jahiaUser         the user for which to create the cookie and JCR property
-     * @param httpServletRequest  the current HTTP servlet request
      * @param httpServletResponse the current HTTP servlet response
      */
-    public static void createRememberMeCookieForUser(JahiaUser jahiaUser, HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse) {
+    public static void createRememberMeCookieForUser(JahiaUser jahiaUser, HttpServletResponse httpServletResponse) {
         // use a random UUID to get a random cookie value
         String cookieUserKey = UUID.randomUUID().toString();
         // let's save the identifier for the user in the database
@@ -48,7 +51,7 @@ public class CookieUtils {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-        sendCookie(cookieUserKey, httpServletRequest, httpServletResponse, jahiaUser);
+        sendCookie(cookieUserKey, httpServletResponse, jahiaUser);
     }
 
     /**
@@ -91,8 +94,7 @@ public class CookieUtils {
         }
     }
 
-    private static void sendCookie(String cookieUserKey, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-            JahiaUser jahiaUser) {
+    private static void sendCookie(String cookieUserKey, HttpServletResponse httpServletResponse, JahiaUser jahiaUser) {
         // now let's save the same identifier in the cookie.
         String realm = jahiaUser.getRealm();
         if (realm != null && logger.isDebugEnabled()) {
@@ -100,9 +102,8 @@ public class CookieUtils {
         }
         CookieAuthConfig cookieAuthConfig = getCookieAuthConfig();
         Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey + (realm != null ? (":" + realm) : ""));
-        authCookie.setPath(org.apache.commons.lang3.StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
-                httpServletRequest.getContextPath() :
-                "/");
+        String contextPath = Jahia.getContextPath();
+        authCookie.setPath(StringUtils.isEmpty(contextPath) ? "/" : contextPath);
         authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
         authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
         authCookie.setSecure(cookieAuthConfig.isSecure());

@@ -58,7 +58,6 @@ import javax.jcr.RepositoryException;
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
 import java.util.Properties;
@@ -191,12 +190,12 @@ public class CookieAuthValveImpl extends BaseAuthValve {
     }
 
     /**
-     * @see CookieUtils#createRememberMeCookieForUser(org.jahia.services.usermanager.JahiaUser, HttpServletRequest, HttpServletResponse)
-     * @deprecated use {@link CookieUtils#createRememberMeCookieForUser(org.jahia.services.usermanager.JahiaUser, HttpServletRequest, HttpServletResponse)} instead.
+     * @see CookieUtils#createRememberMeCookieForUser(org.jahia.services.usermanager.JahiaUser, HttpServletResponse)
+     * @deprecated use {@link CookieUtils#createRememberMeCookieForUser(org.jahia.services.usermanager.JahiaUser, HttpServletResponse)} instead.
      */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public static void createAndSendCookie(AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
-        CookieUtils.createRememberMeCookieForUser(theUser.getJahiaUser(), authContext.getRequest(), authContext.getResponse());
+        CookieUtils.createRememberMeCookieForUser(theUser.getJahiaUser(), authContext.getResponse());
     }
 
     /**

@@ -123,8 +123,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (authenticationOptions.isStateful() && httpServletRequest == null) {
             throw new IllegalArgumentException("HTTP request is required for stateful authentication");
         }
-        if (authenticationOptions.shouldRememberMe() && (httpServletRequest == null || httpServletResponse == null)) {
-            throw new IllegalArgumentException("HTTP request and response are required for the remember me feature");
+        if (authenticationOptions.shouldRememberMe() && httpServletResponse == null) {
+            throw new IllegalArgumentException("HTTP response is required for the remember me feature");
         }
     }
 
@@ -153,7 +153,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             updateLocalesInSession(authenticationOptions, httpServletRequest, userDetails, session);
             if (httpServletResponse != null) {
                 // only available if an HTTP servlet response is passed as param
-                updateRememberMeFlagInSession(authenticationOptions, httpServletRequest, httpServletResponse, userDetails);
+                updateRememberMeFlagInSession(authenticationOptions, httpServletResponse, userDetails);
             }
         }
 
@@ -266,8 +266,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    private void updateRememberMeFlagInSession(AuthenticationOptions authenticationOptions, HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse, UserDetails userDetails) {
+    private void updateRememberMeFlagInSession(AuthenticationOptions authenticationOptions, HttpServletResponse httpServletResponse,
+            UserDetails userDetails) {
         // handle "remember me" feature
         if (!authenticationOptions.shouldRememberMe()) {
             logger.debug("Remember me feature is not supported");
@@ -277,7 +277,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.debug("Jahia is in full read-only mode, the session will not be modified for the remember me feature");
             return;
         }
-        CookieUtils.createRememberMeCookieForUser(userDetails.getJahiaUser(), httpServletRequest, httpServletResponse);
+        CookieUtils.createRememberMeCookieForUser(userDetails.getJahiaUser(), httpServletResponse);
     }
 
     private void triggerLoginEvent(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, JahiaUser jahiaUser) {

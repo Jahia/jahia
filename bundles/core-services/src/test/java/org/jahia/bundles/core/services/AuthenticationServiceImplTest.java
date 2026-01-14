@@ -101,24 +101,6 @@ public class AuthenticationServiceImplTest {
     }
 
     @Test
-    public void GIVEN_authentication_options_with_remember_me_but_no_request_WHEN_authenticating_THEN_IllegalArgumentException() {
-        // GIVEN:
-        // valid authentication request:
-        when(authenticationRequest.getUsername()).thenReturn("myUser");
-        when(authenticationRequest.getPassword()).thenReturn("myPassword");
-        // "remember me" enabled:
-        when(authenticationOptions.shouldRememberMe()).thenReturn(true);
-
-        // WHEN:
-        ThrowingRunnable runnable = () -> authenticationService.authenticate(authenticationRequest, authenticationOptions, null,
-                httpResponse);
-
-        // THEN:
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, runnable);
-        assertEquals("HTTP request and response are required for the remember me feature", exception.getMessage());
-    }
-
-    @Test
     public void GIVEN_authentication_options_with_remember_me_but_no_response_WHEN_authenticating_THEN_IllegalArgumentException() {
         // GIVEN:
         // valid authentication request:
@@ -133,7 +115,7 @@ public class AuthenticationServiceImplTest {
 
         // THEN:
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, runnable);
-        assertEquals("HTTP request and response are required for the remember me feature", exception.getMessage());
+        assertEquals("HTTP response is required for the remember me feature", exception.getMessage());
     }
 
     @Test

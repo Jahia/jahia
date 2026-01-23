@@ -76,6 +76,7 @@ After Testing
 - [ ] In case of a major release, a **Breaking Changes** section is present in the Changelog
 - [ ] The artifact was released on Nexus
 - [ ] If the module is included in Jahia distribution, [jahia-pack-private](https://github.com/Jahia/jahia-pack-private/blob/master/core-modules/pom.xml) was updated with the released version
+- [ ] ⚠️ If the module has a dependency to a recent release of [graphql-dxm-provider](https://github.com/Jahia/graphql-core), [server-availability-manager](https://github.com/Jahia/server-availability-manager) or [personal-api-tokens](https://github.com/Jahia/personal-api-tokens), contact the Cloud team to require their approval before publication.
 - [ ] If applicable, corresponding academy pages were published
 - [ ] The module was published on the store
 - [ ] The [modules releases log page](https://edit.jahia.com/jahia/jcontent/academy/en/pages/home/customer-center/jahia/release-notes/modules-releases-log?params=(sub:!f)) on the Academy was updated

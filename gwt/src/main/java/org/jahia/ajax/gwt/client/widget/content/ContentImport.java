@@ -47,11 +47,13 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -95,32 +97,41 @@ public class ContentImport extends Window {
         form.setBorders(false);
         form.setLabelWidth(200);
 
-        final FileUploadField field = new FileUploadField("import");
-        field.setFieldLabel(Messages.get("label.import"));
-        form.add(field);
+        if (JahiaGWTParameters.isGwtFileUploadEnabled()) {
+            final FileUploadField field = new FileUploadField("import");
+            field.setFieldLabel(Messages.get("label.import"));
+            form.add(field);
 
-//        final CheckBox checkbox = new CheckBox();
-//        checkbox.setFieldLabel(Messages.get("label.scheduleAsBackgroundJob", "Schedule as background job"));
-//        checkbox.setValue(true);
-//        form.add(checkbox);
+            Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    mask();
+                    doImport(n.getPath(), field.getValue());
+                }
+            });
+            submit.addStyleName("button-submit");
 
-        Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                mask();
-                doImport(n.getPath(), field.getValue());
-            }
-        });
-        submit.addStyleName("button-submit");
+            Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    hide();
+                }
+            });
+            cancel.addStyleName("button-cancel");
 
-        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                hide();
-            }
-        });
-        cancel.addStyleName("button-cancel");
+            buttons.add(submit);
+            buttons.add(cancel);
+        } else {
+            Text disabledText = new Text(Messages.get("label.gwt.error.upload.unavailable", "File upload is currently disabled"));
+            disabledText.addStyleName("upload-disabled-message");
+            form.add(disabledText);
 
-        buttons.add(submit);
-        buttons.add(cancel);
+            Button close = new Button(Messages.get("label.close", "Close"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    hide();
+                }
+            });
+            close.addStyleName("button-close");
+            buttons.add(close);
+        }
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
         add(form);

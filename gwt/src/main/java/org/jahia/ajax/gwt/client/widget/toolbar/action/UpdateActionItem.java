@@ -42,6 +42,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ContentImport;
@@ -60,7 +61,9 @@ public class UpdateActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null
+        setVisible(JahiaGWTParameters.isGwtFileUploadEnabled());
+        setEnabled(JahiaGWTParameters.isGwtFileUploadEnabled()
+                && lh.getSingleSelection() != null
                 && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions())
                 && !lh.isLocked()

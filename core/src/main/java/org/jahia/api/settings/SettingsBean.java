@@ -195,8 +195,12 @@ public interface SettingsBean {
 
     long getJahiaFileUploadCountMax();
 
-    default  boolean isJahiaSecuredFileUpload() {
+    default boolean isJahiaSecuredFileUpload() {
         return true;
+    }
+
+    default boolean isGwtFileUploadEnabled() {
+        return false;
     }
 
     /**

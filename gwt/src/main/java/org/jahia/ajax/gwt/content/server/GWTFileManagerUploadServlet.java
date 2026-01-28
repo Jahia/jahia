@@ -104,7 +104,15 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     }
 
     @Override
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Security check: prevent access if GWT file upload is disabled
+        SettingsBean settingsBean = SettingsBean.getInstance();
+        if (!settingsBean.isGwtFileUploadEnabled()) {
+            logger.warn("Attempt to access deprecated GWT file upload API which has been disabled");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
 
         final PrintWriter printWriter = response.getWriter();
         final JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
@@ -115,7 +123,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
-        SettingsBean settingsBean = SettingsBean.getInstance();
         upload.setFileCountMax(settingsBean.getJahiaFileUploadCountMax());
         final long fileSizeLimit = settingsBean.getJahiaFileUploadMaxSize();
         upload.setHeaderEncoding("UTF-8");

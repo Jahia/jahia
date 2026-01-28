@@ -92,6 +92,7 @@ public class JahiaGWTParameters {
     public static final String DX_VERSION = "dxVersion";
     public static final String STUDIO_MAX_DISPLAYABLE_FILE_SIZE = "studioMaxDisplayableFileSize";
     public static final String SERVER_DISPLAYABLE_TIME_ZONE = "serverDisplayableTimeZone";
+    public static final String GWT_FILE_UPLOAD_ENABLED = "gwtFileUploadEnabled";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -161,6 +162,10 @@ public class JahiaGWTParameters {
 
     public static boolean isAreaAutoActivated() {
         return "true".equals(jahiaParamDictionary.get(AREA_AUTO_ACTIVATED));
+    }
+
+    public static boolean isGwtFileUploadEnabled() {
+        return "true".equals(jahiaParamDictionary.get(GWT_FILE_UPLOAD_ENABLED));
     }
 
     public static String getUILanguage() {

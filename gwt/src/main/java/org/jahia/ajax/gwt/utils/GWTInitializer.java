@@ -235,6 +235,8 @@ public class GWTInitializer {
 
         params.put(JahiaGWTParameters.SERVER_DISPLAYABLE_TIME_ZONE, getServerDisplayableTimezone(Calendar.getInstance().getTimeZone(), uilocale));
 
+        params.put(JahiaGWTParameters.GWT_FILE_UPLOAD_ENABLED, String.valueOf(SettingsBean.getInstance().isGwtFileUploadEnabled()));
+
         // add jahia parameter dictionary
         buf.append("<script type=\"text/javascript\">\n");
         buf.append(getJahiaGWTConfig(params));

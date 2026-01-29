@@ -16,20 +16,20 @@ JSON :
 ```json
 [
   {
-    "installBundle": "mvn:org.jahia.modules/article/3.0.0", 
+    "installModule": "mvn:org.jahia.modules/article/3.0.0", 
     "autoStart": true
   },
   {
-    "installBundle": "mvn:org.jahia.modules/bookmarks/3.0.0"
+    "installModule": "mvn:org.jahia.modules/bookmarks/3.0.0"
   }
 ]
 ```
 
 YAML :
 ```yaml
-- installBundle: "mvn:org.jahia.modules/article/3.0.0" 
+- installModule: "mvn:org.jahia.modules/article/3.0.0" 
   autoStart: true
-- installBundle: "mvn:org.jahia.modules/bookmarks/3.0.0"
+- installModule: "mvn:org.jahia.modules/bookmarks/3.0.0"
 ```
 
 ## Variables interpolation
@@ -63,13 +63,13 @@ And :
 
 ## Available operations
 
-### Install bundle
+### Install Jahia module
 
-Install bundle from a URL (supporting all pax-url protocols). This action is triggered when `installBundle` is set to a valid URL.
+Install Jahia module from a URL (supporting all pax-url protocols). This action is triggered when `installModule` is set to a valid URL.
 
 These additional options are available :
 - `target`: The cluster group name where the operation will be done (unset to execute on all nodes), or `local` to perform operation on a node individually using standard non-clustered module deployment
-- `autoStart`: Autostart the bundle after installation
+- `autoStart`: Autostart the module after installation
 - `uninstallPreviousVersion`: Uninstall all other versions
 - `forceUpdate`: If true, module will be updated if it is already installed. Default is `false`
 - `if`: Optional condition that must be met to do the operation
@@ -77,19 +77,19 @@ These additional options are available :
 Examples :
 
 ```yaml
-- installBundle: "mvn:org.jahia.modules/article/3.0.0"
+- installModule: "mvn:org.jahia.modules/article/3.0.0"
   autoStart: true
   uninstallPreviousVersion: true
 ```
 
 ```yaml
-- installBundle: "file:/tmp/example-1.0.0.jar"
+- installModule: "file:/tmp/example-1.0.0.jar"
 ```
 
-Multiple bundles can be installed with the same command and options :
+Multiple modules can be installed with the same command and options :
 
 ```yaml
-- installBundle:
+- installModule:
   - 'mvn:org.jahia.modules/forms-snippets-extension/3.0.0'
   - 'mvn:org.jahia.modules/forms-nocss-theme/2.0.0'
   - 'mvn:org.jahia.modules/font-awesome/6.0.0'
@@ -102,15 +102,15 @@ Multiple bundles can be installed with the same command and options :
 Or using inline format :
 
 ```yaml
-- installBundle: ['mvn:org.jahia.modules/forms-prefill/2.0.0','mvn:org.jahia.modules/forms-core/3.2.0']
+- installModule: ['mvn:org.jahia.modules/forms-prefill/2.0.0','mvn:org.jahia.modules/forms-core/3.2.0']
   autoStart: true
   uninstallPreviousVersion: true
 ```
 
-If some bundles need different options, you can use a nested block, using `url` key for the url itself :
+If some modules need different options, you can use a nested block, using `url` key for the url itself :
 
 ```yaml
-- installBundle:
+- installModule:
   - 'mvn:org.jahia.modules/forms-snippets-extension/3.0.0'
   - 'mvn:org.jahia.modules/forms-nocss-theme/2.0.0'
   - { url: 'mvn:org.jahia.modules/font-awesome/6.0.0', autoStart: false}
@@ -120,7 +120,7 @@ If some bundles need different options, you can use a nested block, using `url` 
   uninstallPreviousVersion: true
 ```
 
-The autoStart option will start all listed bundles once all of them have been installed. 
+The autoStart option will start all listed modules once all of them have been installed. 
 Then, previous versions will be uninstalled.
 
 #### Conditional
@@ -128,54 +128,54 @@ Then, previous versions will be uninstalled.
 You can add a condition on install, by adding the `if` option. The condition is a groovy expression, as described [below](#script-includes-and-conditional-flow)
 
 ```yaml
-- installBundle: 'mvn:org.jahia.modules/sdl-generator-tools/2.1.0'
+- installModule: 'mvn:org.jahia.modules/sdl-generator-tools/2.1.0'
   if: "'${jahia:operatingMode}' == 'development'"
 ```
 
 #### Additional syntax
 
-As as alternate to `autoStart: true`, you can use `installAndStartBundle` :
+As an alternate to `autoStart: true`, you can use `installAndStartModule` :
 
 ```yaml
-- installAndStartBundle: "file:/tmp/example-1.0.0.jar"
+- installAndStartModule: "file:/tmp/example-1.0.0.jar"
 ```
 
-An additional command `installOrUpgradeBundle` is also available for upgrades. Its behaviour changes if it's a new install or an upgrade :
-- If no version of this bundle is installed, it behaves like `installAndStartBundle`.
-- If another version of the bundle is installed, it will install the new version, uninstall the previous ones (as with `uninstallPreviousVersion`) 
+An additional command `installOrUpgradeModule` is also available for upgrades. Its behaviour changes if it's a new install or an upgrade :
+- If no version of this module is installed, it behaves like `installAndStartModule`.
+- If another version of the module is installed, it will install the new version, uninstall the previous ones (as with `uninstallPreviousVersion`) 
   and restore the state of the previous version (started or stopped)
 
 ```yaml
-- installOrUpgradeBundle: "mvn:org.jahia.modules/article/3.0.0"
+- installOrUpgradeModule: "mvn:org.jahia.modules/article/3.0.0"
 ```
 
-### Uninstall bundle
+### Uninstall Jahia module
 
-Uninstall a bundle, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
+Uninstall Jahia module, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
 
 These additional options are available :
 - `target`: The cluster group name where the operation will be done (unset to execute on all nodes), or `local` to perform operation on a node individually using standard non-clustered module deployment
 
 ```yaml
-- uninstallBundle: "article/3.0.0"
+- uninstallModule: "article/3.0.0"
 ```
 
-### Start/stop bundle
+### Start/stop Jahia module
 
-Start or stop a bundle, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
+Start or stop Jahia module, based on a key composed of the symbolic name and optionally the version : `<symbolic-name>[/<version>]`
 
 These additional options are available :
 - `target`: The cluster group name where the operation will be done (unset to execute on all nodes), or `local` to perform operation on a node individually using standard non-clustered module deployment
 
 ```yaml
-- stopBundle: "article/3.0.0"
-- startBundle: "article/3.0.1"
+- stopModule: "article/3.0.0"
+- startModule: "article/3.0.1"
 ```
 
-A list of bundles can be passed :
+A list of modules can be passed :
 
 ```yaml
-- startBundle: ["article/3.0.1", "news/3.0.0"]
+- startModule: ["article/3.0.1", "news/3.0.0"]
 ```
 
 
@@ -212,7 +212,7 @@ You can also directly put the content of the properties file in the script (the 
 
 ### Import zip
 
-Import a zip from the export at the specified url. The file must be a zip expot.
+Import a zip from the export at the specified url. The file must be a zip export.
 
 ```yaml
 - import: "file:/Users/toto/users.zip"

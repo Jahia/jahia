@@ -126,7 +126,7 @@
                                     }
                                     if (project.properties['package.provisioning.skip'] != 'true') {
                                         new File(project.build.directory, '${project.artifactId}.provisioning.yaml').withWriter('utf-8') { writer ->
-                                            writer.writeLine(" - installOrUpgradeBundle: ")
+                                            writer.writeLine(" - installOrUpgradeModule: ")
                                             artifactIds.forEach { f ->
                                                 if ("tgz".equals(f[2])) {
                                                     writer.writeLine("   - url: 'js:mvn:${f[0]}/${f[1]}/${f[3]}/${f[2]}'");

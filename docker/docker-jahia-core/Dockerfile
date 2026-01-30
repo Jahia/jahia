@@ -180,7 +180,6 @@ COPY conf/* ${CATALINA_HOME}/conf/
 COPY bin/* /usr/local/bin/
 COPY setenv.sh setenv.graalvm.sh ${CATALINA_HOME}/bin/
 RUN chmod +x /usr/local/bin/* ${CATALINA_HOME}/bin/setenv.sh ${CATALINA_HOME}/bin/setenv.graalvm.sh
-COPY target/dependency/shared-libraries ${CATALINA_HOME}/lib
 COPY target/dependency/jdbc-drivers ${CATALINA_HOME}/lib
 COPY --chown=${C_USER}:${C_GROUP} target/dependency/jahia-war-data-package ${CATALINA_HOME}/digital-factory-data
 # During the build, simply copy the Jahia WAR folder to a temp folder (jahia-war/). At runtime, this folder will be copied to the deployment folder (under webapps/) specified by the CATALINA_CONTEXT env variable

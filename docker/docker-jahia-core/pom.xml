@@ -84,16 +84,6 @@
                                     </outputDirectory>
                                 </artifactItem>
                                 <!-- the following artifacts must be moved from pack to here ! -->
-
-                                <artifactItem>
-                                    <groupId>org.jahia.server</groupId>
-                                    <artifactId>shared-libraries</artifactId>
-                                    <version>${project.version}</version>
-                                    <classifier>all</classifier>
-                                    <type>zip</type>
-                                    <outputDirectory>${project.build.directory}/dependency/shared-libraries
-                                    </outputDirectory>
-                                </artifactItem>
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>
                                     <artifactId>jdbc-drivers</artifactId>

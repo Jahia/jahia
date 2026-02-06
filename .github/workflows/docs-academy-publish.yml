@@ -1,0 +1,17 @@
+# DO NOT EDIT
+# This file is managed globally at https://github.com/Jahia/.github
+name: Academy Docs - Publication
+
+# This workflow can either be triggered manually or 
+# will trigger when a PR containing changes in docs/ is merged
+# There are limitations with this setup:
+# - The docs to be updated will always be the content of the default branch
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  WF:
+    uses: Jahia/jahia-modules-action/.github/workflows/reusable-academy-publish.yml@v2
+    secrets: inherit

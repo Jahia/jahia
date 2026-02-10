@@ -1,1 +1,1 @@
-Folder for SQL-based patches which are executed once on Jahia startup 
+Folder for SQL-based patches which are executed once on Jahia startup during a migration to a new version of Jahia.

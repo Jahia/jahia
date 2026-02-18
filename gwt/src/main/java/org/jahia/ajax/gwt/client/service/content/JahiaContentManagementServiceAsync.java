@@ -42,6 +42,7 @@
  */
 package org.jahia.ajax.gwt.client.service.content;
 
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcMap;
@@ -144,7 +145,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getChannels(AsyncCallback<List<GWTJahiaChannel>> asyncCallback);
 
-    void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> async);
+    void getContentHistory(String nodeIdentifier, AsyncCallback<ListLoadResult<GWTJahiaContentHistoryEntry>> async);
 
     void getContentTypes(List<String> baseTypes, boolean includeSubTypes, boolean displayStudioElement, AsyncCallback<List<GWTJahiaNodeType>> async);
 

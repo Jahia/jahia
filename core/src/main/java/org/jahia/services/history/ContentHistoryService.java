@@ -78,7 +78,7 @@ import java.util.regex.Pattern;
  * @author loom
  */
 public class ContentHistoryService implements Processor, CamelContextAware {
-    private transient static Logger logger = LoggerFactory.getLogger(ContentHistoryService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContentHistoryService.class);
 
     private org.hibernate.SessionFactory sessionFactoryBean;
     private AtomicLong processedCount = new AtomicLong(0);
@@ -336,13 +336,13 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     }
 
     @SuppressWarnings("unchecked")
-    public List<HistoryEntry> getNodeHistory(JCRNodeWrapper node, boolean withLanguageNodes) {
+    public List<HistoryEntry> getNodeHistory(JCRNodeWrapper node, boolean withLanguageNodes, int offset, int limit) {
         Session session = sessionFactoryBean.openSession();
         try {
             Criteria criteria = session.createCriteria(HistoryEntry.class);
             Map<String, Locale> i18ns = null;
             if (withLanguageNodes) {
-                i18ns = new HashMap<String, Locale>(4);
+                i18ns = new HashMap<>(4);
                 i18ns.put(node.getIdentifier(), null);
                 for (NodeIterator ni = node.getI18Ns(); ni.hasNext();) {
                     Node n = ni.nextNode();
@@ -352,6 +352,14 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 criteria.add(Restrictions.in("uuid", i18ns.keySet()));
             } else {
                 criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
+            }
+            // Add sorting by date descending
+            criteria.addOrder(org.hibernate.criterion.Order.desc("date"));
+            if (offset > 0) {
+                criteria.setFirstResult(offset);
+            }
+            if (limit > 0) {
+                criteria.setMaxResults(limit);
             }
             Transaction tx = session.beginTransaction();
             List<HistoryEntry> result = (List<HistoryEntry>) criteria.list();
@@ -367,6 +375,42 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             return Collections.emptyList();
         } finally {
             session.close();
+        }
+    }
+
+    /**
+     *
+     * Get the content history for a given node.
+     *
+     * @param node              the node on which to get history entries
+     * @param withLanguageNodes whether to include language nodes in the result
+     * @return the list of history entries for the given node
+     * @deprecated use #getNodeHistory(JCRNodeWrapper, boolean, int, int) with an offset and a limit instead. {@link #getNodeHistoryCount(JCRNodeWrapper, boolean)} can be used in this case to get the total number of entries.
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public List<HistoryEntry> getNodeHistory(JCRNodeWrapper node, boolean withLanguageNodes) {
+        return getNodeHistory(node, withLanguageNodes, 0, -1);
+    }
+
+    public int getNodeHistoryCount(JCRNodeWrapper node, boolean withLanguageNodes) {
+        try (Session session = sessionFactoryBean.openSession()) {
+            Criteria criteria = session.createCriteria(HistoryEntry.class);
+            if (withLanguageNodes) {
+                Map<String, Locale> i18ns = new HashMap<>(4);
+                i18ns.put(node.getIdentifier(), null);
+                for (NodeIterator ni = node.getI18Ns(); ni.hasNext(); ) {
+                    Node n = ni.nextNode();
+                    i18ns.put(n.getIdentifier(), LanguageCodeConverters.languageCodeToLocale(n.getProperty("jcr:language").getString()));
+                }
+                criteria.add(Restrictions.in("uuid", i18ns.keySet()));
+            } else {
+                criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
+            }
+            criteria.setProjection(org.hibernate.criterion.Projections.rowCount());
+            Number count = (Number) criteria.uniqueResult();
+            return count != null ? count.intValue() : 0;
+        } catch (Exception e) {
+            return 0;
         }
     }
 

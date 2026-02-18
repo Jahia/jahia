@@ -112,6 +112,7 @@ public class ContentManagerHelper {
     private static final List<String> NEW_NODE_FIELDS = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
 
     private static final Logger logger = LoggerFactory.getLogger(ContentManagerHelper.class);
+    private static final int HISTORY_ENTRIES_LIMIT = 100;
 
     private JahiaSitesService sitesService;
     private ContentHistoryService contentHistoryService;
@@ -1174,22 +1175,15 @@ public class ContentManagerHelper {
         return navigation.getGWTJahiaNode(session.getNode("/modules/" + moduleId), GWTJahiaNode.DEFAULT_SITE_FIELDS);
     }
 
-    public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier, int offset, int limit) throws RepositoryException {
+    public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier)
+            throws RepositoryException {
 
         JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
-        List<HistoryEntry> historyEntryList = contentHistoryService.getNodeHistory(node, true);
+        List<HistoryEntry> historyEntryList = contentHistoryService.getNodeHistory(node, true, 0, HISTORY_ENTRIES_LIMIT);
         List<GWTJahiaContentHistoryEntry> result = new ArrayList<GWTJahiaContentHistoryEntry>();
         for (HistoryEntry historyEntry : historyEntryList) {
             result.add(convertToGWTJahiaContentHistoryEntry(historyEntry));
         }
-
-        Collections.sort(result, new Comparator<GWTJahiaContentHistoryEntry>() {
-
-            @Override
-            public int compare(GWTJahiaContentHistoryEntry o1, GWTJahiaContentHistoryEntry o2) {
-                return o2.compareTo(o1);
-            }
-        });
 
         return result;
     }

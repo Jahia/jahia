@@ -57,7 +57,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -85,7 +85,6 @@ public class HistoryPanel extends LayoutContainer {
     private FormPanel detailsPanel;
 
     private List<GWTJahiaContentHistoryEntry> selectedItems = null;
-    private PagingToolBar pagingToolBar;
     public static final String SECONDS_PRECISION_DATETIME_FORMAT = "dd.MM.yyyy HH:mm:ss";
 
 
@@ -104,37 +103,26 @@ public class HistoryPanel extends LayoutContainer {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
-        RpcProxy<PagingLoadResult<GWTJahiaContentHistoryEntry>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaContentHistoryEntry>>() {
+        RpcProxy<ListLoadResult<GWTJahiaContentHistoryEntry>> proxy = new RpcProxy<ListLoadResult<GWTJahiaContentHistoryEntry>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaContentHistoryEntry>> callback) {
-                if (loadConfig == null) {
-                    service.getContentHistory(node.getUUID(), 0, Integer.MAX_VALUE, callback);
-                } else if (loadConfig instanceof BasePagingLoadConfig) {
-                    BasePagingLoadConfig pagingLoadConfig = (BasePagingLoadConfig) loadConfig;
-                    int limit = pagingLoadConfig.getLimit();
-                    int offset = pagingLoadConfig.getOffset();
-                    service.getContentHistory(node.getUUID(), offset, limit, callback);
+            protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GWTJahiaContentHistoryEntry>> callback) {
+                if (loadConfig == null || loadConfig instanceof BaseListLoadConfig) {
+                    service.getContentHistory(node.getUUID(), callback);
                 } else {
-                    callback.onSuccess(new BasePagingLoadResult<GWTJahiaContentHistoryEntry>(new ArrayList<GWTJahiaContentHistoryEntry>()));
+                    callback.onSuccess(new BaseListLoadResult<>(new ArrayList<>()));
                 }
             }
         };
 
         // tree loader
-        final PagingLoader<BasePagingLoadResult<ModelData>> loader = new BasePagingLoader<BasePagingLoadResult<ModelData>>(proxy);
+        final BaseListLoader<ListLoadResult<GWTJahiaContentHistoryEntry>> loader = new BaseListLoader<ListLoadResult<GWTJahiaContentHistoryEntry>>(proxy);
         loader.setRemoteSort(true);
 
         // trees store
         final GroupingStore<GWTJahiaContentHistoryEntry> store = new GroupingStore<GWTJahiaContentHistoryEntry>(loader);
         store.groupBy("status");
 
-        pagingToolBar = new PagingToolBar(50);
-        PagingToolBar.PagingToolBarMessages pagingMessages = pagingToolBar.getMessages();
-        pagingMessages.setEmptyMsg(pagingMessages.getEmptyMsg() + ". " + Messages.get("label.historyMayBeDelayed", "History may be delayed."));
-        if (pagingMessages.getDisplayMsg() != null) {
-            pagingMessages.setDisplayMsg(pagingMessages.getDisplayMsg() + ". " + Messages.get("label.historyMayBeDelayed", "History may be delayed."));
-        }
-        pagingToolBar.bind(loader);
+        ToolBar toolBar = new ToolBar();
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
@@ -178,25 +166,14 @@ public class HistoryPanel extends LayoutContainer {
         grid.setTrackMouseOver(false);
         grid.setStateId("historyPagingGrid");
         grid.setStateful(true);
-        grid.addListener(Events.Attach, new Listener<GridEvent<GWTJahiaContentHistoryEntry>>() {
-            public void handleEvent(GridEvent<GWTJahiaContentHistoryEntry> be) {
-                PagingLoadConfig config = new BasePagingLoadConfig();
-                config.setOffset(0);
-                config.setLimit(50);
-
-                Map<String, Object> state = grid.getState();
-                if (state.containsKey("offset")) {
-                    int offset = (Integer) state.get("offset");
-                    int limit = (Integer) state.get("limit");
-                    config.setOffset(offset);
-                    config.setLimit(limit);
-                }
-                if (state.containsKey("sortField")) {
-                    config.setSortField((String) state.get("sortField"));
-                    config.setSortDir(Style.SortDir.valueOf((String) state.get("sortDir")));
-                }
-                loader.load(config);
+        grid.addListener(Events.Attach, (Listener<GridEvent<GWTJahiaContentHistoryEntry>>) be -> {
+            BaseListLoadConfig config1 = new BaseListLoadConfig();
+            Map<String, Object> state = grid.getState();
+            if (state.containsKey("sortField")) {
+                config1.setSortField((String) state.get("sortField"));
+                config1.setSortDir(Style.SortDir.valueOf((String) state.get("sortDir")));
             }
+            loader.load(config1);
         });
         grid.setLoadMask(true);
         grid.setBorders(true);
@@ -219,7 +196,7 @@ public class HistoryPanel extends LayoutContainer {
         listPanel.setLayout(new FitLayout());
         listPanel.add(grid);
         listPanel.setSize(600, 350);
-        listPanel.setBottomComponent(pagingToolBar);
+        listPanel.setBottomComponent(toolBar);
         grid.getAriaSupport().setLabelledBy(listPanel.getId());
         add(listPanel);
 

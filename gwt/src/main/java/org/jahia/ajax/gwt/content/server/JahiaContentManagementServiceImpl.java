@@ -2325,22 +2325,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public BasePagingLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier, int offset, int limit) throws GWTJahiaServiceException {
+    public BaseListLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier) throws GWTJahiaServiceException {
         enableJcrSessionReadOnlyCache();
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
-        List<GWTJahiaContentHistoryEntry> historyListJahia;
         try {
-            historyListJahia = contentManager.getContentHistory(sessionWrapper, nodeIdentifier, offset, limit);
-            int size = historyListJahia.size();
-            if (offset > size) {
-                historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(0);
-            } else {
-                historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(historyListJahia.subList(offset, Math.min(size, offset + limit)));
-            }
-            BasePagingLoadResult<GWTJahiaContentHistoryEntry> pagingLoadResult = new BasePagingLoadResult<GWTJahiaContentHistoryEntry>(historyListJahia, offset, size);
-            return pagingLoadResult;
+            List<GWTJahiaContentHistoryEntry> historyListJahia = contentManager.getContentHistory(sessionWrapper, nodeIdentifier);
+            return new BaseListLoadResult<>(historyListJahia);
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.content.history", getUILocale(), getLocalizedMessage(e)));
+            throw new GWTJahiaServiceException(
+                    Messages.getInternalWithArguments("label.gwt.error.cannot.get.content.history", getUILocale(), getLocalizedMessage(e)));
         }
     }
 

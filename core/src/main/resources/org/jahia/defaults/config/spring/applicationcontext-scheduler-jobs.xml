@@ -22,16 +22,16 @@
             </bean>
         </property>
         <property name="trigger">
-            <bean class="org.quartz.CronTrigger">
+            <bean class="org.quartz.CronTrigger" depends-on="settingsBean">
                 <property name="name" value="ContentHistoryPurgeTrigger"/>
-                <!-- run every year -->
-                <property name="cronExpression" value="0 0 0 L DEC ? *"/>
+                <!-- run as per the 'contentHistoryPurge.cronExpression' value in jahia.properties -->
+                <property name="cronExpression" value="#{settingsBean.contentHistoryPurgeCronExpression}"/>
                 <!-- run every hour to debug -->
                 <!--property name="cronExpression" value="0 0 * * * ?"/-->
             </bean>
         </property>
     </bean>
-    
+
     <bean parent="jobSchedulingBean">
         <property name="jobDetail">
             <bean class="org.springframework.scheduling.quartz.JobDetailBean">
@@ -109,7 +109,7 @@
         </property>
     </bean>
 
-    <!-- 
+    <!--
     <bean parent="jobSchedulingBean">
         <property name="jobDetail">
             <bean class="org.springframework.scheduling.quartz.JobDetailBean">

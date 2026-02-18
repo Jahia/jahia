@@ -42,6 +42,7 @@
  */
 package org.jahia.ajax.gwt.client.service.content;
 
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcMap;
@@ -181,12 +182,10 @@ public interface JahiaContentManagementService extends RemoteService {
      * Retrieves the history of modifications on a content node.
      *
      * @param nodeIdentifier the identifier of the node for which to retrieve the history
-     * @param offset         the paging offset
-     * @param limit          the limit of entries to retrieve
-     * @return a paging list of history entries for the specified node identifier.
-     * @throws GWTJahiaServiceException
+     * @return a list of history entries for the specified node identifier
+     * @throws GWTJahiaServiceException in case of errors
      */
-    PagingLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier, int offset, int limit) throws GWTJahiaServiceException;
+    ListLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier) throws GWTJahiaServiceException;
 
     /**
      * Returns a list of node types with name and label populated that are the

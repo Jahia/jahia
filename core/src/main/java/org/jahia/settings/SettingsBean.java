@@ -226,6 +226,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String atmosphereHeartbeatFrequency;
     private StringSubstitutor stringSubstitutor;
 
+    private String contentHistoryPurgeCronExpression;
+    private int contentHistoryRetentionInMonths;
+
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
      * @param   propertiesFilename  The jahia.properties file complete path.
@@ -497,6 +500,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (System.getProperty("cluster.node.serverId") == null) {
                 setSystemProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }
+
+            // by default, run once a month
+            contentHistoryPurgeCronExpression = getString("contentHistoryPurge.cronExpression", "0 0 0 1 * ?");
+            contentHistoryRetentionInMonths = getInt("contentHistoryPurge.retentionInMonths", 13);
 
             DatabaseUtils.setDatasource(dataSource);
 
@@ -1660,5 +1667,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public int getMaxSearchLimit() {
         return maxSearchLimit;
+    }
+
+    @Override
+    public String getContentHistoryPurgeCronExpression() {
+        return contentHistoryPurgeCronExpression;
+    }
+
+    @Override
+    public int getContentHistoryRetentionInMonths() {
+        return contentHistoryRetentionInMonths;
     }
 }

@@ -360,4 +360,8 @@ public interface SettingsBean {
     boolean isUserPasswordUpdateRequiringPreviousPassword();
 
     long getUserPasswordUpdateAuthorizationTimeoutMs();
+
+    String getContentHistoryPurgeCronExpression();
+
+    int getContentHistoryRetentionInMonths();
 }

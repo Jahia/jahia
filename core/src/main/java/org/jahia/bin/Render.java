@@ -523,14 +523,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     /**
      * Very unsecure, will allow any files from multipart requests, storing them on file system in temporary folder..
      * Do not use unless you know what you are doing.
-     * @deprecated
+     * @deprecated Unsecured file upload will be removed in a next version, Use GraphQL API to upload files
      */
-    @Deprecated
+    @Deprecated(since = "8.2.3.0", forRemoval = true)
     private boolean checkForUploadedFiles(HttpServletRequest req, HttpServletResponse resp, String workspace,
                                           Locale locale, Map<String, List<String>> parameters,
                                           URLResolver urlResolver)
             throws RepositoryException, IOException {
-
         if (isMultipartRequest(req)) {
             final String savePath = getSettingsBean().getTmpContentDiskPath();
             final File tmp = new File(savePath);
@@ -684,82 +683,102 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         requestWith.contains("XMLHttpRequest");
 
         if (isMultipartRequest(req) && !isAction && isAjaxRequest) {
-            try {
-                List<String> uuids = new LinkedList<>();
-                List<String> urls = new LinkedList<>();
-
-                String path = urlResolver.getPath();
-                String target = path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path;
-
-                JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(workspace, locale);
-                final JCRNodeWrapper targetDirectory = session.getNode(target);
-
-                FileUpload fileUpload = securedMultiPartRequestParsing(req, targetDirectory.hasPermission("jcr:addChildNodes"), null);
-                if (fileUpload.getFileItems() != null && !fileUpload.getFileItems().isEmpty()) {
-
-                    boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) && (fileUpload.getParameterValues(VERSION))[0].equals("true");
-
-                    final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
-                    for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
-                        //if node exists, do a checkout before
-                        String name = itemEntry.getValue().getName();
-
-                        if (fileUpload.getParameterNames().contains(TARGETNAME)) {
-                            name = (fileUpload.getParameterValues(TARGETNAME))[0];
-                        }
-
-                        name = JCRContentUtils.escapeLocalNodeName(FilenameUtils.getName(name));
-
-                        JCRNodeWrapper fileNode = targetDirectory.hasNode(name) ?
-                                targetDirectory.getNode(name) : null;
-                        if (fileNode != null && isVersionActivated) {
-                            session.checkout(fileNode);
-                        }
-                        // checkout parent directory
-                        session.checkout(targetDirectory);
-                        InputStream is = null;
-                        JCRNodeWrapper wrapper = null;
-                        try {
-                            is = itemEntry.getValue().getInputStream();
-                            wrapper = targetDirectory.uploadFile(name, is, JCRContentUtils
-                                    .getMimeType(name, itemEntry.getValue()
-                                            .getContentType()));
-                        } finally {
-                            IOUtils.closeQuietly(is);
-                        }
-                        uuids.add(wrapper.getIdentifier());
-                        urls.add(wrapper.getAbsoluteUrl(req));
-                        if (isVersionActivated) {
-                            if (!wrapper.isVersioned()) {
-                                wrapper.versionFile();
-                            }
-                            session.save();
-                            // Handle potential move of the node after save
-                            wrapper = session.getNodeByIdentifier(wrapper.getIdentifier());
-                            wrapper.checkpoint();
-                        }
-                    }
-                    fileUpload.disposeItems();
-                    fileUpload.markFilesAsConsumed();
-                    session.save();
-
-                    try {
-                        resp.setStatus(HttpServletResponse.SC_CREATED);
-                        Map<String, Object> map = new LinkedHashMap<String, Object>();
-                        map.put("uuids", uuids);
-                        map.put("urls", urls);
-                        JSONObject nodeJSON = new JSONObject(map);
-                        nodeJSON.write(resp.getWriter());
-                        return true;
-                    } catch (JSONException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            } catch (IOException e) {
-                logger.error("Cannot parse multipart data for ajax file upload !", e);
-            }
+            if (handleAjaxUpload(req, resp, workspace, locale, urlResolver)) return true;
         }
 
+        return false;
+    }
+
+    /**
+     * Handles Ajax-based file uploads to a target directory.
+     * This method processes multipart file upload requests from Ajax calls, validates permissions
+     * on the target directory, and saves uploaded files to the JCR repository.
+     *
+     * @param req the HTTP servlet request containing the multipart file upload
+     * @param resp the HTTP servlet response to write the upload result
+     * @param workspace the JCR workspace where files should be uploaded
+     * @param locale the locale for the current session
+     * @param urlResolver the URL resolver to determine the target directory path
+     * @return true if files were successfully uploaded and response was written, false otherwise
+     * @throws RepositoryException if there is an error accessing the JCR repository
+     * @deprecated since 8.2.4.0, will be removed in a future version. Use GraphQL API to upload files instead.
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    private boolean handleAjaxUpload(HttpServletRequest req, HttpServletResponse resp, String workspace, Locale locale, URLResolver urlResolver) throws RepositoryException {
+        try {
+            List<String> uuids = new LinkedList<>();
+            List<String> urls = new LinkedList<>();
+
+            String path = urlResolver.getPath();
+            String target = path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path;
+
+            JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(workspace, locale);
+            final JCRNodeWrapper targetDirectory = session.getNode(target);
+
+            FileUpload fileUpload = securedMultiPartRequestParsing(req, targetDirectory.hasPermission("jcr:addChildNodes"), null);
+            if (fileUpload.getFileItems() != null && !fileUpload.getFileItems().isEmpty()) {
+
+                boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) && (fileUpload.getParameterValues(VERSION))[0].equals("true");
+
+                final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
+                for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
+                    //if node exists, do a checkout before
+                    String name = itemEntry.getValue().getName();
+
+                    if (fileUpload.getParameterNames().contains(TARGETNAME)) {
+                        name = (fileUpload.getParameterValues(TARGETNAME))[0];
+                    }
+
+                    name = JCRContentUtils.escapeLocalNodeName(FilenameUtils.getName(name));
+
+                    JCRNodeWrapper fileNode = targetDirectory.hasNode(name) ?
+                            targetDirectory.getNode(name) : null;
+                    if (fileNode != null && isVersionActivated) {
+                        session.checkout(fileNode);
+                    }
+                    // checkout parent directory
+                    session.checkout(targetDirectory);
+                    InputStream is = null;
+                    JCRNodeWrapper wrapper = null;
+                    try {
+                        is = itemEntry.getValue().getInputStream();
+                        wrapper = targetDirectory.uploadFile(name, is, JCRContentUtils
+                                .getMimeType(name, itemEntry.getValue()
+                                        .getContentType()));
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                    }
+                    uuids.add(wrapper.getIdentifier());
+                    urls.add(wrapper.getAbsoluteUrl(req));
+                    if (isVersionActivated) {
+                        if (!wrapper.isVersioned()) {
+                            wrapper.versionFile();
+                        }
+                        session.save();
+                        // Handle potential move of the node after save
+                        wrapper = session.getNodeByIdentifier(wrapper.getIdentifier());
+                        wrapper.checkpoint();
+                    }
+                }
+                fileUpload.disposeItems();
+                fileUpload.markFilesAsConsumed();
+                session.save();
+
+                try {
+                    resp.setStatus(HttpServletResponse.SC_CREATED);
+                    Map<String, Object> map = new LinkedHashMap<String, Object>();
+                    map.put("uuids", uuids);
+                    map.put("urls", urls);
+                    JSONObject nodeJSON = new JSONObject(map);
+                    nodeJSON.write(resp.getWriter());
+                    return true;
+                } catch (JSONException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Cannot parse multipart data for ajax file upload !", e);
+        }
         return false;
     }
 

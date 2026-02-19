@@ -50,9 +50,10 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * Factory bean for instantiating and configuring instance of the
  * {@link OfficeManager} that is started as a service on a local or remote
  * machine.
- * 
+ *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class RemoteOfficeManagerFactory extends AbstractFactoryBean<OfficeManager> {
 
     private ExternalOfficeManager.Builder cfg;
@@ -67,7 +68,7 @@ public class RemoteOfficeManagerFactory extends AbstractFactoryBean<OfficeManage
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.springframework.beans.factory.config.AbstractFactoryBean#createInstance
      * ()

@@ -69,6 +69,8 @@ import java.util.Map;
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
  */
+
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DocumentConverterService implements ApplicationContextAware {
 
     protected static final Map<String, Object> DEF_PROPS = new HashMap<>();

@@ -75,6 +75,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DocumentConverter extends JahiaController {
 
     private static Logger logger = LoggerFactory.getLogger(DocumentConverter.class);

@@ -338,7 +338,7 @@ public class JCRTagUtils {
     }
 
     /**
-     * @deprecated
+     * @deprecated Removed as the Contribute mode does not exist anymore.
      */
     @Deprecated(since = "7.2.2.1", forRemoval = true)
     public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws Exception {
@@ -381,6 +381,10 @@ public class JCRTagUtils {
         return finaltypes;
     }
 
+    /**
+     * @deprecated Removed as the Contribute mode does not exist anymore.
+     */
+    @Deprecated (since = "8.2.4.0", forRemoval = true)
     public static Map<String, String> getContributeTypesDisplay(final JCRNodeWrapper node,
             JCRNodeWrapper areaNode, Value[] typelistValues, Locale displayLocale) throws Exception {
         if (node == null) {

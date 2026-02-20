@@ -261,13 +261,13 @@
                 If set to 'true' the query will be run with using the root user instead of the currently logged on user.
                 This is useful if you want to run queries with constraints on attributes, on which the current user has no access.
                 This option will work-around access control, so be very careful, when using this option to then not display results,
-                on which the current user has no access.  
+                on which the current user has no access.
             </description>
             <name>useRootUser</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
-        </attribute>        
+        </attribute>
     </tag>
     <tag>
         <description>
@@ -316,7 +316,7 @@
                 If set to 'true' the query will be run with using the root user instead of the currently logged on user.
                 This is useful if you want to run queries with constraints on attributes, on which the current user has no access.
                 This option will work-around access control, so be very careful, when using this option to then not display results,
-                on which the current user has no access.  
+                on which the current user has no access.
             </description>
             <name>useRootUser</name>
             <required>false</required>
@@ -346,7 +346,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>
                 SQL-2 statement that will be used to initialize the QOM - ignored if qomBeanName is used
@@ -610,7 +610,7 @@
         <example>
             ${jcr:getParentsOfType(currentNode,'jnt:page')}
         </example>
-    </function>    
+    </function>
     <function>
         <description>Returns map of string key,string value using for key the node name of nodes of the type given as an
             argument found in the second argument node, and the value will be the matching property found in the first argument node</description>
@@ -731,7 +731,7 @@
         <function-signature>java.lang.String getSystemSitePath()</function-signature>
     </function>
     <function>
-        <description>Returns a Map of allowed components in contribute mode (key is a node type name, value is a localized disaply label)</description>
+        <description>Returns a Map of allowed components in contribute mode (key is a node type name, value is a localized disaply label) - DEPRECATED: Not used anymore</description>
         <name>getContributeTypesDisplay</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.util.Map getContributeTypesDisplay(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.content.JCRNodeWrapper, javax.jcr.Value[], java.util.Locale)</function-signature>

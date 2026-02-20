@@ -75,7 +75,6 @@ public class URLGenerator {
     private String live;
     private String edit;
     private String preview;
-    private String contribute;
     private String studio;
     private String studioVisual;
     private String initializers;
@@ -93,7 +92,6 @@ public class URLGenerator {
     private String templatesPath;
 
     private String baseLive;
-    private String baseContribute;
     private String baseEdit;
     private String basePreview;
     private String baseUserBoardEdit;
@@ -142,8 +140,6 @@ public class URLGenerator {
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
             baseEdit = "/cms/edit" + editLanguage;
             edit = baseEdit + resourcePath;
-            baseContribute = "/jahia/page-composer" + editLanguage;
-            contribute = baseContribute + resourcePath;
         }
         basePreview = renderServletPath + editLanguage;
         preview = basePreview + resourcePath;
@@ -195,8 +191,12 @@ public class URLGenerator {
         return preview;
     }
 
+    /**
+     * @Depreacted contribute mode is not supported anymore, fall back on edit
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public String getContribute() {
-        return contribute;
+        return edit;
     }
 
     /**
@@ -377,8 +377,12 @@ public class URLGenerator {
         return initializers;
     }
 
+    /**
+     * @Deprecated contribute mode is not supported anymore, fall back on edit
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public String getBaseContribute() {
-        return baseContribute;
+        return baseEdit;
     }
 
     public String getBaseEdit() {
@@ -419,8 +423,6 @@ public class URLGenerator {
             final String path = ajaxResource.getNode().getPath();
             if (context.isEditMode()) {
                 return baseEdit + path + ".html";
-            } else if (context.isContributionMode()) {
-                return baseContribute + path + ".html";
             } else {
                 return (Constants.LIVE_WORKSPACE.equals(ajaxResource.getWorkspace()) ? baseLive : basePreview) + path + ".html";
             }
@@ -499,7 +501,6 @@ public class URLGenerator {
         sb.append(", live='").append(live).append('\'');
         sb.append(", edit='").append(edit).append('\'');
         sb.append(", preview='").append(preview).append('\'');
-        sb.append(", contribute='").append(contribute).append('\'');
         sb.append(", studio='").append(studio).append('\'');
         sb.append(", initializers='").append(initializers).append('\'');
         sb.append(", resource=").append(resource);
@@ -509,7 +510,6 @@ public class URLGenerator {
         sb.append(", templateTypes=").append(templateTypes);
         sb.append(", templatesPath='").append(templatesPath).append('\'');
         sb.append(", baseLive='").append(baseLive).append('\'');
-        sb.append(", baseContribute='").append(baseContribute).append('\'');
         sb.append(", baseEdit='").append(baseEdit).append('\'');
         sb.append(", basePreview='").append(basePreview).append('\'');
         sb.append(", convert='").append(convert).append('\'');

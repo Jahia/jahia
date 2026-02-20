@@ -191,13 +191,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 additionalParameters.append(" areaType=\"").append(areaType).append("\"");
             }
 
-            if (renderContext.getEditModeConfigName().equals("contributemode")) {
-                JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
-                if (contributeNode == null || !contributeNode.hasProperty(Constants.JAHIA_CONTRIBUTE_TYPES)) {
-                    additionalParameters.append(" editable=\"false\"");
-                    isEditable = false;
-                }
-            }
             if (!StringUtils.isEmpty(mockupStyle)) {
                 additionalParameters.append(" mockupStyle=\"").append(mockupStyle).append("\"");
             }

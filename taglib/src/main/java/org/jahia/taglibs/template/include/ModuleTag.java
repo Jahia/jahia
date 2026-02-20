@@ -234,8 +234,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                 try {
 
-                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
-                            resource.getNode()) && !isExcluded(renderContext, resource);
+                    boolean canEdit = canEdit(renderContext);
 
                     boolean nodeEditable = checkNodeEditable(renderContext, node);
                     resource.getModuleParams().put("editableModule", canEdit && nodeEditable);
@@ -243,7 +242,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     if (canEdit) {
 
                         String type = getModuleType(renderContext);
-                        List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                         String oldNodeTypes = nodeTypes;
                         StringBuilder add = new StringBuilder();
                         if (!nodeEditable) {
@@ -409,63 +407,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return isBaseType &&
                 !nt.isNodeType("jmix:hiddenType") &&
                 (nt.getTemplatePackage() == null || installedModulesWithAllDependencies.contains(nt.getTemplatePackage().getId()));
-    }
-
-    private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {
-
-        if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
-            return true;
-        }
-        JCRNodeWrapper contributeNode;
-        final Object areaListResource = renderContext.getRequest().getAttribute("areaListResource");
-        if (areaListResource != null) {
-            contributeNode = (JCRNodeWrapper) areaListResource;
-        } else {
-            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute(TemplateAttributesFilter.AREA_RESOURCE);
-        }
-
-        try {
-            final Boolean nodeStatus = isNodeEditableInContributeMode(node);
-            final Boolean contributeNodeStatus = contributeNode != null ? isNodeEditableInContributeMode(contributeNode) : null;
-
-            final String sitePath = renderContext.getSite().getPath();
-            if (nodeStatus != null) {
-                // first look at the current node's status with respect to editable in contribution mode, if it's determined, then use that
-                return nodeStatus;
-            } else if (contributeNodeStatus != null) {
-                // otherwise, look at the contribute node's status if it exists and use that
-                return contributeNodeStatus;
-            } else if (node.getPath().startsWith(sitePath)) {
-                // otherwise, if the property wasn't defined on the nodes we are interested in, look at the parent iteratively until we know the status of the property
-                while (!node.getPath().equals(sitePath)) {
-                    node = node.getParent();
-
-                    final Boolean parentStatus = isNodeEditableInContributeMode(node);
-                    if (parentStatus != null) {
-                        return parentStatus;
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return false;
-    }
-
-    /**
-     * Returns <code>null</code> if the node we're looking at doesn't have the editable in contribution mode property, otherwise returns the value of the property.
-     *
-     * @param node the node we're interested in
-     * @return <code>null</code> if the node we're looking at doesn't have the editable in contribution mode property, otherwise returns the value of the property.
-     * @throws RepositoryException
-     */
-    private Boolean isNodeEditableInContributeMode(JCRNodeWrapper node) throws RepositoryException {
-        final boolean hasProperty = node.hasProperty(Constants.JAHIA_EDITABLE_IN_CONTRIBUTION);
-        if (hasProperty) {
-            return node.getProperty(Constants.JAHIA_EDITABLE_IN_CONTRIBUTION).getBoolean();
-        } else {
-            return null;
-        }
     }
 
     protected void findNode(RenderContext renderContext, Resource currentResource) throws IOException {
@@ -672,7 +613,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             constraints = ConstraintsHelper.getConstraints(currentResource.getNode(), path);
         }
 
-        if (canEdit(renderContext) && checkNodeEditable(renderContext, currentResource.getNode()) && contributeAccess(renderContext, currentResource.getNode())) {
+        if (canEdit(renderContext) && checkNodeEditable(renderContext, currentResource.getNode())) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
                 List<String> contributeTypes = contributeTypes(renderContext, currentResource.getNode());
                 if (contributeTypes != null) {

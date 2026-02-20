@@ -76,9 +76,6 @@ public class Edit extends Render {
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
-        if ("contributemode".equals(editConfiguration.getName())) {
-            context.setContributionMode(true);
-        }
         context.setEditModeConfig(editConfiguration);
 
         context.setForceUILocaleForJCRSession(forceUILocaleForJCRSession);

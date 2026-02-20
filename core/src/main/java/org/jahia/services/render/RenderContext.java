@@ -82,7 +82,6 @@ public class RenderContext {
     private final Stack<Resource> resourcesStack = new Stack<Resource>();
     private final Set<String> renderedPaths = new HashSet<String>();
 
-    private boolean isContributionMode = false;
     private boolean isEditMode = false;
     private EditConfiguration editModeConfig;
     private String servletPath;
@@ -210,12 +209,20 @@ public class RenderContext {
         this.mode = null;
     }
 
+    /**
+     * @deprecated  contribute mode is not supported anymore
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public boolean isContributionMode() {
-        return isContributionMode;
+        return false;
     }
 
+    /**
+     * @deprecated  contribute mode is not supported anymore
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void setContributionMode(boolean contributionMode) {
-        isContributionMode = contributionMode;
+        // Do nothing, kept to prevent breaking change.
     }
 
     public boolean isLoggedIn() {

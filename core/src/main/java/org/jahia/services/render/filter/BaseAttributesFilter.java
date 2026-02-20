@@ -71,12 +71,10 @@ public class BaseAttributesFilter extends AbstractFilter {
         request.setAttribute("renderContext", context);
         chain.pushAttribute(request, "currentResource", resource);
 
-        String contextPath = null;
-        if(context.isEditMode() && ! context.isContributionMode()){
+        String contextPath;
+        if (context.isEditMode()) {
             contextPath = StringUtils.substringAfterLast(((EditConfiguration) SpringContextSingleton.getBean(context.getEditModeConfigName())).getDefaultUrlMapping(), "/");
-        } else if(context.isContributionMode()){
-            contextPath = "contribute";
-        } else{
+        } else {
             contextPath = "render";
         }
         String mode = contextPath + "/" + resource.getWorkspace();

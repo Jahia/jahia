@@ -221,9 +221,6 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
         }
 
         public static boolean matches(RenderContext renderContext, String mode) {
-            if (mode.equals("contribution")) {
-                mode = "contribute"; // Legacy compatibility
-            }
             return renderContext.getMode() != null && renderContext.getMode().equals(mode);
         }
     }

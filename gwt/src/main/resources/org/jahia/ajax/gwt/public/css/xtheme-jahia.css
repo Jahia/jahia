@@ -217,40 +217,6 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     border-bottom-color: #000;
 }
 
-/*Light Edit Mode*/
-.x-viewport-contributemode .x-toolbar-first {
-    background:none !important;
-    background : #333 url(../images/xtheme-jahia/contributeMode-bg.png) no-repeat top right !important;
-    border-color:#333 !important;
-    border-top:4px solid #3399ff !important;
-    padding: 6px;
-}
-.x-viewport-contributemode .x-toolbar-first button {
-    color:#fff !important;
-}
-.x-viewport-contributemode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-contributemode .x-toolbar-first .x-btn-over .x-btn-arrow, .x-viewport-contributemode .x-toolbar-first .x-btn-focus .x-btn-arrow, .x-viewport-contributemode .x-toolbar-first .x-btn-active .x-btn-arrow {
-    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
-}
-.x-viewport-contributemode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
-    color:#3399ff !important;
-}
-.x-viewport-contributemode .x-toolbar-first .x-btn-tl, .x-viewport-contributemode .x-toolbar-first .x-btn-tr, .x-viewport-contributemode .x-toolbar-first .x-btn-tc, .x-viewport-contributemode .x-toolbar-first .x-btn-ml, .x-viewport-contributemode .x-toolbar-first .x-btn-mr, .x-viewport-contributemode .x-toolbar-first .x-btn-mc, .x-viewport-contributemode .x-toolbar-first .x-btn-bl, .x-viewport-contributemode .x-toolbar-first .x-btn-br, .x-viewport-contributemode .x-toolbar-first .x-btn-bc{
-    background-image:url(../images/xtheme-jahia/btn.png)!important;
-}
-.x-viewport-contributemode .x-toolbar-first .xtb-sep {
-    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
-}
-.x-viewport-contributemode .x-toolbar-first .x-btn-over button, .x-viewport-contributemode .x-toolbar-first .x-btn-focus button {
-    color:#3399ff !important;
-}
-.x-viewport-contributemode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-    background-image:url(../images/xtheme-jahia/arrow.gif);
-}
-.x-viewport-contributemode .x-toolbar-first .x-menu-sep{
-    height:1px;
-    background-color: #333;
-    border-bottom-color: #000;
-}
 /*United Content Manager*/
 .x-viewport-contentmanager .x-toolbar-first {
     background:none !important;

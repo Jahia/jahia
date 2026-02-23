@@ -48,7 +48,6 @@ public class DeprecationTrackerPluginTest {
     @Test
     public void GIVEN_a_simple_deprecated_method_WHEN_called_THEN_should_be_tracked() {
         // When - Call the deprecated method
-        // Note: This assumes TestClass has been transformed by the ByteBuddy plugin during compilation
         new TestClass().deprecatedMethod();
 
         // Then
@@ -130,6 +129,25 @@ public class DeprecationTrackerPluginTest {
                 eq("8.3"), eq(false));
     }
 
+    @Test
+    public void GIVEN_a_method_of_a_deprecated_class_WHEN_called_THEN_should_be_tracked() {
+        // When - Call a method of a deprecated class
+        new DeprecatedTestClass().simpleMethod();
+
+        // Then - should track the method with class-level deprecation metadata
+        assertMethodCalledOnce("org.jahia.tools.bytecode.DeprecationTrackerPluginTest$DeprecatedTestClass.simpleMethod()", "8.3", false);
+    }
+
+    @Test
+    public void GIVEN_a_method_of_a_deprecated_class_that_overrides_its_metadata_WHEN_called_THEN_should_be_tracked_with_overridden_metadata() {
+        // When - Call a method of a deprecated class with its one @Deprecated annotation
+        new DeprecatedTestClass().overrideDeprecatedMetadata();
+
+        // Then - should track the method with method-level deprecation metadata (overriding the class-level one)
+        assertMethodCalledOnce("org.jahia.tools.bytecode.DeprecationTrackerPluginTest$DeprecatedTestClass.overrideDeprecatedMetadata()",
+                "8.2", true);
+    }
+
     private void assertMethodCalledOnce(String expectedSignature, String expectedSince, boolean expectedForRemoval) {
         // First - Verify the service was called exactly once
         // Note: Use nullable() for since parameter as it can be null when @Deprecated has no 'since' attribute
@@ -191,6 +209,19 @@ public class DeprecationTrackerPluginTest {
         @Deprecated(since = "8.2")
         public void overloadedMethod(String param1, int param2) {
             // Third overloaded method - two parameters
+        }
+    }
+
+    @Deprecated(since = "8.3")
+    public static class DeprecatedTestClass {
+
+        public void simpleMethod() {
+            // simple deprecated method for testing
+        }
+
+        @Deprecated(since = "8.2", forRemoval = true)
+        public void overrideDeprecatedMetadata() {
+            // simple deprecated method for testing
         }
     }
 }

@@ -2,6 +2,7 @@ package org.jahia.tools.bytecode;
 
 import net.bytebuddy.build.Plugin;
 import net.bytebuddy.description.annotation.AnnotationDescription;
+import net.bytebuddy.description.annotation.AnnotationList;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.ClassFileLocator;
@@ -30,17 +31,38 @@ public class DeprecationTrackerPlugin implements Plugin {
 
         DynamicType.Builder<?> result = builder;
 
-        // Process each deprecated method individually to extract metadata at build time
-        for (MethodDescription method : typeDescription.getDeclaredMethods().filter(ElementMatchers.isAnnotatedWith(Deprecated.class))) {
+        // Check if the class itself is deprecated
+        boolean isClassDeprecated = typeDescription.getDeclaredAnnotations().isAnnotationPresent(Deprecated.class);
+        DeprecationMetadata classMetadata = null;
 
-            // Extract deprecation metadata at build time (single pass)
-            String methodSignature = buildMethodSignature(method);
-            DeprecationMetadata metadata = extractDeprecationMetadata(method);
+        if (isClassDeprecated) {
+            classMetadata = extractDeprecationMetadata(typeDescription.getDeclaredAnnotations());
+        }
 
-            // Inject call to our static helper method with build-time constants
-            result = result.method(ElementMatchers.is(method)).intercept(
-                    MethodCall.invoke(getTrackDeprecationMethod()).with(methodSignature).with(metadata.since).with(metadata.forRemoval)
-                            .andThen(SuperMethodCall.INSTANCE));
+        // Process each method
+        for (MethodDescription method : typeDescription.getDeclaredMethods()) {
+
+            // Check if method itself is deprecated
+            boolean isMethodDeprecated = method.getDeclaredAnnotations().isAnnotationPresent(Deprecated.class);
+
+            // Track if either the method is deprecated OR the class is deprecated
+            if (isMethodDeprecated || isClassDeprecated) {
+                String methodSignature = buildMethodSignature(method);
+                DeprecationMetadata metadata;
+
+                if (isMethodDeprecated) {
+                    // Method-level deprecation takes precedence
+                    metadata = extractDeprecationMetadata(method.getDeclaredAnnotations());
+                } else {
+                    // Use class-level deprecation metadata
+                    metadata = classMetadata;
+                }
+
+                // Inject call to our static helper method with build-time constants
+                result = result.method(ElementMatchers.is(method)).intercept(
+                        MethodCall.invoke(getTrackDeprecationMethod()).with(methodSignature).with(metadata.since).with(metadata.forRemoval)
+                                .andThen(SuperMethodCall.INSTANCE));
+            }
         }
 
         return result;
@@ -74,7 +96,9 @@ public class DeprecationTrackerPlugin implements Plugin {
 
     @Override
     public boolean matches(TypeDescription target) {
-        return !target.getDeclaredMethods().filter(ElementMatchers.isAnnotatedWith(Deprecated.class)).isEmpty();
+        // Match if the class itself is deprecated OR if it has any deprecated methods
+        return target.getDeclaredAnnotations().isAnnotationPresent(Deprecated.class) ||
+                !target.getDeclaredMethods().filter(ElementMatchers.isAnnotatedWith(Deprecated.class)).isEmpty();
     }
 
     @Override
@@ -106,18 +130,13 @@ public class DeprecationTrackerPlugin implements Plugin {
 
     /**
      * Extracts both 'since' and 'forRemoval' attributes from the @Deprecated annotation
-     * at build time in a single pass.
-     * <p>
-     * This is more efficient than extracting each attribute separately, as it only needs
-     * to retrieve and load the annotation once.
-     * </p>
+     * from an annotation list.
      *
-     * @param method the method to extract deprecation metadata from
+     * @param annotations the annotation list to extract deprecation metadata from
      * @return a DeprecationMetadata object containing both attributes
      */
-    private static DeprecationMetadata extractDeprecationMetadata(MethodDescription method) {
-        AnnotationDescription deprecated = method.getDeclaredAnnotations().filter(ElementMatchers.annotationType(Deprecated.class))
-                .getOnly();
+    private static DeprecationMetadata extractDeprecationMetadata(AnnotationList annotations) {
+        AnnotationDescription deprecated = annotations.filter(ElementMatchers.annotationType(Deprecated.class)).getOnly();
         if (deprecated == null) {
             // Default values if annotation not found or cannot be loaded
             return new DeprecationMetadata(null, false);
@@ -126,7 +145,6 @@ public class DeprecationTrackerPlugin implements Plugin {
         String since = StringUtils.trimToNull(deprecatedAnnotation.since());
         boolean forRemoval = deprecatedAnnotation.forRemoval();
         return new DeprecationMetadata(since, forRemoval);
-
     }
 
     /**

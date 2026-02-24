@@ -8,7 +8,14 @@ FROM ${BASE_IMAGE} as base
 ARG DEBUG_TOOLS="false"
 ARG FFMPEG="false"
 ARG LIBREOFFICE="false"
-ARG IMAGEMAGICK="false"
+# Include ImageMagick by default
+ARG IMAGEMAGICK="true"
+# Commit id corresponding to the version 7.1.2-15
+ARG IMAGEMAGICK_COMMIT_ID="b5fdb90dac0e6d0bf1bbd95704bbd60216a5bc23"
+# List of packages required at runtime by ImageMagick
+ARG IMAGEMAGICK_RUNTIME_PACKAGES="libgomp1 libltdl7 liblcms2-2 libxml2 libjpeg-turbo8 libpng16-16 libtiff6 libwebp7 libopenjp2-7 libfreetype6"
+# List of packages required ONLY to build ImageMagick. They are removed once installed
+ARG IMAGEMAGICK_BUILD_PACKAGES="libjpeg-dev libpng-dev libtiff-dev libwebp-dev libopenjp2-7-dev liblcms2-dev libltdl-dev libxml2-dev libfreetype-dev build-essential pkg-config"
 
 # GraalVM configuration
 ARG GRAALVM="false"
@@ -24,7 +31,7 @@ RUN apt-get update \
         packages="$packages vim binutils less procps iputils-ping htop"; \
     fi \
     && if [ "$IMAGEMAGICK" = "true" ]; then \
-        packages="$packages libfontconfig1 libx11-6 libharfbuzz0b libfribidi0 imagemagick"; \
+        packages="$packages $IMAGEMAGICK_RUNTIME_PACKAGES $IMAGEMAGICK_BUILD_PACKAGES"; \
     fi \
     && if [ "$LIBREOFFICE" = "true" ]; then \
         packages="$packages libreoffice"; \
@@ -34,6 +41,39 @@ RUN apt-get update \
     fi \
     && apt-get install -y --no-install-recommends $packages \
     && set -ux \
+    && if [ "$IMAGEMAGICK" = "true" ]; then \
+        IMAGEMAGICK_URL="https://github.com/ImageMagick/ImageMagick/archive/${IMAGEMAGICK_COMMIT_ID}.tar.gz"; \
+        echo "Installing ImageMagick from source using ${IMAGEMAGICK_URL}..."; \
+        wget -nv -O /tmp/imagemagick.tar.gz "${IMAGEMAGICK_URL}"; \
+        mkdir -p /tmp/imagemagick-build; \
+        tar --extract --file /tmp/imagemagick.tar.gz --directory /tmp/imagemagick-build --strip-components 1; \
+        cd /tmp/imagemagick-build; \
+        ./configure --prefix=/usr/local/imagemagick \
+            --enable-shared \
+            --disable-static \
+            --with-modules \
+            --with-perl=no \
+            --without-magick-plus-plus \
+            --disable-docs; \
+        make -j$(nproc); \
+        make install; \
+        ldconfig /usr/local/imagemagick/lib; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/magick; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/convert; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/identify; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/mogrify; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/composite; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/montage; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/compare; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/display; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/animate; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/import; \
+        ln -s /usr/local/imagemagick/bin/magick /usr/local/bin/conjure; \
+        cd /; \
+        rm -rf /tmp/imagemagick.tar.gz /tmp/imagemagick-build; \
+        apt-get remove -y $IMAGEMAGICK_BUILD_PACKAGES; \
+        apt-get autoremove -y; \
+    fi \
     && if [ "$GRAALVM" = "true" ]; then \
         if [ -z "${GRAALVM_ARCH+x}" ]; then \
             GRAALVM_DL_ARCH="$(uname -m)"; \
@@ -91,7 +131,6 @@ COPY --from=base / /
 ARG MAVEN_VER="3.9.9"
 ARG MAVEN_BASE_URL="https://archive.apache.org/dist/maven/maven-3"
 ARG MODULES_BASE_URL="https://store.jahia.com/cms/mavenproxy/private-app-store/org/jahia/modules"
-ARG IMAGEMAGICK_BINARIES_DOWNLOAD_URL="https://imagemagick.org/archive/binaries/magick"
 ARG DATA_FOLDER="/var/jahia"
 ARG ETC_FOLDER="/etc/jahia"
 ARG LOGS_FOLDER="/var/log/jahia"
@@ -155,20 +194,20 @@ RUN printf "I'm building for TARGETPLATFORM=${TARGETPLATFORM}" \
     && printf ", TARGETVARIANT=${TARGETVARIANT} \n" \
     && printf "With uname -s : " && uname -s \
     && printf "and  uname -m : " && uname -m \
-    # User and group setup
+    # User and group setup \
     && groupadd -g 9999 ${C_GROUP} \
     && useradd -r -u 9999 -g ${C_GROUP} ${C_USER} -d /home/${C_USER} -m \
-    # Application directories setup
+    # Application directories setup \
     && mkdir -p ${DATA_FOLDER}/info ${DATA_FOLDER}/repository ${DATA_FOLDER}/modules ${DATA_FOLDER}/patches/provisioning ${LOGS_FOLDER} \
     && chown -R ${C_USER}:${C_GROUP} ${DATA_FOLDER} ${LOGS_FOLDER} \
     && rm -r ${CATALINA_HOME}/logs \
     && ln -s ${LOGS_FOLDER} ${CATALINA_HOME}/logs \
-    # Maven installation
+    # Maven installation \
     && wget -nv -O maven.zip ${MAVEN_BASE_URL}/${MAVEN_VER}/binaries/apache-maven-${MAVEN_VER}-bin.zip \
     && unzip maven.zip -d /opt \
     && ln -s /opt/apache-maven-${MAVEN_VER}/bin/mvn /usr/local/bin/mvn \
     && rm maven.zip \
-    # Additional directories
+    # Additional directories \
     && mkdir -p /opt/jahia \
     && mkdir -p ${ETC_FOLDER} \
     && mkdir -p ${ETC_FOLDER}/jahia \

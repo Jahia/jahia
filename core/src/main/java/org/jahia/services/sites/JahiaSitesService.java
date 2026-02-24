@@ -399,7 +399,7 @@ public class JahiaSitesService extends JahiaService {
 
     /**
      * Creates the site using the specified data.
-     * 
+     *
      * @param info the site creation information
      * @return the created site object
      * @throws JahiaException in case of site creation issues
@@ -460,7 +460,7 @@ public class JahiaSitesService extends JahiaService {
 
     /**
      * Creates the site using the specified data.
-     * 
+     *
      * @param info the site creation information
      * @param session the current JCR session to use for site creation
      * @param installModulesWithoutPages will not create jnt:page nodes if true
@@ -471,9 +471,9 @@ public class JahiaSitesService extends JahiaService {
     public JahiaSite addSite(SiteCreationInfo info, JCRSessionWrapper session, boolean installModulesWithoutPages) throws JahiaException, IOException {
         long startTime = System.currentTimeMillis();
         logger.info("Start creation of a site using data: {}", info);
-        
+
         String siteKey = info.getSiteKey();
-        
+
         if (!isSiteKeyValid(siteKey, true)) {
             String msg = "Site key is not valid. Allowed characters are: " + validSiteKeyCharacters;
             throw new JahiaException(msg, msg, JahiaException.DATA_ERROR, JahiaException.ERROR_SEVERITY);
@@ -556,7 +556,7 @@ public class JahiaSitesService extends JahiaService {
             JCRSiteNode siteNode = (JCRSiteNode) session.getNode(site.getPath());
 
             // continue if the site is added correctly...
-            if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getNbSites() == 2) {
+            if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getSiteCount(true) == 2) {
                 setDefaultSite(site, session);
             }
 
@@ -634,7 +634,7 @@ public class JahiaSitesService extends JahiaService {
         }
         return pack;
     }
-    
+
     private String getTargetString(String siteKey) {
         return "/sites/" + siteKey;
     }
@@ -846,7 +846,7 @@ public class JahiaSitesService extends JahiaService {
      * @deprecated since Jahia 8.0.0.0 use {@link #getSiteCount(boolean)} instead
      */
     @Deprecated(since = "8.0.0.0", forRemoval = true)
-    public int getNbSites() throws JahiaException {
+    public int getNbSites() {
         return Math.toIntExact(getSiteCount(true));
     }
 

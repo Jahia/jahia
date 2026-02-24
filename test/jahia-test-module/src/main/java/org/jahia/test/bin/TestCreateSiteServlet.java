@@ -109,9 +109,9 @@ public class TestCreateSiteServlet extends BaseTestController {
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        int numberOfSites = 0;
+                        long numberOfSites;
                         try {
-                            numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
+                            numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getSiteCount(true);
                             if (siteKey == null) {
                                 siteKey = "ACME" + numberOfSites;
                             }
@@ -155,7 +155,7 @@ public class TestCreateSiteServlet extends BaseTestController {
             }
         } else if (httpServletRequest.getParameter("site").equals("mySite")) {
             try {
-                int numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getNbSites();
+                long numberOfSites = ServicesRegistry.getInstance().getJahiaSitesService().getSiteCount(true);
                 TestHelper.createSite("mySite" + numberOfSites, "localhost" + numberOfSites, TestHelper.WEB_TEMPLATES);
             } catch (Exception e) {
                 logger.warn("Exception during mySite Creation", e);

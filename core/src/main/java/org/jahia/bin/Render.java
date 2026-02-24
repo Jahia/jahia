@@ -189,7 +189,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     private static final String PARAM_IS_WEBFLOW_REQUEST = Render.class.getName() + ".isWebflowRequest";
-    private static final long XSS_FILTER_DEPRECATED_LOG_INTERVAL = 24 * 60 * 60 * 1000L;
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Render.class);
 
@@ -475,17 +474,20 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return parameters;
     }
 
+    /**
+     * Filters the provided string value to remove potential XSS (Cross-Site Scripting) vulnerabilities
+     * in HTML or script content.
+     *
+     * @param stringValue the input string that may contain untrusted content to be filtered
+     * @return the sanitized string with potential XSS vulnerabilities removed
+     * @deprecated Automatic XSS Filter sanitizer on Jahia actions request parameters is deprecated and will be removed in future Jahia release. Please use the html-filtering module instead and refer to <a href="https://store.jahia.com/contents/modules-repository/org/jahia/modules/html-filtering.html>its documentation</a> for configuration.
+     */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     private String xssFilter(String stringValue) {
         // fail fast if we find no start or end of a tag
         if (!stringValue.contains("<") && !stringValue.contains(">")) {
             return stringValue;
         }
-
-        LimiterExecutor.executeOncePerInterval("xssFilterDeprecate", XSS_FILTER_DEPRECATED_LOG_INTERVAL,
-                () -> logger.warn("Automatic XSS Filter sanitizer on Jahia actions request parameters is deprecated, " +
-                        "and will be removed in future Jahia release, please use the html-filtering module instead " +
-                        "and refer to its documentation for configuration."));
 
         // fix for https://jira.jahia.org/browse/QA-4337, attack with unclosed tags. These regexp will encode unclosed tags.
         stringValue = TAG_MISSING_END_BIGGERTHAN_PATTERN.matcher(stringValue).replaceAll("&lt;$1");

@@ -24,12 +24,10 @@
 package org.jahia.bundles.core.services;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.jahia.api.settings.SettingsBean;
 import org.jahia.tools.bytecode.DeprecationTrackerService;
 import org.jahia.utils.LimiterExecutor;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.*;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -57,6 +55,7 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
 
     private Config config;
     private transient Pattern excludedMethodsPattern;
+    private SettingsBean settingsBean;
 
     @Activate
     public void activate(Config config) {
@@ -72,6 +71,10 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
         logger.info("Deprecation Service configuration modified");
     }
 
+    @Reference
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
+    }
     /**
      * Compiles the excluded methods regex patterns from configuration into a single {@link Pattern}.
      * <p>
@@ -115,6 +118,12 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
             return;
         }
 
+        // check the operating mode
+        if (config.developmentModeOnly() && !settingsBean.isDevelopmentMode()) {
+            logger.debug("Skipping deprecated method: {} (development mode only)", methodSignature);
+            return;
+        }
+
         // log only once per interval
         long intervalInMs = config.loggingIntervalInSeconds() * 1000L;
         String key = KEY_PREFIX + methodSignature;
@@ -149,5 +158,7 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
 
         @AttributeDefinition(name = "%excludedMethodsRegexes", description = "%excludedMethodsRegexesDesc") String[] excludedMethodsRegexes() default {
                 "org\\.jahia\\.bin\\.Render\\.xssFilter.*" };
+
+        @AttributeDefinition(name = "%developmentModeOnly", description = "%developmentModeOnlyDesc") boolean developmentModeOnly() default false;
     }
 }

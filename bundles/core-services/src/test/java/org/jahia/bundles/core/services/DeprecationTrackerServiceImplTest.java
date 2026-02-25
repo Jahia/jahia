@@ -260,6 +260,85 @@ public class DeprecationTrackerServiceImplTest {
         assertTrue("Normal method should be tracked in development mode", limiterExecutorMap.containsKey(normalKey));
     }
 
+    @Test
+    @Parameters({ "-123", "0" })
+    public void GIVEN_valid_config_WHEN_invalid_logging_interval_modification_attempted_THEN_should_keep_old_config(int invalidInterval) {
+        // Given - activate with valid config
+        DeprecationTrackerServiceImpl.Config validConfig = configBuilder().loggingIntervalInSeconds(60).build();
+        deprecationService.activate(validConfig);
+
+        String signature = "org.example.Service.deprecatedMethod()";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + signature;
+
+        // Verify initial config works
+        deprecationService.onMethodCall(signature, "8.3", false);
+        assertTrue("Method should be tracked with valid config", limiterExecutorMap.containsKey(key));
+
+        // When - try to modify with invalid config
+        DeprecationTrackerServiceImpl.Config invalidConfig = configBuilder().loggingIntervalInSeconds(invalidInterval).build();
+
+        try {
+            deprecationService.modified(invalidConfig);
+            fail("Should have thrown IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        // Then - old config should still work
+        limiterExecutorMap.clear();
+        deprecationService.onMethodCall(signature, "8.3", false);
+        assertTrue("Method should still be tracked with old valid config", limiterExecutorMap.containsKey(key));
+    }
+
+    @Test
+    @Parameters(method = "invalidRegexParameters")
+    public void GIVEN_valid_config_WHEN_invalid_regex_modification_attempted_THEN_should_keep_old_config(String[] invalidRegexes) {
+        // Given - activate with valid config
+        DeprecationTrackerServiceImpl.Config validConfig = configBuilder().excludedMethodsRegexes(".*excludedMethod.*").build();
+        deprecationService.activate(validConfig);
+
+        String excludedSignature = "org.example.Service.excludedMethod()";
+        String normalSignature = "org.example.Service.normalMethod()";
+        String excludedKey = DeprecationTrackerServiceImpl.KEY_PREFIX + excludedSignature;
+        String normalKey = DeprecationTrackerServiceImpl.KEY_PREFIX + normalSignature;
+
+        // Verify initial config works - excluded method not tracked
+        deprecationService.onMethodCall(excludedSignature, "8.3", false);
+        assertFalse("Excluded method should not be tracked with valid config", limiterExecutorMap.containsKey(excludedKey));
+
+        // Verify initial config works - normal method is tracked
+        deprecationService.onMethodCall(normalSignature, "8.3", false);
+        assertTrue("Normal method should be tracked with valid config", limiterExecutorMap.containsKey(normalKey));
+
+        // When - try to modify with invalid regex pattern
+        DeprecationTrackerServiceImpl.Config invalidConfig = configBuilder().excludedMethodsRegexes(invalidRegexes).build();
+
+        try {
+            deprecationService.modified(invalidConfig);
+            fail("Should have thrown PatternSyntaxException for regex: " + String.join(", ", invalidRegexes));
+        } catch (java.util.regex.PatternSyntaxException e) {
+            // Expected
+        }
+
+        // Then - old config should still work
+        limiterExecutorMap.clear();
+        deprecationService.onMethodCall(excludedSignature, "8.3", false);
+        assertFalse("Excluded method should still not be tracked with old valid config", limiterExecutorMap.containsKey(excludedKey));
+
+        deprecationService.onMethodCall(normalSignature, "8.3", false);
+        assertTrue("Normal method should still be tracked with old valid config", limiterExecutorMap.containsKey(normalKey));
+    }
+
+    private Object[] invalidRegexParameters() {
+        return new Object[] { new Object[] { new String[] { "[invalid(regex" } }, new Object[] { new String[] { "*invalid" } },
+                new Object[] { new String[] { "(?<invalid)" } }, new Object[] { new String[] { "(?P<invalid>)" } },
+                new Object[] { new String[] { "[z-a]" } },
+                // Test cases with multiple regexes where at least one is invalid
+                new Object[] { new String[] { ".*valid.*", "[invalid(regex" } },
+                new Object[] { new String[] { "[invalid(regex", ".*valid.*" } },
+                new Object[] { new String[] { ".*firstValid.*", "*invalid", ".*secondValid.*" } } };
+    }
+
     // ==================== Helper Methods ====================
 
     /**

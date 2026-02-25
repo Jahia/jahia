@@ -59,15 +59,13 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
 
     @Activate
     public void activate(Config config) {
-        excludedMethodsPattern = compileExcludedMethodsPattern(config);
-        this.config = config;
+        applyConfiguration(config);
         logger.info("Deprecation Service activated");
     }
 
     @Modified
     public void modified(Config config) {
-        excludedMethodsPattern = compileExcludedMethodsPattern(config);
-        this.config = config;
+        applyConfiguration(config);
         logger.info("Deprecation Service configuration modified");
     }
 
@@ -75,6 +73,17 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
     }
+
+    private void applyConfiguration(Config config) {
+        Pattern compiledExcludedMethodsPattern = compileExcludedMethodsPattern(config);
+        if (config.loggingIntervalInSeconds() <= 0) {
+            throw new IllegalArgumentException("Invalid logging interval, must be positive: " + config.loggingIntervalInSeconds());
+        }
+        // once validated, update the local fields
+        this.config = config;
+        this.excludedMethodsPattern = compiledExcludedMethodsPattern;
+    }
+
     /**
      * Compiles the excluded methods regex patterns from configuration into a single {@link Pattern}.
      * <p>
@@ -154,7 +163,7 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
 
         int DEFAULT_LOGGING_INTERVAL = 24 * 60 * 60; // 1 day
 
-        @AttributeDefinition(name = "%loggingIntervalInSeconds", description = "%loggingIntervalInSecondsDesc") int loggingIntervalInSeconds() default DEFAULT_LOGGING_INTERVAL;
+        @AttributeDefinition(name = "%loggingIntervalInSeconds", description = "%loggingIntervalInSecondsDesc", min = "1") int loggingIntervalInSeconds() default DEFAULT_LOGGING_INTERVAL;
 
         @AttributeDefinition(name = "%excludedMethodsRegexes", description = "%excludedMethodsRegexesDesc") String[] excludedMethodsRegexes() default {
                 "org\\.jahia\\.bin\\.Render\\.xssFilter.*" };

@@ -136,14 +136,15 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
         // log only once per interval
         long intervalInMs = config.loggingIntervalInSeconds() * 1000L;
         String key = KEY_PREFIX + methodSignature;
-        LimiterExecutor.executeOncePerInterval(key, intervalInMs, () -> logDeprecatedUsage(methodSignature, deprecatedSince, forRemoval));
+        LimiterExecutor.executeOncePerInterval(key, intervalInMs,
+                () -> logDeprecatedMethodCall(methodSignature, deprecatedSince, forRemoval));
     }
 
     private boolean isExcluded(String methodSignature) {
         return excludedMethodsPattern.matcher(methodSignature).matches();
     }
 
-    private static void logDeprecatedUsage(String methodSignature, String deprecatedSince, boolean forRemoval) {
+    private static void logDeprecatedMethodCall(String methodSignature, String deprecatedSince, boolean forRemoval) {
         // Build warning message based on available metadata
         StringBuilder warnMsg = new StringBuilder("Deprecated method called: ");
         warnMsg.append(methodSignature);
@@ -156,6 +157,34 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
         warnMsg.append(". Enable debugging to get the full stacktrace.");
         logger.warn(warnMsg.toString());
         logger.debug("Stack trace:", new Throwable()); // Log the stack trace
+    }
+
+    @Override
+    public void onFeatureUsage(String featureName, String deprecatedSince, boolean markedForRemoval, String details) {
+
+        // log only once per interval
+        long intervalInMs = config.loggingIntervalInSeconds() * 1000L;
+        String key = KEY_PREFIX + featureName;
+        LimiterExecutor.executeOncePerInterval(key, intervalInMs,
+                () -> logDeprecatedFeatureUsage(featureName, deprecatedSince, markedForRemoval, details));
+
+    }
+
+    private static void logDeprecatedFeatureUsage(String featureName, String deprecatedSince, boolean forRemoval, String details) {
+        // Build warning message based on available metadata
+        StringBuilder warnMsg = new StringBuilder("Deprecated feature used: ");
+        warnMsg.append(featureName);
+        if (StringUtils.isNotBlank(deprecatedSince)) {
+            warnMsg.append(" (deprecated since ").append(deprecatedSince).append(")");
+        }
+        if (forRemoval) {
+            warnMsg.append(" [MARKED FOR REMOVAL]");
+        }
+        warnMsg.append(".");
+        logger.warn(warnMsg.toString());
+        if (StringUtils.isNotBlank(details)) {
+            logger.warn("Details: {}", details);
+        }
     }
 
     @ObjectClassDefinition(name = "%configName", description = "%configDesc", localization = "OSGI-INF/l10n/deprecation/config")

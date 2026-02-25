@@ -49,6 +49,7 @@ import org.jahia.bundles.securityfilter.legacy.PermissionsConfig;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.securityfilter.PermissionService;
 import org.jahia.services.securityfilter.ScopeDefinition;
+import org.jahia.utils.DeprecationUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
@@ -133,6 +134,10 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         Map<String, String> m = ConfigUtil.getMap(properties);
         String profile = m.get("security.profile");
         if (profile != null) {
+            if ("compat".equals(profile)) {
+                DeprecationUtils.onDeprecatedFeatureUsage("Security 'compat' profile", "8.2.4.0", true,
+                        "The 'compat' ('compatibility') is strongly discouraged, please use 'default' instead.");
+            }
             deployProfileConfig(profile);
         } else {
             removeProfile();

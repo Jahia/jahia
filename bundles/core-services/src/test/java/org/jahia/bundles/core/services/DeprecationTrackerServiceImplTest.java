@@ -260,6 +260,8 @@ public class DeprecationTrackerServiceImplTest {
         assertTrue("Normal method should be tracked in development mode", limiterExecutorMap.containsKey(normalKey));
     }
 
+    // ==================== Invalid Config Tests ====================
+
     @Test
     @Parameters({ "-123", "0" })
     public void GIVEN_valid_config_WHEN_invalid_logging_interval_modification_attempted_THEN_should_keep_old_config(int invalidInterval) {
@@ -337,6 +339,142 @@ public class DeprecationTrackerServiceImplTest {
                 new Object[] { new String[] { ".*valid.*", "[invalid(regex" } },
                 new Object[] { new String[] { "[invalid(regex", ".*valid.*" } },
                 new Object[] { new String[] { ".*firstValid.*", "*invalid", ".*secondValid.*" } } };
+    }
+
+    // ==================== Feature Usage Tests ====================
+
+    @Test
+    public void GIVEN_deprecated_feature_WHEN_used_THEN_should_be_tracked() {
+        // Given
+        deprecationService.activate(config);
+        String featureName = "Legacy XML Configuration";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + featureName;
+
+        // When
+        deprecationService.onFeatureUsage(featureName, "8.2", false, "Some details");
+
+        // Then
+        assertTrue("Feature usage should be tracked", limiterExecutorMap.containsKey(key));
+        assertNotNull("Timestamp should be recorded", limiterExecutorMap.get(key));
+    }
+
+    @Test
+    public void GIVEN_deprecated_feature_with_null_details_WHEN_used_THEN_should_be_tracked() {
+        // Given
+        deprecationService.activate(config);
+        String featureName = "Old Authentication Flow";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + featureName;
+
+        // When - call with null details
+        deprecationService.onFeatureUsage(featureName, "8.1", true, null);
+
+        // Then
+        assertTrue("Feature usage should be tracked even with null details", limiterExecutorMap.containsKey(key));
+    }
+
+    @Test
+    public void GIVEN_deprecated_feature_with_empty_since_WHEN_used_THEN_should_be_tracked() {
+        // Given
+        deprecationService.activate(config);
+        String featureName = "Legacy Data Format";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + featureName;
+
+        // When - call with empty deprecatedSince
+        deprecationService.onFeatureUsage(featureName, "", false, "Some details");
+
+        // Then
+        assertTrue("Feature usage should be tracked with empty since value", limiterExecutorMap.containsKey(key));
+    }
+
+    @Test
+    public void GIVEN_deprecated_feature_marked_for_removal_WHEN_used_THEN_should_be_tracked() {
+        // Given
+        deprecationService.activate(config);
+        String featureName = "Deprecated API Pattern";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + featureName;
+
+        // When - call with forRemoval=true
+        deprecationService.onFeatureUsage(featureName, "8.3", true, "Some details");
+
+        // Then
+        assertTrue("Feature usage marked for removal should be tracked", limiterExecutorMap.containsKey(key));
+    }
+
+    @Test
+    public void GIVEN_rate_limiting_config_WHEN_feature_used_multiple_times_THEN_should_respect_interval() throws InterruptedException {
+        // Given - config with 1 second interval
+        DeprecationTrackerServiceImpl.Config rateLimitConfig = configBuilder().loggingIntervalInSeconds(1).build();
+        deprecationService.activate(rateLimitConfig);
+        String featureName = "Legacy Protocol";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + featureName;
+
+        // When - use the feature twice quickly
+        deprecationService.onFeatureUsage(featureName, "8.2", false, "Protocol v1 detected");
+        Long firstTimestamp = limiterExecutorMap.get(key);
+
+        deprecationService.onFeatureUsage(featureName, "8.2", false, "Protocol v1 detected again");
+        Long secondTimestamp = limiterExecutorMap.get(key);
+
+        // Then - timestamps should be the same (rate limited)
+        assertEquals("Timestamp should not change within interval", firstTimestamp, secondTimestamp);
+
+        // When - wait for interval to pass and use again
+        Thread.sleep(1100); // Wait slightly more than 1 second
+        deprecationService.onFeatureUsage(featureName, "8.2", false, "Protocol v1 detected after interval");
+        Long thirdTimestamp = limiterExecutorMap.get(key);
+
+        // Then - timestamp should be updated
+        assertTrue("Timestamp should update after interval", thirdTimestamp > secondTimestamp);
+    }
+
+    @Test
+    public void GIVEN_multiple_different_features_WHEN_used_THEN_each_should_be_tracked_independently() {
+        // Given
+        deprecationService.activate(config);
+        String feature1 = "Legacy XML Configuration";
+        String feature2 = "Old Authentication Flow";
+        String feature3 = "Deprecated API Pattern";
+        String key1 = DeprecationTrackerServiceImpl.KEY_PREFIX + feature1;
+        String key2 = DeprecationTrackerServiceImpl.KEY_PREFIX + feature2;
+        String key3 = DeprecationTrackerServiceImpl.KEY_PREFIX + feature3;
+
+        // When
+        deprecationService.onFeatureUsage(feature1, "8.1", false, "Details 1");
+        deprecationService.onFeatureUsage(feature2, "8.2", true, "Details 2");
+        deprecationService.onFeatureUsage(feature3, "8.3", false, null);
+
+        // Then - all features should be tracked independently
+        assertEquals(3, limiterExecutorMap.size());
+        assertTrue("Feature 1 should be tracked", limiterExecutorMap.containsKey(key1));
+        assertTrue("Feature 2 should be tracked", limiterExecutorMap.containsKey(key2));
+        assertTrue("Feature 3 should be tracked", limiterExecutorMap.containsKey(key3));
+
+        // Verify they have different timestamps
+        assertNotEquals("Feature 1 timestamp should be different from feature 2 timestamp", key1, key2);
+        assertNotEquals("Feature 2 timestamp should be different from feature 3 timestamp", key2, key3);
+        assertNotEquals("Feature 3 timestamp should be different from feature 1 timestamp", key3, key1);
+    }
+
+    @Test
+    public void GIVEN_method_and_feature_with_similar_names_WHEN_both_used_THEN_should_track_independently() {
+        // Given
+        deprecationService.activate(config);
+        String methodSignature = "org.example.Service.legacyMethod()";
+        String featureName = "legacyMethod"; // Similar but different namespace
+        String methodKey = DeprecationTrackerServiceImpl.KEY_PREFIX + methodSignature;
+        String featureKey = DeprecationTrackerServiceImpl.KEY_PREFIX + featureName;
+
+        // When
+        deprecationService.onMethodCall(methodSignature, "8.2", false);
+        deprecationService.onFeatureUsage(featureName, "8.2", false, "Feature usage");
+
+        // Then - both should be tracked independently due to different identifiers
+        assertEquals(2, limiterExecutorMap.size());
+        assertTrue("Method call should be tracked", limiterExecutorMap.containsKey(methodKey));
+        assertTrue("Feature usage should be tracked", limiterExecutorMap.containsKey(featureKey));
+
+        // Verify they are different entries
+        assertNotEquals("Method and feature should have different keys", methodKey, featureKey);
     }
 
     // ==================== Helper Methods ====================

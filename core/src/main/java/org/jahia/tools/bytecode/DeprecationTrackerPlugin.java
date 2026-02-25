@@ -11,7 +11,7 @@ import net.bytebuddy.implementation.MethodCall;
 import net.bytebuddy.implementation.SuperMethodCall;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.commons.lang3.StringUtils;
-import org.jahia.osgi.BundleUtils;
+import org.jahia.utils.DeprecationUtils;
 
 import java.lang.reflect.Method;
 
@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  * ByteBuddy plugin that instruments deprecated methods to track their usage.
  * <p>
  * This transformer extracts deprecation metadata (method signature, 'since' attribute,
- * and 'forRemoval' flag) at build time and injects calls to {@link #onDeprecatedMethodCall}
+ * and 'forRemoval' flag) at build time and injects calls to {@link DeprecationUtils#onDeprecatedMethodCall(String, String, boolean)}
  * with the pre-computed metadata.
  * </p>
  */
@@ -69,26 +69,11 @@ public class DeprecationTrackerPlugin implements Plugin {
     }
 
     /**
-     * Static helper method that gets injected into deprecated methods.
-     * This does the OSGi service lookup and delegates to the {@link DeprecationTrackerService}.
-     *
-     * @param methodSignature the fully qualified method signature
-     * @param deprecatedSince the 'since' value from @Deprecated annotation
-     * @param forRemoval      whether the method is marked for removal
-     */
-    public static void onDeprecatedMethodCall(String methodSignature, String deprecatedSince, boolean forRemoval) {
-        DeprecationTrackerService service = BundleUtils.getOsgiService(DeprecationTrackerService.class, null);
-        if (service != null) {
-            service.onMethodCall(methodSignature, deprecatedSince, forRemoval);
-        }
-    }
-
-    /**
      * Gets the trackDeprecation helper method for ByteBuddy to invoke.
      */
     private static Method getTrackDeprecationMethod() {
         try {
-            return DeprecationTrackerPlugin.class.getMethod("onDeprecatedMethodCall", String.class, String.class, boolean.class);
+            return DeprecationUtils.class.getMethod("onDeprecatedMethodCall", String.class, String.class, boolean.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Failed to find trackDeprecation method", e);
         }

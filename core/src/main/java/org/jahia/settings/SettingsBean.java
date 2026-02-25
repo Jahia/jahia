@@ -1122,9 +1122,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return gwtFileUploadEnabled;
     }
 
-    /**
-     * @deprecated since 7.0.0.2
-     */
     @Override
     @Deprecated(since = "7.0.0.2", forRemoval = true)
     public String getJahiaHomeDiskPath() {

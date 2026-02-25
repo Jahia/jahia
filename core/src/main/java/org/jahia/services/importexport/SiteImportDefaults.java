@@ -46,14 +46,14 @@ package org.jahia.services.importexport;
  * Generates some default values to be preselected in the import UI.
  *
  * @since 6.6.1.2
- * @deprecated never been used
+ * @deprecated Legacy import code, not used anymore
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public interface SiteImportDefaults {
 
-    public String getDefaultTemplateSet (String sitekey);
+    String getDefaultTemplateSet (String sitekey);
 
-    public String getDefaultMappingFile (String sitekey);
+    String getDefaultMappingFile(String sitekey);
 
-    public String getDefaultSourceDefinitionsFile (String sitekey);
+    String getDefaultSourceDefinitionsFile(String sitekey);
 }

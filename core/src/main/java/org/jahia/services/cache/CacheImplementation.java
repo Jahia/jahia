@@ -53,7 +53,16 @@ import java.util.Set;
  *
  */
 public interface CacheImplementation<K, V> {
-    @Deprecated(since = "7.2.0.0")
+
+    /**
+     * Checks if the cache contains the specified key.
+     *
+     * @param key the key to check
+     * @return true if the cache contains the key, false otherwise
+     * @deprecated Use {@link #get(Object)} directly and check if the returned value is null instead.
+     * The EhCache implementation calls get() internally, making this method redundant.
+     */
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     boolean containsKey(K key);
 
     V get(K key);

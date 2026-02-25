@@ -49,6 +49,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Filter that logs into the session main resources visited by the user
+ * @deprecated User navigation history tracking is no longer recommended. Implement your own solution if you need this functionality.
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class HistoryTrackerFilter extends AbstractFilter {

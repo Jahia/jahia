@@ -67,9 +67,7 @@ public interface RenderContextTuner {
      * @param resource the current resource rendered
      * @param renderContext the current renderContext
      * @return An object that represents the original state of the key part in the render context
-     * <p>
      * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
-     * <p>
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext);
@@ -83,9 +81,7 @@ public interface RenderContextTuner {
      * @param resource the current resource rendered
      * @param renderContext the current renderContext
      * @param original the original object previously retrieved via prepareContextForContentGeneration() invocation
-     * <p>
      * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
-     * <p>
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original);

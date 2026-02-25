@@ -883,7 +883,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param password String representation of a password.
      * @return Return a String representation of the password encryption. Return
      * null on any failure.
-     * @deprecated since 7.1.0.1 use {@link PasswordService#digest(String)} instead
+     * @deprecated use {@link PasswordService#digest(String)} instead
      */
     @Deprecated(since = "7.1.0.1", forRemoval = true)
     public static String encryptPassword(String password) {
@@ -979,36 +979,18 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         cacheHelper.updateRemoved(userPath);
     }
 
-    /**
-     * get the list of olds users providers
-     * this method is used to maintain compatibility with old users providers
-     *
-     * @deprecated
-     */
     @Override
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public List<? extends JahiaUserManagerProvider> getProviderList() {
         return new ArrayList<>(legacyUserProviders.values());
     }
 
-    /**
-     * get the provider corresponding to a given key
-     * this method is used to maintain compatibility with old users providers
-     *
-     * @deprecated
-     */
     @Override
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public JahiaUserManagerProvider getProvider(String key) {
         return legacyUserProviders.get(key);
     }
 
-    /**
-     * register a user provider
-     * this method is used to maintain compatibility with old users providers
-     *
-     * @deprecated
-     */
     @Override
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
@@ -1022,7 +1004,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * unregister a user provider
      * this method is used to maintain compatibility with old users providers
      *
-     * @deprecated
+     * @deprecated used to maintain compatibility with old groups providers
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {

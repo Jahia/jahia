@@ -259,12 +259,12 @@ public class TemplatePackageDeployer {
     }
 
     /**
-     * clear all module nodes for given package and session
-     * Deprecated: use clearModuleNodes(final JahiaTemplatesPackage pkg)
+     * Clear all module nodes for a given package and session.
      *
      * @param pkg     the module package
      * @param session current JCR session instance
      * @throws RepositoryException in case of JCR-related errors
+     * @deprecated use {@link #clearModuleNodes(JahiaTemplatesPackage)} instead
      */
     @Deprecated(since = "7.2.1.0", forRemoval = true)
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {

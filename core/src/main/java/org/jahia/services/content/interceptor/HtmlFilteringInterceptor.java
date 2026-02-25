@@ -70,11 +70,12 @@ import org.jahia.services.sites.SitesSettings;
 
 /**
  * @author Sergiy Shyrkov
- * @deprecated a new module "html-filtering" is available in Jahia to provide XSS protection,
- * this implementation was related to site property: htmlMarkupFilteringEnabled
- * to re-enable this implementation, you need to programmatically call: setConsiderSiteSettingsForFiltering.
+ * Automatic XSS Filtering should be done using the <i>HTML Filtering module</i>. Refer to <a href="https://store.jahia.com/contents/modules-repository/org/jahia/modules/html-filtering.html">its documentation</a> for configuration.
+ * @deprecated XSS Filtering should be done using the <i>HTML Filtering module</i>,
+ * this implementation was related to site property: {@code htmlMarkupFilteringEnabled}
+ * to re-enable this implementation, you need to programmatically call: {@link #setConsiderSiteSettingsForFiltering(boolean)}.
  * But beware that this interceptor is deprecated and will be removed in future releases.
- * (Please use the new module "html-filtering" instead, and refer to its documentation for configuration)
+ * Refer to <a href="https://store.jahia.com/contents/modules-repository/org/jahia/modules/html-filtering.html">HTML Filtering module documentation</a> for configuration.
  */
 @Deprecated(since = "8.2.0.0", forRemoval = true)
 public class HtmlFilteringInterceptor extends BaseInterceptor {

@@ -444,6 +444,9 @@ public class Resource {
         return result;
     }
 
+    /**
+     * @deprecated not used anymore
+     */
     @Deprecated(since = "7.0.0.0", forRemoval = true)
     public class Option implements Comparable<Option> {
 

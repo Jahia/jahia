@@ -112,7 +112,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession with JahiaUser
+     * @deprecated Use {@link #doExecuteWithSystemSessionAsUser(JahiaUser, String, Locale, JCRCallback)} with the corresponding {@link JahiaUser} instead
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithSystemSession(String username, JCRCallback<X> callback) throws RepositoryException {
@@ -120,7 +120,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession with JahiaUser
+     * @deprecated Use {@link #doExecuteWithSystemSessionAsUser(JahiaUser, String, Locale, JCRCallback)} with the corresponding {@link JahiaUser} instead
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithSystemSession(String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
@@ -128,7 +128,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession with JahiaUser
+     * @deprecated Use {@link #doExecuteWithSystemSessionAsUser(JahiaUser, String, Locale, JCRCallback)} with the corresponding {@link JahiaUser} instead
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithSystemSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
@@ -178,7 +178,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecute with JahiaUser
+     * @deprecated Use {@link #doExecute(JahiaUser, String, Locale, JCRCallback)} with the corresponding {@link JahiaUser} instead
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithUserSession(String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
@@ -194,7 +194,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecute with JahiaUser
+     * @deprecated Use {@link #doExecute(JahiaUser, String, Locale, JCRCallback)} with the corresponding {@link JahiaUser} instead
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecuteWithUserSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
@@ -236,7 +236,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession or doExecute with JahiaUser
+     * @deprecated Use {@link #doExecuteWithSystemSessionAsUser(JahiaUser, String, Locale, JCRCallback)} or {@link #doExecute(JahiaUser, String, Locale, JCRCallback)} with the corresponding {@link JahiaUser} instead
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
@@ -248,7 +248,7 @@ public class JCRTemplate implements org.jahia.api.content.JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession or doExecute with JahiaUser
+     * @deprecated Use {@link #doExecuteWithSystemSessionAsUser(JahiaUser, String, Locale, JCRCallback)} or {@link #doExecute(JahiaUser, String, Locale, JCRCallback)} with the corresponding {@link JahiaUser} instead
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, JCRCallback<X> callback) throws RepositoryException {

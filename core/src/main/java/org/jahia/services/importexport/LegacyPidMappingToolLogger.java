@@ -51,7 +51,7 @@ import java.util.Locale;
 
 /**
  * User: rincevent
- * @deprecated Legacy import code, seems not used
+ * @deprecated Legacy import code, not used anymore
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class LegacyPidMappingToolLogger implements LegacyPidMappingTool {

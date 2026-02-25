@@ -213,7 +213,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
     /**
      * @deprecated the mechanism to generate a random string is now using the {@link UUID} class, so this method is of no use anymore
      */
-    @Deprecated(since = "7.2.2.0")
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public static String generateRandomString(int length) {
         SecureRandom randomGen = new SecureRandom();
         StringBuilder result = new StringBuilder();

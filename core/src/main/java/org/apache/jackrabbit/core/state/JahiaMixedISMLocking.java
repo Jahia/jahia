@@ -61,6 +61,8 @@ import static org.apache.jackrabbit.data.core.TransactionContext.isSameThreadId;
  * <code>JahiaMixedISMLocking</code> is a mix of the FineGrainedISMLocking (for synchronizing
  * changes from other nodes) and the coarse grained global lock like DefaultISMLocking (for writes
  * to repository initiated on the current VM).
+ *
+ * @deprecated Use {@link org.apache.jackrabbit.core.state.DefaultISMLocking} instead
  */
 @Deprecated(since = "8.0.0.0", forRemoval = true)
 public class JahiaMixedISMLocking implements ISMLocking {

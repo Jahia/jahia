@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 
 /**
  * Class of utility method for compressing/decompressing cache key.
+ * @deprecated Legacy cache key generation infrastructure, no longer used in current cache implementation.
  */
 
 @Deprecated(since = "8.2.3.0", forRemoval = true)

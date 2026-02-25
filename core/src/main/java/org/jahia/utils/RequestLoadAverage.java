@@ -46,6 +46,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 
 /**
  * Request load average tool.
+ * @deprecated Load tracking utilities are no longer maintained. Use standard Java monitoring tools or implement your own metrics tracking solution.
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class RequestLoadAverage extends LoadAverage {

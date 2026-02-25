@@ -48,6 +48,11 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpSession;
 import java.util.LinkedList;
 
+/**
+ * Bean for tracking user navigation history.
+ *
+ * @deprecated User navigation history tracking is no longer recommended. Implement your own solution if you need this functionality.
+ */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class HistoryTrackerBean implements BeanNameAware {
     private int historySize = 10;

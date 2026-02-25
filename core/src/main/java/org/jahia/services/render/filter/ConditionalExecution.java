@@ -326,6 +326,9 @@ public abstract class ConditionalExecution {
         }
     }
 
+    /**
+     * @deprecated not used anymore
+     */
     @Deprecated(since = "7.2.1.0", forRemoval = true)
     public void setSkipOnConfiguration(String configurations) {
         setSkipOnConfigurations(configurations);

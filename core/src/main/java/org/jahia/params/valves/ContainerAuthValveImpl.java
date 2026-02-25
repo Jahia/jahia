@@ -58,7 +58,7 @@ import java.security.Principal;
  * Date: Aug 10, 2005
  * Time: 7:03:55 PM
  * Copyright (C) Jahia Inc.
- * @deprecated not used, we don't recommend container based authentication, Jahia is handling users and authentication itself
+ * @deprecated not used, container-based authentication is not recommended, Jahia is handling users and authentication itself
  */
 @Deprecated(since = "8.2.3.0", forRemoval = true)
 public class ContainerAuthValveImpl extends BaseAuthValve {

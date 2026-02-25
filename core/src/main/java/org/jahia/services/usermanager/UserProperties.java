@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * state as well as the original provider of the properties.
  *
  * @author Serge Huber
- * @deprecated
+ * @deprecated Legacy user properties infrastructure maintained for backward compatibility. Use the modern JCR-based user management API instead.
  */
 @Deprecated(since = "7.2.0.0", forRemoval = true)
 public class UserProperties implements Serializable {

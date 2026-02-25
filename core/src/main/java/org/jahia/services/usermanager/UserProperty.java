@@ -45,7 +45,9 @@ package org.jahia.services.usermanager;
 import java.io.Serializable;
 
 /**
- * @deprecated
+ * Represents a user property with metadata.
+ *
+ * @deprecated Legacy user properties infrastructure maintained for backward compatibility. Use the modern JCR-based user management API instead.
  */
 @Deprecated(since = "7.2.0.0", forRemoval = true)
 public class UserProperty implements Serializable {

@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
 /**
  * This class is keep to maintain compatibility with olds users/groups providers
  * @author kevan
- * @deprecated
+ * @deprecated used to maintain compatibility with old groups providers
  */
 @Deprecated(since = "7.1.0.0", forRemoval = true)
 public abstract class JahiaUserManagerProvider extends JahiaService implements InitializingBean, DisposableBean {

@@ -74,6 +74,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
+ * @deprecated not supported anymore
  */
 @Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DocumentConverter extends JahiaController {

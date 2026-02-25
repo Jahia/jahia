@@ -54,8 +54,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author Jerome Blanchard
+ * Executor for managing load average tracking.
  *
+ * @author Jerome Blanchard
+ * @deprecated Load tracking utilities are no longer maintained. Use standard Java monitoring tools or implement your own metrics tracking solution.
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class LoadAverageExecutor {

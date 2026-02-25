@@ -559,7 +559,10 @@ public class JahiaTemplatesPackage {
     }
 
     /**
-     * @deprecated with no replacement
+     * Gets the build number.
+     *
+     * @return the build number
+     * @deprecated no longer recommended
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public long getBuildNumber() {
@@ -567,7 +570,10 @@ public class JahiaTemplatesPackage {
     }
 
     /**
-     * @deprecated with no replacement
+     * Sets the build number.
+     *
+     * @param buildNumber the build number to set
+     * @deprecated no longer recommended
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void setBuildNumber(long buildNumber) {

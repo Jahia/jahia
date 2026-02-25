@@ -720,7 +720,7 @@ public class JahiaGroupManagerService extends JahiaService {
     /**
      * get the list of olds group providers
      * this method is used to maintain compatibility with old groups providers
-     * @deprecated
+     * @deprecated used to maintain compatibility with old groups providers
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public List<? extends JahiaGroupManagerProvider> getProviderList (){
@@ -730,7 +730,7 @@ public class JahiaGroupManagerService extends JahiaService {
     /**
      * get the provider corresponding to a given key
      * this method is used to maintain compatibility with old groups providers
-     * @deprecated
+     * @deprecated used to maintain compatibility with old groups providers
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public JahiaGroupManagerProvider getProvider(String key){
@@ -740,7 +740,7 @@ public class JahiaGroupManagerService extends JahiaService {
     /**
      * register a group provider
      * this method is used to maintain compatibility with old groups providers
-     * @deprecated
+     * @deprecated used to maintain compatibility with old groups providers
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){
@@ -751,7 +751,7 @@ public class JahiaGroupManagerService extends JahiaService {
     /**
      * unregister a group provider
      * this method is used to maintain compatibility with old groups providers
-     * @deprecated
+     * @deprecated used to maintain compatibility with old groups providers
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void unregisterProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){

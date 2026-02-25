@@ -56,6 +56,7 @@ import java.io.File;
  * {@link OfficeManager} that uses local installation of the OpenOffice.
  *
  * @author Sergiy Shyrkov
+ * @deprecated Document conversion using OpenOffice/LibreOffice is no longer recommended. Build your own solution if you need document conversion capabilities.
  */
 @Deprecated(since = "8.2.4.0", forRemoval = true)
 public class LocalOfficeManagerFactory extends AbstractFactoryBean<OfficeManager> {

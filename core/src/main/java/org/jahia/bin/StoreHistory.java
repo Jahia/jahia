@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * @author rincevent
+ * @deprecated internal use only no longer supported
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class StoreHistory extends JahiaController {

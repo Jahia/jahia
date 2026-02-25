@@ -48,7 +48,7 @@ import org.osgi.framework.BundleContext;
  * Initial startup OSGi provision activator
  *
  * @author loom
- * @deprecated since 7.2
+ * @deprecated use {@link FrameworkService#getBundleContext()} directly instead to access the OSGi bundle context
  */
 @Deprecated(since = "7.2.0.0", forRemoval = true)
 public final class ProvisionActivator {

@@ -287,11 +287,12 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     }
 
     /**
-     * Performs the sync on the Jackrabbit cluster node. If clustering is not activated this method does nothing. Possible exceptions during
-     * cluster sync are logged by not propagated upper by this method.
-     * @deprecated Since 8.1.1.0
+     * Manual synchronization of the cluster has been deprecated and does not execute cluster.sync() anymore but log an error message instead.
+     * If clustering is not activated, this method does nothing.
+     *
+     * @deprecated Manual cluster synchronization is no longer supported. Implement {@link org.apache.jackrabbit.core.journal.RecordConsumer} if you need to react to cluster sync events.
      */
-    @Deprecated(since = "8.1.1.0")
+    @Deprecated(since = "8.1.1.0", forRemoval = true)
     public void syncClusterNode() {
         ClusterNode clusterNode = getClusterNode();
         if (clusterNode != null) {

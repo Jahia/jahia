@@ -80,7 +80,7 @@ public class DocumentViewExporter {
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
 
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/sites/[^/]*/templates/(.*)");
-    
+
     private JCRSessionWrapper session;
     private final ContentHandler ch;
     private final boolean noRecurse;
@@ -128,6 +128,10 @@ public class DocumentViewExporter {
         this.typesToIgnore = typesToIgnore;
     }
 
+    /**
+     *
+     * @deprecated an export does not contain the publication status ({@code j:publicationStatus}) anymore
+     */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void setPublicationStatusSession(JCRSessionWrapper publicationStatusSession) {
         // Do nothing, since 8.2.1.0 export does not contain publication status (j:publicationStatus) anymore
@@ -487,6 +491,10 @@ public class DocumentViewExporter {
         return exportContext;
     }
 
+    /**
+     *
+     * @deprecated not supported anymore
+     */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void addObserver(PropertyChangeListener propertyChangeListener) {
         // not supported anymore, do nothing

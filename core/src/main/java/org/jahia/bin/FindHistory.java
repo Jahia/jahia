@@ -66,6 +66,7 @@ import org.json.JSONObject;
 /**
  * A small servlet to allow us to perform queries on the JCR.
  *
+ * @deprecated Internal servlet for JCR queries, not intended for public use and no longer recommended.
  * @author loom
  *         Date: Jan 26, 2010
  *         Time: 5:55:17 PM

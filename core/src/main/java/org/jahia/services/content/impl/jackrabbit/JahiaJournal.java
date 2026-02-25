@@ -666,7 +666,7 @@ public class JahiaJournal extends AbstractJournal implements DatabaseAware, Node
      * Set the database type.
      *
      * @param databaseType the database type
-     * @deprecated This method is deprecated; {@link #setDatabaseType} should be used instead.
+     * @deprecated Use {@link #setDatabaseType(String)} instead
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public void setSchema(String databaseType) {

@@ -52,7 +52,7 @@ import org.jahia.registries.ServicesRegistry;
  * Represent a base class for an external user.
  * This class is keep to maintain compatibility with olds users/groups providers
  * @author Sergiy Shyrkov
- * @deprecated
+ * @deprecated Legacy user provider infrastructure maintained for backward compatibility. Use the modern JCR-based user management API instead.
  */
 @Deprecated(since = "7.1.0.0", forRemoval = true)
 public abstract class BaseJahiaExternalUser implements JahiaUser {
@@ -220,6 +220,9 @@ public abstract class BaseJahiaExternalUser implements JahiaUser {
 
     protected abstract boolean setPropertyExternal(String key, String value);
 
+    /**
+     * @deprecated not used anymore
+     */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     protected boolean setPropertyInternal(String key, String value) {
         return false;

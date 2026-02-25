@@ -61,7 +61,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Date: May 26, 2008
  * Time: 10:59:42 AM
  *
- * @deprecated Legacy import code, seems not used
+ * @deprecated Legacy import code, not used anymore
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class FilesDateImportHandler extends DefaultHandler {

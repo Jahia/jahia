@@ -59,6 +59,7 @@ import java.util.concurrent.TimeUnit;
  * where n = what we are evaluating over time (number of active threads, requests, etc...)
  * and m = time in minutes over which to perform the average
  *
+ * @deprecated Load tracking utilities are no longer maintained. Use standard Java monitoring tools or implement your own metrics tracking solution.
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public abstract class LoadAverage implements Runnable {

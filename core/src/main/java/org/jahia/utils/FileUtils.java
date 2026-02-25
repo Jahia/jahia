@@ -130,6 +130,7 @@ public final class FileUtils {
      * @param filter the file filter to consider
      * @throws IOException in case cleaning is unsuccessful
      * @see org.apache.commons.io.FileUtils#cleanDirectory(File)
+     * @deprecated use {@link org.apache.commons.io.FileUtils#cleanDirectory(File)} or similar instead
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     public static void cleanDirectory(File directory, FileFilter filter) throws IOException {

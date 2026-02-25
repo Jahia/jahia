@@ -75,7 +75,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 
 /**
- * @deprecated Legacy import code
+ * @deprecated Legacy import code, not used anymore
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class FilesAclImportHandler extends DefaultHandler {

@@ -1448,7 +1448,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * Remove the list of files temporarily expanded to the given folder.
      *
      * @param expandedFolder path to the expanded folder on disk - if null, do nothing
-     * @deprecated use {@link ImportZipContext#close()} instead
+     * @deprecated Use {@link ImportZipContext#close()} instead
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     public void cleanFilesList(File expandedFolder) {
@@ -2263,9 +2263,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @return null if files were not expanded to disk (it is just optional), otherwise path to temporary local folder
      * @throws IOException
      *
-     * @deprecated use {@link #initImportZipContext(Resource)} instead
+     * @deprecated use {@link #initImportZipContext(Resource)} instead.
      *          It used to calculate the size of uncompressed files in the zip file, but this information was never really used.
-     *          This method risk to be removed in the next major release.
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     public File getFileList(Resource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {

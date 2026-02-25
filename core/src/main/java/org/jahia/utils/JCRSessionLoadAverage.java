@@ -46,6 +46,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 
 /**
  * A tracker for JCR sessions load.
+ * @deprecated Load tracking utilities are no longer maintained. Use standard Java monitoring tools or implement your own metrics tracking solution.
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class JCRSessionLoadAverage extends LoadAverage {

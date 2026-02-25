@@ -114,8 +114,17 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         return result;
     }
 
+    /**
+     * Replaces a field in the cache key.
+     *
+     * @param key the cache key
+     * @param fieldName the field name to replace
+     * @param newValue the new value
+     * @return the modified key
+     * @deprecated Legacy cache key generation infrastructure, no longer used in current cache implementation.
+     */
     @Override
-    @Deprecated(since = "7.2.0.0", forRemoval = true)// not used anymore
+    @Deprecated(since = "7.2.0.0", forRemoval = true)
     public String replaceField(String key, String fieldName, String newValue) {
 
         String[] args = getSplit(key);
@@ -178,9 +187,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     /**
-     * <p>
      * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
-     * <p>
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     @Override
@@ -196,9 +203,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     /**
-     * <p>
      * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
-     * <p>
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     @Override
@@ -212,9 +217,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     /**
-     * <p>
      * @deprecated Render chain V2 is deprecated and will be removed in the next major release (8.3.0.0).
-     * <p>
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     @Override

@@ -192,7 +192,7 @@ public class URLGenerator {
     }
 
     /**
-     * @Depreacted contribute mode is not supported anymore, fall back on edit
+     * @deprecated contribute mode is not supported anymore, fall back on edit
      */
     @Deprecated(since = "8.2.4.0", forRemoval = true)
     public String getContribute() {
@@ -378,7 +378,7 @@ public class URLGenerator {
     }
 
     /**
-     * @Deprecated contribute mode is not supported anymore, fall back on edit
+     * @deprecated contribute mode is not supported anymore, fall back on edit
      */
     @Deprecated(since = "8.2.4.0", forRemoval = true)
     public String getBaseContribute() {

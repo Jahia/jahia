@@ -76,10 +76,9 @@ public class CookieAuthConfig implements Serializable {
     }
 
     /**
-     * @deprecated the mechanism to generate the cookie value is using now the {@link UUID} class, so this length parameter is no longer
-     *             effective.
+     * @deprecated the mechanism to generate the cookie value is using now the {@link UUID} class, so this length parameter is no longer effective.
      */
-    @Deprecated(since = "7.2.2.0")
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public int getIdLength() {
         return idLength;
     }
@@ -121,10 +120,9 @@ public class CookieAuthConfig implements Serializable {
     }
 
     /**
-     * @deprecated the mechanism to generate the cookie value is using now the {@link UUID} class, so this length parameter is no longer
-     *             effective.
+     * @deprecated the mechanism to generate the cookie value is using now the {@link UUID} class, so this length parameter is no longer effective.
      */
-    @Deprecated(since = "7.2.2.0")
+    @Deprecated(since = "7.2.2.0", forRemoval = true)
     public void setIdLength(int idLength) {
         this.idLength = idLength;
     }

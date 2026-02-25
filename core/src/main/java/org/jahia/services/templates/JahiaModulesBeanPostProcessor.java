@@ -53,7 +53,7 @@ import org.springframework.beans.factory.config.DestructionAwareBeanPostProcesso
  *
  * We recommend to use a more OSGI compliant way to perform intermodule beans communication (service trackers, osgi:list, etc.)
  *
- * @deprecated since DX 7.2.0.0
+ * @deprecated Use OSGi-compliant mechanisms such as service trackers or OSGi service references for inter-module communication instead of Spring bean post-processors.
  */
 @Deprecated(since = "7.2.0.0", forRemoval = true)
 public interface JahiaModulesBeanPostProcessor extends DestructionAwareBeanPostProcessor {

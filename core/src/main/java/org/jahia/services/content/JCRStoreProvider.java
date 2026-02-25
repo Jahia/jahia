@@ -206,23 +206,35 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.repositoryName = repositoryName;
     }
 
+    /**
+     * @deprecated no longer functional and always returns {@code null}
+     */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public String getFactory() {
         // no longer supported, will be removed in a future release
         return null;
     }
 
+    /**
+     * @deprecated no longer functional and is ignored
+     */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setFactory(String factory) {
         // no longer supported, will be removed in a future release
     }
 
+    /**
+     * @deprecated no longer functional and always returns {@code null}
+     */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public String getUrl() {
         // no longer supported, will be removed in a future release
         return null;
     }
 
+    /**
+     * @deprecated no longer functional and is ignored
+     */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setUrl(String url) {
         // no longer supported, will be removed in a future release
@@ -255,12 +267,18 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.authenticationType = authenticationType;
     }
 
+    /**
+     * @deprecated no longer functional and always returns {@code null}
+     */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public String getRmibind() {
         // no longer supported, will be removed in a future release
         return null;
     }
 
+    /**
+     * @deprecated no longer functional and is ignored
+     */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setRmibind(String rmibind) {
         // no longer supported, will be removed in a future release
@@ -307,7 +325,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     /**
-     * @deprecated without no replacement
+     * @deprecated no longer functional and is ignored
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public void setSessionKeepAliveCheckInterval(long sessionKeepAliveCheckInterval) {
@@ -592,7 +610,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     /**
-     * @deprecated with no replacement
+     * @deprecated no longer functional and always returns {@code false}
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public boolean isRunning() {
@@ -945,10 +963,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     /**
+     * Indicates if the nodes, backed by this provider, are considered during export operation.
+     *
      * @return <code>true</code> if the nodes, backed by this provider, are also included during the export operation; <code>false</code> if
      * they are skipped
-     * @deprecated now canExportNode and canExportProperty are used
-     * Indicates if the nodes, backed by this provider, are considered during export operation.
+     * @deprecated This method always returns true and does not affect behavior. Use {@link #canExportNode(Node)} and {@link #canExportProperty(Property)} instead.
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public boolean isExportable() {

@@ -843,7 +843,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     /**
-     * @deprecated since Jahia 8.0.0.0 use {@link #getSiteCount(boolean)} instead
+     * @deprecated use {@link #getSiteCount(boolean)} instead
      */
     @Deprecated(since = "8.0.0.0", forRemoval = true)
     public int getNbSites() {

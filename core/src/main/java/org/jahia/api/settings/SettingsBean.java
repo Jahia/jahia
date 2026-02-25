@@ -204,9 +204,12 @@ public interface SettingsBean {
     }
 
     /**
-     * @deprecated since 7.0.0.2
+     * Returns the Jahia home disk path.
+     *
+     * @return the servlet context real path
+     * @deprecated Use {@link javax.servlet.ServletContext#getRealPath(String)} instead to get the web application's file system path.
      */
-    @Deprecated(since = "7.0.0.2")
+    @Deprecated(since = "7.0.0.2", forRemoval = true)
     String getJahiaHomeDiskPath();
 
     String getJahiaImportsDiskPath();

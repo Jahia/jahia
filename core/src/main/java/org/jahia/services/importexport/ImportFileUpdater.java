@@ -48,7 +48,7 @@ import java.io.File;
 
 /**
  * Class used to update import file based on the originating version and build number
- * @deprecated Legacy import code, seems not used
+ * @deprecated Legacy import code, not used anymore
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public abstract class ImportFileUpdater {
@@ -58,7 +58,6 @@ public abstract class ImportFileUpdater {
     /**
      * Method used to determine if this import must be updated
      * @param version
-     * @param buildNumber
      * @return true if this updater is applicable on an import originating from the specified version and build number
      */
     public abstract boolean mustUpdate(Version version);

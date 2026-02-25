@@ -294,7 +294,7 @@ class BundleStarter {
      * Used only for migrations from versions < 7.3.1.1
      * If we dont have further migration from previous versions, this method can be removed.
      *
-     * @deprecated
+     * @deprecated only used for migrations from versions < 7.3.1.1
      */
     @Deprecated(since = "8.0.0.0", forRemoval = true)
     void startInitialBundlesIfNeeded() {
@@ -348,9 +348,9 @@ class BundleStarter {
 
     /**
      * Used only for migrations from versions < 7.3.1.1
-     * If we dont have further migration from previous versions, this method can be removed.
+     * If we don't have further migration from previous versions, this method can be removed.
      *
-     * @deprecated
+     * @deprecated only used for migrations from versions < 7.3.1.1
      */
     @Deprecated(since = "8.0.0.0", forRemoval = true)
     private void startMigrateBundlesIfNeeded() {

@@ -1381,7 +1381,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param uuid the UUID string to check
      * @return code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
      *         different provide, like VFS
-     * @deprecated without any replacement
+     * @deprecated This method is unreliable, and there is no replacement for it.
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public static boolean isNotJcrUuid(String uuid) {
@@ -1454,6 +1454,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * it is advised to perform a query on the JCR to determine the count of items beneath a node, rather than relying on JCRContentUtils.size
      * @param iterator the item iterator to check the size
      * @return the number of elements in the provided iterator
+     * @deprecated This method consumes the iterator, making it unusable afterwards. Use a JCR query to count items instead.
      */
     @Deprecated(since = "8.2.0.0", forRemoval = true)
     public static long size(RangeIterator iterator) {

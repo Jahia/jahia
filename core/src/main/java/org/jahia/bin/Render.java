@@ -703,7 +703,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      * @param urlResolver the URL resolver to determine the target directory path
      * @return true if files were successfully uploaded and response was written, false otherwise
      * @throws RepositoryException if there is an error accessing the JCR repository
-     * @deprecated since 8.2.4.0, will be removed in a future version. Use GraphQL API to upload files instead.
+     * @deprecated Will be removed in a future version. Use GraphQL API to upload files instead.
      */
     @Deprecated(since = "8.2.4.0", forRemoval = true)
     private boolean handleAjaxUpload(HttpServletRequest req, HttpServletResponse resp, String workspace, Locale locale, URLResolver urlResolver) throws RepositoryException {

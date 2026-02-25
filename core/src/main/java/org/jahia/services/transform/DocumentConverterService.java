@@ -68,6 +68,7 @@ import java.util.Map;
  *
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
+ * @deprecated Document conversion using OpenOffice/LibreOffice is no longer recommended. Build your own solution if you need document conversion capabilities.
  */
 
 @Deprecated(since = "8.2.4.0", forRemoval = true)

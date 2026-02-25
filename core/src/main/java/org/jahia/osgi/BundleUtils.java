@@ -278,7 +278,7 @@ public final class BundleUtils {
 
     /**
      * @deprecated used for detecting if a bundle was a Jahia bundle, in order to handle specific blueprint/spring related logic.
-     *            This is no longer needed as blueprint/spring is not used in our internal bundles.
+     * This is no longer needed as blueprint/spring is not used in our internal bundles.
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
     public static boolean isJahiaBundle(Bundle bundle) {

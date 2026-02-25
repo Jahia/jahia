@@ -303,7 +303,7 @@ public interface JahiaUserManagerService {
      * get the list of olds users providers
      * this method is used to maintain compatibility with old users providers
      *
-     * @deprecated
+     * @deprecated use {@link #getProviderList(JCRSessionWrapper)} instead
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     List<? extends JahiaUserManagerProvider> getProviderList();
@@ -312,7 +312,7 @@ public interface JahiaUserManagerService {
      * get the provider corresponding to a given key
      * this method is used to maintain compatibility with old users providers
      *
-     * @deprecated
+     * @deprecated use {@link #getProvider(String, JCRSessionWrapper)} instead
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     JahiaUserManagerProvider getProvider(String key);
@@ -321,7 +321,7 @@ public interface JahiaUserManagerService {
      * register a user provider
      * this method is used to maintain compatibility with old users providers
      *
-     * @deprecated
+     * @deprecated exists only to accomodate with the Spring lifecycle of the deprecated {@link JahiaUserManagerProvider} interface
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);

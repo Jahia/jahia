@@ -66,7 +66,7 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 /**
  * Simple servlet to expose server statistics in JSON.
  *
- * That
+ * @deprecated use the <i>ServerLoad</i> probe of the Server Availability Module (SAM) instead
  */
 @Deprecated(since = "8.2.1.0", forRemoval = true)
 public class ServerStats implements Controller {

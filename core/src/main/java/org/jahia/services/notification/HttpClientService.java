@@ -345,7 +345,7 @@ public class HttpClientService implements ServletContextAware {
 
     /**
      * @return the httpClient
-     * @deprecated since 7.1.2.3 Please, use {@link #getHttpClient(String)} instead which properly handles proxy server settings, if any
+     * @deprecated Use {@link #getHttpClient(String)} instead which properly handles proxy server settings, if any
      */
     @Deprecated(since = "7.1.2.3", forRemoval = true)
     public HttpClient getHttpClient() {

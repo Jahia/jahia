@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
 /**
  * This class is keep to maintain compatibility with olds users/groups providers
  * @author kevan
- * @deprecated
+ * @deprecated Legacy group provider infrastructure maintained for backward compatibility. Use the modern JCR-based group management API instead.
  */
 @Deprecated(since = "7.1.0.0", forRemoval = true)
 public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean, DisposableBean {

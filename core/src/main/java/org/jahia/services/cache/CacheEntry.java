@@ -185,6 +185,7 @@ public class CacheEntry<V> implements Serializable {
      * entry was requested).</p>
      *
      * @return  the entry's hits
+     * @deprecated no longer functional and always returns 0
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public int getHits () {
@@ -193,6 +194,8 @@ public class CacheEntry<V> implements Serializable {
 
 
     /** <p>Resets the number of times the entry was requested.</p>
+     *
+     * @deprecated no longer functional
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void resetHits () {
@@ -201,6 +204,7 @@ public class CacheEntry<V> implements Serializable {
 
     /** <p>Increments the number of hits by one.</p>
      *
+     * @deprecated no longer functional
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void incrementHits () {
@@ -211,6 +215,7 @@ public class CacheEntry<V> implements Serializable {
     /** <p>Retrieves the entry's expiration date.</p>
      *
      * @return  the expiration date
+     * @deprecated no longer functional and always returns null
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public Date getExpirationDate () {
@@ -221,6 +226,7 @@ public class CacheEntry<V> implements Serializable {
     /** <p>Sets the entry's expiration date.</p>
      *
      * @param expirationDate    the expiration date
+     * @deprecated no longer functional
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void setExpirationDate (Date expirationDate) {
@@ -229,11 +235,16 @@ public class CacheEntry<V> implements Serializable {
 
 
     /** <p>Set the last accessed date to the current time.</p>
+     *
+     * @deprecated no longer functional
      */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     final public void setLastAccessedTimeNow () {
     }
 
+    /**
+     * @deprecated no longer functional and always returns 0
+     */
     @Deprecated(since = "7.1.0.0", forRemoval = true)
     public long getLastAccessedTimeMillis() {
         return 0;

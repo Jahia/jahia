@@ -125,8 +125,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
     }
 
     /**
-     *
-     * @deprecated not used anymore
+     * @deprecated No longer used for Spring injection
      */
     @Deprecated(since = "8.2.3.0", forRemoval = true)
     public void setUserManagerService(JahiaUserManagerService userManagerService) {

@@ -66,7 +66,7 @@ import javax.servlet.RequestDispatcher;
  * Date: Sep 28, 2009
  * Time: 7:20:38 PM
  *
- * @deprecated in favour of {@link BundleView}
+ * @deprecated Use {@link BundleView} instead
  */
 @Deprecated(since = "7.1.0.0", forRemoval = true)
 public class FileSystemView implements Comparable<View>, View {

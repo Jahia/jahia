@@ -365,6 +365,9 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         sendCacheFlushCommandToCluster(CMD_FLUSH_PATH, nodePathOrIdentifier);
     }
 
+    /**
+     * @deprecated not used anymore
+     */
     @Deprecated(since = "7.2.3.1", forRemoval = true)
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         // deprecated since 7.2.3.1 as not used

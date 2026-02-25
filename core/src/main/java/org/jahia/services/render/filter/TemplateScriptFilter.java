@@ -42,6 +42,7 @@
  */
 package org.jahia.services.render.filter;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.bin.errors.StackTraceFilter;
 import org.jahia.services.render.*;
@@ -239,6 +240,6 @@ public class TemplateScriptFilter extends AbstractFilter {
         out.append(ex.getMessage()).append("\n");
         out.append(StackTraceFilter.printStackTrace(ex));
         out.append("\n");
-        return "<pre>" + out + "</pre>";
+        return "<pre>" + StringEscapeUtils.escapeHtml4(out.toString()) + "</pre>";
     }
 }

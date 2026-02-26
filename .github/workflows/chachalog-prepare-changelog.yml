@@ -1,0 +1,18 @@
+# DO NOT EDIT
+# This file is managed globally at https://github.com/Jahia/.github
+name: Chachalog - Prepare Changelog
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: null
+
+jobs:
+  prepare-changelog:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: Jahia/jahia-modules-action/.github/workflows/reusable-chachalog-prepare-changelog.yml@v2
+    secrets: inherit

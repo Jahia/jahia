@@ -1,0 +1,16 @@
+# DO NOT EDIT
+# This file is managed globally at https://github.com/Jahia/.github
+name: Chachalog - Comment PR
+
+on:
+  pull_request_target:
+    branches:
+      - main
+      - master
+
+jobs:
+  comment-pr:
+    permissions:
+      pull-requests: write
+    uses: Jahia/jahia-modules-action/.github/workflows/reusable-chachalog-comment-pr.yml@v2
+    secrets: inherit

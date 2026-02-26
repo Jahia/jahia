@@ -11,6 +11,7 @@ on:
 jobs:
   comment-pr:
     permissions:
+      contents: read
       pull-requests: write
     uses: Jahia/jahia-modules-action/.github/workflows/reusable-chachalog-comment-pr.yml@v2
     secrets: inherit

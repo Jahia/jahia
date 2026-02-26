@@ -23,7 +23,7 @@
  */
 package org.jahia.bundles.core.services;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jahia.api.settings.SettingsBean;
 import org.jahia.tools.bytecode.DeprecationTrackerService;
 import org.jahia.utils.LimiterExecutor;
@@ -34,7 +34,10 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link DeprecationTrackerService} that instruments and logs deprecated method calls.
@@ -51,6 +54,10 @@ import java.util.regex.Pattern;
 @Designate(ocd = DeprecationTrackerServiceImpl.Config.class)
 public class DeprecationTrackerServiceImpl implements DeprecationTrackerService {
     private static final Logger logger = LoggerFactory.getLogger(DeprecationTrackerServiceImpl.class);
+    /**
+     * Default pattern that matches nothing.
+     */
+    private static final Pattern EXCLUDED_METHODS_DEFAULT_PATTERN = Pattern.compile("(?!)");
     static final String KEY_PREFIX = DeprecationTrackerServiceImpl.class.getName() + ".";
 
     private Config config;
@@ -88,19 +95,17 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
      * Compiles the excluded methods regex patterns from configuration into a single {@link Pattern}.
      * <p>
      * Multiple regex patterns are joined with the OR operator (|) to create a single compiled pattern
-     * for efficient matching. If no patterns are provided, a pattern that never matches is returned.
+     * for efficient matching. Blank patterns are filtered out. If no valid patterns are provided,
+     * a pattern that never matches is returned.
      * </p>
      *
      * @param config the service configuration containing the regex patterns
      * @return a compiled {@link Pattern} that matches any of the configured exclusion patterns
      */
     private static Pattern compileExcludedMethodsPattern(Config config) {
-        String[] patterns = config.excludedMethodsRegexes();
-        if (patterns == null || patterns.length == 0) {
-            // Return a pattern that never matches anything
-            return Pattern.compile("(?!)");
-        }
-        return Pattern.compile(String.join("|", patterns));
+        String joined = Arrays.stream(Optional.ofNullable(config.excludedMethodsRegexes()).orElse(new String[0]))
+                .filter(StringUtils::isNotBlank).collect(Collectors.joining("|"));
+        return StringUtils.isNotBlank(joined) ? Pattern.compile(joined) : EXCLUDED_METHODS_DEFAULT_PATTERN;
     }
 
     /**
@@ -194,8 +199,7 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
 
         @AttributeDefinition(name = "%loggingIntervalInSeconds", description = "%loggingIntervalInSecondsDesc", min = "1") int loggingIntervalInSeconds() default DEFAULT_LOGGING_INTERVAL;
 
-        @AttributeDefinition(name = "%excludedMethodsRegexes", description = "%excludedMethodsRegexesDesc") String[] excludedMethodsRegexes() default {
-                "org\\.jahia\\.bin\\.Render\\.xssFilter.*" };
+        @AttributeDefinition(name = "%excludedMethodsRegexes", description = "%excludedMethodsRegexesDesc") String[] excludedMethodsRegexes() default {};
 
         @AttributeDefinition(name = "%developmentModeOnly", description = "%developmentModeOnlyDesc") boolean developmentModeOnly() default false;
     }

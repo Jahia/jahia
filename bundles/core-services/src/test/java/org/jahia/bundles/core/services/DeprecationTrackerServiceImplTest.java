@@ -492,7 +492,8 @@ public class DeprecationTrackerServiceImplTest {
      * Builder pattern for creating Config instances with optional parameters.
      */
     private static class ConfigBuilder {
-        private String[] excludedMethodsRegexes = new String[] { "org\\.jahia\\.bin\\.Render\\.xssFilter.*" };
+        // should match the default values set in org.jahia.bundles.core.services.DeprecationTrackerServiceImpl.Config
+        private String[] excludedMethodsRegexes = new String[] { "" };
         private int loggingIntervalInSeconds = DEFAULT_LOGGING_INTERVAL;
         private boolean developmentModeOnly = false;
 

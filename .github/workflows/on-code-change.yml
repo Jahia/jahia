@@ -89,6 +89,10 @@ jobs:
           echo "OUTPUT: image_tag = ${{steps.tags.outputs.image_tag}}"
           echo "OUTPUT: current_branch = ${{steps.tags.outputs.current_branch}}"
 
+      # Expose GitHub Actions Runtime for Docker Cache (required for type=gha)
+      - name: Expose GitHub Runtime
+        uses: crazy-max/ghaction-github-runtime@3cb05d89e1f492524af3d41a1c98c83bc3025124 # v3.1.0
+
       - name: Build package and deploy all dependencies into remote Nexus Maven repository, push Docker images
         shell: bash
         if: ${{ github.event_name != 'pull_request' }}

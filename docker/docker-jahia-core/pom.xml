@@ -115,35 +115,101 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <executions>
+                            <!-- to leverage buildx "cache-from" for a multi-platform Docker image:
+                            1) build only for the amd64 architecture that populates an "amd64-only" cache (or uses it if already in cache)
+                            2) build only for the arm64 architecture that populates an "arm64-only" cache (or uses it if already in cache)
+                            3) build a multi-architecture image that uses both caches: "amd64-only" and "arm64-only"
+                            -->
                             <execution>
-                                <id>default</id>
+                                <id>amd64-only</id>
                                 <goals>
                                     <goal>build</goal>
                                     <goal>push</goal>
                                 </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <name>${image.registry}jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                            <build>
+                                                <contextDir>${project.basedir}</contextDir>
+                                                <buildx>
+                                                    <builderName>jahia_builder</builderName>
+                                                    <platforms>
+                                                        <platform>linux/amd64</platform>
+                                                    </platforms>
+                                                    <cacheFrom>type=gha,scope=amd64-only,ignore-error=true</cacheFrom>
+                                                    <cacheTo>type=gha,scope=amd64-only,mode=max</cacheTo>
+                                                </buildx>
+                                                <tags>${image.alias}</tags>
+                                                <args>
+                                                    <GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
+                                                </args>
+                                            </build>
+                                        </image>
+                                    </images>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>arm64-only</id>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <name>${image.registry}jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                            <build>
+                                                <contextDir>${project.basedir}</contextDir>
+                                                <buildx>
+                                                    <builderName>jahia_builder</builderName>
+                                                    <platforms>
+                                                        <platform>linux/arm64</platform>
+                                                    </platforms>
+                                                    <cacheFrom>type=gha,scope=arm64-only,ignore-error=true</cacheFrom>
+                                                    <cacheTo>type=gha,scope=arm64-only,mode=max</cacheTo>
+                                                </buildx>
+                                                <tags>${image.alias}</tags>
+                                                <args>
+                                                    <GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
+                                                </args>
+                                            </build>
+                                        </image>
+                                    </images>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>multi-platform-amd64-and-arm64</id>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <name>${image.registry}jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
+                                            <build>
+                                                <contextDir>${project.basedir}</contextDir>
+                                                <buildx>
+                                                    <builderName>jahia_builder</builderName>
+                                                    <platforms>
+                                                        <platform>linux/amd64</platform>
+                                                        <platform>linux/arm64</platform>
+                                                    </platforms>
+                                                    <!-- both cache (amd64 and arm64) are used -->
+                                                    <cacheFrom>type=gha,scope=amd64-only,ignore-error=true</cacheFrom>
+                                                    <cacheFrom>type=gha,scope=arm64-only,ignore-error=true</cacheFrom>
+                                                </buildx>
+                                                <tags>${image.alias}</tags>
+                                                <args>
+                                                    <GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
+                                                </args>
+                                            </build>
+                                        </image>
+                                    </images>
+                                </configuration>
                             </execution>
                         </executions>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <name>${image.registry}jahia/${image.repo}${image.repo.classifier}:${image.tag}</name>
-                                    <build>
-                                        <contextDir>${project.basedir}</contextDir>
-                                        <buildx>
-                                            <builderName>jahia_builder</builderName>
-                                            <platforms>
-                                                <platform>linux/amd64</platform>
-                                                <platform>linux/arm64</platform>
-                                            </platforms>
-                                        </buildx>
-                                        <tags>${image.alias}</tags>
-                                        <args>
-                                            <GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
-                                        </args>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

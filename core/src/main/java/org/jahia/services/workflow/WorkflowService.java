@@ -135,7 +135,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     /**
      * Performs the registration of the provided workflow type.
      *
-     * @param type the helper object instance for registerng a new workflow type
+     * @param type the helper object instance for registering a new workflow type
      */
     public synchronized void registerWorkflowType(final WorklowTypeRegistration type) {
 

@@ -56,7 +56,9 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.services.workflow.jbpm.command.*;
-import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
+import org.jahia.services.workflow.jbpm.custom.*;
+import org.jahia.services.workflow.jbpm.custom.email.JBPMMailWorkItemHandler;
+import org.jahia.utils.DeprecationUtils;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.KieServices;
@@ -183,12 +185,26 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     }
 
     public synchronized void registerWorkItemHandler(String name, WorkItemHandler workItemHandler) {
+        if (!isAKnownWorkItemHandler(workItemHandler)) {
+            // log a warning only when used by custom workflows outside Jahia core
+            DeprecationUtils.onDeprecatedFeatureUsage("Custom workflows / JBPM", "8.2.4.0", true,
+                    "Defining custom workflows is now deprecated and will be removed in the next major release");
+        }
         synchronized (workflowService) {
             workItemHandlers.put(name, workItemHandler);
             if (runtimeEngine != null) {
                 runtimeEngine.getKieSession().getWorkItemManager().registerWorkItemHandler(name, workItemHandler);
             }
         }
+    }
+
+    private static boolean isAKnownWorkItemHandler(WorkItemHandler workItemHandler) {
+        // check if it's one of the known implementations under org.jahia.services.workflow.jbpm.custom
+        return workItemHandler instanceof AddLabelWorkItemHandler || workItemHandler instanceof CustomLockWorkItemHandler
+                || workItemHandler instanceof CustomUnlockWorkItemHandler || workItemHandler instanceof JahiaLocalHTWorkItemHandler
+                || workItemHandler instanceof LockWorkItemHandler || workItemHandler instanceof PublishWorkItemHandler
+                || workItemHandler instanceof SetPropertyWorkItemHandler || workItemHandler instanceof UnlockWorkItemHandler
+                || workItemHandler instanceof UnpublishWorkItemHandler || workItemHandler instanceof JBPMMailWorkItemHandler;
     }
 
     public WorkItemHandler unregisterWorkItemHandler(String name) {

@@ -97,11 +97,135 @@ public class SrcSetURLReplacer extends BaseURLReplacer {
         return originalValue;
     }
 
+    /**
+     * Extracts URLs from a srcset attribute value, discarding descriptors.
+     * <p>
+     * This method parses the srcset attribute and returns only the image URLs,
+     * dropping all descriptors (width and pixel density information).
+     * </p>
+     * <p>
+     * Example:
+     * <ul>
+     *   <li>Input: {@code "image-320.jpg 320w, image-640.jpg 640w"}</li>
+     *   <li>Output: {@code ["image-320.jpg", "image-640.jpg"]}</li>
+     * </ul>
+     * </p>
+     *
+     * @param srcSet the srcset attribute value
+     * @return array of URLs extracted from the srcset
+     * @see #parseSrcsetEntries(String)
+     * @see SrcsetEntry
+     * @deprecated Use {@link #parseSrcsetEntries(String)} instead,
+     * which provides more precise extraction of both URLs and descriptors.
+     * The descriptor information (width and pixel density) is often needed
+     * to properly rebuild the srcset after URL rewriting.
+     * <p>
+     * Before (loses descriptor information):
+     * <pre>
+     *             String[] urls = getURLsFromSrcSet(srcSet);
+     *             for (String url : urls) {
+     *                 // descriptor information is lost
+     *             }
+     *             </pre>
+     * After (preserves descriptor information):
+     * <pre>
+     *             SrcsetEntry[] entries = parseSrcsetEntries(srcSet);
+     *             for (SrcsetEntry entry : entries) {
+     *                 String url = entry.getUrl();
+     *                 String descriptor = entry.getDescriptor();
+     *                 // can now rebuild with original descriptors
+     *             }
+     *             </pre>
+     * </p>
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public static String[] getURLsFromSrcSet(String srcSet) {
         return Arrays
                 .stream(srcSet.split(","))
                 .map(String::trim)
                 .map(entry -> StringUtils.substringBefore(entry, " "))
                 .toArray(String[]::new);
+    }
+
+    /**
+     * Parses a srcset attribute value and extracts srcset entries with their descriptors.
+     * <p>
+     * The srcset attribute contains a comma-separated list of entries. Each entry
+     * consists of a URL followed by an optional descriptor. The descriptor can be:
+     * <ul>
+     *   <li>A width descriptor (e.g., "320w") indicating the image's width in pixels</li>
+     *   <li>A pixel density descriptor (e.g., "2x") indicating the device pixel ratio</li>
+     *   <li>Both descriptors combined (e.g., "320w 2x")</li>
+     * </ul>
+     * </p>
+     * <p>
+     * Examples:
+     * <ul>
+     *   <li>{@code "image-320.jpg 320w, image-640.jpg 640w"} - Width descriptors</li>
+     *   <li>{@code "image.jpg 1x, image@2x.jpg 2x"} - Pixel density descriptors</li>
+     *   <li>{@code "image-320.jpg 320w 2x"} - Combined width and pixel density descriptor</li>
+     *   <li>{@code "image.jpg"} - Single image without descriptor</li>
+     * </ul>
+     * </p>
+     *
+     * @param srcset the srcset attribute value
+     * @return array of {@link SrcsetEntry} objects containing URLs and descriptors
+     */
+    public static SrcsetEntry[] parseSrcsetEntries(String srcset) {
+        if (StringUtils.isEmpty(srcset)) {
+            return new SrcsetEntry[0];
+        }
+
+        return Arrays.stream(srcset.split(",")).map(String::trim).map(entry -> {
+            String[] parts = entry.split("\\s+", 2);
+            String url = parts[0];
+            String descriptor = parts.length > 1 ? parts[1] : "";
+            return new SrcsetEntry(url, descriptor);
+        }).toArray(SrcsetEntry[]::new);
+    }
+
+    /**
+     * Represents a single entry in a srcset attribute.
+     * <p>
+     * Each srcset entry consists of:
+     * <ul>
+     *   <li><b>URL</b>: The path or URL to the image resource</li>
+     *   <li><b>Descriptor</b>: An optional descriptor that can be:
+     *     <ul>
+     *       <li>A width descriptor (e.g., "320w")</li>
+     *       <li>A pixel density descriptor (e.g., "2x")</li>
+     *       <li>Both descriptors combined (e.g., "320w 2x")</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     * </p>
+     * <p>
+     * Examples:
+     * <ul>
+     *   <li>{@code new SrcsetEntry("image-320.jpg", "320w")} - Entry with width descriptor</li>
+     *   <li>{@code new SrcsetEntry("image@2x.jpg", "2x")} - Entry with pixel density descriptor</li>
+     *   <li>{@code new SrcsetEntry("image-320.jpg", "320w 2x")} - Entry with both descriptors</li>
+     *   <li>{@code new SrcsetEntry("image.jpg", "")} - Entry without descriptor</li>
+     * </ul>
+     * </p>
+     *
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#srcset">MDN Web Docs - srcset attribute</a>
+     */
+    public static class SrcsetEntry {
+        private final String url;
+        private final String descriptor;
+
+        public SrcsetEntry(String url, String descriptor) {
+            this.url = url;
+            this.descriptor = descriptor;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getDescriptor() {
+            return descriptor;
+        }
     }
 }

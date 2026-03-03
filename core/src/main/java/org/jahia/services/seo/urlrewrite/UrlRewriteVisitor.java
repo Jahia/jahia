@@ -51,6 +51,9 @@ import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttribu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * A Jahia HTML Tag attribute visitor for applying URL rewriting rules (using {@link UrlRewriteService}).
  *
@@ -100,25 +103,42 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
                 String attrNameLowerCase = attrName == null ? null : attrName.toLowerCase();
                 context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_NAME, tagNameLowerCase);
                 context.getRequest().setAttribute(REQUEST_ATTRIBUTE_TAG_ATTRIBUTE_NAME, attrNameLowerCase);
-                if (StringUtils.equals(SrcSetURLReplacer.IMG, tagNameLowerCase) && StringUtils.endsWith(attrNameLowerCase, SrcSetURLReplacer.IMG_SRCSET_ATTR)) {
-                    String[] urls = SrcSetURLReplacer.getURLsFromSrcSet(value);
-                    for (String url : urls) {
-                        value = StringUtils.replace(value, url, urlRewriteService.rewriteOutbound(url,
-                                context.getRequest(), context.getResponse()));
-                    }
+                if (StringUtils.equals(SrcSetURLReplacer.IMG, tagNameLowerCase) && StringUtils.endsWith(attrNameLowerCase,
+                        SrcSetURLReplacer.IMG_SRCSET_ATTR)) {
+                    // Process srcset attribute: parse entries, rewrite URLs, rebuild srcset string
+                    // Example: "/files/img-320.jpg 320w, /files/img-640.jpg 640w"
+                    //       => "https://cdn.com/files/img-320.jpg 320w, https://cdn.com/files/img-640.jpg 640w"
+                    value =
+                            // Step 1: Parse srcset into individual entries (URL + descriptor pairs)
+                            // "/files/img-320.jpg 320w" => SrcsetEntry("/files/img-320.jpg", "320w")
+                            Arrays.stream(SrcSetURLReplacer.parseSrcsetEntries(value))
+                                    // Step 2: Rewrite each URL and preserve its descriptor
+                                    // "/files/img-320.jpg" => "https://cdn.com/files/img-320.jpg"
+                                    .map(entry -> rewriteSrcsetEntry(context, entry))
+                                    // Step 3: Rebuild the srcset string by joining entries with comma separator
+                                    // ["https://cdn.com/files/img-320.jpg 320w", "https://cdn.com/files/img-640.jpg 640w"]
+                                    // => "https://cdn.com/files/img-320.jpg 320w, https://cdn.com/files/img-640.jpg 640w"
+                                    .collect(Collectors.joining(", "));
                 } else {
-                    value = urlRewriteService.rewriteOutbound(attrValue,
-                            context.getRequest(), context.getResponse());
+                    value = urlRewriteService.rewriteOutbound(attrValue, context.getRequest(), context.getResponse());
                 }
             } catch (Exception e) {
                 logger.error("Error rewriting URL value " + attrValue + " Skipped rewriting.", e);
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Rewriting URL {} into {} took {} ms", attrValue,
-                        value, System.currentTimeMillis() - timer);
+                logger.debug("Rewriting URL {} into {} took {} ms", attrValue, value, System.currentTimeMillis() - timer);
             }
         }
         return value;
+    }
+
+    private String rewriteSrcsetEntry(RenderContext context, SrcSetURLReplacer.SrcsetEntry entry) {
+        try {
+            String rewrittenUrl = urlRewriteService.rewriteOutbound(entry.getUrl(), context.getRequest(), context.getResponse());
+            return StringUtils.isNotEmpty(entry.getDescriptor()) ? rewrittenUrl + " " + entry.getDescriptor() : rewrittenUrl;
+        } catch (Exception e) {
+            throw new RuntimeException("Error rewriting URL: " + entry.getUrl(), e);
+        }
     }
 
     public void setUrlRewriteService(UrlRewriteService urlRewriteService) {

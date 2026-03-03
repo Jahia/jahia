@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 /**
@@ -55,13 +56,14 @@ import java.util.stream.Collectors;
 public class DeprecationTrackerServiceImpl implements DeprecationTrackerService {
     private static final Logger logger = LoggerFactory.getLogger(DeprecationTrackerServiceImpl.class);
     /**
-     * Default pattern that matches nothing.
+     * Default pattern that matches nothing (meaning no methods are excluded).
      */
-    private static final Pattern EXCLUDED_METHODS_DEFAULT_PATTERN = Pattern.compile("(?!)");
+    static final Pattern EXCLUDED_METHODS_DEFAULT_PATTERN = Pattern.compile("(?!)");
     static final String KEY_PREFIX = DeprecationTrackerServiceImpl.class.getName() + ".";
 
-    private Config config;
-    private transient Pattern excludedMethodsPattern;
+    private int loggingIntervalInSeconds;
+    private Pattern excludedMethodsPattern;
+    boolean developmentModeOnly;
     private SettingsBean settingsBean;
 
     @Activate
@@ -82,30 +84,50 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
     }
 
     private void applyConfiguration(Config config) {
-        Pattern compiledExcludedMethodsPattern = compileExcludedMethodsPattern(config);
-        if (config.loggingIntervalInSeconds() <= 0) {
-            throw new IllegalArgumentException("Invalid logging interval, must be positive: " + config.loggingIntervalInSeconds());
-        }
-        // once validated, update the local fields
-        this.config = config;
-        this.excludedMethodsPattern = compiledExcludedMethodsPattern;
+        this.loggingIntervalInSeconds = validateLoggingInterval(config.loggingIntervalInSeconds());
+        this.excludedMethodsPattern = compileExcludedMethodsPattern(config.excludedMethodsRegexes());
+        this.developmentModeOnly = config.developmentModeOnly();
     }
 
     /**
      * Compiles the excluded methods regex patterns from configuration into a single {@link Pattern}.
      * <p>
-     * Multiple regex patterns are joined with the OR operator (|) to create a single compiled pattern
-     * for efficient matching. Blank patterns are filtered out. If no valid patterns are provided,
-     * a pattern that never matches is returned.
+     * Blank or empty patterns are filtered out. The remaining patterns are joined with the OR operator (|)
+     * and compiled into a single {@link Pattern}. If no valid patterns are provided, a pattern that never matches is returned.
      * </p>
      *
-     * @param config the service configuration containing the regex patterns
-     * @return a compiled {@link Pattern} that matches any of the configured exclusion patterns
+     * @param excludedMethodsRegexes array of regex patterns to exclude methods; may be null or contain blank values
+     * @return a compiled {@link Pattern} that matches any of the configured exclusion patterns, or a never-matching pattern if none are valid
      */
-    private static Pattern compileExcludedMethodsPattern(Config config) {
-        String joined = Arrays.stream(Optional.ofNullable(config.excludedMethodsRegexes()).orElse(new String[0]))
-                .filter(StringUtils::isNotBlank).collect(Collectors.joining("|"));
-        return StringUtils.isNotBlank(joined) ? Pattern.compile(joined) : EXCLUDED_METHODS_DEFAULT_PATTERN;
+    private static Pattern compileExcludedMethodsPattern(String[] excludedMethodsRegexes) {
+        String joined = Arrays.stream(Optional.ofNullable(excludedMethodsRegexes).orElse(new String[0])).filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining("|"));
+        return StringUtils.isNotBlank(joined) ? compile(joined) : EXCLUDED_METHODS_DEFAULT_PATTERN;
+    }
+
+    private static Pattern compile(String regex) {
+        try {
+            return Pattern.compile(regex);
+        } catch (PatternSyntaxException e) {
+            logger.warn("The provided regex pattern '{}' is invalid. Using the default pattern (no methods are excluded)", regex);
+            return EXCLUDED_METHODS_DEFAULT_PATTERN;
+        }
+    }
+
+    /**
+     * Validates and applies the logging interval configuration value.
+     * If the value is not positive, falls back to the default interval and logs a warning.
+     *
+     * @param loggingIntervalInSeconds the configured logging interval in seconds
+     * @return a valid logging interval in seconds
+     */
+    private static int validateLoggingInterval(int loggingIntervalInSeconds) {
+        if (loggingIntervalInSeconds <= 0) {
+            logger.warn("The configured logging interval is invalid ({}). The value must be positive. Using the default value: {}.",
+                    loggingIntervalInSeconds, Config.DEFAULT_LOGGING_INTERVAL);
+            return Config.DEFAULT_LOGGING_INTERVAL;
+        }
+        return loggingIntervalInSeconds;
     }
 
     /**
@@ -133,20 +155,20 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
         }
 
         // check the operating mode
-        if (config.developmentModeOnly() && !settingsBean.isDevelopmentMode()) {
+        if (developmentModeOnly && !settingsBean.isDevelopmentMode()) {
             logger.debug("Skipping deprecated method: {} (development mode only)", methodSignature);
             return;
         }
 
         // log only once per interval
-        long intervalInMs = config.loggingIntervalInSeconds() * 1000L;
+        long intervalInMs = getLoggingIntervalInSeconds() * 1000L;
         String key = KEY_PREFIX + methodSignature;
         LimiterExecutor.executeOncePerInterval(key, intervalInMs,
                 () -> logDeprecatedMethodCall(methodSignature, deprecatedSince, forRemoval));
     }
 
     private boolean isExcluded(String methodSignature) {
-        return excludedMethodsPattern.matcher(methodSignature).matches();
+        return getExcludedMethodsPattern().matcher(methodSignature).matches();
     }
 
     private static void logDeprecatedMethodCall(String methodSignature, String deprecatedSince, boolean forRemoval) {
@@ -168,7 +190,7 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
     public void onFeatureUsage(String featureName, String deprecatedSince, boolean markedForRemoval, String details) {
 
         // log only once per interval
-        long intervalInMs = config.loggingIntervalInSeconds() * 1000L;
+        long intervalInMs = getLoggingIntervalInSeconds() * 1000L;
         String key = KEY_PREFIX + featureName;
         LimiterExecutor.executeOncePerInterval(key, intervalInMs,
                 () -> logDeprecatedFeatureUsage(featureName, deprecatedSince, markedForRemoval, details));
@@ -202,5 +224,13 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
         @AttributeDefinition(name = "%excludedMethodsRegexes", description = "%excludedMethodsRegexesDesc") String[] excludedMethodsRegexes() default {};
 
         @AttributeDefinition(name = "%developmentModeOnly", description = "%developmentModeOnlyDesc") boolean developmentModeOnly() default false;
+    }
+
+    int getLoggingIntervalInSeconds() {
+        return loggingIntervalInSeconds;
+    }
+
+    Pattern getExcludedMethodsPattern() {
+        return excludedMethodsPattern;
     }
 }

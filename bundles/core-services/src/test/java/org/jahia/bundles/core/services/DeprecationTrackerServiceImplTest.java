@@ -92,7 +92,7 @@ public class DeprecationTrackerServiceImplTest {
 
         // When
         deprecationService.onMethodCall(excludedSignature, "", false);
-        deprecationService.onMethodCall(normalSignature, "8.3", false);
+        deprecationService.onMethodCall(normalSignature, "8.3", true);
 
         // Then
         assertFalse("Excluded method should not be tracked", limiterExecutorMap.containsKey(excludedKey));
@@ -152,19 +152,18 @@ public class DeprecationTrackerServiceImplTest {
         assertFalse("Method should be excluded from tracking after config update", limiterExecutorMap.containsKey(key));
     }
 
-    @Test(expected = java.util.regex.PatternSyntaxException.class)
-    public void GIVEN_invalid_regex_pattern_WHEN_activate_THEN_should_throw_exception() {
+    public void GIVEN_invalid_regex_pattern_WHEN_activate_THEN_should_fallback_to_default() {
         // Given - config with invalid regex pattern
         DeprecationTrackerServiceImpl.Config invalidRegexConfig = configBuilder().excludedMethodsRegexes("[invalid(regex").build();
 
         // When - activate with invalid pattern
         deprecationService.activate(invalidRegexConfig);
 
-        // Then - PatternSyntaxException should be thrown
+        // Then - should use the default one
+        assertEquals(DeprecationTrackerServiceImpl.EXCLUDED_METHODS_DEFAULT_PATTERN, deprecationService.getExcludedMethodsPattern());
     }
 
-    @Test(expected = java.util.regex.PatternSyntaxException.class)
-    public void GIVEN_invalid_regex_pattern_WHEN_modified_THEN_should_throw_exception() {
+    public void GIVEN_invalid_regex_pattern_WHEN_modified_THEN_should_fallback_to_default() {
         // Given
         deprecationService.activate(config);
         DeprecationTrackerServiceImpl.Config invalidConfig = configBuilder().excludedMethodsRegexes("[invalid(regex").build();
@@ -172,7 +171,8 @@ public class DeprecationTrackerServiceImplTest {
         // When
         deprecationService.modified(invalidConfig);
 
-        // Then - PatternSyntaxException should be thrown
+        // Then - should use the default one
+        assertEquals(DeprecationTrackerServiceImpl.EXCLUDED_METHODS_DEFAULT_PATTERN, deprecationService.getExcludedMethodsPattern());
     }
 
     // ==================== Development Mode Tests ====================
@@ -264,7 +264,8 @@ public class DeprecationTrackerServiceImplTest {
 
     @Test
     @Parameters({ "-123", "0" })
-    public void GIVEN_valid_config_WHEN_invalid_logging_interval_modification_attempted_THEN_should_keep_old_config(int invalidInterval) {
+    public void GIVEN_valid_config_WHEN_invalid_logging_interval_modification_attempted_THEN_should_fallback_to_default(
+            int invalidInterval) {
         // Given - activate with valid config
         DeprecationTrackerServiceImpl.Config validConfig = configBuilder().loggingIntervalInSeconds(60).build();
         deprecationService.activate(validConfig);
@@ -278,23 +279,20 @@ public class DeprecationTrackerServiceImplTest {
 
         // When - try to modify with invalid config
         DeprecationTrackerServiceImpl.Config invalidConfig = configBuilder().loggingIntervalInSeconds(invalidInterval).build();
+        deprecationService.modified(invalidConfig);
 
-        try {
-            deprecationService.modified(invalidConfig);
-            fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
-
-        // Then - old config should still work
+        // Then - interval should fallback to default
+        assertEquals("Should fallback to default interval", DeprecationTrackerServiceImpl.Config.DEFAULT_LOGGING_INTERVAL,
+                deprecationService.getLoggingIntervalInSeconds());
         limiterExecutorMap.clear();
         deprecationService.onMethodCall(signature, "8.3", false);
-        assertTrue("Method should still be tracked with old valid config", limiterExecutorMap.containsKey(key));
+        assertTrue("Method should still be tracked after fallback", limiterExecutorMap.containsKey(key));
     }
 
     @Test
     @Parameters(method = "invalidRegexParameters")
-    public void GIVEN_valid_config_WHEN_invalid_regex_modification_attempted_THEN_should_keep_old_config(String[] invalidRegexes) {
+    public void GIVEN_valid_config_WHEN_invalid_regex_modification_attempted_THEN_should_fallback_to_default_pattern(
+            String[] invalidRegexes) {
         // Given - activate with valid config
         DeprecationTrackerServiceImpl.Config validConfig = configBuilder().excludedMethodsRegexes(".*excludedMethod.*").build();
         deprecationService.activate(validConfig);
@@ -314,21 +312,15 @@ public class DeprecationTrackerServiceImplTest {
 
         // When - try to modify with invalid regex pattern
         DeprecationTrackerServiceImpl.Config invalidConfig = configBuilder().excludedMethodsRegexes(invalidRegexes).build();
+        deprecationService.modified(invalidConfig);
 
-        try {
-            deprecationService.modified(invalidConfig);
-            fail("Should have thrown PatternSyntaxException for regex: " + String.join(", ", invalidRegexes));
-        } catch (java.util.regex.PatternSyntaxException e) {
-            // Expected
-        }
-
-        // Then - old config should still work
+        // Then - pattern should fallback to default, where nothing is excluded
         limiterExecutorMap.clear();
         deprecationService.onMethodCall(excludedSignature, "8.3", false);
-        assertFalse("Excluded method should still not be tracked with old valid config", limiterExecutorMap.containsKey(excludedKey));
+        assertTrue("Excluded method should now be tracked after fallback", limiterExecutorMap.containsKey(excludedKey));
 
         deprecationService.onMethodCall(normalSignature, "8.3", false);
-        assertTrue("Normal method should still be tracked with old valid config", limiterExecutorMap.containsKey(normalKey));
+        assertTrue("Normal method should still be tracked after fallback", limiterExecutorMap.containsKey(normalKey));
     }
 
     private Object[] invalidRegexParameters() {

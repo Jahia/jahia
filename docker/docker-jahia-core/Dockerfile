@@ -185,6 +185,8 @@ ENV RESTORE_MODULE_STATES="false" \
     SSL_ENABLED="false" \
     SSL_CERTIFICATE_PASSWD="changeit" \
     YOURKIT_ACTIVATED="false" \
+    IMAGE_SERVICE="ImageMagickImageService"\
+    IMAGE_MAGICK_PATH="/usr/local/bin/" \
     GRAALVM=${GRAALVM}
 
 # System setup and application preparation

@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Function to add a property to JAHIA_PROPERTIES
+add_jahia_property() {
+    local key="$1"
+    local value="$2"
+    if [ -n "$value" ]; then
+        JAHIA_PROPERTIES="${JAHIA_PROPERTIES}${JAHIA_PROPERTIES:+,}\"${key}\":\"${value}\""
+    fi
+}
+
 if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     echo "Initial container startup, configuring Jahia..."
 
@@ -109,12 +118,13 @@ if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
       alive.sh ${DB_HOST} ${DB_PORT}
     fi
 
-    if [ "${JAHIA_PROPERTIES}" != "" ]; then
-      JAHIA_PROPERTIES="${JAHIA_PROPERTIES},\"mvnPath\":\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",\"svnPath\":\"/usr/bin/svn\",\"gitPath\":\"/usr/bin/git\",\"karaf.remoteShell.host\":\"0.0.0.0\""
-    else
-      JAHIA_PROPERTIES="\"mvnPath\":\"/opt/apache-maven-${MAVEN_VER}/bin/mvn\",\"svnPath\":\"/usr/bin/svn\",\"gitPath\":\"/usr/bin/git\",\"karaf.remoteShell.host\":\"0.0.0.0\""
-    fi
-
+    # Build default properties
+    add_jahia_property "mvnPath" "/opt/apache-maven-${MAVEN_VER}/bin/mvn"
+    add_jahia_property "svnPath" "/usr/bin/svn"
+    add_jahia_property "gitPath" "/usr/bin/git"
+    add_jahia_property "karaf.remoteShell.host" "0.0.0.0"
+    add_jahia_property "imageService" "$IMAGE_SERVICE"
+    add_jahia_property "imageMagickPath" "$IMAGE_MAGICK_PATH"
 
     # Create or overwrite install.properties file
     PROPERTIES_FILE="/tmp/install.properties"
@@ -134,6 +144,8 @@ if [ ! -f "${CATALINA_HOME}/conf/configured" ]; then
     echo "operatingMode=${OPERATING_MODE}" >> $PROPERTIES_FILE
     echo "overwritedb=${OVERWRITEDB}" >> $PROPERTIES_FILE
     echo "webAppDirName=${CONTEXT}" >> $PROPERTIES_FILE
+    echo "imageService=${IMAGE_SERVICE}"  >> $PROPERTIES_FILE
+    echo "imageMagickPath=${IMAGE_MAGICK_PATH}"  >> $PROPERTIES_FILE
     echo "jahiaProperties={${JAHIA_PROPERTIES}}" >> $PROPERTIES_FILE
 
     # Handle external opts

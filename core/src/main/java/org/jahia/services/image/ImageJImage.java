@@ -46,7 +46,9 @@ import ij.ImagePlus;
 
 /**
  * ImageJ image
-*/
+ * @deprecated since 8.2.4.0 - Use {@link org.jahia.services.image.JahiaImageService} OSGi service instead (org.jahia.bundles.imageservice)
+ */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ImageJImage implements Image {
     private String path;
 

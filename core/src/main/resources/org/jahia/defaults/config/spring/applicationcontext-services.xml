@@ -297,18 +297,27 @@
         </property>
     </bean>
 
+<!--    Deprecated, use OSGi service ImageService instead-->
     <bean id="ImageJImageService" class="org.jahia.services.image.ImageJImageService" factory-method="getInstance"/>
 
+
+    <!--    Deprecated, use OSGi service ImageService instead-->
     <bean id="ImageJAndJava2DImageService" class="org.jahia.services.image.ImageJAndJava2DImageService"  factory-method="getInstance" />
 
+
+    <!--    Deprecated, use OSGi service ImageService instead-->
     <bean id="ImageMagickImageService" class="org.jahia.services.image.ImageMagickImageService" factory-method="getInstance" init-method="init">
         <property name="imageMagickPath" value="${imageMagickPath}"/>
     </bean>
 
+
+    <!--    Deprecated, use OSGi service ImageService instead-->
     <bean id="ImageMagickImage6Service" class="org.jahia.services.image.ImageMagickImage6Service" factory-method="getInstance" init-method="init">
         <property name="imageMagickPath" value="${imageMagickPath}"/>
     </bean>
 
+
+    <!--    Deprecated, use OSGi service ImageService instead-->
     <bean id="imageService" class="org.springframework.beans.factory.config.BeanReferenceFactoryBean" depends-on="ImageJImageService,ImageJAndJava2DImageService,ImageMagickImageService">
         <property name="targetBeanName" value="#{jahiaProperties['imageService'].trim()}"/>
     </bean>

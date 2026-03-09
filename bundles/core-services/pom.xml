@@ -31,6 +31,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>gov.nih.imagej</groupId>
+            <artifactId>imagej</artifactId>
+            <version>1.47</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.18.0</version>

@@ -55,7 +55,6 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerSe
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.events.JournalEventReader;
-import org.jahia.services.image.JahiaImageService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.modulemanager.DefinitionsManagerService;
@@ -131,7 +130,6 @@ public class JahiaCoreSpringBridge {
         bridgeSpringService("SearchService", "DX search service", SearchService.class.getName());
         bridgeSpringService("JahiaFileWatcherService", "DX file watcher service", JahiaFileWatcherService.class.getName());
         bridgeSpringService("org.jahia.services.seo.jcr.VanityUrlService", "Service to manage vanity urls in DX", VanityUrlService.class.getName());
-        bridgeSpringService("imageService", "This service provides access to various image manipulation operations such as image resizing, cropping and rotating", JahiaImageService.class.getName());
         bridgeSpringService("visibilityService", "Service implementation for evaluating visibility conditions on a content item", VisibilityService.class.getName());
         bridgeSpringService("ModuleManager", "Entry point interface for the module management service, " +
                 "providing functionality for module deployment, undeployment, start and stop operations, which are performed " +

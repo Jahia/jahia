@@ -189,6 +189,12 @@ public class DeprecationTrackerServiceImpl implements DeprecationTrackerService 
     @Override
     public void onFeatureUsage(String featureName, String deprecatedSince, boolean markedForRemoval, String details) {
 
+        // check the operating mode
+        if (developmentModeOnly && !settingsBean.isDevelopmentMode()) {
+            logger.debug("Skipping deprecated feature: {} (development mode only)", featureName);
+            return;
+        }
+
         // log only once per interval
         long intervalInMs = getLoggingIntervalInSeconds() * 1000L;
         String key = KEY_PREFIX + featureName;

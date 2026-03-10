@@ -179,7 +179,7 @@ public class DeprecationTrackerServiceImplTest {
 
     @Test
     @Parameters({ "true", "false" })
-    public void GIVEN_an_environment_in_development_mode_WHEN_developmentModeOnly_is_configured_THEN_should_always_track(
+    public void GIVEN_an_environment_in_development_mode_WHEN_developmentModeOnly_is_configured_THEN_method_calls_should_always_be_tracked(
             boolean developmentModeOnly) {
         // Given
         DeprecationTrackerServiceImpl.Config devModeConfig = configBuilder().developmentModeOnly(developmentModeOnly).build();
@@ -199,7 +199,28 @@ public class DeprecationTrackerServiceImplTest {
     }
 
     @Test
-    public void GIVEN_developmentModeOnly_enabled_WHEN_not_in_development_mode_THEN_should_not_track() {
+    @Parameters({ "true", "false" })
+    public void GIVEN_an_environment_in_development_mode_WHEN_developmentModeOnly_is_configured_THEN_feature_usages_should_always_be_tracked(
+            boolean developmentModeOnly) {
+        // Given
+        DeprecationTrackerServiceImpl.Config devModeConfig = configBuilder().developmentModeOnly(developmentModeOnly).build();
+        deprecationService.activate(devModeConfig);
+
+        // Mock: system is in development mode
+        when(settingsBean.isDevelopmentMode()).thenReturn(true);
+
+        String feature = "my old feature";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + feature;
+
+        // When
+        deprecationService.onFeatureUsage(feature, "8.3", false, "Some details");
+
+        // Then - method should be tracked
+        assertTrue("Feature usage should be tracked when in development mode", limiterExecutorMap.containsKey(key));
+    }
+
+    @Test
+    public void GIVEN_developmentModeOnly_enabled_WHEN_not_in_development_mode_THEN_should_not_track_method_calls() {
         // Given - config with developmentModeOnly enabled
         DeprecationTrackerServiceImpl.Config devModeConfig = configBuilder().developmentModeOnly(true).build();
         deprecationService.activate(devModeConfig);
@@ -217,8 +238,28 @@ public class DeprecationTrackerServiceImplTest {
         assertFalse("Method should not be tracked when not in development mode", limiterExecutorMap.containsKey(key));
     }
 
+
     @Test
-    public void GIVEN_developmentModeOnly_disabled_WHEN_not_in_development_mode_THEN_should_track() {
+    public void GIVEN_developmentModeOnly_enabled_WHEN_not_in_development_mode_THEN_should_not_track_feature_usages() {
+        // Given - config with developmentModeOnly enabled
+        DeprecationTrackerServiceImpl.Config devModeConfig = configBuilder().developmentModeOnly(true).build();
+        deprecationService.activate(devModeConfig);
+
+        // Mock: system is NOT in development mode (production)
+        when(settingsBean.isDevelopmentMode()).thenReturn(false);
+
+        String feature = "my old feature";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + feature;
+
+        // When
+        deprecationService.onFeatureUsage(feature, "8.3", false, "Some details");
+
+        // Then - method should NOT be tracked
+        assertFalse("Feature usage should not be tracked when not in development mode", limiterExecutorMap.containsKey(key));
+    }
+
+    @Test
+    public void GIVEN_developmentModeOnly_disabled_WHEN_not_in_development_mode_THEN_should_track_method_calls() {
         // Given - config with developmentModeOnly disabled (default)
         DeprecationTrackerServiceImpl.Config devModeConfig = configBuilder().developmentModeOnly(false).build();
         deprecationService.activate(devModeConfig);
@@ -234,6 +275,25 @@ public class DeprecationTrackerServiceImplTest {
 
         // Then - method should be tracked (works in all modes)
         assertTrue("Method should be tracked regardless of mode when developmentModeOnly is false", limiterExecutorMap.containsKey(key));
+    }
+
+    @Test
+    public void GIVEN_developmentModeOnly_disabled_WHEN_not_in_development_mode_THEN_should_track_feature_usages() {
+        // Given - config with developmentModeOnly disabled (default)
+        DeprecationTrackerServiceImpl.Config devModeConfig = configBuilder().developmentModeOnly(false).build();
+        deprecationService.activate(devModeConfig);
+
+        // Note: No need to mock settingsBean.isDevelopmentMode() when developmentModeOnly is false,
+        // because the condition short-circuits and never checks the development mode
+
+        String feature = "my old feature";
+        String key = DeprecationTrackerServiceImpl.KEY_PREFIX + feature;
+
+        // When
+        deprecationService.onFeatureUsage(feature, "8.3", false, "Some details");
+
+        // Then - feature usage should be tracked (works in all modes)
+        assertTrue("Feature usage should be tracked regardless of mode when developmentModeOnly is false", limiterExecutorMap.containsKey(key));
     }
 
     @Test

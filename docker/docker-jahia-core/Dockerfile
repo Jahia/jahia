@@ -6,8 +6,6 @@ FROM ${BASE_IMAGE} as base
 
 # Build feature flags
 ARG DEBUG_TOOLS="false"
-ARG FFMPEG="false"
-ARG LIBREOFFICE="false"
 # Include ImageMagick by default
 ARG IMAGEMAGICK="true"
 # Commit id corresponding to the version 7.1.2-15
@@ -32,12 +30,6 @@ RUN apt-get update \
     fi \
     && if [ "$IMAGEMAGICK" = "true" ]; then \
         packages="$packages $IMAGEMAGICK_RUNTIME_PACKAGES $IMAGEMAGICK_BUILD_PACKAGES"; \
-    fi \
-    && if [ "$LIBREOFFICE" = "true" ]; then \
-        packages="$packages libreoffice"; \
-    fi \
-    && if [ "$FFMPEG" = "true" ]; then \
-        packages="$packages ffmpeg"; \
     fi \
     && apt-get install -y --no-install-recommends $packages \
     && set -ux \

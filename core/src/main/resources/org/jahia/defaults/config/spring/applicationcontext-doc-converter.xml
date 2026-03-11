@@ -7,14 +7,14 @@
     <!-- DEPRECATED since 8.2.4.0 - Will be removed in a future version -->
     <bean id="DocumentConverterService" class="org.jahia.services.transform.DocumentConverterService" init-method="start" destroy-method="stop">
     	<!-- set this to true to enable the service -->
-        <property name="enabled" value="${documentConverter.enabled}"/>
+        <property name="enabled" value="${documentConverter.enabled:false}"/>
         <!-- contains the name of the bean that provides configured OfficeManager instance (not the reference to the bean itself) -->
         <property name="officeManagerBeanName" value="${documentConverter.officeManagerFactory:localOfficeManagerFactory}"/>
     </bean>
 
     <!-- DEPRECATED since 8.2.4.0 - Part of deprecated DocumentConverterService -->
     <bean name="localOfficeManagerFactory" class="org.jahia.services.transform.LocalOfficeManagerFactory" lazy-init="true">
-        <property name="officeHome" value="${documentConverter.officeHome}"/>
+        <property name="officeHome" value="${documentConverter.officeHome:/usr/lib/openoffice}"/>
         <property name="portNumber" value="${documentConverter.officePort:2002}"/>
         <property name="killExistingOfficeProcessOnWindows" value="${documentConverter.killExistingOfficeProcessOnWindows:true}"/>
     </bean>

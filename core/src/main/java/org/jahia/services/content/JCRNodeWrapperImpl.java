@@ -1154,10 +1154,35 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     /**
+     * Checks if the current session has permission to add/remove the jmix:accessControlled mixin.
+     * This mixin is special because it auto-creates/removes the j:acl node structure,
+     * which requires jcr:modifyAccessControl permission to prevent privilege escalation.
+     * Similar to what AddMixinOperation does in Jackrabbit, for mix:versionable mixin
+     * that jcr:versionManagement should protect
+     *
+     * @param mixinName the name of the mixin to check
+     * @param throwException if true, throws AccessDeniedException when permission is denied;
+     *                      if false, returns false when permission is denied
+     * @return true if permission is granted or mixin is not jmix:accessControlled;
+     *         false if permission is denied and throwException is false
+     * @throws AccessDeniedException if permission is denied and throwException is true
+     */
+    private boolean checkAccessControlMixin(String mixinName, boolean throwException) throws AccessDeniedException {
+        if ("jmix:accessControlled".equals(mixinName) && !hasPermission("jcr:modifyAccessControl")) {
+            if (throwException) {
+                throw new AccessDeniedException("Not allowed to modify access control");
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        checkAccessControlMixin(s, true);
         checkLock();
         try {
             getOriginalMixinNodeTypes();
@@ -1172,7 +1197,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public void removeMixin(String mixinName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
-
+        checkAccessControlMixin(mixinName, true);
         checkLock();
 
         NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
@@ -1231,6 +1256,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean canAddMixin(String s) throws NoSuchNodeTypeException, RepositoryException {
+        if (!checkAccessControlMixin(s, false)) {
+            return false;
+        }
+
         try {
             checkLock();
         } catch (LockException e) {

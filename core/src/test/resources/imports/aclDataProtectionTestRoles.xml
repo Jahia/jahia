@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content jcr:primaryType="jnt:systemFolder"
+         jcr:mixinTypes="jmix:accessControlled jmix:workflowRulesable"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+
+    <roles jcr:primaryType="jnt:roles">
+
+        <reader-default-only jcr:primaryType="jnt:role" j:permissionNames="jcr:read_default"/>
+
+        <not-privileged-reader-default-and-publish jcr:primaryType="jnt:role" j:permissionNames="jcr:read_default publish"/>
+
+        <privileged-reader-default-and-publish jcr:primaryType="jnt:role" j:permissionNames="jcr:read_default publish" j:privilegedAccess="true"/>
+
+        <editor-with-acl-management j:hidden="false"
+                                    j:nodeTypes=""
+                                    j:permissionNames="jcr:all_default publication-finish-correction publication-start move jContentAccordions siteAdminUrlmapping"
+                                    j:privilegedAccess="true"
+                                    j:roleGroup="edit-role"
+                                    jcr:primaryType="jnt:role">
+            <editor-with-acl-management-and-publish j:hidden="false"
+                             j:permissionNames="publish"
+                             j:privilegedAccess="true"
+                             j:roleGroup="edit-role"
+                             jcr:primaryType="jnt:role"/>
+            <currentSite-access j:path="currentSite"
+                                j:permissionNames="viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewVanityUrlModal viewVisibilityTab jContentAccess jContentActions pageComposerAccess managers view-basic-wysiwyg-editor components templates"
+                                jcr:primaryType="jnt:externalPermissions"/>
+        </editor-with-acl-management>
+
+        <editor-no-acl-management  j:hidden="false"
+                                   j:nodeTypes=""
+                                   j:permissionNames="api-access jcr:readAccessControl_default jcr:read_default jcr:lockManagement_default jcr:nodeTypeManagement_default jcr:versionManagement_default jcr:write_default jcr:addChildNodes_default jcr:modifyProperties_default jcr:modifyProperties_default_de jcr:modifyProperties_default_en jcr:modifyProperties_default_es jcr:modifyProperties_default_fr jcr:modifyProperties_default_it jcr:modifyProperties_default_pt jcr:removeChildNodes_default jcr:removeNode_default publication-finish-correction publication-start move jContentAccordions siteAdminUrlmapping"
+                                   j:privilegedAccess="true"
+                                   j:roleGroup="edit-role"
+                                   jcr:primaryType="jnt:role">
+            <editor-no-acl-management-and-publish j:hidden="false"
+                                                    j:permissionNames="publish"
+                                                    j:privilegedAccess="true"
+                                                    j:roleGroup="edit-role"
+                                                    jcr:primaryType="jnt:role"/>
+            <currentSite-access j:path="currentSite"
+                                j:permissionNames="viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewVanityUrlModal viewVisibilityTab jContentAccess jContentActions pageComposerAccess managers view-basic-wysiwyg-editor components templates"
+                                jcr:primaryType="jnt:externalPermissions"/>
+        </editor-no-acl-management>
+    </roles>
+</content>

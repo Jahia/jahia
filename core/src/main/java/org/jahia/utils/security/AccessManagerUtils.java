@@ -88,6 +88,8 @@ public class AccessManagerUtils {
     private static volatile Cache<String, Boolean> matchingPermissions = null;
     public static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
+    private static final String ACL_PATH = "/j:acl";
+    private static final int ACL_PATH_LENGTH = ACL_PATH.length();
     private static final Pattern REFERENCE_FIELD_LANGUAGE_PATTERN = Pattern.compile("(.*)j:referenceInField_.*_([a-z]{2,3}(_[A-Z]{2})?)_[0-9]+([/].*)?$");
     private static final Pattern TRANSLATION_LANGUAGE_PATTERN = Pattern.compile("(.*)j:translation_([a-z]{2,3}(_[A-Z]{2})?)([/].*)?$");
 
@@ -218,7 +220,6 @@ public class AccessManagerUtils {
         boolean res = false;
 
         String jcrPath = pathWrapper.getPathStr();
-
         String cacheKey = jcrPath + " : " + permissions;
 
         Boolean result = pathPermissionCacheGet(cacheKey, isAliased, pathPermissionCache);
@@ -243,6 +244,7 @@ public class AccessManagerUtils {
             // Always deny write access on system folders
             if (permissions.contains(getPrivilegeName(Privilege.JCR_WRITE, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
+                    permissions.contains(getPrivilegeName(Privilege.JCR_NODE_TYPE_MANAGEMENT, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
                 itemExists = pathWrapper.itemExist();
                 if (itemExists) {
@@ -262,6 +264,34 @@ public class AccessManagerUtils {
                     pathPermissionCachePut(cacheKey, true, isAliased, pathPermissionCache);
                     return true;
                 }
+            }
+
+            // Special handling for ACL nodes: we want to check permissions on the parent of the j:acl node, and not on the ACL node itself,
+            // and we want to check MODIFY_AC for write permissions and READ_AC for read permissions
+            PathWrapper aclOwnerPath = resolveAclPath(pathWrapper, jcrPath);
+            if (aclOwnerPath != null) {
+                Set<String> aclPermissions;
+                if(permissions.contains(getPrivilegeName(Privilege.JCR_WRITE, workspaceName)) ||
+                        permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
+                        permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName)) ||
+                        permissions.contains(getPrivilegeName(Privilege.JCR_NODE_TYPE_MANAGEMENT, workspaceName)) ||
+                        permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_CHILD_NODES, workspaceName)) ||
+                        permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
+                    // protect writing
+                    aclPermissions = Collections.singleton(getPrivilegeName(Privilege.JCR_MODIFY_ACCESS_CONTROL, workspaceName));
+                } else if (permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
+                    // protect read
+                    aclPermissions = Collections.singleton(getPrivilegeName(Privilege.JCR_READ_ACCESS_CONTROL, workspaceName));
+                } else {
+                    // forward any other permissions without change (publish, apiAccess, etc...)
+                    aclPermissions = permissions;
+                }
+
+                // all permissions on jnt:acl/jnt:ace should be checked on the owner of the ACL
+                boolean areACLPermissionsGranted = isGranted(aclOwnerPath, aclPermissions, securitySession, jahiaPrincipal,
+                        workspaceName, isAliased, pathPermissionCache, compiledAcls, privilegeRegistry);
+                pathPermissionCachePut(cacheKey, areACLPermissionsGranted, isAliased, pathPermissionCache);
+                return areACLPermissionsGranted;
             }
 
             if (itemExists == null) {
@@ -291,12 +321,7 @@ public class AccessManagerUtils {
                 }
             }
 
-            Node n;
-
-            if (i.isNode()) {
-                n = (Node) i;
-            } else {
-                n = i.getParent();
+            if (!i.isNode()) {
                 nodePathWrapper = nodePathWrapper.getAncestor();
             }
 
@@ -322,7 +347,6 @@ public class AccessManagerUtils {
             }
 
             // Always allow to add child nodes when it's a translation node and the user have the translate permission
-
             if (permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
                 String nodeName = pathWrapper.getNodeName();
                 if ((nodeName.startsWith("j:translation_") || nodeName.startsWith("j:referenceInField_")) &&
@@ -333,32 +357,39 @@ public class AccessManagerUtils {
                 }
             }
 
-            String ntName = n.getPrimaryNodeType().getName();
-            if (ntName.equals("jnt:acl") || ntName.equals("jnt:ace")) {
-                if (permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
-                    permissions.add(getPrivilegeName(Privilege.JCR_READ_ACCESS_CONTROL, workspaceName));
-                }
-                if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {
-                    permissions.add(getPrivilegeName(Privilege.JCR_MODIFY_ACCESS_CONTROL, workspaceName));
-                }
-            }
-
             String site = resolveSite(jcrPath);
-
-//            if (jahiaPrincipal != null) {
-//                if (isAdmin(jahiaPrincipal.getName(), siteId)) {
-//                    cache.put(absPathStr + " : " + permissions, true);
-//                    return true;
-//                }
-//            }
-
-
             res = recurseOnACPs(nodePathWrapper, securitySession, permissions, site, compiledAcls, jahiaPrincipal, isAliased, privilegeRegistry, workspaceName);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         pathPermissionCachePut(cacheKey, res, isAliased, pathPermissionCache);
         return res;
+    }
+
+    /**
+     * If the path targets a j:acl node or any descendant beneath it,
+     * returns the ancestor PathWrapper that owns the ACL subtree.
+     * Returns null if the path is not an ACL path.
+     */
+    static PathWrapper resolveAclPath(PathWrapper pathWrapper, String fullPath)
+            throws RepositoryException {
+        int idx = fullPath.indexOf(ACL_PATH);
+        if (idx == -1) {
+            return null;
+        }
+        int afterIdx = idx + ACL_PATH_LENGTH;
+        if (afterIdx != fullPath.length() && fullPath.charAt(afterIdx) != '/') {
+            return null; // false match, e.g. /j:aclExtra
+        }
+
+        // Walk up: one level for j:acl itself, plus one per segment after it
+        PathWrapper ancestor = pathWrapper.getAncestor(); // skip j:acl
+        for (int i = afterIdx; i < fullPath.length(); i++) {
+            if (fullPath.charAt(i) == '/') {
+                ancestor = ancestor.getAncestor();
+            }
+        }
+        return ancestor;
     }
 
     /**

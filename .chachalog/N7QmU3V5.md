@@ -26,4 +26,4 @@ All deprecated classes are marked with `@Deprecated(since = "8.2.4.0", forRemova
 
 ### Spring Configuration
 - **`applicationcontext-services.xml`** - Added deprecation comments to image service bean definitions
-- All image service beans marked as deprecated with recommendation to use OSGi service
+- Marked all image service beans as deprecated with a recommendation to use OSGi service

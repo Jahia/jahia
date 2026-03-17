@@ -46,6 +46,7 @@ import org.jahia.api.settings.SettingsBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
+import org.jahia.utils.DeprecationUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -109,18 +110,16 @@ public class ImageServiceDelegator implements JahiaImageService {
             serviceType = SERVICE_IMAGEJ_JAVA2D;
         }
 
-        // Check if we need to switch services
-        if (currentServiceType != null && currentServiceType.equals(serviceType)) {
-            logger.debug("Service type unchanged: {}", serviceType);
-            return;
-        }
-
         logger.info("Selecting image service implementation: {}", serviceType);
 
         try {
             delegateService = createServiceInstance(serviceType);
             currentServiceType = serviceType;
             logger.info("Image service successfully switched to: {}", serviceType);
+            if (!SERVICE_IMAGEMAGICK.equals(serviceType)) {
+                DeprecationUtils.onDeprecatedFeatureUsage("Image Service", "8.2.4.0", true,
+                        "Please configure imageMagick 7 for your environment, other ImageService implementations are now deprecated");
+            }
 
         } catch (Exception e) {
             logger.error("Failed to initialize image service {}: {}", serviceType, e.getMessage());

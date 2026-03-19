@@ -64,7 +64,6 @@ import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.*;
-import javax.jcr.version.VersionException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -1012,9 +1011,22 @@ public class ContentTest {
         } catch (RepositoryException re) {
             assertEquals("Failed to resolve path []*|/% relative to node /sites/contentTestSite", re.getMessage());
         }
+        // AddNode ".." is a valid operation work only in case of a parent node that allows same name siblings.
 
-        JCRNodeWrapper newNode = root.addNode("..", "jnt:contentFolder");
-        assertEquals("/sites[2]", newNode.getPath());
+        try {
+            JCRNodeWrapper parentNode = root.addNode("parentFolder", "jnt:contentFolder");
+            parentNode.addNode("..", parentNode.getParent().getPrimaryNodeTypeName());
+        } catch (RepositoryException re) {
+            assertEquals("This node already exists: /sites/contentTestSite", re.getMessage());
+        }
+
+        // Sibling node
+        JCRNodeWrapper parentNode = root.addNode("parentSiblingFolder", "test:childNodeType");
+        JCRNodeWrapper childNode = parentNode.addNode("test:siblingNode", "test:childNodeType");
+        JCRNodeWrapper subChildNde = childNode.addNode("test:siblingNode", "test:childNodeType");
+        JCRNodeWrapper newNode = subChildNde.addNode("..", "test:childNodeType");
+
+        assertEquals(SITECONTENT_ROOT_NODE + "/parentSiblingFolder/test:siblingNode[2]", newNode.getPath());
 
         try {
             root.addNode(".", "jnt:contentFolder");

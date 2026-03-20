@@ -18,7 +18,7 @@
                     j:permissionNames="jcr:read_default jcr:readAccessControl_default jcr:readAccessControl_live useComponent"
                 />
         <editor j:hidden="false"
-                j:permissionNames="jcr:all_default"
+                j:permissionNames="api-access jcr:read_default jcr:write_default jcr:readAccessControl_default jcr:lockManagement_default jcr:versionManagement_default jcr:nodeTypeManagement_default jcr:retentionManagement_default jcr:lifecycleManagement_default"
                 j:privilegedAccess="true"
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">

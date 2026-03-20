@@ -17,4 +17,5 @@ war/src/main/webapp/engines/jahia-anthracite/css/*.css
 war/src/main/webapp/engines/jahia-anthracite/css/*.map
 war/node
 war/node_modules
+war/overlays
 .DS_Store

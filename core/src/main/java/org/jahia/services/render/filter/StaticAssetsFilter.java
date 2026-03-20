@@ -55,12 +55,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.AgeFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.stream.Streams;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
+import org.jahia.services.io.FileSystemIOResource;
 import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
@@ -75,8 +77,6 @@ import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.script.*;
@@ -532,7 +532,7 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
             if (assetsEntry.getKey().equals("css") || assetsEntry.getKey().equals(JS_TYPE)) {
                 Map<String, Map<String, String>> newMap = new LinkedHashMap<String, Map<String, String>>();
                 for (Map.Entry<String, Map<String, String>> entry : assetsEntry.getValue().entrySet()) {
-                    Resource r = getResource(getKey(entry.getKey()));
+                    IOResource r = getResource(getKey(entry.getKey()));
                     if (r != null) {
                         newMap.put(entry.getKey() + "?" + r.lastModified(), entry.getValue());
                     } else {
@@ -605,7 +605,7 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
         Map<String, ResourcesToAggregate> resourcesToAggregateMap = new LinkedHashMap<>();
         for (Map.Entry<String, Map<String, String>> entry : entries) {
             String key = getKey(entry.getKey());
-            Resource resource = getResource(key);
+            IOResource resource = getResource(key);
             String media = entry.getValue().get("media");
 
             boolean supportedOption = true;
@@ -678,7 +678,7 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
         return newEntries;
     }
 
-    private void addResourceToAggregation(String key, Resource resource, ResourcesToAggregate resourcesToAggregate) throws IOException {
+    private void addResourceToAggregation(String key, IOResource resource, ResourcesToAggregate resourcesToAggregate) throws IOException {
         long lastModified = resource.lastModified();
         resourcesToAggregate.getPathsToAggregate().put(key + "_" + lastModified, resource);
         if (lastModified > resourcesToAggregate.getMaxLastModified()) {
@@ -708,7 +708,7 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
 
     private class ResourcesToAggregate {
 
-        public ResourcesToAggregate(LinkedHashMap<String, Resource> pathsToAggregate, String media,
+        public ResourcesToAggregate(LinkedHashMap<String, IOResource> pathsToAggregate, String media,
                                     boolean async, boolean defer) {
             this.pathsToAggregate = pathsToAggregate;
             this.media = media;
@@ -717,13 +717,13 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
             this.maxLastModified = 0;
         }
 
-        LinkedHashMap<String, Resource> pathsToAggregate;
+        LinkedHashMap<String, IOResource> pathsToAggregate;
         String media;
         long maxLastModified;
         boolean async;
         boolean defer;
 
-        public LinkedHashMap<String, Resource> getPathsToAggregate() {
+        public LinkedHashMap<String, IOResource> getPathsToAggregate() {
             return pathsToAggregate;
         }
 
@@ -748,7 +748,7 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
         }
     }
 
-    private String performAggregation(Map<String, Resource> pathsToAggregate, String type, long maxLastModified, boolean async, boolean defer) throws IOException {
+    private String performAggregation(Map<String, IOResource> pathsToAggregate, String type, long maxLastModified, boolean async, boolean defer) throws IOException {
 
         String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
         String minifiedAggregatedFileName = aggregatedKey + (async ? "-async" : "") + (defer ? "-defer" : "") + ".min." + type;
@@ -771,9 +771,9 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
 
             // aggregate resources
             LinkedHashMap<String, String> minifiedFileNames = new LinkedHashMap<>();
-            for (Map.Entry<String, Resource> entry : pathsToAggregate.entrySet()) {
+            for (Map.Entry<String, IOResource> entry : pathsToAggregate.entrySet()) {
                 String path = entry.getKey();
-                Resource resource = entry.getValue();
+                IOResource resource = entry.getValue();
                 String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                 File minifiedFile = new File(getFileSystemPath(minifiedFileName));
                 if (!minifiedFile.exists() || isGeneratedFileStaled(minifiedFile)) {
@@ -812,7 +812,7 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
         return minifiedAggregatedPath;
     }
 
-    private static void minify(String path, Resource resource, String type, File minifiedFile) throws IOException {
+    private static void minify(String path, IOResource resource, String type, File minifiedFile) throws IOException {
 
         Reader reader = null;
         Writer writer = null;
@@ -854,21 +854,21 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
         return key;
     }
 
-    private static Resource getResource(String key) {
-        Resource r = null;
+    private static IOResource getResource(String key) {
+        IOResource r = null;
         String filePath = StringUtils.substringAfter(key.substring(1), "/");
         String moduleId = StringUtils.substringBefore(filePath, "/");
         filePath = StringUtils.substringAfter(filePath, "/");
         if (key.startsWith("/modules/")) {
             final JahiaTemplatesPackage jahiaTemplatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId);
             if (jahiaTemplatesPackage != null) {
-                r = jahiaTemplatesPackage.getResource(filePath);
+                r = jahiaTemplatesPackage.getModuleResource(filePath);
             }
         } else if (key.startsWith("/files/")) {
             r = getResourceFromFile(moduleId, "/" + filePath);
         } else if (key.contains(GENERATED_RESOURCES_URL_PATH)) {
             //Use case for Form Factory / Database Connector that are generating resources inside GENERATED_RESOURCES
-            r = new FileSystemResource(getFileSystemPath(StringUtils.substringAfterLast(key, GENERATED_RESOURCES_URL_PATH)));
+            r = new FileSystemIOResource(getFileSystemPath(StringUtils.substringAfterLast(key, GENERATED_RESOURCES_URL_PATH)));
         }
         return r;
     }
@@ -877,27 +877,17 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
         return SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath() + File.separator + minifiedAggregatedFileName;
     }
 
-    private static Resource getResourceFromFile(String workspace, final String fFilePath) {
+    private static IOResource getResourceFromFile(String workspace, final String fFilePath) {
 
         try {
 
             final JCRNodeWrapper contentNode = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(fFilePath);
 
-            return new Resource() {
+            return new IOResource() {
 
                 @Override
                 public boolean exists() {
                     return true;
-                }
-
-                @Override
-                public boolean isReadable() {
-                    return false;
-                }
-
-                @Override
-                public boolean isOpen() {
-                    return false;
                 }
 
                 @Override
@@ -916,18 +906,8 @@ public class StaticAssetsFilter extends AbstractFilter implements InitializingBe
                 }
 
                 @Override
-                public long contentLength() throws IOException {
-                    return contentNode.getFileContent().getContentLength();
-                }
-
-                @Override
                 public long lastModified() throws IOException {
                     return contentNode.getLastModifiedAsDate().getTime();
-                }
-
-                @Override
-                public Resource createRelative(String relativePath) throws IOException {
-                    return null;
                 }
 
                 @Override

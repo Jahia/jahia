@@ -44,6 +44,7 @@ package org.jahia.osgi;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jahia.services.io.BundleIOResource;
 import org.osgi.framework.Bundle;
 import org.springframework.core.io.UrlResource;
 
@@ -53,7 +54,9 @@ import java.net.URLConnection;
 
 /**
  * An implementation of a Spring resource that can resolve files inside bundles
+ * @deprecated use {@link BundleIOResource} instead, this class is not used anymore and should be removed in future versions
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class BundleResource extends UrlResource {
 
     private Bundle bundle;

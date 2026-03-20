@@ -47,17 +47,19 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.commons.Version;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import javax.servlet.ServletContext;
@@ -100,7 +102,9 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
             "rootContextInitialized"
     };
     private static final Pattern VERSION_PATTERN = Pattern.compile("([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+).*");
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public static final Comparator<Resource> RESOURCE_COMPARATOR = Comparator.comparing(Resource::getFilename);
+    public static final Comparator<IOResource> JAHIA_RESOURCE_COMPARATOR = Comparator.comparing(IOResource::getFilename);
 
     private static class InstanceHolder {
         public static final Patcher instance = new Patcher();
@@ -162,12 +166,12 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
                 return;
             }
 
-            List<Resource> resources = patches.stream()
-                    .map(p -> p == null ? null : new FileSystemResource(p))
-                    .sorted(RESOURCE_COMPARATOR)
+            List<IOResource> resources = patches.stream()
+                    .map(p -> p == null ? null : new FileSystemIOResource(p))
+                    .sorted(JAHIA_RESOURCE_COMPARATOR)
                     .collect(Collectors.toList());
 
-            executeScripts(resources, lifecyclePhase);
+            executeAllScripts(resources, lifecyclePhase);
         } catch (Exception e) {
             logger.error("Error executing patches", e);
         }
@@ -178,8 +182,16 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
      * @param scripts scripts
      * @param lifecyclePhase lifecyclePhase
      */
+    public void executeAllScripts(Collection<IOResource> scripts, String lifecyclePhase) {
+        executeAllScripts(scripts, lifecyclePhase, this::afterExecution);
+    }
+
+    /**
+     * @deprecated use {@link #executeAllScripts(Collection, String)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void executeScripts(Collection<Resource> scripts, String lifecyclePhase) {
-        executeScripts(scripts, lifecyclePhase, this::afterExecution);
+        executeAllScripts(SpringResourceAdapter.fromSpring(scripts), lifecyclePhase);
     }
 
     /**
@@ -188,7 +200,7 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
      * @param lifecyclePhase lifecyclePhase
      * @param afterExecution afterExecution callback
      */
-    public void executeScripts(Collection<Resource> scripts, String lifecyclePhase, BiConsumer<Resource, String> afterExecution) {
+    public void executeAllScripts(Collection<IOResource> scripts, String lifecyclePhase, BiConsumer<IOResource, String> afterExecution) {
         if (scripts.isEmpty()) {
             return;
         }
@@ -198,38 +210,53 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
             logger.info("Found patch scripts {}. Executing...", StringUtils.join(scripts, ','));
         }
 
-        for (Resource script : scripts) {
-            try {
-                if (shouldSkipMigrationScript(script.getFilename())) {
-                    afterExecution.accept(script, SUFFIX_SKIPPED);
-                } else {
-                    executeScript(lifecyclePhase, script, afterExecution);
-                }
-            } catch (Exception e) {
-                logger.error("Execution of script {} failed with error: ", e.getMessage(), e);
-                afterExecution.accept(script, SUFFIX_FAILED);
-            }
+        for (IOResource script : scripts) {
+            executeScript(script, lifecyclePhase, afterExecution);
         }
 
         logger.info("Execution took {} ms", (System.currentTimeMillis() - timer));
     }
 
-    private void executeScript(String lifecyclePhase, Resource script, BiConsumer<Resource, String> afterExecution) throws IOException {
-        long timerSingle = System.currentTimeMillis();
-        String scriptContent = getContent(script);
+    /**
+     * @deprecated use {@link #executeAllScripts(Collection, String, BiConsumer)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void executeScripts(Collection<Resource> scripts, String lifecyclePhase, BiConsumer<Resource, String> afterExecution) {
+        executeAllScripts(SpringResourceAdapter.fromSpring(scripts), lifecyclePhase,
+                (resource, result) -> afterExecution.accept(SpringResourceAdapter.toSpring(resource), result));
+    }
 
-        if (StringUtils.isNotEmpty(scriptContent)) {
-            for (PatchExecutor patcher : patchers) {
-                if (patcher.canExecute(script.getURL().getPath(), lifecyclePhase)) {
-                    String result = patcher.executeScript(script.getURL().getPath(), scriptContent);
-                    logger.info("Execution of script {} : {} took {} ms", script.getFilename(), result, System.currentTimeMillis() - timerSingle);
-                    afterExecution.accept(script, result);
-                    break;
+    /**
+     * Execute script in the specified lifecycle phase, use a callback after execution
+     * @param script script
+     * @param lifecyclePhase lifecyclePhase
+     * @param afterExecution afterExecution callback
+     */
+    public void executeScript(IOResource script, String lifecyclePhase, BiConsumer<IOResource, String> afterExecution) {
+        try {
+            if (shouldSkipMigrationScript(script.getFilename())) {
+                afterExecution.accept(script, SUFFIX_SKIPPED);
+            } else {
+                long timerSingle = System.currentTimeMillis();
+                String scriptContent = getContent(script);
+
+                if (StringUtils.isNotEmpty(scriptContent)) {
+                    for (PatchExecutor patcher : patchers) {
+                        if (patcher.canExecute(script.getURL().getPath(), lifecyclePhase)) {
+                            String result = patcher.executeScript(script.getURL().getPath(), scriptContent);
+                            logger.info("Execution of script {} : {} took {} ms", script.getFilename(), result, System.currentTimeMillis() - timerSingle);
+                            afterExecution.accept(script, result);
+                            break;
+                        }
+                    }
+                } else {
+                    logger.warn("Content of the script {} is either empty or cannot be read. Skipping.", script.getFilename());
+                    afterExecution.accept(script, SUFFIX_SKIPPED);
                 }
             }
-        } else {
-            logger.warn("Content of the script {} is either empty or cannot be read. Skipping.", script.getFilename());
-            afterExecution.accept(script, SUFFIX_SKIPPED);
+        } catch (Exception e) {
+            logger.error("Execution of script {} failed with error: ", e.getMessage(), e);
+            afterExecution.accept(script, SUFFIX_FAILED);
         }
     }
 
@@ -238,7 +265,7 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
         return matcher.matches() && (jahiaPreviousVersion == null || new Version(matcher.group(1)).compareTo(jahiaPreviousVersion) <= 0);
     }
 
-    private String getContent(Resource r) throws IOException {
+    private String getContent(IOResource r) throws IOException {
         InputStream in = null;
         try {
             in = r.getInputStream();
@@ -260,7 +287,7 @@ public final class Patcher implements JahiaAfterInitializationService, Disposabl
         return lookupFolder.isDirectory() ? lookupFolder : null;
     }
 
-    private void afterExecution(Resource script, String result) {
+    private void afterExecution(IOResource script, String result) {
         File scriptFile;
         try {
             scriptFile = script.getFile();

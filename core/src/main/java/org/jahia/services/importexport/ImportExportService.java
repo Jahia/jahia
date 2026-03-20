@@ -42,6 +42,7 @@
  */
  package org.jahia.services.importexport;
 
+import org.jahia.api.io.IOResource;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.categories.Category;
@@ -49,6 +50,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.validation.ValidationResults;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.sites.JahiaSite;
 import org.springframework.core.io.Resource;
 import org.xml.sax.ContentHandler;
@@ -190,7 +192,15 @@ public interface ImportExportService {
      * @throws RepositoryException in case of JCR-related errors
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, Resource file, int rootBehavior) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, IOResource file, int rootBehavior) throws IOException, RepositoryException;
+
+    /**
+     * @deprecated use {@link #importZip(String, IOResource, int)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default void importZip(String parentNodePath, Resource file, int rootBehavior) throws IOException, RepositoryException {
+        importZip(parentNodePath, SpringResourceAdapter.fromSpring(file), rootBehavior);
+    }
 
     /**
      * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
@@ -204,7 +214,15 @@ public interface ImportExportService {
      * @throws RepositoryException in case of JCR-related errors
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, Resource file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, IOResource file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException;
+
+    /**
+     * @deprecated use {@link #importZip(String, IOResource, int, JCRSessionWrapper)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default void importZip(String parentNodePath, Resource file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException {
+        importZip(parentNodePath, SpringResourceAdapter.fromSpring(file), rootBehavior, session);
+    }
 
     /**
      * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
@@ -219,20 +237,36 @@ public interface ImportExportService {
      * @throws RepositoryException in case of JCR-related errors
      * @throws JahiaException
      */
-    void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
+    void importZip(String parentNodePath, IOResource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
+
+    /**
+     * @deprecated use {@link #importZip(String, IOResource, int, JCRSessionWrapper, Set, boolean)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException {
+        importZip(parentNodePath, SpringResourceAdapter.fromSpring(file), rootBehaviour, session, filesToIgnore, useReferenceKeeper);
+    }
 
 
     /**
      * Init ImportZipContext
      */
-    ImportZipContext initImportZipContext(Resource file) throws IOException;
+    ImportZipContext initImportZipContext(IOResource file) throws IOException;
+
+    /**
+     * @deprecated use {@link #initImportZipContext(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default ImportZipContext initImportZipContext(Resource file) throws IOException {
+        return initImportZipContext(SpringResourceAdapter.fromSpring(file));
+    }
 
     /**
      * Imports the content of the specified import context.
      * Convenient as it let you run multiple import on the same resource with only one already built zip context.
      * (Don't forget to call {@link ImportZipContext#close()} after you are done with the import)
      *
-     * In order to initialize the import context, you can use {@link #initImportZipContext(Resource)}
+     * In order to initialize the import context, you can use {@link #initImportZipContext(IOResource)}
      *
      * @param parentNodePath the node to use as a parent for the import
      * @param importZipContext the context for the import
@@ -286,7 +320,15 @@ public interface ImportExportService {
      * @throws IOException in case of an I/O exception
      * @throws JahiaException if a processing error happens
      */
-    void importSiteZip(Resource resource) throws RepositoryException, IOException, JahiaException;
+    void importSiteZip(IOResource resource) throws RepositoryException, IOException, JahiaException;
+
+    /**
+     * @deprecated use {@link #importSiteZip(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default void importSiteZip(Resource resource) throws RepositoryException, IOException, JahiaException {
+        importSiteZip(SpringResourceAdapter.fromSpring(resource));
+    }
 
     /**
      * Import the site from the specified resource using the provided JCR session.
@@ -297,7 +339,15 @@ public interface ImportExportService {
      * @throws IOException in case of an I/O exception
      * @throws JahiaException if a processing error happens
      */
-    void importSiteZip(Resource resource, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
+    void importSiteZip(IOResource resource, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
+
+    /**
+     * @deprecated use {@link #importSiteZip(IOResource, JCRSessionWrapper)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default void importSiteZip(Resource resource, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException {
+        importSiteZip(SpringResourceAdapter.fromSpring(resource), session);
+    }
 
     /**
      * Import a full site zip into a newly created site.
@@ -310,7 +360,15 @@ public interface ImportExportService {
      * @throws RepositoryException in case of JCR-related errors
      * @throws IOException
      */
-    void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
+    void importSiteZip(IOResource file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
+
+    /**
+     * @deprecated use {@link #importSiteZip(IOResource, JahiaSite, Map)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {
+        importSiteZip(SpringResourceAdapter.fromSpring(file), site, infos);
+    }
 
     /**
      * Import a full site zip into a newly created site.
@@ -325,7 +383,15 @@ public interface ImportExportService {
      * @throws RepositoryException in case of JCR-related errors
      * @throws IOException
      */
-    void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) throws RepositoryException, IOException;
+    void importSiteZip(IOResource file, JahiaSite site, Map<Object, Object> infos, IOResource legacyMappingFilePath, IOResource legacyDefinitionsFilePath) throws RepositoryException, IOException;
+
+    /**
+     * @deprecated use {@link #importSiteZip(IOResource, JahiaSite, Map, IOResource, IOResource)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) throws RepositoryException, IOException {
+        importSiteZip(SpringResourceAdapter.fromSpring(file), site, infos, SpringResourceAdapter.fromSpring(legacyMappingFilePath), SpringResourceAdapter.fromSpring(legacyDefinitionsFilePath));
+    }
 
     /**
      * Performs the import of categories from the provided import stream into the specified root category.

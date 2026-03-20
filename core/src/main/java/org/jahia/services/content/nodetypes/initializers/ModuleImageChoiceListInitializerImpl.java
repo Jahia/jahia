@@ -47,7 +47,6 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
@@ -87,8 +86,7 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
             if (template != null) {
                 for (ChoiceListValue value : values) {
                     try {
-                        final Resource imagePath = template.getResource("/img/" + value.getValue().getString() + "." + param);
-                        if (imagePath != null && imagePath.exists()) {
+                        if (template.resourceExists("/img/" + value.getValue().getString() + "." + param)) {
                             String s = Jahia.getContextPath();
                             if (s.equals("/")) {
                                 s = "";

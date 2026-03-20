@@ -46,6 +46,7 @@ import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -65,7 +66,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -408,9 +408,9 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         String suffix = StringUtils.substringAfterLast(template, ".");
         String languageMailConfTemplate = template.substring(0, template.length() - (suffix.length() + 1)) + "_" + locale.toString() + "." + suffix;
         JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(templatePackageName);
-        Resource templateRealPath = templatePackage.getResource(languageMailConfTemplate);
+        IOResource templateRealPath = templatePackage.getModuleResource(languageMailConfTemplate);
         if (templateRealPath == null) {
-          templateRealPath = templatePackage.getResource(template);
+          templateRealPath = templatePackage.getModuleResource(template);
         }
         InputStream scriptInputStream = null;
         try {
@@ -437,7 +437,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             String subject;
             try {
                 String subjectTemplatePath = StringUtils.substringBeforeLast(template, ".") + ".subject." + StringUtils.substringAfterLast(template, ".");
-                InputStream stream = templatePackage.getResource(subjectTemplatePath).getInputStream();
+                InputStream stream = templatePackage.getModuleResource(subjectTemplatePath).getInputStream();
                 scriptContent = templateCharset != null ? new InputStreamReader(stream, templateCharset) : new InputStreamReader(stream);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
                 scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);

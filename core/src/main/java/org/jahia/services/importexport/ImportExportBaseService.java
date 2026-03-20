@@ -57,6 +57,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
@@ -77,6 +78,9 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.validation.*;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.services.io.InputStreamIOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -100,9 +104,6 @@ import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -926,7 +927,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @Override
-    public void importSiteZip(Resource file) throws RepositoryException, IOException, JahiaException {
+    public void importSiteZip(IOResource file) throws RepositoryException, IOException, JahiaException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
             overrideService.importSiteZip(file);
@@ -937,7 +938,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @Override
-    public void importSiteZip(Resource file, JCRSessionWrapper session) throws RepositoryException, IOException {
+    public void importSiteZip(IOResource file, JCRSessionWrapper session) throws RepositoryException, IOException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
             try {
@@ -953,7 +954,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    private void importSiteZip(ZipInputStream zis2, final String uri, final Resource fileImport, JCRSessionWrapper session) throws IOException {
+    private void importSiteZip(ZipInputStream zis2, final String uri, final IOResource fileImport, JCRSessionWrapper session) throws IOException {
         ZipEntry z;
         final Properties infos = new Properties();
         while ((z = zis2.getNextEntry()) != null) {
@@ -987,7 +988,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    private void performSiteImport(String uri, Resource fileImport, JCRSessionWrapper session, Properties infos) {
+    private void performSiteImport(String uri, IOResource fileImport, JCRSessionWrapper session, Properties infos) {
         // site import
         String tpl = (String) infos.get("templatePackageName");
         if ("".equals(tpl)) {
@@ -1013,7 +1014,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                                     locale(finalLocale != null ? finalLocale.toString() : null).
                                     siteAdmin(JCRSessionFactory.getInstance().getCurrentUser()).
                                     firstImport(fileImport != null ? "fileImport" : "importRepositoryFile").
-                                    fileImport(fileImport).
+                                    fileImportResource(fileImport).
                                     fileImportName(uri).
                                     originatingJahiaRelease(infos.getProperty("originatingJahiaRelease")).build();
                             JahiaSite site = sitesService
@@ -1057,7 +1058,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
 
     @Override
-    public void importSiteZip(final Resource file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {
+    public void importSiteZip(final IOResource file, final JahiaSite site, final Map<Object, Object> infos) throws RepositoryException, IOException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
             overrideService.importSiteZip(file, site, infos);
@@ -1068,7 +1069,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @Override
-    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) throws RepositoryException, IOException {
+    public void importSiteZip(IOResource file, JahiaSite site, Map<Object, Object> infos, IOResource legacyMappingFilePath, IOResource legacyDefinitionsFilePath) throws RepositoryException, IOException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
             overrideService.importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath);
@@ -1094,7 +1095,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @throws IOException         in case of I/O errors
      */
     @SuppressWarnings("java:S2093")
-    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
+    public void importSiteZip(IOResource file, JahiaSite site, Map<Object, Object> infos, IOResource legacyMappingFilePath, IOResource legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
 
@@ -1156,7 +1157,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @SuppressWarnings("java:S107")
-    private List<String[]> importAdditionalFilesIfPresentInArchiveOrPerformLegacyImportIfNeeded(ImportZipContext importZipContext, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session, long timerSite, CategoriesImportHandler categoriesImportHandler, boolean legacyImport, List<String[]> catProps, Map<String, String> pathMapping) throws IOException, RepositoryException {
+    private List<String[]> importAdditionalFilesIfPresentInArchiveOrPerformLegacyImportIfNeeded(ImportZipContext importZipContext, JahiaSite site, Map<Object, Object> infos, IOResource legacyMappingFilePath, IOResource legacyDefinitionsFilePath, JCRSessionWrapper session, long timerSite, CategoriesImportHandler categoriesImportHandler, boolean legacyImport, List<String[]> catProps, Map<String, String> pathMapping) throws IOException, RepositoryException {
         NodeTypeRegistry reg = NodeTypeRegistry.getInstance();
         DefinitionsMapping mapping = null;
 
@@ -1168,7 +1169,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 importZipContext.getLoadedImportDescriptorNames().contains(SITE_PERMISSIONS_XML) ||
                 importZipContext.getLoadedImportDescriptorNames().contains(DEFINITIONS_CND) ||
                 importZipContext.getLoadedImportDescriptorNames().contains(DEFINITIONS_MAP)) {
-            ZipInputStream zis = getZipInputStream(importZipContext.getArchive());
+            ZipInputStream zis = getZipInputStream(importZipContext.getArchiveResource());
             try {
                 ZipEntry zipentry;
                 while ((zipentry = zis.getNextEntry()) != null) {
@@ -1181,7 +1182,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                     } else if (name.equals(CATEGORIES_XML)) {
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
                     } else if (name.equals(DEFINITIONS_CND)) {
-                        reg = getSafeNodeTypeRegistryFromLegacyArchive(importZipContext.getArchive(), legacyImport, zis, zipentry);
+                        reg = getSafeNodeTypeRegistryFromLegacyArchive(importZipContext.getArchiveResource(), legacyImport, zis, zipentry);
                     } else if (name.equals(DEFINITIONS_MAP)) {
                         mapping = new DefinitionsMapping();
                         mapping.load(zis);
@@ -1196,12 +1197,12 @@ public final class ImportExportBaseService extends JahiaService implements Impor
 
         // Import legacy content from 5.x and 6.x
         if (legacyImport) {
-            performLegacyImport(importZipContext.getArchive(), site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, session, timerSite, importZipContext.getLoadedContentFilePaths(), reg, mapping);
+            performLegacyImport(importZipContext.getArchiveResource(), site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, session, timerSite, importZipContext.getLoadedContentFilePaths(), reg, mapping);
         }
         return catProps;
     }
 
-    private NodeTypeRegistry getSafeNodeTypeRegistryFromLegacyArchive(Resource file, boolean legacyImport, ZipInputStream zis, ZipEntry zipentry) throws IOException {
+    private NodeTypeRegistry getSafeNodeTypeRegistryFromLegacyArchive(IOResource file, boolean legacyImport, ZipInputStream zis, ZipEntry zipentry) throws IOException {
         NodeTypeRegistry reg;
         reg = new NodeTypeRegistry(); // this is fishy: a new instance is created here when NodeTypeRegistry is meant to be used as a singleton
         try {
@@ -1213,7 +1214,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                         file.getURL().getPath(), reg);
                 r.parse();
             } else {
-                reg.addDefinitionsFile(new InputStreamResource(zis, zipentry.getName()), file.getURL().getPath());
+                reg.addDefinitionsFile(new InputStreamIOResource(zis, zipentry.getName()), file.getURL().getPath());
             }
         } catch (RepositoryException | ParseException e) {
             logger.error(e.getMessage(), e);
@@ -1308,7 +1309,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @SuppressWarnings({"java:S107", "java:S3776"})
-    private void performLegacyImport(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session, long timerSite, List<String> fileList, NodeTypeRegistry reg, DefinitionsMapping mapping) throws IOException, RepositoryException {
+    private void performLegacyImport(IOResource file, JahiaSite site, Map<Object, Object> infos, IOResource legacyMappingFilePath, IOResource legacyDefinitionsFilePath, JCRSessionWrapper session, long timerSite, List<String> fileList, NodeTypeRegistry reg, DefinitionsMapping mapping) throws IOException, RepositoryException {
         long timerLegacy = System.currentTimeMillis();
         final String originatingJahiaRelease = (String) infos.get("originatingJahiaRelease");
         logger.info("Start legacy import, source version is {}", originatingJahiaRelease);
@@ -1368,7 +1369,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    private InputStream getDocumentInput(Resource file, JahiaSite site, long timerSite, ZipInputStream zis, String name, String languageCode) throws IOException {
+    private InputStream getDocumentInput(IOResource file, JahiaSite site, long timerSite, ZipInputStream zis, String name, String languageCode) throws IOException {
         InputStream documentInput = zis;
         if (this.xmlContentTransformers != null && !this.xmlContentTransformers.isEmpty()) {
             documentInput = new ZipInputStream(file.getInputStream());
@@ -1395,7 +1396,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @SuppressWarnings("java:S3776")
-    private NodeTypeRegistry getLegacyNodeTypeRegistry(Resource file, Resource legacyDefinitionsFilePath, String originatingJahiaRelease) throws IOException, RepositoryException {
+    private NodeTypeRegistry getLegacyNodeTypeRegistry(IOResource file, IOResource legacyDefinitionsFilePath, String originatingJahiaRelease) throws IOException, RepositoryException {
         NodeTypeRegistry reg;
         reg = new NodeTypeRegistry();
         if ("6.1".equals(originatingJahiaRelease)) {
@@ -1564,7 +1565,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         logger.info("Done loading properties for site {} in {}", site.getSiteKey(), DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
     }
 
-    private void importFilesAcl(JahiaSite site, Resource file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
+    private void importFilesAcl(JahiaSite site, IOResource file, InputStream is, DefinitionsMapping mapping, List<String> fileList) {
         Map<String, File> filePath = new HashMap<>();
         File temp = null;
         try {
@@ -1588,7 +1589,8 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 closeInputStream(zis);
             }
 
-            handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList, filePath), file.getFilename());
+            // using SpringResourceAdapter here directly as FilesAclImportHandler is already deprecated and most probably not used anymore
+            handleImport(is, new FilesAclImportHandler(site, mapping, SpringResourceAdapter.toSpring(file), fileList, filePath), file.getFilename());
         } catch (IOException e) {
             logger.error("Cannot extract zip", e);
         } finally {
@@ -1870,7 +1872,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @Override
-    public void importZip(final String parentNodePath, final Resource file, final int rootBehavior) throws IOException, RepositoryException {
+    public void importZip(final String parentNodePath, final IOResource file, final int rootBehavior) throws IOException, RepositoryException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
             overrideService.importZip(parentNodePath, file, rootBehavior);
@@ -1989,7 +1991,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @Override
-    public void importZip(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session)
+    public void importZip(String parentNodePath, IOResource file, int rootBehaviour, JCRSessionWrapper session)
             throws IOException, RepositoryException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
@@ -2013,7 +2015,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      */
     @Override
     @SuppressWarnings("java:S3776")
-    public void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session,
+    public void importZip(String parentNodePath, IOResource file, int rootBehaviour, final JCRSessionWrapper session,
                           Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
@@ -2031,7 +2033,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * Convenient as it let you run multiple import on the same resource with only one already built zip context.
      * (Don't forget to call {@link ImportZipContext#close()} after you are done with the import)
      *
-     * In order to initialize the import context, you can use {@link #initImportZipContext(Resource)}
+     * In order to initialize the import context, you can use {@link #initImportZipContext(IOResource)}
      *
      * @param parentNodePath the node to use as a parent for the import
      * @param importZipContext the context for the import
@@ -2054,7 +2056,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         if (filesToIgnore == null) {
             filesToIgnore = Collections.emptySet();
         }
-        logger.info("Start importing file {} into path {} ", importZipContext.getArchive(), parentNodePath != null ? parentNodePath : "/");
+        logger.info("Start importing file {} into path {} ", importZipContext.getArchiveResource(), parentNodePath != null ? parentNodePath : "/");
 
         Map<String, List<String>> references = new HashMap<>();
         Map<String, String> pathMapping = getRegisteredModulesPathMapping(session);
@@ -2111,7 +2113,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             importUserGeneratedContent(parentNodePath, importZipContext, rootBehaviour, pathMapping);
         }
         if (logger.isInfoEnabled()) {
-            logger.info("Done importing file {} in {}", importZipContext.getArchive(), DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
+            logger.info("Done importing file {} in {}", importZipContext.getArchiveResource(), DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
         }
     }
 
@@ -2127,7 +2129,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             logger.info("Start importing user generated content");
             JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live").disableSessionCache();
             DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(
-                    liveSession, parentNodePath, importZipContext.getArchive(), importZipContext.getLoadedContentFilePaths());
+                    liveSession, parentNodePath, importZipContext.getArchiveResource(), importZipContext.getLoadedContentFilePaths());
 
             documentViewImportHandler.setImportUserGeneratedContent(true);
             documentViewImportHandler.setRootBehavior(rootBehaviour);
@@ -2156,7 +2158,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 long timerDefault = System.currentTimeMillis();
                 logger.info("Start importing " + REPOSITORY_XML);
                 DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath,
-                        importZipContext.getArchive(), importZipContext.getLoadedContentFilePaths());
+                        importZipContext.getArchiveResource(), importZipContext.getLoadedContentFilePaths());
                 if (livePreviouslyImported) {
                     documentViewImportHandler.cleanPreviousLiveImport();
                 }
@@ -2232,7 +2234,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
             List<String>> references, InputStream is) throws IOException, RepositoryException {
 
         final DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath,
-                importZipContext.getArchive(), importZipContext.getLoadedContentFilePaths());
+                importZipContext.getArchiveResource(), importZipContext.getLoadedContentFilePaths());
 
         documentViewImportHandler.setReferences(references);
         documentViewImportHandler.setRootBehavior(rootBehaviour);
@@ -2263,11 +2265,11 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @return null if files were not expanded to disk (it is just optional), otherwise path to temporary local folder
      * @throws IOException
      *
-     * @deprecated use {@link #initImportZipContext(Resource)} instead.
+     * @deprecated use {@link #initImportZipContext(IOResource)} instead
      *          It used to calculate the size of uncompressed files in the zip file, but this information was never really used.
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
-    public File getFileList(Resource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {
+    public File getFileList(IOResource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {
         File newlyExpandedFolder = null;
         if (settingsBean.isExpandImportedFilesOnDisk()) {
             final File expandFolder = getExpandFolder(file, settingsBean.getExpandImportedFilesOnDiskPath());
@@ -2334,7 +2336,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    public static File getExpandFolder(Resource file, String expandImportedFilesOnDiskPath) throws IOException {
+    public static File getExpandFolder(IOResource file, String expandImportedFilesOnDiskPath) throws IOException {
         return new File(expandImportedFilesOnDiskPath + File.separator + "import-" + Base64.getEncoder().encodeToString(file.getURL().toString().getBytes(StandardCharsets.UTF_8)));
     }
 
@@ -2346,14 +2348,14 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         }
     }
 
-    private static ZipInputStream getZipInputStream(Resource file) throws IOException {
-        ZipInputStream zis;
-        if (!file.isReadable() && file instanceof FileSystemResource) {
-            zis = new DirectoryZipInputStream(file.getFile());
-        } else {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+    private static ZipInputStream getZipInputStream(IOResource file) throws IOException {
+        if (file instanceof FileSystemIOResource) {
+            File f = ((FileSystemIOResource) file).getFile();
+            if (f.isDirectory()) {
+                return new DirectoryZipInputStream(f);
+            }
         }
-        return zis;
+        return new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
     }
 
     /**
@@ -2509,7 +2511,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     @Override
-    public ImportZipContext initImportZipContext(Resource file) throws IOException {
+    public ImportZipContext initImportZipContext(IOResource file) throws IOException {
         ImportExportService overrideService = getOSGIService();
         if (overrideService != null) {
             return overrideService.initImportZipContext(file);
@@ -2527,9 +2529,9 @@ public final class ImportExportBaseService extends JahiaService implements Impor
         private final List<String> loadedContentFilePaths = new ArrayList<>();
         private final List<String> loadedImportDescriptorNames = new ArrayList<>();
         private File expandedFolder = null;
-        private final Resource archive;
+        private final IOResource archive;
 
-        public ImportZipContextImpl(Resource archive) throws IOException {
+        public ImportZipContextImpl(IOResource archive) throws IOException {
             this.archive = archive;
             logger.info("Building import context, by analyzing file {}", archive);
             long timer = System.currentTimeMillis();
@@ -2596,7 +2598,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
          * Gets the ZIP file resource.
          * @return the ZIP file resource
          */
-        public Resource getArchive() {
+        public IOResource getArchiveResource() {
             return archive;
         }
 

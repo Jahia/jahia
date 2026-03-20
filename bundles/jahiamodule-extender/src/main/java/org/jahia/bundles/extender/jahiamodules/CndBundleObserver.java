@@ -43,12 +43,12 @@
 package org.jahia.bundles.extender.jahiamodules;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
+import org.jahia.services.io.BundleIOResource;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageRegistry;
@@ -57,7 +57,6 @@ import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -92,9 +91,9 @@ public class CndBundleObserver implements BundleObserver<URL> {
 
         long lastModified = 0;
 
-        List<Resource> resources = new ArrayList<>();
+        List<BundleIOResource> resources = new ArrayList<>();
         for (URL url : urls) {
-            BundleResource bundleResource = new BundleResource(url, bundle);
+            BundleIOResource bundleResource = new BundleIOResource(url, bundle);
             try {
                 resources.add(bundleResource);
                 long l = bundleResource.lastModified();
@@ -112,12 +111,8 @@ public class CndBundleObserver implements BundleObserver<URL> {
         NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
         String systemId = bundle.getSymbolicName();
 
-        try {
-            for (Resource resource : resources) {
-                module.setDefinitionsFile(resource.getURL().getPath().substring(1));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error getting definition file for bundle " + bundle, e);
+        for (BundleIOResource resource : resources) {
+            module.setDefinitionsFile(resource.getURL().getPath().substring(1));
         }
 
         boolean latestDefinitions = JCRStoreService.getInstance().isLatestDefinitions(systemId, moduleVersion, lastModified);
@@ -131,7 +126,7 @@ public class CndBundleObserver implements BundleObserver<URL> {
             logger.info("Updated deployment properties for bundle {}", systemId);
         } else {
             try {
-                nodeTypeRegistry.addDefinitionsFile(resources, systemId);
+                nodeTypeRegistry.addAllDefinitionsFile(resources, systemId);
                 jcrStoreService.deployDefinitions(systemId, module.getVersion().toString(), lastModified);
                 logger.info("Registered definitions for bundle {}", BundleUtils.getDisplayName(bundle));
             } catch (IOException | ParseException | RepositoryException e) {

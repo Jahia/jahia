@@ -44,10 +44,10 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.rules.RulesListener;
+import org.jahia.services.io.BundleIOResource;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
@@ -55,7 +55,6 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,9 +84,9 @@ public class RulesBundleObserver implements BundleObserver<URL> {
 
         for (RulesListener listener : RulesListener.getInstances()) {
             List<String> filesAccepted = listener.getFilesAccepted();
-            listener.addRules(urls.stream()
+            listener.addAllRules(urls.stream()
                             .filter(url -> filesAccepted.contains(StringUtils.substringAfterLast(url.getPath(), "/")))
-                            .map(url -> new BundleResource(url, bundle)).collect(Collectors.toList()),
+                            .map(url -> new BundleIOResource(url, bundle)).collect(Collectors.toList()),
                     module);
         }
 

@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.ajax.gwt.helper.ModuleGWTResources;
 import org.jahia.ajax.gwt.utils.GWTResourceConfig;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.bin.filters.AbstractServletFilter;
@@ -94,7 +95,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
@@ -518,9 +518,9 @@ public class TemplatePackageRegistry {
             logger.error("Cannot get permissions in module", e);
         }
 
-        Resource[] rootResources = templatePackage.getResources("");
-        for (Resource rootResource : rootResources) {
-            if (templatePackage.getResources(rootResource.getFilename()).length > 0 && rootResource.getFilename().contains("_")) {
+        IOResource[] rootResources = templatePackage.getModuleResources("");
+        for (IOResource rootResource : rootResources) {
+            if (templatePackage.getModuleResources(rootResource.getFilename()).length > 0 && rootResource.getFilename().contains("_")) {
                 String key = rootResource.getFilename();
                 if (!modulesWithViewsPerComponents.containsKey(key)) {
                     modulesWithViewsPerComponents.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));

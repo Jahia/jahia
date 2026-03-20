@@ -50,12 +50,12 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRFileNode;
+import org.jahia.services.io.FileSystemIOResource;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSite;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -103,7 +103,7 @@ public class ImportJob extends BackgroundJob {
                 try {
                     if (file != null) {
                         ServicesRegistry.getInstance().getImportExportService()
-                                .importSiteZip(new FileSystemResource(file), site, jobDataMap);
+                                .importSiteZip(new FileSystemIOResource(file), site, jobDataMap);
                     }
                     f.remove();
                     session.save();
@@ -135,7 +135,7 @@ public class ImportJob extends BackgroundJob {
         ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
         switch (contentType) {
             case "application/zip":
-                importExport.importZip(parentPath, new FileSystemResource(file), DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
+                importExport.importZip(parentPath, new FileSystemIOResource(file), DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
                 break;
             case "application/xml":
             case "text/xml":

@@ -184,6 +184,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             applicationContext.setResourceLoader(new ResourceLoader() {
                 @Override
                 public org.springframework.core.io.Resource getResource(String location) {
+                    // resolve *.jsp resources sibling to flow.xml
                     return applicationContext.getParent().getResource("/"+flowPath+"/"+location);
                 }
 

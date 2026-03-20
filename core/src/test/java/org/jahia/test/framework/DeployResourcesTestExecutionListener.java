@@ -52,6 +52,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.io.FileSystemIOResource;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
@@ -80,7 +81,7 @@ public class DeployResourcesTestExecutionListener extends
     public void prepareTestInstance(TestContext testContext) throws Exception {
         addCndFiles(MAIN_META_INF, TEST_SYSTEM_ID);
         addCndFiles(TEST_META_INF, TEST_SYSTEM_ID);
-        if (NodeTypeRegistry.getInstance().getFiles(TEST_SYSTEM_ID) != null) {
+        if (NodeTypeRegistry.getInstance().getFilesForSystemId(TEST_SYSTEM_ID) != null) {
             JCRStoreService.getInstance().deployDefinitions(TEST_SYSTEM_ID, null, -1);
         }
 
@@ -123,7 +124,7 @@ public class DeployResourcesTestExecutionListener extends
                 List<String> filesAccepted = listener.getFilesAccepted();
                 if (filesAccepted.contains(StringUtils.substringAfterLast(
                         drlFile.getPath(), "/"))) {
-                    listener.addRules(drlFile);
+                    listener.addRules(new FileSystemIOResource(drlFile), null);
                 }
             }
         }

@@ -53,7 +53,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jodconverter.core.document.DefaultDocumentFormatRegistry;
 import org.jodconverter.core.document.DocumentFamily;
@@ -70,9 +69,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -178,7 +174,9 @@ public final class FileUtils {
      * @return the content of the specified {@link Resource} as a string
      * @throws IOException
      *             in case of an I/O error
+     * @deprecated without replacement, poor usage, and tied to the old Spring Resource AP. Please use the standard Java APIs to read the content of a resource.
      */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public static String getContent(Resource resource) throws IOException {
         String content = null;
         InputStream is = null;
@@ -277,7 +275,9 @@ public final class FileUtils {
      * @return the last modified date of the specified resource
      * @throws IOException
      *             in case of an I/O error
+     * @deprecated without replacement, poor usage, and tied to the old Spring Resource AP.
      */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public static long getLastModified(Resource resource) throws IOException {
         URL resourceUrl = resource.getURL();
         return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.lastModified();

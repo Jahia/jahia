@@ -53,6 +53,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -597,16 +598,16 @@ public class JahiaSitesService extends JahiaService {
                 session.save();
             }
 
-            Resource initialZip = null;
+            IOResource initialZip = null;
             if ("fileImport".equals(info.getFirstImport())) {
-                initialZip = info.getFileImport();
+                initialZip = info.getFileImportResource();
             }
 
             if ("importRepositoryFile".equals(info.getFirstImport()) || (initialZip != null && initialZip.exists() && !"noImport".equals(info.getFirstImport()))) {
                 try {
                     Map<Object, Object> importInfos = new HashMap<Object, Object>();
                     importInfos.put("originatingJahiaRelease", info.getOriginatingJahiaRelease());
-                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, info.getLegacyMappingFilePath(), info.getLegacyDefinitionsFilePath(), session);
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, info.getLegacyDefinitionsFilePathResource(), info.getLegacyMappingFilePathResource(), session);
                 } catch (RepositoryException e) {
                     logger.warn("Error importing site ZIP", e);
                 }

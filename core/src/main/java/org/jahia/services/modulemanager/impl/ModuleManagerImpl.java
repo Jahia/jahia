@@ -45,11 +45,13 @@ package org.jahia.services.modulemanager.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.io.UrlIOResource;
 import org.jahia.services.modulemanager.*;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
@@ -67,8 +69,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -210,29 +210,29 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public OperationResult install(Resource bundleResource, String target) {
+    public OperationResult install(IOResource bundleResource, String target) {
         return install(bundleResource, target, false);
     }
 
     @Override
-    public OperationResult install(Resource bundleResource, String target, boolean start) {
-        return install(Collections.singleton(bundleResource), target, start);
+    public OperationResult install(IOResource bundleResource, String target, boolean start) {
+        return installAll(Collections.singleton(bundleResource), target, start);
     }
 
     @Override
-    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start) {
-        return install(bundleResources, target, start, SettingsBean.getInstance().getModuleStartLevel());
+    public OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start) {
+        return installAll(bundleResources, target, start, SettingsBean.getInstance().getModuleStartLevel());
     }
 
-    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start, boolean ignoreChecks) {
-        return install(bundleResources, target, start, SettingsBean.getInstance().getModuleStartLevel(), ignoreChecks);
+    public OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start, boolean ignoreChecks) {
+        return installAll(bundleResources, target, start, SettingsBean.getInstance().getModuleStartLevel(), ignoreChecks);
     }
 
-    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel) {
-        return install(bundleResources, target, start, startLevel, false);
+    public OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start, int startLevel) {
+        return installAll(bundleResources, target, start, startLevel, false);
     }
 
-    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel, boolean ignoreChecks) {
+    public OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start, int startLevel, boolean ignoreChecks) {
         readOnlyModeLock.readLock().lock();
         try {
             long startTime = System.currentTimeMillis();
@@ -242,8 +242,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
             try {
                 assertWritable();
                 ArrayList<PersistentBundle> bundleInfos = new ArrayList<>(bundleResources.size());
-                for (Resource bundleResource : bundleResources) {
-                    boolean requiresPersisting = !((bundleResource instanceof UrlResource) && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
+                for (IOResource bundleResource : bundleResources) {
+                    boolean requiresPersisting = !((bundleResource instanceof UrlIOResource) && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
                     PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(bundleResource, requiresPersisting, requiresPersisting);
                     if (bundleInfo == null) {
                         throw new InvalidModuleException();

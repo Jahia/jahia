@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -58,13 +59,14 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -103,7 +105,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private int batchCount = 0;
 
     private Locator documentLocator;
-    private Resource archive;
+    private IOResource archive;
     private NoCloseZipInputStream zis;
     private ZipEntry nextEntry;
     private List<String> fileList = new ArrayList<String>();
@@ -152,11 +154,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private JCRSessionWrapper liveSession = null;
 
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath) throws IOException {
-        this(session, rootPath, null, null);
+        this(session, rootPath, (IOResource) null, null);
     }
 
     @SuppressWarnings("unchecked")
-    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, Resource archive, List<String> fileList) throws IOException {
+    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, IOResource archive, List<String> fileList) throws IOException {
         super(session);
         JCRNodeWrapper node = null;
         try {
@@ -175,15 +177,28 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
         this.archive = archive;
 
-        if (archive != null && !archive.isReadable() && archive instanceof FileSystemResource) {
-            expandedFolder = archive.getFile().getPath();
-            expandImportedFilesOnDisk = true;
+        if (archive != null && archive instanceof FileSystemIOResource) {
+            File f = ((FileSystemIOResource) archive).getFile();
+            if (f.isDirectory()) {
+                expandedFolder = f.getPath();
+                expandImportedFilesOnDisk = true;
+            } else if (expandImportedFilesOnDisk) {
+                expandedFolder = ImportExportBaseService.getExpandFolder(archive, SettingsBean.getInstance().getExpandImportedFilesOnDiskPath()).getPath();
+            }
         } else if (expandImportedFilesOnDisk && archive != null) {
             expandedFolder = ImportExportBaseService.getExpandFolder(archive, SettingsBean.getInstance().getExpandImportedFilesOnDiskPath()).getPath();
         }
 
         this.fileList = fileList;
         setPropertiesToSkip(new HashSet<>((Set<String>) SpringContextSingleton.getBean("DocumentViewImportHandler.propertiesToSkip")));
+    }
+
+    /**
+     * @deprecated use {@link #DocumentViewImportHandler(JCRSessionWrapper, String, IOResource, List)} instead, this constructor is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath, Resource archive, List<String> fileList) throws IOException {
+        this(session, rootPath, SpringResourceAdapter.fromSpring(archive), fileList);
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {

@@ -1,6 +1,8 @@
 package org.jahia.services.importexport;
 
+import org.jahia.api.io.IOResource;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -35,7 +37,15 @@ public interface ImportZipContext extends Closeable {
      * Gets the ZIP file resource.
      * @return the ZIP file resource
      */
-    Resource getArchive();
+    IOResource getArchiveResource();
+
+    /**
+     * @deprecated use {@link #getArchiveResource()}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default Resource getArchive() {
+        return SpringResourceAdapter.toSpring(getArchiveResource());
+    }
 
     /**
      *

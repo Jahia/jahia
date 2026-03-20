@@ -63,12 +63,12 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.subject.Subject;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
-import org.springframework.core.io.Resource;
 
 /**
  * Miscellaneous request/response handling methods.
@@ -176,7 +176,7 @@ public final class WebUtils {
             JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                     .getTemplatePackageById(module);
             if (pack != null) {
-                Resource r = pack.getResource(remainingPath);
+                IOResource r = pack.getModuleResource(remainingPath);
                 if (r != null) {
                     is = r.getInputStream();
                 }

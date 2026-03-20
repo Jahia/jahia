@@ -69,6 +69,7 @@ import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
+import org.jahia.services.io.FileSystemIOResource;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.OperationResult;
@@ -82,7 +83,6 @@ import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
@@ -164,7 +164,7 @@ public class ModuleBuildHelper implements InitializingBean {
                     moduleInfo.getVersion()));
         } else {
             // No existing bundle found, deploy new one
-            OperationResult operationResult = moduleManager.install(new FileSystemResource(moduleInfo.getFile()), null, true);
+            OperationResult operationResult = moduleManager.install(new FileSystemIOResource(moduleInfo.getFile()), null, true);
             BundleInfo bundleInfo = operationResult.getBundleInfos().get(0);
             bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
 
@@ -668,7 +668,7 @@ public class ModuleBuildHelper implements InitializingBean {
             throw e;
         }
 
-        OperationResult operationResult = moduleManager.install(new FileSystemResource(compiledModuleInfo.getFile()), null, true);
+        OperationResult operationResult = moduleManager.install(new FileSystemIOResource(compiledModuleInfo.getFile()), null, true);
         BundleInfo bundleInfo = operationResult.getBundleInfos().get(0);
         Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
 

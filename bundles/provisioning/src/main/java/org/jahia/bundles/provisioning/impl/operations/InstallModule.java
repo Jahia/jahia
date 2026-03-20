@@ -44,6 +44,9 @@ package org.jahia.bundles.provisioning.impl.operations;
 
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.apache.felix.utils.version.VersionCleaner;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.UrlIOResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidModuleException;
@@ -62,9 +65,6 @@ import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -226,7 +226,7 @@ public class InstallModule implements Operation {
                            LinkedHashMap<BundleInfo, String> toStart, LinkedHashMap<BundleInfo, String> toUninstall, List<OperationResult> results) {
         String bundleKey = (String) entry.get(key);
         try {
-            Resource resource = ProvisioningScriptUtil.getResource(bundleKey, executionContext);
+            IOResource resource = ProvisioningScriptUtil.getResource(bundleKey, executionContext);
             logger.info("Installing resource {}", resource);
             resource = transformURL(resource);
 
@@ -239,7 +239,7 @@ public class InstallModule implements Operation {
             }
 
             String target = (String) entry.get(TARGET);
-            OperationResult result = moduleManager.install(
+            OperationResult result = moduleManager.installAll(
                     Collections.singleton(resource), target,
                     false,
                     Optional.ofNullable((Integer) entry.get(START_LEVEL)).orElse(SettingsBean.getInstance().getModuleStartLevel()),
@@ -258,7 +258,7 @@ public class InstallModule implements Operation {
         }
     }
 
-    private boolean checkMoreRecentVersion(Resource resource, String bundleKey, Map<String, Set<Bundle>> installedBundles) {
+    private boolean checkMoreRecentVersion(IOResource resource, String bundleKey, Map<String, Set<Bundle>> installedBundles) {
         // Check if a more recent version is already installed
         try (InputStream is = resource.getInputStream()) {
             JarInputStream zip = new JarInputStream(is);
@@ -286,12 +286,12 @@ public class InstallModule implements Operation {
         return false;
     }
 
-    private Resource transformURL(Resource resource) throws Exception {
-        if (resource instanceof FileSystemResource) {
-            ArtifactUrlTransformer transformer = findTransformer(resource.getFile());
+    private IOResource transformURL(IOResource resource) throws Exception {
+        if (resource instanceof FileSystemIOResource) {
+            ArtifactUrlTransformer transformer = findTransformer(((FileSystemIOResource) resource).getFile());
             if (transformer != null) {
                 URL transformedURL = transformer.transform(resource.getURL());
-                resource = new UrlResource(transformedURL);
+                resource = new UrlIOResource(transformedURL);
                 logger.info("Resource has been transformed to {}", resource);
             }
         }
@@ -345,7 +345,7 @@ public class InstallModule implements Operation {
         }
     }
 
-    private boolean checkAlreadyInstalled(String bundleKey, Resource resource) throws IOException {
+    private boolean checkAlreadyInstalled(String bundleKey, IOResource resource) throws IOException {
         PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(resource, false, false);
         if (bundleInfo == null) {
             throw new InvalidModuleException();

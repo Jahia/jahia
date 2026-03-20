@@ -45,6 +45,8 @@ package org.jahia.services.modulemanager.persistence;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
 import org.springframework.core.io.Resource;
@@ -61,7 +63,7 @@ public class PersistentBundle extends BundleInfo {
     private String checksum;
     private String displayName;
     private long lastModified;
-    private Resource resource;
+    private IOResource resource;
     private boolean transformationRequired;
     private boolean ignoreChecks;
 
@@ -117,8 +119,16 @@ public class PersistentBundle extends BundleInfo {
     /**
      * @return a resource, which represents the bundle
      */
-    public Resource getResource() {
+    public IOResource getBundleResource() {
         return resource;
+    }
+
+    /**
+     * @deprecated use {@link #getBundleResource()} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public Resource getResource() {
+        return SpringResourceAdapter.toSpring(resource);
     }
 
     @Override
@@ -172,10 +182,18 @@ public class PersistentBundle extends BundleInfo {
     /**
      * Sets the resource, which represents this bundle.
      *
-     * @param jarFile The resource, which represents this bundle
+     * @param resource The resource, which represents this bundle
      */
+    public void setBundleResource(IOResource resource) {
+        this.resource = resource;
+    }
+
+    /**
+     * @deprecated use {@link #setBundleResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void setResource(Resource jarFile) {
-        this.resource = jarFile;
+        this.resource = SpringResourceAdapter.fromSpring(jarFile);
     }
 
     /**

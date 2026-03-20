@@ -42,13 +42,14 @@
  */
 package org.jahia.services.modulemanager;
 
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.osgi.BundleResource;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
+import org.jahia.services.io.BundleIOResource;
 import org.jahia.services.modulemanager.impl.DefinitionsBundleChecker;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
@@ -57,7 +58,6 @@ import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -103,7 +103,7 @@ public class DefinitionsManagerService {
     }
 
     private JahiaCndReader parse(URL url, Bundle bundle) throws IOException {
-        Resource resource = new BundleResource(url, bundle);
+        IOResource resource = new BundleIOResource(url, bundle);
         String systemId = bundle.getSymbolicName();
         try (Reader resourceReader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
             JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, NodeTypeRegistry.getInstance());
@@ -176,7 +176,7 @@ public class DefinitionsManagerService {
         Bundle bundle = module.getBundle();
         List<URL> urls = CND_SCANNER.scan(bundle);
         for (URL url : urls) {
-            BundleResource bundleResource = new BundleResource(url, bundle);
+            BundleIOResource bundleResource = new BundleIOResource(url, bundle);
             try {
                 long l = bundleResource.lastModified();
                 if (l > lastModified) {

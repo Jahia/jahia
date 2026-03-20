@@ -164,7 +164,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                     if (stream == null) {
                         String resourcePath = "resources/" + StringUtils.substringAfter(fileName,"/resources/");
                         try {
-                            stream = aPackage.getResource(resourcePath).getInputStream();
+                            stream = aPackage.getModuleResource(resourcePath).getInputStream();
                         } catch (IOException e) {
                             //
                         }

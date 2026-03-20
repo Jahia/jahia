@@ -50,7 +50,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +73,7 @@ public class ExecuteScript implements Operation {
             String script = (String) subEntry.get(EXECUTE_SCRIPT);
             if (script != null) {
                 try {
-                    Patcher.getInstance().executeScripts(Collections.singleton(ProvisioningScriptUtil.getResource(script, executionContext)), "",
+                    Patcher.getInstance().executeScript(ProvisioningScriptUtil.getResource(script, executionContext), "",
                             (resource, s) -> {
                                 logger.info("Script {} result: {}", script, s);
                                 if (executionContext.getContext().get("result") instanceof Collection) {

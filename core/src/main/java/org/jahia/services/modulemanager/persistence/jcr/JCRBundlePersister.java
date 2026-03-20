@@ -55,18 +55,18 @@ import java.util.Date;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import org.jahia.api.io.IOResource;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.io.InputStreamIOResource;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 
 /**
  * Responsible bundle persistence into JCR.
@@ -177,7 +177,7 @@ public class JCRBundlePersister implements BundlePersister {
             info.setTransformationRequired(node.hasProperty("j:transformationRequired")
                     && node.getProperty("j:transformationRequired").getBoolean());
 
-            info.setResource(new InputStreamResource(node.getFileContent().downloadFile()));
+            info.setBundleResource(new InputStreamIOResource(node.getFileContent().downloadFile()));
         }
         return info;
     }
@@ -236,7 +236,7 @@ public class JCRBundlePersister implements BundlePersister {
         bundleNode.setProperty("j:checksum", bundleInfo.getChecksum());
         bundleNode.setProperty("j:displayName", bundleInfo.getDisplayName());
         bundleNode.setProperty("j:transformationRequired", bundleInfo.isTransformationRequired());
-        try (InputStream is = new BufferedInputStream(bundleInfo.getResource().getInputStream())) {
+        try (InputStream is = new BufferedInputStream(bundleInfo.getBundleResource().getInputStream())) {
             bundleNode.getFileContent().uploadFile(is, "application/java-archive");
         }
 
@@ -248,7 +248,7 @@ public class JCRBundlePersister implements BundlePersister {
     }
 
     @Override
-    public PersistentBundle store(Resource resource) throws ModuleManagementException {
+    public PersistentBundle store(IOResource resource) throws ModuleManagementException {
 
         long startTime = System.currentTimeMillis();
 

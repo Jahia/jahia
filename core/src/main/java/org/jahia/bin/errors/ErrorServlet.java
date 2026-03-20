@@ -171,9 +171,9 @@ public class ErrorServlet extends HttpServlet {
                         .getTemplatePackage(site
                                 .getTemplatePackageName());
                 if (pkg != null) {
-                    if (pkg.getResource("/errors/" + page) != null) {
+                    if (pkg.resourceExists("/errors/" + page)) {
                         return "/modules/" + pkg.getId() + "/errors/" + page;
-                    } else if (pkg.getResource("/errors/error.jsp") != null) {
+                    } else if (pkg.resourceExists("/errors/error.jsp")) {
                         return "/modules/" + pkg.getId() + "/errors/error.jsp";
                     }
                 }

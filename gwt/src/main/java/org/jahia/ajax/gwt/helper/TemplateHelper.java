@@ -45,6 +45,7 @@ package org.jahia.ajax.gwt.helper;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.GWTStaticAssetEntry;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.Render;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -275,8 +276,8 @@ public class TemplateHelper {
                     }
                 }
             } else {
-                org.springframework.core.io.Resource[] rs = pack.getResources(type);
-                for (org.springframework.core.io.Resource r : rs) {
+                IOResource[] rs = pack.getModuleResources(type);
+                for (IOResource r : rs) {
                     String resourceName = r.getFilename();
                     if (resourceName.endsWith(ext)) {
                         resources.add(resourceName);

@@ -50,12 +50,14 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -68,6 +70,7 @@ import java.io.Reader;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * Jahia implementation of the {@link NodeTypeManager}.
@@ -83,7 +86,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private final BidiMap namespaces = new DualHashBidiMap();
 
     @SuppressWarnings("unchecked")
-    private final Map<String, List<Resource>> files = new ListOrderedMap();
+    private final Map<String, List<IOResource>> files = new ListOrderedMap();
 
     // map of mixin and associate extended node types index by mixin
     private final Map<ExtendedNodeType, List<ExtendedNodeType>> extensionsMixin = new HashMap<>();
@@ -141,35 +144,42 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return res;
     }
 
+
     /**
-     *
-     * @deprecated Use {@link #addDefinitionsFile(Resource, String)} instead
+     * @deprecated use {@link #addDefinitionsFile(File, String)}  instead, this method is not used anymore and should be removed in future versions
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException, RepositoryException {
-        addDefinitionsFile(Collections.singletonList(resource), systemId);
-    }
-
-    public void addDefinitionsFile(Resource resource, String systemId) throws IOException, ParseException, RepositoryException {
-        addDefinitionsFile(Collections.singletonList(resource), systemId);
+        addAllDefinitionsFile(Collections.singletonList(SpringResourceAdapter.fromSpring(resource)), systemId);
     }
 
     /**
-     * @deprecated Use {@link #addDefinitionsFile(File, String)} instead
+     * @deprecated use {@link #addDefinitionsFile(IOResource, String)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void addDefinitionsFile(Resource resource, String systemId) throws IOException, ParseException, RepositoryException {
+        addAllDefinitionsFile(Collections.singletonList(SpringResourceAdapter.fromSpring(resource)), systemId);
+    }
+
+    public void addDefinitionsFile(IOResource resource, String systemId) throws IOException, ParseException, RepositoryException {
+        addAllDefinitionsFile(Collections.singletonList(resource), systemId);
+    }
+
+    /**
+     * @deprecated use {@link #addDefinitionsFile(File, String)} instead, this method is not used anymore and should be removed in future versions
      */
     @Deprecated(since = "7.2.0.0", forRemoval = true)
     public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException, RepositoryException {
-        addDefinitionsFile(file == null ? Collections.<Resource>emptyList() : Collections.singletonList(new FileSystemResource(file)), systemId);
+        addAllDefinitionsFile(file == null ? Collections.<IOResource>emptyList() : Collections.singletonList(new FileSystemIOResource(file)), systemId);
     }
 
     public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException, RepositoryException  {
-        addDefinitionsFile(file == null ? Collections.<Resource>emptyList() : Collections.singletonList(new FileSystemResource(file)), systemId);
+        addAllDefinitionsFile(file == null ? Collections.<IOResource>emptyList() : Collections.singletonList(new FileSystemIOResource(file)), systemId);
     }
 
-
-    public void addDefinitionsFile(List<? extends Resource> resources, String systemId) throws IOException, ParseException, RepositoryException {
+    public void addAllDefinitionsFile(List<? extends IOResource> resources, String systemId) throws IOException, ParseException, RepositoryException {
         List<ExtendedNodeType> types = new ArrayList<>();
-        for (Resource resource : resources) {
+        for (IOResource resource : resources) {
             logger.debug("Adding definitions file {} for {}", resource, systemId);
             Reader resourceReader = null;
             try {
@@ -185,13 +195,21 @@ public class NodeTypeRegistry implements NodeTypeManager {
         registerNodeTypes(types);
 
         if (!files.containsKey(systemId)) {
-            files.put(systemId, new ArrayList<Resource>());
+            files.put(systemId, new ArrayList<IOResource>());
         }
-        for (Resource resource : resources) {
+        for (IOResource resource : resources) {
             if (!files.get(systemId).contains(resource)) {
                 files.get(systemId).add(resource);
             }
         }
+    }
+
+    /**
+     * @deprecated use {@link #addAllDefinitionsFile(List, String)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void addDefinitionsFile(List<? extends Resource> resources, String systemId) throws IOException, ParseException, RepositoryException {
+        addAllDefinitionsFile(SpringResourceAdapter.fromSpring(resources), systemId);
     }
 
     /**
@@ -276,7 +294,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
      * @throws IOException
      *             in case of an I/O error when reading the specified resource
      */
-    public List<ExtendedNodeType> getDefinitionsFromFile(Resource resource, String systemId) throws ParseException, IOException {
+    public List<ExtendedNodeType> getDefinitionsFromFile(IOResource resource, String systemId) throws ParseException, IOException {
         String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
             Reader resourceReader = null;
@@ -292,12 +310,28 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return Collections.emptyList();
     }
 
+    /**
+     * @deprecated use {@link #getDefinitionsFromFile(IOResource, String)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public List<ExtendedNodeType> getDefinitionsFromFile(Resource resource, String systemId) throws ParseException, IOException {
+        return getDefinitionsFromFile(SpringResourceAdapter.fromSpring(resource), systemId);
+    }
+
     public List<String> getSystemIds() {
         return new ArrayList<>(files.keySet());
     }
 
-    public List<Resource> getFiles(String systemId) {
+    public List<IOResource> getFilesForSystemId(String systemId) {
         return files.get(systemId);
+    }
+
+    /**
+     * @deprecated use {@link #getFilesForSystemId(String)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public List<Resource> getFiles(String systemId) {
+        return SpringResourceAdapter.toSpring(getFilesForSystemId(systemId));
     }
 
     public ExtendedNodeType getNodeType(String name) throws NoSuchNodeTypeException {

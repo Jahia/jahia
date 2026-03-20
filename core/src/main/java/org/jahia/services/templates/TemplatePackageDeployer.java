@@ -46,6 +46,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
@@ -63,7 +64,6 @@ import org.osgi.framework.BundleException;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
@@ -119,7 +119,7 @@ public class TemplatePackageDeployer {
         logger.info("Starting import for the module package '{}' including: {}", aPackage.getName(), aPackage.getInitialImports());
         for (String imp : aPackage.getInitialImports()) {
             String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
-            Resource importFile = aPackage.getResource(imp);
+            IOResource importFile = aPackage.getModuleResource(imp);
             logger.info("... importing " + importFile + " into " + targetPath);
             session.getPathMapping().put("/templateSets/", MODULES + "/");
             session.getPathMapping().put(MODULES + "/" + aPackage.getId() + "/", MODULES + "/" + aPackage.getId() + "/" + aPackage.getVersion() + "/");
@@ -423,8 +423,8 @@ public class TemplatePackageDeployer {
 
         if (pack.getResourceBundleName() != null) {
             List<String> langs = new ArrayList<String>();
-            Resource[] resources = pack.getResources("resources");
-            for (Resource resource : resources) {
+            IOResource[] resources = pack.getModuleResources("resources");
+            for (IOResource resource : resources) {
                 try {
                     String key = resource.getURI().getPath().substring(1).replace("/", ".");
                     if (key.startsWith(pack.getResourceBundleName())) {

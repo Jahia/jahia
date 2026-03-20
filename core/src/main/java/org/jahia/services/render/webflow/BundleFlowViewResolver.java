@@ -51,6 +51,7 @@ import org.springframework.webflow.execution.RequestContext;
 import org.springframework.webflow.mvc.view.FlowViewResolver;
 
 /**
+ * This is just an override of: FlowResourceFlowViewResolver without JSTL view support.
  * @author rincevent
  */
 class BundleFlowViewResolver implements FlowViewResolver {

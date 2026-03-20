@@ -59,16 +59,18 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
 import org.jahia.api.Constants;
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleDelegatingClassLoader;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.settings.SettingsBean;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.ItemNotFoundException;
@@ -110,7 +112,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     private Set<String> ruleFiles;
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
-    private List<Resource> dslFiles;
+    private List<IOResource> dslFiles;
     private Map<String, Object> globalObjects;
 
     private List<String> filesAccepted;
@@ -193,8 +195,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     private void initCoreSystemRules() {
-        dslFiles.add(new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
-        addRules(ruleFiles.stream().map(s -> new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + s)).collect(Collectors.toList()), null);
+        dslFiles.add(new FileSystemIOResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
+        addAllRules(ruleFiles.stream().map(s -> new FileSystemIOResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + s)).collect(Collectors.toList()), null);
         lastInit = System.currentTimeMillis();
     }
 
@@ -259,7 +261,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private String getDslFiles() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Resource dslFile : dslFiles) {
+        for (IOResource dslFile : dslFiles) {
             InputStream dslFileInputStream = null;
             try {
                 dslFileInputStream = dslFile.getInputStream();
@@ -271,7 +273,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return stringBuilder.toString();
     }
 
-    private Package recoverCompiledRules(File compiledRulesFile, Resource dsrlFile, ClassLoader packageClassLoader) throws IOException, ClassNotFoundException {
+    private Package recoverCompiledRules(File compiledRulesFile, IOResource dsrlFile, ClassLoader packageClassLoader) throws IOException, ClassNotFoundException {
         Package rulePackage = null;
         if (compiledRulesFile.exists() && compiledRulesFile.lastModified() > dsrlFile.lastModified()) {
             ObjectInputStream ois = null;
@@ -287,7 +289,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return rulePackage;
     }
 
-    private Package compileRules(File compiledRulesFile, Resource dsrlFile, ClassLoader packageClassLoader) throws IOException, DroolsParserException {
+    private Package compileRules(File compiledRulesFile, IOResource dsrlFile, ClassLoader packageClassLoader) throws IOException, DroolsParserException {
         long start = System.currentTimeMillis();
         InputStream drlInputStream = dsrlFile.getInputStream();
         List<String> lines;
@@ -339,15 +341,21 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         }
     }
 
+    /**
+     * @deprecated use {@link #addRules(IOResource, JahiaTemplatesPackage)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void addRules(File dsrlFile) {
-        addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile), null);
+        addRules(dsrlFile == null ? null : new FileSystemIOResource(dsrlFile), null);
     }
 
-    public void addRules(Resource dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
-        addRules(Collections.singleton(dsrlFiles), jahiaTemplatesPackage);
+    public void addRules(IOResource dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
+        if (dsrlFiles != null) {
+            addAllRules(Collections.singleton(dsrlFiles), jahiaTemplatesPackage);
+        }
     }
 
-    public void addRules(Collection<Resource> dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
+    public void addAllRules(Collection<IOResource> dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
         File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules", jahiaTemplatesPackage != null ? jahiaTemplatesPackage.getIdWithVersion() : "system");
         if (!compiledRulesDir.exists()) {
             compiledRulesDir.mkdirs();
@@ -369,6 +377,22 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             }
         }).collect(Collectors.toList());
         addRuleBasePackage(jahiaTemplatesPackage, rulesPackage);
+    }
+
+    /**
+     * @deprecated use {@link #addRules(IOResource, JahiaTemplatesPackage)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void addRules(Resource dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
+        addRules(SpringResourceAdapter.fromSpring(dsrlFiles), jahiaTemplatesPackage);
+    }
+
+    /**
+     * @deprecated use {@link #addAllRules(Collection, JahiaTemplatesPackage)}   instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void addRules(Collection<Resource> dsrlFiles, JahiaTemplatesPackage jahiaTemplatesPackage) {
+        addAllRules(SpringResourceAdapter.fromSpring(dsrlFiles), jahiaTemplatesPackage);
     }
 
     private void addClassLoader(JahiaTemplatesPackage aPackage) {
@@ -704,14 +728,30 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void addRulesDescriptor(File file) {
-        dslFiles.add(file == null ? null : new FileSystemResource(file));
+        dslFiles.add(file == null ? null : new FileSystemIOResource(file));
     }
 
+    /**
+     * @deprecated use {@link #addRulesDescriptor(IOResource)}   instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void addRulesDescriptor(Resource resource) {
+        addRulesDescriptor(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    /**
+     * @deprecated use {@link #addRulesDescriptor(IOResource, JahiaTemplatesPackage)}    instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void addRulesDescriptor(Resource resource, JahiaTemplatesPackage aPackage) {
+        addRulesDescriptor(SpringResourceAdapter.fromSpring(resource), aPackage);
+    }
+
+    public void addRulesDescriptor(IOResource resource) {
         dslFiles.add(resource);
     }
 
-    public void addRulesDescriptor(Resource resource, JahiaTemplatesPackage aPackage) {
+    public void addRulesDescriptor(IOResource resource, JahiaTemplatesPackage aPackage) {
         dslFiles.add(resource);
         ClassLoader packageClassLoader = aPackage != null ? aPackage.getClassLoader() : null;
         if (packageClassLoader != null) {
@@ -833,7 +873,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         removeRuleBasePackage(module);
     }
 
+    /**
+     * @deprecated use {@link #removeRulesDescriptor(IOResource)}   instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public boolean removeRulesDescriptor(Resource resource) {
+        return removeRulesDescriptor(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    public boolean removeRulesDescriptor(IOResource resource) {
         return dslFiles.remove(resource);
     }
 

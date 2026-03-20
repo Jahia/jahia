@@ -42,6 +42,8 @@
  */
 package org.jahia.services.seo.urlrewrite;
 
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -49,11 +51,10 @@ import org.tuckey.web.filters.urlrewrite.RewrittenOutboundUrl;
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  * URL rewriter engine.
@@ -64,7 +65,7 @@ class UrlRewriteEngine extends UrlRewriter {
 
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteEngine.class);
 
-    private static Configuration getConfiguration(ServletContext context, Resource[] confLocations) {
+    private static Configuration getConfiguration(ServletContext context, IOResource[] confLocations) {
         Configuration cfg = null;
         if (confLocations == null || confLocations.length == 0) {
             logger.warn("No configuration resource location specified for"
@@ -81,6 +82,14 @@ class UrlRewriteEngine extends UrlRewriter {
     }
 
     /**
+     * @deprecated use {@link #UrlRewriteEngine(ServletContext, IOResource[])} instead, this constructor is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public UrlRewriteEngine(ServletContext context, Resource[] confLocations) {
+        this(context, SpringResourceAdapter.fromSpring(confLocations));
+    }
+
+    /**
      * Initializes an instance of this class.
      *
      * @param context
@@ -88,7 +97,7 @@ class UrlRewriteEngine extends UrlRewriter {
      * @param confLocations
      *            the URL rewriter configuration resource location
      */
-    public UrlRewriteEngine(ServletContext context, Resource[] confLocations) {
+    public UrlRewriteEngine(ServletContext context, IOResource[] confLocations) {
         super(getConfiguration(context, confLocations));
         if (confLocations != null) {
             logger.info("Loaded URL rewrite rules from {}",java.util.Arrays.asList(confLocations));

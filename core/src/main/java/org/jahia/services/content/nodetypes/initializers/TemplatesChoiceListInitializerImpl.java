@@ -62,7 +62,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.View;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import java.io.File;
@@ -294,9 +293,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                         locale, view.getKey());
                 ChoiceListValue c =  new ChoiceListValue(displayName, map, new ValueImpl(view.getKey(), PropertyType.STRING, false));
                 try {
-                    final Resource imagePath = pkg.getResource(File.separator + "img" + File.separator + c.getValue().getString() + ".png");
-
-                    if (imagePath != null && imagePath.exists()) {
+                    if (pkg.resourceExists(File.separator + "img" + File.separator + c.getValue().getString() + ".png")) {
                         String s = Jahia.getContextPath();
                         if (s.equals("/")) {
                             s = "";

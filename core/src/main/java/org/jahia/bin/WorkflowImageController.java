@@ -44,11 +44,11 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
-import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -75,9 +75,9 @@ public class WorkflowImageController implements Controller {
 
             String language = request.getParameter("language");
 
-            Resource resource = module.getResource(basePath + wfKey + "_" + language + ".png");
+            IOResource resource = module.getModuleResource(basePath + wfKey + "_" + language + ".png");
             if (resource == null) {
-                resource = module.getResource(basePath + wfKey + ".png");
+                resource = module.getModuleResource(basePath + wfKey + ".png");
             }
             if (resource != null) {
                 response.setContentType("image/png");

@@ -74,6 +74,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
+import org.jahia.services.io.FileSystemIOResource;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.jahia.services.observation.JahiaEventService;
@@ -91,7 +92,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.Node;
@@ -379,7 +379,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             throw new IOException("Module release failed.");
         }
 
-        moduleManager.install(new FileSystemResource(generatedWar), null);
+        moduleManager.install(new FileSystemIOResource(generatedWar), null);
 
         JahiaTemplatesPackage pack = compileAndDeploy(module.getId(), sources, session);
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());

@@ -45,6 +45,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.drools.core.spi.KnowledgeHelper;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -59,7 +60,6 @@ import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -255,7 +255,7 @@ public class RulesNotificationService {
             for (Map.Entry<String, Collection<String>> entry : rulesListener.getModulePackageNameMap().entrySet()) {
                 if (entry.getValue().contains(packageName)) {
                     JahiaTemplatesPackage templatePackage = jahiaTemplateManagerService.getTemplatePackage(entry.getKey());
-                    Resource resource = templatePackage.getResource(template);
+                    IOResource resource = templatePackage.getModuleResource(template);
                     if (resource != null) {
                         scriptInputStream = resource.getInputStream();
                         break;

@@ -44,6 +44,7 @@ package org.jahia.services.templates;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.Ordering;
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -208,11 +209,12 @@ public class ComponentRegistry {
             modules = session.getNode("/modules");
         }
 
-        List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
+        List<ExtendedNodeType> types = new ArrayList<>();
         for (String s : pkg.getDefinitionsFiles()) {
             try {
-                if (pkg.getResource(s) != null) {
-                    types.addAll(NodeTypeRegistry.getInstance().getDefinitionsFromFile(pkg.getResource(s), pkg.getId()));
+                IOResource resource = pkg.getModuleResource(s);
+                if (resource != null) {
+                    types.addAll(NodeTypeRegistry.getInstance().getDefinitionsFromFile(resource, pkg.getId()));
                 }
             } catch (ParseException e) {
                 logger.error("Cannot parse definitions file "+s,e);

@@ -42,15 +42,14 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
-import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.io.BundleIOResource;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import java.net.URL;
 import java.util.List;
@@ -73,19 +72,19 @@ public class UrlRewriteBundleObserver implements BundleObserver<URL> {
             final String name = BundleUtils.getDisplayName(bundle);
             for (URL url : entries) {
                 // create associated Resource
-                Resource resource = new BundleResource(url, bundle);
+                BundleIOResource resource = new BundleIOResource(url, bundle);
                 final String path = url.getPath();
                 if (path.contains("seo-")) {
                     // SEO rule
-                    this.rewriteService.addSeoConfigurationResource(resource);
+                    this.rewriteService.addConfigurationIOResource(resource);
                     logger.info("Adding SEO rewrite configuration " + url + " for bundle " + name);
                 } else if (path.contains("last-")) {
                     // last rule
-                    this.rewriteService.addLastConfigurationResource(resource);
+                    this.rewriteService.addLastConfigurationIOResource(resource);
                     logger.info("Adding last rewrite configuration " + url + " for bundle " + name);
                 } else {
                     // regular rule
-                    this.rewriteService.addConfigurationResource(resource);
+                    this.rewriteService.addConfigurationIOResource(resource);
                     logger.info("Adding rewrite configuration " + url + " for bundle " + name);
                 }
 
@@ -99,19 +98,19 @@ public class UrlRewriteBundleObserver implements BundleObserver<URL> {
             final String name = BundleUtils.getDisplayName(bundle);
             for (URL url : entries) {
                 // create associated Resource
-                Resource resource = new BundleResource(url, bundle);
+                BundleIOResource resource = new BundleIOResource(url, bundle);
                 final String path = url.getPath();
                 if (path.contains("seo-")) {
                     // SEO rule
-                    this.rewriteService.removeSeoConfigurationResource(resource);
+                    this.rewriteService.removeSeoConfigurationIOResource(resource);
                     logger.info("Removed SEO rewrite configuration " + url + " for bundle " + name);
                 } else if (path.contains("last-")) {
                     // last rule
-                    this.rewriteService.removeLastConfigurationResource(resource);
+                    this.rewriteService.removeLastConfigurationIOResource(resource);
                     logger.info("Removed last rewrite configuration " + url + " for bundle " + name);
                 } else {
                     // regular rule
-                    this.rewriteService.removeConfigurationResource(resource);
+                    this.rewriteService.removeConfigurationIOResource(resource);
                     logger.info("Removed rewrite configuration " + url + " for bundle " + name);
                 }
 

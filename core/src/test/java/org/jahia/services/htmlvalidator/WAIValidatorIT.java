@@ -51,8 +51,6 @@ import java.util.Locale;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.htmlvalidator.ValidatorResults;
-import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.junit.After;
 import org.junit.Before;

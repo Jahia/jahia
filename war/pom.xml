@@ -816,6 +816,8 @@
                                 <packageExclude>org.publicsuffix.list</packageExclude>
                                 <packageExclude>rc.icons</packageExclude>
                                 <packageExclude>trax</packageExclude>
+                                <!-- private Jahia packages -->
+                                <packageExclude>org.jahia.services.io.adapter</packageExclude>
                             </packageExcludes>
                             <packageVersionOverrides>
                                 <!-- Xalan jar manifest is broken, does not detect proper version -->

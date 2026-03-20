@@ -43,6 +43,9 @@
 package org.jahia.bundles.extender.jahiamodules.fileinstall;
 
 import org.apache.felix.fileinstall.*;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.UrlIOResource;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -53,9 +56,6 @@ import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 import java.io.*;
 import java.net.URL;
@@ -185,15 +185,15 @@ public class ModuleFileInstallHandler implements CustomHandler {
         } else if (artifact.getListener() instanceof ArtifactUrlTransformer) {
             logger.info("Installing url transformed artifact {}", path);
             // if the listener is an url transformer
-            install(artifact, new UrlResource(artifact.getTransformedUrl()));
+            install(artifact, new UrlIOResource(artifact.getTransformedUrl()));
         } else if (artifact.getListener() instanceof ArtifactTransformer) {
             logger.info("Installing transformed artifact {}", path);
             // if the listener is an artifact transformer
-            install(artifact, new FileSystemResource(artifact.getTransformed()));
+            install(artifact, new FileSystemIOResource(artifact.getTransformed()));
         }
     }
 
-    private void install(Artifact artifact, Resource bundleResource) {
+    private void install(Artifact artifact, IOResource bundleResource) {
         OperationResult result = getModuleManager().install(bundleResource, TARGET_GROUP);
         for (BundleInfo bundleInfo : result.getBundleInfos()) {
             Bundle b = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
@@ -403,12 +403,12 @@ public class ModuleFileInstallHandler implements CustomHandler {
         // if the listener is an url transformer
         else if (artifact.getListener() instanceof ArtifactUrlTransformer) {
             URL transformed = artifact.getTransformedUrl();
-            getModuleManager().install(new UrlResource(transformed), TARGET_GROUP);
+            getModuleManager().install(new UrlIOResource(transformed), TARGET_GROUP);
         }
         // else we need to ask for an update on the bundle
         else if (artifact.getListener() instanceof ArtifactTransformer) {
             File transformed = artifact.getTransformed();
-            getModuleManager().install(new FileSystemResource(transformed), TARGET_GROUP);
+            getModuleManager().install(new FileSystemIOResource(transformed), TARGET_GROUP);
         }
     }
 
@@ -454,7 +454,7 @@ public class ModuleFileInstallHandler implements CustomHandler {
      * @throws IOException if an error occurs while computing the checksum
      */
     private String computeChecksum(Artifact artifact) throws IOException {
-        Resource resource = new UrlResource(artifact.getJaredUrl());
+        IOResource resource = new UrlIOResource(artifact.getJaredUrl());
         PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(resource, true, false);
         if (bundleInfo == null) {
             throw new InvalidModuleException();

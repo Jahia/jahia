@@ -58,11 +58,11 @@ import org.jahia.services.content.nodetypes.JahiaCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
 import org.jahia.services.content.nodetypes.ParseException;
+import org.jahia.services.io.ByteArrayIOResource;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ByteArrayResource;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -548,7 +548,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                         final String systemId = StringUtils.substringBeforeLast(file, ".cnd");
                         if (!initializedSystemIds.contains(systemId)) {
                             logger.debug("Loading CND : {}" , file);
-                            instance.addDefinitionsFile(new ByteArrayResource(cndFile.getBytes(StandardCharsets.UTF_8), file), systemId);
+                            instance.addDefinitionsFile(new ByteArrayIOResource(cndFile.getBytes(StandardCharsets.UTF_8), file), systemId);
                         }
                         reloadedSystemIds.add(systemId);
                     }

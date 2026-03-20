@@ -52,6 +52,7 @@ import java.util.Map;
 
 /**
  * Bundle view
+ * TODO: seems could be removed and used standard ServletMvcView instead
  */
 public class BundleMvcView extends AbstractMvcView {
     /**

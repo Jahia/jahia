@@ -44,6 +44,7 @@ package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.fileinstall.FileInstallConfigurer;
@@ -56,15 +57,15 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModuleState.State;
 import org.jahia.osgi.BundleLifecycleUtils;
-import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ExtensionObserverRegistry;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.io.BundleIOResource;
+import org.jahia.services.io.UrlIOResource;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
@@ -99,8 +100,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import pl.touk.throwing.ThrowingBiConsumer;
 import pl.touk.throwing.ThrowingPredicate;
@@ -121,7 +120,7 @@ import java.util.stream.Stream;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
 import static org.jahia.tools.patches.Patcher.KEEP;
-import static org.jahia.tools.patches.Patcher.RESOURCE_COMPARATOR;
+import static org.jahia.tools.patches.Patcher.JAHIA_RESOURCE_COMPARATOR;
 
 /**
  * Activator for DX Modules extender.
@@ -139,7 +138,7 @@ public class Activator implements BundleActivator {
     private static final BundleURLScanner URLREWRITE_SCANNER = new BundleURLScanner("META-INF", "*urlrewrite*.xml", false);
     private static final BundleURLScanner FLOW_SCANNER = new BundleURLScanner("/", "flow.xml", true);
 
-    private static final Comparator<Resource> IMPORT_FILE_COMPARATOR = Comparator.comparing(o -> StringUtils.substringBeforeLast(o.getFilename(), "."));
+    private static final Comparator<BundleIOResource> IMPORT_FILE_COMPARATOR = Comparator.comparing(o -> StringUtils.substringBeforeLast(o.getFilename(), "."));
     private static final String EXTENDER_CAPABILITY_NAME = "org.jahia.bundles.blueprint.extender.config";
 
     private static Activator instance;
@@ -1128,26 +1127,22 @@ public class Activator implements BundleActivator {
     }
 
     private void scanForImportFiles(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage) {
-        List<Resource> importFiles = new ArrayList<>();
+        List<BundleIOResource> importFiles = new ArrayList<>();
         Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
         if (importXMLEntryEnum != null) {
             while (importXMLEntryEnum.hasMoreElements()) {
-                importFiles.add(new BundleResource(importXMLEntryEnum.nextElement(), bundle));
+                importFiles.add(new BundleIOResource(importXMLEntryEnum.nextElement(), bundle));
             }
         }
         Enumeration<URL> importZIPEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
         if (importZIPEntryEnum != null) {
             while (importZIPEntryEnum.hasMoreElements()) {
-                importFiles.add(new BundleResource(importZIPEntryEnum.nextElement(), bundle));
+                importFiles.add(new BundleIOResource(importZIPEntryEnum.nextElement(), bundle));
             }
         }
         Collections.sort(importFiles, IMPORT_FILE_COMPARATOR);
-        for (Resource importFile : importFiles) {
-            try {
-                jahiaTemplatesPackage.addInitialImport(importFile.getURL().getPath());
-            } catch (IOException e) {
-                logger.error("Error retrieving URL for resource " + importFile, e);
-            }
+        for (BundleIOResource importFile : importFiles) {
+            jahiaTemplatesPackage.addInitialImport(importFile.getURL().getPath());
         }
     }
 
@@ -1261,17 +1256,17 @@ public class Activator implements BundleActivator {
         String eventType = status.get(event.getType());
 
         if (eventType != null) {
-            List<Resource> migrationScripts = getMigrationScripts(event.getBundle(), eventType);
+            List<IOResource> migrationScripts = getMigrationScripts(event.getBundle(), eventType);
             if (!migrationScripts.isEmpty()) {
                 try {
                     JSONObject moduleScriptsStatus = BundleInfoJcrHelper.getModuleScriptsStatus(event.getBundle().getSymbolicName());
 
-                    List<Resource> filteredMigrationScripts = migrationScripts.stream().filter(ThrowingPredicate.unchecked(resource ->
+                    List<IOResource> filteredMigrationScripts = migrationScripts.stream().filter(ThrowingPredicate.unchecked(resource ->
                             !moduleScriptsStatus.has(resource.getURI().getPath()) || moduleScriptsStatus.get(resource.getURI().getPath()).equals(KEEP)
                     )).collect(Collectors.toList());
 
                     if (!filteredMigrationScripts.isEmpty()) {
-                        Patcher.getInstance().executeScripts(filteredMigrationScripts, eventType, ThrowingBiConsumer.unchecked((resource, result) -> {
+                        Patcher.getInstance().executeAllScripts(filteredMigrationScripts, eventType, ThrowingBiConsumer.unchecked((resource, result) -> {
                             moduleScriptsStatus.put(resource.getURI().getPath(), result);
                             logger.info("Execution result for {} : {}", resource, result);
                         }));
@@ -1285,13 +1280,13 @@ public class Activator implements BundleActivator {
         }
     }
 
-    private List<Resource> getMigrationScripts(Bundle bundle, String eventType) {
+    private List<IOResource> getMigrationScripts(Bundle bundle, String eventType) {
         Enumeration<URL> migrationScriptsURLs = bundle.findEntries("META-INF/patches", "*." + eventType + ".*", true);
         if (migrationScriptsURLs == null) {
             return Collections.emptyList();
         }
-        return Collections.list(migrationScriptsURLs).stream().map(UrlResource::new)
-                .sorted(RESOURCE_COMPARATOR)
+        return Collections.list(migrationScriptsURLs).stream().map(UrlIOResource::new)
+                .sorted(JAHIA_RESOURCE_COMPARATOR)
                 .collect(Collectors.toList());
     }
 }

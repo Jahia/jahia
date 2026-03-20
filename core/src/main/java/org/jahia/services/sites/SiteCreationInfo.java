@@ -44,6 +44,8 @@ package org.jahia.services.sites;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.usermanager.JahiaUser;
 import org.springframework.core.io.Resource;
 
@@ -74,9 +76,17 @@ public class SiteCreationInfo {
             return this;
         }
 
-        public Builder fileImport(Resource fileImport) {
-            site.setFileImport(fileImport);
+        public Builder fileImportResource(IOResource fileImport) {
+            site.setFileImportResource(fileImport);
             return this;
+        }
+
+        /**
+         * @deprecated use {@link #fileImportResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+         */
+        @Deprecated(since = "8.2.4.0", forRemoval = true)
+        public Builder fileImport(Resource fileImport) {
+            return fileImportResource(SpringResourceAdapter.fromSpring(fileImport));
         }
 
         public Builder fileImportName(String fileImportName) {
@@ -89,14 +99,30 @@ public class SiteCreationInfo {
             return this;
         }
 
-        public Builder legacyDefinitionsFilePath(Resource legacyDefinitionsFilePath) {
-            site.setLegacyDefinitionsFilePath(legacyDefinitionsFilePath);
+        public Builder legacyDefinitionsFilePathResource(IOResource legacyDefinitionsFilePath) {
+            site.setLegacyDefinitionsFilePathResource(legacyDefinitionsFilePath);
             return this;
         }
 
-        public Builder legacyMappingFilePath(Resource legacyMappingFilePath) {
-            site.setLegacyMappingFilePath(legacyMappingFilePath);
+        /**
+         * @deprecated use {@link #legacyDefinitionsFilePathResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+         */
+        @Deprecated(since = "8.2.4.0", forRemoval = true)
+        public Builder legacyDefinitionsFilePath(Resource legacyDefinitionsFilePath) {
+           return legacyDefinitionsFilePathResource(SpringResourceAdapter.fromSpring(legacyDefinitionsFilePath));
+        }
+
+        public Builder legacyMappingFilePathResource(IOResource legacyMappingFilePath) {
+            site.setLegacyMappingFilePathResource(legacyMappingFilePath);
             return this;
+        }
+
+        /**
+         * @deprecated use {@link #legacyMappingFilePathResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+         */
+        @Deprecated(since = "8.2.4.0", forRemoval = true)
+        public Builder legacyMappingFilePath(Resource legacyMappingFilePath) {
+           return legacyMappingFilePathResource(SpringResourceAdapter.fromSpring(legacyMappingFilePath));
         }
 
         public Builder locale(String locale) {
@@ -156,15 +182,15 @@ public class SiteCreationInfo {
 
     private String description;
 
-    private Resource fileImport;
+    private IOResource fileImport;
 
     private String fileImportName;
 
     private String firstImport;
 
-    private Resource legacyDefinitionsFilePath;
+    private IOResource legacyDefinitionsFilePath;
 
-    private Resource legacyMappingFilePath;
+    private IOResource legacyMappingFilePath;
 
     private String locale;
 
@@ -211,9 +237,9 @@ public class SiteCreationInfo {
      * @param legacyDefinitionsFilePath
      */
     public SiteCreationInfo(String siteKey, String serverName, String serverNameAliasesAsString, String title,
-            String description, String templateSet, String[] modulesToDeploy, String locale, JahiaUser siteAdmin,
-            String firstImport, Resource fileImport, String fileImportName, String originatingJahiaRelease,
-            Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) {
+                            String description, String templateSet, String[] modulesToDeploy, String locale, JahiaUser siteAdmin,
+                            String firstImport, IOResource fileImport, String fileImportName, String originatingJahiaRelease,
+                            IOResource legacyMappingFilePath, IOResource legacyDefinitionsFilePath) {
         this();
         this.siteKey = siteKey;
         this.serverName = serverName;
@@ -232,12 +258,34 @@ public class SiteCreationInfo {
         this.legacyMappingFilePath = legacyMappingFilePath;
     }
 
+    /**
+     * @deprecated use {@link #SiteCreationInfo(String, String, String, String, String, String, String[], String, JahiaUser, String, IOResource, String, String, IOResource, IOResource)} instead, this constructor is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public SiteCreationInfo(String siteKey, String serverName, String serverNameAliasesAsString, String title,
+                            String description, String templateSet, String[] modulesToDeploy, String locale, JahiaUser siteAdmin,
+                            String firstImport,Resource fileImport, String fileImportName, String originatingJahiaRelease,
+                            Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) {
+        this(siteKey, serverName, serverNameAliasesAsString, title,
+                description, templateSet, modulesToDeploy, locale, siteAdmin,
+                firstImport, SpringResourceAdapter.fromSpring(fileImport), fileImportName, originatingJahiaRelease,
+                SpringResourceAdapter.fromSpring(legacyDefinitionsFilePath), SpringResourceAdapter.fromSpring(legacyMappingFilePath));
+    }
+
     public String getDescription() {
         return description;
     }
 
-    public Resource getFileImport() {
+    public IOResource getFileImportResource() {
         return fileImport;
+    }
+
+    /**
+     * @deprecated use {@link #getFileImportResource()} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public Resource getFileImport() {
+        return SpringResourceAdapter.toSpring(fileImport);
     }
 
     public String getFileImportName() {
@@ -248,12 +296,28 @@ public class SiteCreationInfo {
         return firstImport;
     }
 
-    public Resource getLegacyDefinitionsFilePath() {
+    public IOResource getLegacyDefinitionsFilePathResource() {
         return legacyDefinitionsFilePath;
     }
 
-    public Resource getLegacyMappingFilePath() {
+    /**
+     * @deprecated use {@link #getLegacyDefinitionsFilePathResource()} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public Resource getLegacyDefinitionsFilePath() {
+        return SpringResourceAdapter.toSpring(legacyDefinitionsFilePath);
+    }
+
+    public IOResource getLegacyMappingFilePathResource() {
         return legacyMappingFilePath;
+    }
+
+    /**
+     * @deprecated use {@link #getLegacyMappingFilePathResource()} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public Resource getLegacyMappingFilePath() {
+        return SpringResourceAdapter.toSpring(legacyMappingFilePath);
     }
 
     public String getLocale() {
@@ -296,8 +360,16 @@ public class SiteCreationInfo {
         this.description = description;
     }
 
-    public void setFileImport(Resource fileImport) {
+    public void setFileImportResource(IOResource fileImport) {
         this.fileImport = fileImport;
+    }
+
+    /**
+     * @deprecated use {@link #setFileImportResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void setFileImport(Resource fileImport) {
+        this.fileImport = SpringResourceAdapter.fromSpring(fileImport);
     }
 
     public void setFileImportName(String fileImportName) {
@@ -308,12 +380,28 @@ public class SiteCreationInfo {
         this.firstImport = firstImport;
     }
 
-    public void setLegacyDefinitionsFilePath(Resource legacyDefinitionsFilePath) {
+    public void setLegacyDefinitionsFilePathResource(IOResource legacyDefinitionsFilePath) {
         this.legacyDefinitionsFilePath = legacyDefinitionsFilePath;
     }
 
-    public void setLegacyMappingFilePath(Resource legacyMappingFilePath) {
+    /**
+     * @deprecated use {@link #setLegacyDefinitionsFilePathResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void setLegacyDefinitionsFilePath(Resource legacyDefinitionsFilePath) {
+        this.legacyDefinitionsFilePath = SpringResourceAdapter.fromSpring(legacyDefinitionsFilePath);
+    }
+
+    public void setLegacyMappingFilePathResource(IOResource legacyMappingFilePath) {
         this.legacyMappingFilePath = legacyMappingFilePath;
+    }
+
+    /**
+     * @deprecated use {@link #setLegacyMappingFilePathResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void setLegacyMappingFilePath(Resource legacyMappingFilePath) {
+        this.legacyMappingFilePath = SpringResourceAdapter.fromSpring(legacyMappingFilePath);
     }
 
     public void setLocale(String locale) {

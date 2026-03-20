@@ -45,8 +45,12 @@ package org.jahia.services.modulemanager.util;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.io.IOResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.services.io.UrlIOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.models.JahiaDepends;
@@ -56,9 +60,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -297,14 +299,14 @@ public class ModuleUtils {
      * @return the bundle resource
      * @throws java.net.MalformedURLException
      */
-    public static Resource loadBundleResource(Bundle bundle) throws MalformedURLException {
+    public static IOResource getResourceForBundle(Bundle bundle) {
         try {
-            Resource bundleResource = null;
+            IOResource bundleResource = null;
             File bundleFile = getBundleFile(bundle);
             if (bundleFile != null) {
-                bundleResource = new FileSystemResource(bundleFile);
+                bundleResource = new FileSystemIOResource(bundleFile);
             } else {
-                bundleResource = new UrlResource(bundle.getLocation());
+                bundleResource = new UrlIOResource(bundle.getLocation());
             }
             return bundleResource;
         } catch (Exception e) {
@@ -316,6 +318,14 @@ public class ModuleUtils {
             logger.error(msg, e);
             throw new ModuleManagementException(msg, e);
         }
+    }
+
+    /**
+     * @deprecated use {@link #getResourceForBundle(Bundle)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public static Resource loadBundleResource(Bundle bundle) throws MalformedURLException {
+            return SpringResourceAdapter.toSpring(getResourceForBundle(bundle));
     }
 
     /**
@@ -347,7 +357,7 @@ public class ModuleUtils {
      */
     public static PersistentBundle persist(Bundle bundle) throws ModuleManagementException {
         try {
-            return persist(loadBundleResource(bundle));
+            return persist(getResourceForBundle(bundle));
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
                 // re-throw
@@ -366,7 +376,7 @@ public class ModuleUtils {
      * @return information about persisted bundle
      * @throws ModuleManagementException in case of an error during persistence of the bundle
      */
-    public static PersistentBundle persist(Resource bundleResource) throws ModuleManagementException {
+    public static PersistentBundle persist(IOResource bundleResource) throws ModuleManagementException {
         long startTime = System.currentTimeMillis();
         try {
             logger.debug("Persisting from resource {}", bundleResource);
@@ -379,6 +389,14 @@ public class ModuleUtils {
             logger.error(msg, e);
             throw new ModuleManagementException(msg, e);
         }
+    }
+
+    /**
+     * @deprecated use {@link #persist(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public static PersistentBundle persist(Resource bundleResource) throws ModuleManagementException {
+        return persist(SpringResourceAdapter.fromSpring(bundleResource));
     }
 
     /**

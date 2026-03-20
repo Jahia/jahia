@@ -43,6 +43,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.io.IOUtils;
+import org.jahia.api.io.IOResource;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
@@ -50,7 +51,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
-import org.springframework.core.io.Resource;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -93,8 +93,8 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                 final Bindings bindings = byName.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("values", values);
                 for (JahiaTemplatesPackage template : forModule) {
-                    final Resource scriptPath = template.getResource(File.separator + "scripts" + File.separator + param);
-                    if (scriptPath != null && scriptPath.exists()) {
+                    final IOResource scriptPath = template.getModuleResource(File.separator + "scripts" + File.separator + param);
+                    if (scriptPath != null ) {
                         Reader scriptContent = null;
                         try {
                             scriptContent = new InputStreamReader(scriptPath.getInputStream());

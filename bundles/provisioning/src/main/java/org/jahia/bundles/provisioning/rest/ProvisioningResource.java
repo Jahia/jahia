@@ -48,11 +48,12 @@ import org.apache.commons.lang.StringUtils;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.api.io.IOResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.provisioning.ProvisioningManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -107,7 +108,7 @@ public class ProvisioningResource {
         try {
             String scriptAsString = IOUtils.toString(script.getEntityAs(BodyPartEntity.class).getInputStream(), StandardCharsets.UTF_8);
             List<Map<String,Object>> sc = getService().parseScript(scriptAsString, script.getMediaType().getSubtype());
-            Map<String, FileSystemResource> resources = new HashMap<>();
+            Map<String, IOResource> resources = new HashMap<>();
             if (files != null) {
                 for (FormDataBodyPart file : files) {
                     //Creating temp file in order to define a specific name
@@ -115,7 +116,7 @@ public class ProvisioningResource {
                     File tmpFile = File.createTempFile("tmp-", "." + StringUtils.substringAfterLast(file.getFormDataContentDisposition().getFileName(), "."));
                     tmpFiles.add(tmpFile);
                     entity.moveTo(tmpFile);
-                    resources.put(file.getFormDataContentDisposition().getFileName(), new FileSystemResource(tmpFile));
+                    resources.put(file.getFormDataContentDisposition().getFileName(), new FileSystemIOResource(tmpFile));
                 }
             }
             Map<String, Object> context = new HashMap<>();

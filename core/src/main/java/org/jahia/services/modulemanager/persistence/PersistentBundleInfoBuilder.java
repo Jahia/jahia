@@ -48,6 +48,8 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -73,8 +75,16 @@ public final class PersistentBundleInfoBuilder {
      * @return The information about the supplied bundle
      * @throws IOException In case of resource read errors
      */
-    public static PersistentBundle build(Resource resource) throws IOException {
+    public static PersistentBundle build(IOResource resource) throws IOException {
         return build(resource, true, true);
+    }
+
+    /**
+     * @deprecated use {@link #build(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public static PersistentBundle build(Resource resource) throws IOException {
+        return build(SpringResourceAdapter.fromSpring(resource));
     }
 
     /**
@@ -87,7 +97,7 @@ public final class PersistentBundleInfoBuilder {
      * @return The information about the supplied bundle
      * @throws IOException In case of resource read errors
      */
-    public static PersistentBundle build(Resource resource, boolean calculateChecksum, boolean checkTransformationRequired) throws IOException {
+    public static PersistentBundle build(IOResource resource, boolean calculateChecksum, boolean checkTransformationRequired) throws IOException {
 
         // Read the manifest once
         Manifest manifest;
@@ -125,8 +135,16 @@ public final class PersistentBundleInfoBuilder {
             bundleInfo.setTransformationRequired(ModuleUtils.requiresTransformation(manifest.getMainAttributes()));
         }
 
-        bundleInfo.setResource(resource);
+        bundleInfo.setBundleResource(resource);
         return bundleInfo;
+    }
+
+    /**
+     * @deprecated use {@link #build(IOResource, boolean, boolean)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public static PersistentBundle build(Resource  resource, boolean calculateChecksum, boolean checkTransformationRequired) throws IOException {
+        return build(SpringResourceAdapter.fromSpring(resource), calculateChecksum, checkTransformationRequired);
     }
 
     private PersistentBundleInfoBuilder() {

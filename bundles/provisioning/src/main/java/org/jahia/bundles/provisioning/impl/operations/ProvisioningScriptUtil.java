@@ -42,12 +42,12 @@
  */
 package org.jahia.bundles.provisioning.impl.operations;
 
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.UrlIOResource;
 import org.jahia.services.provisioning.ExecutionContext;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -71,11 +71,11 @@ public final class ProvisioningScriptUtil {
      * @return resource
      * @throws IOException exception
      */
-    public static Resource getResource(String key, ExecutionContext executionContext) throws IOException {
+    public static IOResource getResource(String key, ExecutionContext executionContext) throws IOException {
         if (PATTERN.matcher(key).matches()) {
-            return new UrlResource(key);
+            return new UrlIOResource(key);
         } else {
-            Map<String, Resource> resources = (Map<String, Resource>) executionContext.getContext().get("resources");
+            Map<String, IOResource> resources = (Map<String, IOResource>) executionContext.getContext().get("resources");
             if (resources != null) {
                 return resources.get(key);
             }

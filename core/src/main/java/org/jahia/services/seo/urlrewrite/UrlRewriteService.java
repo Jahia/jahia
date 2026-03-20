@@ -43,15 +43,16 @@
 package org.jahia.services.seo.urlrewrite;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.io.IOResource;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -86,11 +87,11 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteService.class);
 
-    private List<Resource> configurationResources;
+    private List<IOResource> configurationResources;
 
-    private List<Resource> lastConfigurationResources;
+    private List<IOResource> lastConfigurationResources;
 
-    private List<Resource> seoConfigurationResources;
+    private List<IOResource> seoConfigurationResources;
 
     /**
      * A user defined setting that says how often to check the configuration has changed. <b>0</b> means check on each call.
@@ -146,11 +147,11 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return (configurationResources != null && !configurationResources.isEmpty()) || (seoConfigurationResources != null && !seoConfigurationResources.isEmpty()) || (lastConfigurationResources != null && !lastConfigurationResources.isEmpty());
     }
 
-    private List<Resource> getMergedConfigurationResources() {
+    private List<IOResource> getMergedConfigurationResources() {
         final int seoSize = seoConfigurationResources != null ? seoConfigurationResources.size() : 0;
         final int lastSize = lastConfigurationResources != null ? lastConfigurationResources.size() : 0;
 
-        final List<Resource> merged = configurationResources == null ? new ArrayList<Resource>(seoSize + lastSize) : new ArrayList<Resource>(configurationResources);
+        final List<IOResource> merged = configurationResources == null ? new ArrayList<>(seoSize + lastSize) : new ArrayList<>(configurationResources);
 
         // add SEO rules if provided and SEO URL rewriting is enabled
         if (seoRulesEnabled && seoSize > 0) {
@@ -165,8 +166,8 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return merged;
     }
 
-    private void addAllWithoutDuplicates(List<Resource> merged, List<Resource> resourcesToAdd) {
-        for (Resource resource : resourcesToAdd) {
+    private void addAllWithoutDuplicates(List<IOResource> merged, List<IOResource> resourcesToAdd) {
+        for (IOResource resource : resourcesToAdd) {
             // make sure we don't add duplicates
             if (!merged.contains(resource)) {
                 merged.add(resource);
@@ -186,12 +187,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     public UrlRewriteEngine getEngine() {
         try {
             // get merged resources if they were changed, null otherwise
-            final List<Resource> merged = getMergedResourcesIfReloadNeeded();
+            final List<IOResource> merged = getMergedResourcesIfReloadNeeded();
             if (urlRewriteEngine == null || merged != null) {
                 if (urlRewriteEngine != null) {
                     urlRewriteEngine.destroy();
                 }
-                urlRewriteEngine = new UrlRewriteEngine(servletContext, merged.toArray(new Resource[merged.size()]));
+                urlRewriteEngine = new UrlRewriteEngine(servletContext, merged.toArray(new IOResource[merged.size()]));
             }
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
@@ -230,20 +231,20 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
      * @return <code>null</code> if resources were unchanged, the list of updated resources otherwise
      * @throws IOException
      */
-    private List<Resource> getMergedResourcesIfReloadNeeded() throws IOException {
+    private List<IOResource> getMergedResourcesIfReloadNeeded() throws IOException {
         if (confReloadCheckIntervalSeconds > -1 && hasConfigurationResources()) {
 
             boolean doReload = false;
-            List<Resource> result = null;
+            List<IOResource> result = null;
             if (modified || confReloadCheckIntervalSeconds == 0 || lastChecked == 0 || lastChecked + confReloadCheckIntervalSeconds * 1000L < System.currentTimeMillis()) {
                 logger.debug("Checking for modifications in URL rewriter configuration resources.");
-                List<Resource> mergedConfigurationResources = getMergedConfigurationResources();
+                List<IOResource> mergedConfigurationResources = getMergedConfigurationResources();
                 if (modified) {
                     result = mergedConfigurationResources;
                 } else {
                     // look at last modified time for resources
-                    for (Resource resource : mergedConfigurationResources) {
-                        long resourceLastModified = FileUtils.getLastModified(resource);
+                    for (IOResource resource : mergedConfigurationResources) {
+                        long resourceLastModified = resource.lastModified();
                         int hash = resource.hashCode();
                         Long previous = lastModified.get(hash);
 
@@ -382,15 +383,36 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return getEngine().rewriteOutbound(url, request, response);
     }
 
+    // not deprecated, used as Spring bean setters, so valid usage of Resource for now.
     public void setConfigurationResources(Resource[] configurationResources) {
+        setConfigurationIOResources(SpringResourceAdapter.fromSpring(configurationResources));
+    }
+
+    public void setConfigurationIOResources(IOResource[] configurationResources) {
         this.configurationResources = createIfNeededAndAddAll(configurationResources, this.configurationResources);
     }
 
+    /**
+     * @deprecated use {@link #addConfigurationIOResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void addConfigurationResource(Resource resource) {
+        addConfigurationIOResource(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    public void addConfigurationIOResource(IOResource resource) {
         configurationResources = addTo(resource, configurationResources);
     }
 
+    /**
+     * @deprecated use {@link #removeConfigurationIOResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void removeConfigurationResource(Resource resource) {
+        removeConfigurationIOResource(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    public void removeConfigurationIOResource(IOResource resource) {
         removeFrom(resource, configurationResources);
     }
 
@@ -398,15 +420,36 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.confReloadCheckIntervalSeconds = confReloadCheckIntervalSeconds;
     }
 
+    // not deprecated, used as Spring bean setters, so valid usage of Resource for now.
     public void setSeoConfigurationResources(Resource[] seoConfigurationResources) {
+        setSeoConfigurationIOResources(SpringResourceAdapter.fromSpring(seoConfigurationResources));
+    }
+
+    public void setSeoConfigurationIOResources(IOResource[] seoConfigurationResources) {
         this.seoConfigurationResources = createIfNeededAndAddAll(seoConfigurationResources, this.seoConfigurationResources);
     }
 
+    /**
+     * @deprecated use {@link #addSeoConfigurationIOResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void addSeoConfigurationResource(Resource resource) {
+        addSeoConfigurationIOResource(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    public void addSeoConfigurationIOResource(IOResource resource) {
         seoConfigurationResources = addTo(resource, seoConfigurationResources);
     }
 
+    /**
+     * @deprecated use {@link #removeSeoConfigurationIOResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0")
     public void removeSeoConfigurationResource(Resource resource) {
+        removeSeoConfigurationIOResource(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    public void removeSeoConfigurationIOResource(IOResource resource) {
         removeFrom(resource, seoConfigurationResources);
     }
 
@@ -448,15 +491,36 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.settingsBean = settingsBean;
     }
 
+    // not deprecated, used as Spring bean setters, so valid usage of Resource for now.
     public void setLastConfigurationResources(Resource[] postSeoConfigurationResources) {
+        setLastConfigurationIOResources(SpringResourceAdapter.fromSpring(postSeoConfigurationResources));
+    }
+
+    public void setLastConfigurationIOResources(IOResource[] postSeoConfigurationResources) {
         this.lastConfigurationResources = createIfNeededAndAddAll(postSeoConfigurationResources, this.lastConfigurationResources);
     }
 
+    /**
+     * @deprecated use {@link #addLastConfigurationIOResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void addLastConfigurationResource(Resource resource) {
+        addLastConfigurationIOResource(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    public void addLastConfigurationIOResource(IOResource resource) {
         lastConfigurationResources = addTo(resource, lastConfigurationResources);
     }
 
+    /**
+     * @deprecated use {@link #removeLastConfigurationIOResource(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public void removeLastConfigurationResource(Resource resource) {
+        removeLastConfigurationIOResource(SpringResourceAdapter.fromSpring(resource));
+    }
+
+    public void removeLastConfigurationIOResource(IOResource resource) {
         removeFrom(resource, lastConfigurationResources);
     }
 
@@ -468,10 +532,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.seoRemoveCmsPrefix = seoRemoveCmsPrefix;
     }
 
-    private List<Resource> addTo(Resource resource, List<Resource> resources) {
+    private List<IOResource> addTo(IOResource resource, List<IOResource> resources) {
         if (resource != null) {
             if (resources == null) {
-                resources = new ArrayList<Resource>();
+                resources = new ArrayList<>();
             }
             if (!resources.contains(resource)) {
                 resources.add(resource);
@@ -482,16 +546,16 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return resources;
     }
 
-    private void removeFrom(Resource resource, List<Resource> resources) {
+    private void removeFrom(IOResource resource, List<IOResource> resources) {
         if (resources != null && resource != null) {
             resources.remove(resource);
             modified = true; // set modified flag
         }
     }
 
-    private List<Resource> createIfNeededAndAddAll(Resource[] newResources, List<Resource> resources) {
+    private List<IOResource> createIfNeededAndAddAll(IOResource[] newResources, List<IOResource> resources) {
         if (newResources != null) {
-            resources = new ArrayList<Resource>(newResources.length);
+            resources = new ArrayList<>(newResources.length);
             Collections.addAll(resources, newResources);
         }
 

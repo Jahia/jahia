@@ -51,10 +51,13 @@
 package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.io.IOResource;
 import org.jahia.bin.Jahia;
-import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.io.BundleIOResource;
+import org.jahia.services.io.FileSystemIOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.jahia.services.templates.ModuleVersion;
@@ -65,8 +68,6 @@ import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import pl.touk.throwing.ThrowingFunction;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class JahiaTemplatesPackage {
     public static final String RESOURCE_BASE_PATH = "src/main/resources/";
     public static final String ID_DEFAULT = "default";
     public static final String NAME_DEFAULT = "Default Jahia Templates";
-    private static final Resource[] NO_RESOURCES = new Resource[0];
+    private static final IOResource[] NO_RESOURCES = new IOResource[0];
     private static final String GIT_URI_END = ".git";
     private static URL nullUrl;
     static {
@@ -822,25 +823,29 @@ public class JahiaTemplatesPackage {
      * @return a resource from the module's bundle for the specified path
      * @see Bundle#getEntry(String)
      */
-    public Resource getResource(String relativePath) {
+    public IOResource getModuleResource(String relativePath) {
         if (relativePath == null) {
             return null;
         }
         if (getSourcesFolder() != null && getSourcesFolder().exists()) {
-            try {
-                File file = new File(getSourcesFolder(), RESOURCE_BASE_PATH + relativePath);
-                if (file.exists()) {
-                    return new UrlResource(file.toURI());
-                }
-            } catch (MalformedURLException e) {
-                // file.toURI cannot return malformed URL
+            File file = new File(getSourcesFolder(), RESOURCE_BASE_PATH + relativePath);
+            if (file.exists()) {
+                return new FileSystemIOResource(file);
             }
         }
         URL entryURL = getResourceFromCache(relativePath);
         if (entryURL != null) {
-            return new BundleResource(entryURL, bundle);
+            return new BundleIOResource(entryURL, bundle);
         }
         return null;
+    }
+
+    /**
+     * @deprecated use {@link #getModuleResource(String)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public Resource getResource(String relativePath) {
+        return SpringResourceAdapter.toSpring(getModuleResource(relativePath));
     }
 
     /**
@@ -880,7 +885,7 @@ public class JahiaTemplatesPackage {
      * @return resources from the module's bundle and its attached fragments for the specified path
      * @see Bundle#findEntries(String, String, boolean)
      */
-    public Resource[] getResources(String relativePath) {
+    public IOResource[] getModuleResources(String relativePath) {
         File sourceLocation = getSourcesFolder() != null ?
                 new File(getSourcesFolder(), RESOURCE_BASE_PATH + relativePath) : null;
 
@@ -892,8 +897,8 @@ public class JahiaTemplatesPackage {
             }
 
             return Arrays.stream(files)
-                    .map(ThrowingFunction.unchecked(file -> new UrlResource(file.toURI())))
-                    .toArray(Resource[]::new);
+                    .map(FileSystemIOResource::new)
+                    .toArray(IOResource[]::new);
         } else {
             // Load resources from the bundle
             Enumeration<URL> resourceEnum = bundle.findEntries(relativePath, null, false);
@@ -903,9 +908,20 @@ public class JahiaTemplatesPackage {
 
             return Collections.list(resourceEnum)
                     .stream()
-                    .map(url -> new BundleResource(url, bundle))
-                    .toArray(Resource[]::new);
+                    .map(url -> new BundleIOResource(url, bundle))
+                    .toArray(IOResource[]::new);
         }
+    }
+
+    /**
+     * @deprecated use {@link #getModuleResources(String)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public Resource[] getResources(String relativePath) {
+        IOResource[] resources = getModuleResources(relativePath);
+        return resources == null ? null : Arrays.stream(resources)
+                .map(SpringResourceAdapter::toSpring)
+                .toArray(Resource[]::new);
     }
 
     /**

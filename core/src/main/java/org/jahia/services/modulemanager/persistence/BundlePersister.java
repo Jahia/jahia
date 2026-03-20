@@ -42,6 +42,8 @@
  */
 package org.jahia.services.modulemanager.persistence;
 
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.springframework.core.io.Resource;
 
@@ -88,5 +90,13 @@ public interface BundlePersister {
      * @return The bundle information, extracted from the provided resource
      * @throws ModuleManagementException In case of issues during persistence operation
      */
-    PersistentBundle store(Resource resource) throws ModuleManagementException;
+    PersistentBundle store(IOResource resource) throws ModuleManagementException;
+
+    /**
+     * @deprecated use {@link #store(IOResource)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default PersistentBundle store(Resource resource) throws ModuleManagementException {
+        return store(SpringResourceAdapter.fromSpring(resource));
+    }
 }

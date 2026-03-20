@@ -43,12 +43,12 @@
 package org.jahia.services.seo.urlrewrite;
 
 import org.apache.commons.io.IOUtils;
-import org.jahia.osgi.BundleResource;
+import org.jahia.api.io.IOResource;
+import org.jahia.services.io.BundleIOResource;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 import org.tuckey.web.filters.urlrewrite.Conf;
 
 import javax.servlet.ServletContext;
@@ -72,11 +72,11 @@ public class Configuration extends Conf {
         super.initialise();
     }
 
-    private Configuration(ServletContext context, InputStream is, Resource[] confLocations, ClassLoader mainClassLoader) {
+    private Configuration(ServletContext context, InputStream is, IOResource[] confLocations, ClassLoader mainClassLoader) {
         super(context, is, confLocations[0].getFilename(), confLocations[0].getDescription(), mainClassLoader);
         IOUtils.closeQuietly(is);
         for (int i = 1; i < confLocations.length; i++) {
-            Resource resource = confLocations[i];
+            IOResource resource = confLocations[i];
             InputStream stream = null;
             try {
                 stream = resource.getInputStream();
@@ -104,7 +104,7 @@ public class Configuration extends Conf {
      * @return the configuration
      * @throws IOException if an error occurs
      */
-    static Configuration createConfiguration(ServletContext context, Resource[] confLocations) throws IOException {
+    static Configuration createConfiguration(ServletContext context, IOResource[] confLocations) throws IOException {
         return new Configuration(context, confLocations[0].getInputStream(), confLocations, getClassLoader(confLocations[0]));
     }
 
@@ -112,9 +112,9 @@ public class Configuration extends Conf {
         return new Configuration();
     }
 
-    private static ClassLoader getClassLoader(Resource resource) {
-        if (resource instanceof BundleResource) {
-            Bundle bundle = ((BundleResource) resource).getBundle();
+    private static ClassLoader getClassLoader(IOResource resource) {
+        if (resource instanceof BundleIOResource) {
+            Bundle bundle = ((BundleIOResource) resource).getBundle();
             BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
             if (bundleWiring == null) {
                 logger.warn("Unable to get the bundle wiring for bundle {}", bundle.getSymbolicName());

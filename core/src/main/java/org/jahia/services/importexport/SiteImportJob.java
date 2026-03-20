@@ -52,6 +52,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.Service;
 import org.jahia.services.importexport.validation.*;
+import org.jahia.services.io.FileSystemIOResource;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -65,7 +66,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.RepositoryException;
@@ -329,7 +329,7 @@ public class SiteImportJob extends BackgroundJob {
                 File file = (File) infos.get("importFile");
                 if (file != null && infos.get("type").equals("files")) {
                     try {
-                        ImportExportBaseService.getInstance().importSiteZip(new FileSystemResource(file), null, infos);
+                        ImportExportBaseService.getInstance().importSiteZip(new FileSystemIOResource(file), null, infos);
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -354,7 +354,7 @@ public class SiteImportJob extends BackgroundJob {
                                 locale(infos.containsKey("defaultLanguage") ? (String) infos.get("defaultLanguage") : SettingsBean.getInstance().getDefaultLanguageCode()).
                                 siteAdmin(user).
                                 firstImport("fileImport").
-                                fileImport(file == null ? null : new FileSystemResource(file)).
+                                fileImportResource(file == null ? null : new FileSystemIOResource(file)).
                                 fileImportName((String) infos.get("importFileName")).
                                 originatingJahiaRelease((String) infos.get("originatingJahiaRelease")).build();
                         ServicesRegistry.getInstance().getJahiaSitesService().addSite(siteCreationInfo);

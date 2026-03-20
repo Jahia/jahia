@@ -42,12 +42,15 @@
  */
 package org.jahia.services.modulemanager;
 
+import org.jahia.api.io.IOResource;
 import org.jahia.osgi.BundleState;
+import org.jahia.services.io.adapter.SpringResourceAdapter;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.springframework.core.io.Resource;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Entry point interface for the module management service, providing functionality for module deployment, undeployment, start and stop
@@ -86,6 +89,14 @@ import java.util.Map;
 public interface ModuleManager {
 
     /**
+     * @deprecated use {@link #install(IOResource, String)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default OperationResult install(Resource bundleResource, String target) throws ModuleManagementException {
+        return install(SpringResourceAdapter.fromSpring(bundleResource), target);
+    }
+
+    /**
      * Install the specified bundle on the target group of cluster nodes.
      *
      * @param bundleResource The resource representing a bundle to install
@@ -93,7 +104,15 @@ public interface ModuleManager {
      * @return The result of the install operation
      * @throws ModuleManagementException Is case of problems
      */
-    OperationResult install(Resource bundleResource, String target) throws ModuleManagementException;
+    OperationResult install(IOResource bundleResource, String target) throws ModuleManagementException;
+
+    /**
+     * @deprecated use {@link #install(IOResource, String, boolean)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException {
+        return install(SpringResourceAdapter.fromSpring(bundleResource), target, start);
+    }
 
     /**
      * Install the specified bundle on the target group of cluster nodes, optionally starting it right after.
@@ -104,7 +123,15 @@ public interface ModuleManager {
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
-    OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException;
+    OperationResult install(IOResource bundleResource, String target, boolean start) throws ModuleManagementException;
+
+    /**
+     * @deprecated use {@link #installAll(Collection, String, boolean)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default OperationResult install(Collection<Resource> bundleResources, String target, boolean start) throws ModuleManagementException {
+        return installAll(SpringResourceAdapter.fromSpring(bundleResources), target, start);
+    }
 
     /**
      * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
@@ -115,7 +142,15 @@ public interface ModuleManager {
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
-    OperationResult install(Collection<Resource> bundleResources, String target, boolean start) throws ModuleManagementException;
+    OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start) throws ModuleManagementException;
+
+    /**
+     * @deprecated use {@link #installAll(Collection, String, boolean, boolean)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default OperationResult install(Collection<Resource> bundleResources, String target, boolean start, boolean ignoreChecks)  {
+        return installAll(SpringResourceAdapter.fromSpring(bundleResources), target, start, ignoreChecks);
+    }
 
     /**
      * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
@@ -127,7 +162,15 @@ public interface ModuleManager {
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
-    OperationResult install(Collection<Resource> bundleResources, String target, boolean start, boolean ignoreChecks);
+    OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start, boolean ignoreChecks);
+
+    /**
+     * @deprecated use {@link #installAll(Collection, String, boolean, int)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel)  {
+        return installAll(SpringResourceAdapter.fromSpring(bundleResources), target, start, startLevel);
+    }
 
     /**
      * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
@@ -139,7 +182,15 @@ public interface ModuleManager {
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
-    OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel);
+    OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start, int startLevel);
+
+    /**
+     * @deprecated use {@link #installAll(Collection, String, boolean, int, boolean)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    default OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel, boolean ignoreChecks)  {
+        return installAll(SpringResourceAdapter.fromSpring(bundleResources), target, start, startLevel, ignoreChecks);
+    }
 
     /**
      * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
@@ -152,7 +203,7 @@ public interface ModuleManager {
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
      */
-    OperationResult install(Collection<Resource> bundleResources, String target, boolean start, int startLevel, boolean ignoreChecks);
+    OperationResult installAll(Collection<IOResource> bundleResources, String target, boolean start, int startLevel, boolean ignoreChecks);
 
     /**
      * Start the specified bundle on the target group of cluster nodes.

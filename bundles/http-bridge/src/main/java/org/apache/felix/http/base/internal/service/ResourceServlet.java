@@ -43,10 +43,15 @@
 package org.apache.felix.http.base.internal.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.felix.http.base.internal.context.ServletContextImpl;
+import org.jahia.utils.DeprecationUtils;
+import org.jahia.utils.HttpResponseUtils;
 import org.osgi.framework.Bundle;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,15 +61,27 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Forked version of org.apache.felix.http.base
  */
 public final class ResourceServlet extends HttpServlet {
     private final String path;
+    private boolean gzipEnabled;
 
     public ResourceServlet(String path) {
         this.path = path;
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        gzipEnabled = Boolean.parseBoolean(StringUtils.defaultString(config.getInitParameter("enable-gzip"), "true"));
+        if (!gzipEnabled) {
+            DeprecationUtils.onDeprecatedFeatureUsage("ResourceServlet#enable-gzip", "8.2.4.0", true,
+                    "The init parameter 'enable-gzip' is no longer supported for ResourceServlet");
+        }
     }
 
     @Override
@@ -90,24 +107,50 @@ public final class ResourceServlet extends HttpServlet {
 
     private void handle(HttpServletRequest req, HttpServletResponse res, URL url, String resName) throws IOException {
         String contentType = getServletContext().getMimeType(resName);
+        boolean compressible = HttpResponseUtils.isCompressibleContentType(contentType);
+        boolean rangeRequested = req.getHeader("Range") != null;
+        boolean acceptsGzip = gzipEnabled
+                && compressible
+                && !rangeRequested
+                && HttpResponseUtils.acceptsEncoding(req.getHeader("Accept-Encoding"), "gzip");
+
+        long lastModified = getLastModified(url);
+        String baseEtag = HttpResponseUtils.buildStrongEtag(DigestUtils.md5Hex(url.toString()), lastModified);
+        String identityEtag = compressible ? HttpResponseUtils.buildVariantEtag(baseEtag, "a") : baseEtag;
+        String responseEtag = compressible
+                ? HttpResponseUtils.buildVariantEtag(baseEtag, acceptsGzip ? "g" : "a")
+                : baseEtag;
+
+        HttpResponseUtils.applyValidatorHeaders(res, responseEtag, lastModified);
+        res.setHeader("Accept-Ranges", "bytes");
+        if (compressible) {
+            HttpResponseUtils.appendVaryHeader(res, "Accept-Encoding");
+        }
+
+        if (HttpResponseUtils.isNotModified(req, responseEtag, lastModified)) {
+            res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return;
+        }
+
         if (contentType != null) {
             res.setContentType(contentType);
         }
 
-        long lastModified = getLastModified(url);
-        String eTag = "\"".concat(DigestUtils.md5Hex(url.toString())).concat(".").concat(Long.toHexString(lastModified))
-                .concat("\"");
-        if (lastModified != 0) {
-            res.setDateHeader("Last-Modified", lastModified);
-            res.setHeader("ETag", eTag);
+        long contentLength = getContentLength(url);
+        HttpResponseUtils.ByteRange range = HttpResponseUtils.parseRange(req, res, contentLength, identityEtag, lastModified);
+        if (range == HttpResponseUtils.UNSATISFIABLE_RANGE) {
+            return;
         }
 
-        if (!resourceModified(eTag, req.getHeader("If-None-Match")) ||
-                !resourceModified(lastModified, req.getDateHeader("If-Modified-Since"))) {
-            res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        } else {
-            copyResource(url, res);
+        if (range != null) {
+            res.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            res.setHeader("Content-Range", "bytes " + range.start + "-" + range.end + "/" + range.total);
+            HttpResponseUtils.setContentLength(res, range.length());
+            copyResourceRange(url, res, range);
+            return;
         }
+
+        copyResource(url, res, acceptsGzip, contentLength);
     }
 
     private long getLastModified(URL url) {
@@ -152,27 +195,46 @@ public final class ResourceServlet extends HttpServlet {
         return null;
     }
 
-    private boolean resourceModified(String localEtag, String reqETag) {
-        return localEtag == null || !localEtag.equals(reqETag);
+    private long getContentLength(URL url) {
+        try {
+            return url.openConnection().getContentLengthLong();
+        } catch (IOException e) {
+            return -1;
+        }
     }
 
-    private boolean resourceModified(long resTimestamp, long modSince) {
-        modSince /= 1000;
-        resTimestamp /= 1000;
-        return resTimestamp == 0 || modSince == -1 || resTimestamp > modSince;
-    }
+    private void copyResource(URL url, HttpServletResponse res, boolean gzip, long contentLength) throws IOException {
+        URLConnection connection = url.openConnection();
 
-    private void copyResource(URL url, HttpServletResponse res) throws IOException {
-        try (OutputStream os = res.getOutputStream(); InputStream is = url.openStream()) {
-            int len = 0;
-            byte[] buf = new byte[1024];
-            int n;
-
-            while ((n = is.read(buf, 0, buf.length)) >= 0) {
-                os.write(buf, 0, n);
-                len += n;
+        try (InputStream is = connection.getInputStream(); OutputStream os = res.getOutputStream()) {
+            if (gzip) {
+                res.setHeader("Content-Encoding", "gzip");
+                try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(os, 1024)) {
+                    HttpResponseUtils.copy(is, gzipOutputStream);
+                }
+                return;
             }
-            res.setContentLength(len);
+
+            HttpResponseUtils.setContentLength(res, contentLength);
+            HttpResponseUtils.copy(is, os);
+        }
+    }
+
+    private void copyResourceRange(URL url, HttpServletResponse res, HttpResponseUtils.ByteRange range) throws IOException {
+        try (InputStream is = url.openConnection().getInputStream(); OutputStream os = res.getOutputStream()) {
+            HttpResponseUtils.skipFully(is, range.start);
+
+            long remaining = range.length();
+            byte[] buf = new byte[1024];
+            while (remaining > 0) {
+                int toRead = (int) Math.min(buf.length, remaining);
+                int read = is.read(buf, 0, toRead);
+                if (read < 0) {
+                    break;
+                }
+                os.write(buf, 0, read);
+                remaining -= read;
+            }
         }
     }
 }

@@ -42,13 +42,11 @@
  */
 package org.jahia.services.content.files;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPOutputStream;
 
 import javax.jcr.*;
 import javax.servlet.ServletConfig;
@@ -74,6 +72,8 @@ import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DeprecationUtils;
+import org.jahia.utils.HttpResponseUtils;
 import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +89,8 @@ import static org.jahia.services.content.JCRTemplate.*;
  * Time: 2:08:59 PM
  */
 public class FileServlet extends HttpServlet {
+
+    private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
 
     private static final Logger logger = LoggerFactory.getLogger(FileServlet.class);
 
@@ -107,6 +109,8 @@ public class FileServlet extends HttpServlet {
     private transient MetricsLoggingService loggingService;
 
     private transient JCRSessionFactory sessionFactory;
+
+    private boolean gzipEnabled;
 
     private boolean canCache(JCRNodeWrapper n) {
         return cacheFromExternalProviders || n.getProvider().canCacheNode(n);
@@ -128,13 +132,6 @@ public class FileServlet extends HttpServlet {
 
                 FileLastModifiedCacheEntry lastModifiedEntry = lastModifiedCache.get(fileKey
                         .getCacheKey());
-                if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
-                    // resource is not changed
-                    code = HttpServletResponse.SC_NOT_MODIFIED;
-                    res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    logAccess(fileKey, req, "ok-not-modified");
-                    return;
-                }
 
                 Cache<String, Map<String, FileCacheEntry>> contentCache = cacheManager.getContentCache();
 
@@ -163,28 +160,12 @@ public class FileServlet extends HttpServlet {
 
                     Date lastModifiedDate = n.getLastModifiedAsDate();
                     long lastModified = lastModifiedDate != null ? lastModifiedDate.getTime() : System.currentTimeMillis();
-                    String eTag = generateETag(n.getIdentifier(), lastModified);
+                    String eTag = HttpResponseUtils.buildStrongEtag(n.getIdentifier(), lastModified);
                     if (lastModifiedEntry == null) {
                         lastModifiedEntry = new FileLastModifiedCacheEntry(eTag, lastModified);
                         if (canCache(n)) {
                             lastModifiedCache.put(fileKey.getCacheKey(), lastModifiedEntry);
                         }
-                    }
-
-                    if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
-                        final String fileName = FileServlet.getFileName(n, fileKey);
-                        if (fileName != null) {
-                            res.setHeader(
-                                    "Content-Disposition",
-                                    "inline; filename=\""
-                                    + fileName + "\"");
-                        }
-
-                        // resource is not changed
-                        code = HttpServletResponse.SC_NOT_MODIFIED;
-                        res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                        logAccess(fileKey, req, "ok-not-modified");
-                        return;
                     }
 
                     fileEntry = getFileEntry(fileKey, n, lastModifiedEntry);
@@ -209,13 +190,43 @@ public class FileServlet extends HttpServlet {
                 }
 
                 if (fileEntry != null) {
-                    List<RangeUtils.Range> ranges;
                     boolean useRanges = true;
                     if (fileEntry.getBinary() instanceof BinaryRangesSupport) {
                         useRanges = ((BinaryRangesSupport) fileEntry.getBinary()).supportRanges();
                     }
 
-                    ranges = useRanges ? RangeUtils.parseRange(req, res, fileEntry.getETag(), fileEntry.getLastModified(), fileEntry.getContentLength()) : null;
+                    String contentType = fileEntry.getMimeType();
+                    if (contentType == null) {
+                        contentType = "application/octet-stream";
+                    }
+
+                    boolean compressible = HttpResponseUtils.isCompressibleContentType(contentType);
+                    boolean acceptsGzip = gzipEnabled
+                            && compressible
+                            && req.getHeader("Range") == null
+                            && HttpResponseUtils.acceptsEncoding(req.getHeader("Accept-Encoding"), "gzip");
+                    if (compressible) {
+                        contentType += ";charset=UTF-8";
+                        HttpResponseUtils.appendVaryHeader(res, "Accept-Encoding");
+                    }
+
+                    String identityEtag = HttpResponseUtils.buildVariantEtag(fileEntry.getETag(), "a");
+                    String gzipEtag = HttpResponseUtils.buildVariantEtag(fileEntry.getETag(), "g");
+
+                    List<RangeUtils.Range> ranges = useRanges
+                            ? RangeUtils.parseRange(req, res, identityEtag, fileEntry.getLastModified(), fileEntry.getContentLength())
+                            : null;
+                    boolean fullResponse = ranges == null || ranges == RangeUtils.FULL;
+                    boolean gzipResponse = acceptsGzip && fullResponse;
+                    String responseEtag = gzipResponse ? gzipEtag : identityEtag;
+
+                    if (HttpResponseUtils.isNotModified(req, responseEtag, fileEntry.getLastModified())) {
+                        HttpResponseUtils.applyValidatorHeaders(res, responseEtag, fileEntry.getLastModified());
+                        code = HttpServletResponse.SC_NOT_MODIFIED;
+                        res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        logAccess(fileKey, req, "ok-not-modified");
+                        return;
+                    }
 
                     final String fileName = fileEntry.getFileName();
                     if (fileName != null) {
@@ -225,8 +236,7 @@ public class FileServlet extends HttpServlet {
                                 + fileName + "\"");
                     }
 
-                    res.setDateHeader("Last-Modified", fileEntry.getLastModified());
-                    res.setHeader("ETag", fileEntry.getETag());
+                    HttpResponseUtils.applyValidatorHeaders(res, responseEtag, fileEntry.getLastModified());
                     InputStream is = null;
 
                     if (fileEntry.getData() != null) {
@@ -241,22 +251,29 @@ public class FileServlet extends HttpServlet {
                         return;
                     }
 
-                    if (ranges == null || (ranges == RangeUtils.FULL)) {
-                        res.setContentType(fileEntry.getMimeType());
-                        if (fileEntry.getContentLength() <= Integer.MAX_VALUE) {
+                    if (fullResponse) {
+                        res.setContentType(contentType);
+                        if (gzipResponse) {
+                            // The browser accepts GZIP, so GZIP the content.
+                            res.setHeader("Content-Encoding", "gzip");
+                        } else if (fileEntry.getContentLength() <= Integer.MAX_VALUE) {
                             res.setContentLength((int) fileEntry.getContentLength());
                         } else {
                             res.setHeader("Content-Length", Long.toString(fileEntry.getContentLength()));
                         }
                         ServletOutputStream os = res.getOutputStream();
-                        IOUtils.copy(is, os);
+
+                        try (OutputStream outputStream = gzipResponse ? new GZIPOutputStream(os, DEFAULT_BUFFER_SIZE) : os) {
+                            // Copy full range.
+                            IOUtils.copy(is, outputStream);
+                        }
                         os.flush();
                         os.close();
                     } else {
                         res.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
                         if (ranges.size() == 1) {
                             res.setContentType(fileEntry.getMimeType());
-                            RangeUtils.Range range = (RangeUtils.Range) ranges.get(0);
+                            RangeUtils.Range range = ranges.get(0);
                             res.addHeader("Content-Range", "bytes "
                                     + range.start
                                     + "-" + range.end + "/"
@@ -321,11 +338,6 @@ public class FileServlet extends HttpServlet {
                                 (System.currentTimeMillis() - timer)});
             }
         }
-    }
-
-    protected String generateETag(String uuid, long lastModified) {
-        return "\"" + StringUtils.replace(StringUtils.defaultIfEmpty(uuid, "unknown"), "\"", "")
-                + "-" + lastModified + "\"";
     }
 
     protected JCRNodeWrapper getContentNode(JCRNodeWrapper n, String thumbnail)
@@ -464,6 +476,7 @@ public class FileServlet extends HttpServlet {
         }
     }
 
+
     private boolean isValid(JCRNodeWrapper n) throws ValueFormatException, PathNotFoundException,
             RepositoryException {
         if (!Constants.LIVE_WORKSPACE.equals(n.getSession().getWorkspace().getName())) {
@@ -513,10 +526,28 @@ public class FileServlet extends HttpServlet {
                 logger.error("Unable to get the logging service instance. Metrics logging will be disabled.");
             }
         }
+        gzipEnabled = Boolean.parseBoolean(StringUtils.defaultString(config.getInitParameter("enable-gzip"), "true"));
+        if (!gzipEnabled) {
+            DeprecationUtils.onDeprecatedFeatureUsage("FileServlet#enable-gzip", "8.2.4.0", true,
+                    "The init parameter 'enable-gzip' is no longer supported for FileServlet");
+        }
     }
 
+    /**
+     * Determines if a specific file has not been modified based on HTTP request headers.
+     * This method checks the request headers 'If-None-Match' and 'If-Modified-Since'
+     * to verify if the file represented by the given parameters matches the cached state.
+     *
+     * @param fileKey           the key representing the file whose state is being checked
+     * @param lastModifiedEntry an entry containing the last modified timestamp and ETag of the file
+     * @param request           the HTTP request containing the headers to check for modification
+     * @param response          the HTTP response that can be used to update the client state
+     * @return {@code true} if the file has not been modified as per the request headers, {@code false} otherwise
+     * @deprecated use {@link HttpResponseUtils#isNotModified(HttpServletRequest, String, long)} instead.
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     protected boolean isNotModified(FileKey fileKey, FileLastModifiedCacheEntry lastModifiedEntry,
-                                    HttpServletRequest request, HttpServletResponse response) {
+            HttpServletRequest request, HttpServletResponse response) {
         if (lastModifiedEntry != null) {
             // check presence of the 'If-None-Match' header
             String eTag = request.getHeader("If-None-Match");
@@ -644,8 +675,10 @@ public class FileServlet extends HttpServlet {
     }
 
     /**
-     * Interface to set on javax.jcr.Binary implementation to set range support
-     * If ranges are not supported, the entire file will be download each time
+     * Interface to set on javax.jcr.{@link Binary} implementation to set range support.
+     * <p>
+     * If ranges are not supported, the entire file will be downloaded each time
+     * </p>
      */
     public interface BinaryRangesSupport {
 

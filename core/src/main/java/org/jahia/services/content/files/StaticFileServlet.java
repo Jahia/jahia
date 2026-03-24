@@ -62,6 +62,8 @@ package org.jahia.services.content.files;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DeprecationUtils;
+import org.jahia.utils.HttpResponseUtils;
 import org.jahia.utils.Patterns;
 
 import javax.servlet.ServletConfig;
@@ -105,7 +107,7 @@ public class StaticFileServlet extends HttpServlet {
     // Properties ---------------------------------------------------------------------------------
 
     private String basePath;
-    private boolean enableGzip;
+    private boolean gzipEnabled;
 
     // Actions ------------------------------------------------------------------------------------
 
@@ -118,7 +120,11 @@ public class StaticFileServlet extends HttpServlet {
         } catch (IOException e) {
             throw new ServletException(e);
         }
-        enableGzip = Boolean.valueOf(StringUtils.defaultString(config.getInitParameter("enable-gzip"), "true"));
+        gzipEnabled = Boolean.parseBoolean(StringUtils.defaultString(config.getInitParameter("enable-gzip"), "true"));
+        if (!gzipEnabled) {
+            DeprecationUtils.onDeprecatedFeatureUsage("StaticFileServlet#enable-gzip", "8.2.4.0", true,
+                    "The init parameter 'enable-gzip' is no longer supported for StaticFileServlet");
+        }
     }
 
     /**
@@ -187,24 +193,28 @@ public class StaticFileServlet extends HttpServlet {
         String fileName = file.getName();
         long length = file.length();
         long lastModified = file.lastModified();
-        String eTag = fileName + "_" + length + "_" + lastModified;
+        String baseEtag = HttpResponseUtils.buildStrongEtag(fileName + "_" + length, lastModified);
+        String identityEtag = HttpResponseUtils.buildVariantEtag(baseEtag, "a");
+        String gzipEtag = HttpResponseUtils.buildVariantEtag(baseEtag, "g");
+
+        // Prepare content type and content encoding capability before validators.
+        String contentType = getServletContext().getMimeType(fileName);
+        boolean compressible = HttpResponseUtils.isCompressibleContentType(contentType);
+        boolean acceptsGzip = gzipEnabled
+                && compressible
+                && request.getHeader("Range") == null
+                && HttpResponseUtils.acceptsEncoding(request.getHeader("Accept-Encoding"), "gzip");
+        String eTag = acceptsGzip ? gzipEtag : identityEtag;
 
         // Validate request headers for caching ---------------------------------------------------
 
-        // If-None-Match header should contain "*" or ETag. If so, then return 304.
-        String ifNoneMatch = request.getHeader("If-None-Match");
-        if (ifNoneMatch != null && matches(ifNoneMatch, eTag)) {
+        // Check If-None-Match and If-Modified-Since for 304 Not Modified response.
+        if (HttpResponseUtils.isNotModified(request, eTag, lastModified)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            response.setHeader("ETag", eTag); // Required in 304.
-            return;
-        }
-
-        // If-Modified-Since header should be greater than LastModified. If so, then return 304.
-        // This header is ignored if any If-None-Match header is specified.
-        long ifModifiedSince = request.getDateHeader("If-Modified-Since");
-        if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            response.setHeader("ETag", eTag); // Required in 304.
+            HttpResponseUtils.applyValidatorHeaders(response, eTag, lastModified);
+            if (compressible) {
+                HttpResponseUtils.appendVaryHeader(response, "Accept-Encoding");
+            }
             return;
         }
 
@@ -213,7 +223,7 @@ public class StaticFileServlet extends HttpServlet {
 
         // If-Match header should contain "*" or ETag. If not, then return 412.
         String ifMatch = request.getHeader("If-Match");
-        if (ifMatch != null && !matches(ifMatch, eTag)) {
+        if (ifMatch != null && !HttpResponseUtils.matchesIfMatch(ifMatch, eTag)) {
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
@@ -229,8 +239,8 @@ public class StaticFileServlet extends HttpServlet {
         // Validate and process range -------------------------------------------------------------
 
         // Prepare some variables. The full Range represents the complete file.
-        Range full = new Range(0, length - 1, length);
-        List<Range> ranges = new ArrayList<>();
+        HttpResponseUtils.ByteRange full = new HttpResponseUtils.ByteRange(0, length - 1, length);
+        List<HttpResponseUtils.ByteRange> ranges = new ArrayList<>();
 
         // Validate and process Range and If-Range headers.
         String range = request.getHeader("Range");
@@ -246,7 +256,7 @@ public class StaticFileServlet extends HttpServlet {
             // If-Range header should either match ETag or be greater then LastModified. If not,
             // then return full file.
             String ifRange = request.getHeader("If-Range");
-            if (ifRange != null && !ifRange.equals(eTag)) {
+            if (ifRange != null && !ifRange.equals(identityEtag)) {
                 try {
                     long ifRangeTime = request.getDateHeader("If-Range"); // Throws IAE if invalid.
                     if (ifRangeTime != -1 && ifRangeTime + 1000 < lastModified) {
@@ -280,7 +290,7 @@ public class StaticFileServlet extends HttpServlet {
                     }
 
                     // Add range.
-                    ranges.add(new Range(start, end, length));
+                    ranges.add(new HttpResponseUtils.ByteRange(start, end, length));
                 }
             }
         }
@@ -288,9 +298,7 @@ public class StaticFileServlet extends HttpServlet {
 
         // Prepare and initialize response --------------------------------------------------------
 
-        // Get content type by file name and set default GZIP support and content disposition.
-        String contentType = getServletContext().getMimeType(fileName);
-        boolean acceptsGzip = false;
+        // Set content disposition.
         String disposition = "inline";
 
         // If content type is unknown, then set the default value.
@@ -300,11 +308,7 @@ public class StaticFileServlet extends HttpServlet {
             contentType = "application/octet-stream";
         }
 
-        // If content type is text, then determine whether GZIP content encoding is supported by
-        // the browser and expand content type with the one and right character encoding.
-        if (contentType.startsWith("text")) {
-            String acceptEncoding = request.getHeader("Accept-Encoding");
-            acceptsGzip = enableGzip && acceptEncoding != null && accepts(acceptEncoding, "gzip");
+        if (compressible) {
             contentType += ";charset=UTF-8";
         }
 
@@ -321,8 +325,10 @@ public class StaticFileServlet extends HttpServlet {
         response.setBufferSize(DEFAULT_BUFFER_SIZE);
         response.setHeader("Content-Disposition", disposition + ";filename=\"" + fileName + "\"");
         response.setHeader("Accept-Ranges", "bytes");
-        response.setHeader("ETag", eTag);
-        response.setDateHeader("Last-Modified", lastModified);
+        HttpResponseUtils.applyValidatorHeaders(response, eTag, lastModified);
+        if (compressible) {
+            HttpResponseUtils.appendVaryHeader(response, "Accept-Encoding");
+        }
         if (presetCacheControl != null && !presetCacheControl.isEmpty()) {
             response.setHeader(HttpHeaders.CACHE_CONTROL, presetCacheControl);
         }
@@ -337,7 +343,7 @@ public class StaticFileServlet extends HttpServlet {
             if (ranges.isEmpty() || ranges.get(0) == full) {
 
                 // Return full file.
-                Range r = full;
+                HttpResponseUtils.ByteRange r = full;
                 response.setContentType(contentType);
                 response.setHeader(CONTENT_RANGE, "bytes " + r.start + "-" + r.end + "/" + r.total);
                 if (content) {
@@ -347,12 +353,12 @@ public class StaticFileServlet extends HttpServlet {
                     } else {
                         // Content length is not directly predictable in case of GZIP.
                         // So only add it if there is no means of GZIP, else browser will hang.
-                        response.setHeader("Content-Length", String.valueOf(r.length));
+                        response.setHeader("Content-Length", String.valueOf(r.length()));
                     }
                     boolean copyDone = false;
                     try (OutputStream outputStream = acceptsGzip ? new GZIPOutputStream(output, DEFAULT_BUFFER_SIZE) : output) {
                         // Copy full range.
-                        copy(input, outputStream, r.start, r.length);
+                        copy(input, outputStream, r.start, r.length());
                         copyDone = true;
                     } catch (IOException e) {
                         if (!copyDone) {
@@ -364,15 +370,15 @@ public class StaticFileServlet extends HttpServlet {
             } else if (ranges.size() == 1) {
 
                 // Return single part of file.
-                Range r = ranges.get(0);
+                HttpResponseUtils.ByteRange r = ranges.get(0);
                 response.setContentType(contentType);
                 response.setHeader(CONTENT_RANGE, "bytes " + r.start + "-" + r.end + "/" + r.total);
-                response.setHeader("Content-Length", String.valueOf(r.length));
+                response.setHeader("Content-Length", String.valueOf(r.length()));
                 response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
 
                 if (content) {
                     // Copy single part range.
-                    copy(input, output, r.start, r.length);
+                    copy(input, output, r.start, r.length());
                 }
 
             } else {
@@ -383,7 +389,7 @@ public class StaticFileServlet extends HttpServlet {
 
                 if (content) {
                     // Copy multi part range.
-                    for (Range r : ranges) {
+                    for (HttpResponseUtils.ByteRange r : ranges) {
                         // Add multipart boundary and header fields for every range.
                         output.println();
                         output.println("--" + MULTIPART_BOUNDARY);
@@ -391,7 +397,7 @@ public class StaticFileServlet extends HttpServlet {
                         output.println("Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total);
 
                         // Copy single part range of multi part range.
-                        copy(input, output, r.start, r.length);
+                        copy(input, output, r.start, r.length());
                     }
 
                     // End with multipart boundary.
@@ -449,7 +455,7 @@ public class StaticFileServlet extends HttpServlet {
      */
     private static long sublong(String value, int beginIndex, int endIndex) {
         String substring = value.substring(beginIndex, endIndex);
-        return (substring.length() > 0) ? Long.parseLong(substring) : -1;
+        return (!substring.isEmpty()) ? Long.parseLong(substring) : -1;
     }
 
     /**
@@ -491,7 +497,9 @@ public class StaticFileServlet extends HttpServlet {
 
     /**
      * This class represents a byte range.
+     * @deprecated use {@link HttpResponseUtils.ByteRange} instead.
      */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     protected class Range {
 
         long start;

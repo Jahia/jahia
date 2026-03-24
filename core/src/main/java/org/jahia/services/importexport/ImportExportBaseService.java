@@ -104,6 +104,7 @@ import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -1080,6 +1081,14 @@ public final class ImportExportBaseService extends JahiaService implements Impor
     }
 
     /**
+     * @deprecated use {@link #importSiteZip(IOResource, JahiaSite, Map, IOResource, IOResource, JCRSessionWrapper session)}  instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
+        importSiteZip(SpringResourceAdapter.fromSpring(file), site, infos,  SpringResourceAdapter.fromSpring(legacyMappingFilePath),  SpringResourceAdapter.fromSpring(legacyDefinitionsFilePath),  session);
+    }
+
+    /**
      * Import a full site zip into a newly created site.
      * <p/>
      * zip file can contain all kind of legacy jahia import files or jcr import format.
@@ -1095,6 +1104,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      * @throws IOException         in case of I/O errors
      */
     @SuppressWarnings("java:S2093")
+
     public void importSiteZip(IOResource file, JahiaSite site, Map<Object, Object> infos, IOResource legacyMappingFilePath, IOResource legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
@@ -2269,7 +2279,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
      *          It used to calculate the size of uncompressed files in the zip file, but this information was never really used.
      */
     @Deprecated(since = "8.2.1.0", forRemoval = true)
-    public File getFileList(IOResource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {
+    public File getFileList(Resource file, Map<String, Long> sizes, List<String> fileList, boolean forceClean) throws IOException {
         File newlyExpandedFolder = null;
         if (settingsBean.isExpandImportedFilesOnDisk()) {
             final File expandFolder = getExpandFolder(file, settingsBean.getExpandImportedFilesOnDiskPath());
@@ -2281,7 +2291,7 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 newlyExpandedFolder = expandFolder;
             }
         }
-        ZipInputStream zis = getZipInputStream(file);
+        ZipInputStream zis = getZipInputStream(SpringResourceAdapter.fromSpring(file));
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
@@ -2334,6 +2344,13 @@ public final class ImportExportBaseService extends JahiaService implements Impor
                 }
             }
         }
+    }
+    /**
+     * @deprecated use {@link #getExpandFolder(IOResource, String)} instead, this method is not used anymore and should be removed in future versions
+     */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
+    public static File getExpandFolder(Resource file, String expandImportedFilesOnDiskPath) throws IOException {
+        return getExpandFolder(SpringResourceAdapter.fromSpring(file), expandImportedFilesOnDiskPath);
     }
 
     public static File getExpandFolder(IOResource file, String expandImportedFilesOnDiskPath) throws IOException {

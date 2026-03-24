@@ -8,7 +8,9 @@ on:
       - opened
       - reopened
       - edited
-      - synchronize  
+      - synchronize
+      - labeled
+      - unlabeled
   pull_request_review:
 
 jobs:

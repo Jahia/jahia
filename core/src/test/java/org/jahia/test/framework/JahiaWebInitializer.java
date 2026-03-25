@@ -81,8 +81,11 @@ public class JahiaWebInitializer implements ApplicationContextInitializer<Generi
                 jackrabbitHome = webAppContext.getResource(jackrabbitHome)
                         .getURL().getPath();
                 File repoHome = new File(jackrabbitHome);
-                if (!repoHome.exists()) {
-                    repoHome.mkdirs();
+                // always delete the repository directory before starting the tests
+                // this ensures the live workspace nodes are always created, see https://github.com/Jahia/jahia-private/issues/4880 for details
+                FileUtils.deleteDirectory(repoHome);
+                if (!repoHome.mkdirs()) {
+                    throw new IllegalStateException("Unable to create Jackrabbit home directory directory '" + jackrabbitHome + "'");
                 }
 
                 if (resources[0] != null && ResourceUtils.isJarURL(resources[0].getURL())) {

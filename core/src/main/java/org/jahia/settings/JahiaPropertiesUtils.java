@@ -310,14 +310,24 @@ public class JahiaPropertiesUtils {
         logger.info("Added entry {} into {}", key, cfg);
     }
 
+    public static String getPropertyLine(String key, String content) {
+        final Pattern patternConfigured = Pattern.compile("^[ \\t]*" + Pattern.quote(key) + "[ \\t]*[=:][ \\t]*\\S+[ \\t]*$", Pattern.MULTILINE);
+        java.util.regex.Matcher matcher = patternConfigured.matcher(content);
+        return matcher.find() ? matcher.group() : null;
+    }
+
     public static String getPropertyLine(String key, List<String> lines) {
-        final Pattern patternConfigured = Pattern.compile("^[ \\t]*" + Pattern.quote(key) + "[ \\t]*[=:][ \\t]*\\S+$", Pattern.MULTILINE);
-        return (String) CollectionUtils.find(lines, line -> patternConfigured.matcher((String) line).matches());
+        return getPropertyLine(key, String.join("\n", lines));
+    }
+
+    public static String getCommentedPropertyLine(String key, String content) {
+        final Pattern patternConfigured = Pattern.compile("^[ \\t]*[#!]+[ \\t]*" + Pattern.quote(key) + "[ \\t]*[=:][ \\t]*\\S+[ \\t]*$", Pattern.MULTILINE);
+        java.util.regex.Matcher matcher = patternConfigured.matcher(content);
+        return matcher.find() ? matcher.group() : null;
     }
 
     public static String getCommentedPropertyLine(String key, List<String> lines) {
-        final Pattern patternConfigured = Pattern.compile("^[ \\t]*[#!]+[ \\t]*" + Pattern.quote(key) + "[ \\t]*[=:][ \\t]*\\S+$", Pattern.MULTILINE);
-        return (String) CollectionUtils.find(lines, line -> patternConfigured.matcher((String) line).matches());
+        return getCommentedPropertyLine(key, String.join("\n", lines));
     }
 
     public static void jahiaPropertiesFileNotFound() {
@@ -396,4 +406,56 @@ public class JahiaPropertiesUtils {
             EXACT_BLOCK, REGEXP_LINE
         }
     }
+
+    /**
+     * Adds a comment before a property key if not already present.
+     * Preserves the original value and handles both active and commented properties.
+     *
+     * @param propertyKey the property key to update
+     * @param comment the comment to add (without leading #)
+     */
+    public static void addCommentBeforeProperty(String propertyKey, String comment) throws IOException {
+        File cfg = detectJahiaPropertiesFile();
+        if (cfg == null) {
+            jahiaPropertiesFileNotFound();
+        }
+        addCommentBeforeProperty(propertyKey, comment, cfg);
+    }
+
+    /**
+     * Adds a comment before a property key if not already present.
+     * Preserves the original value and handles both active and commented properties.
+     *
+     * @param propertyKey the property key to update
+     * @param comment the comment to add (without leading #)
+     * @param cfg the properties file to update
+     */
+    public static void addCommentBeforeProperty(String propertyKey, String comment, File cfg) throws IOException {
+        if (cfg == null || !cfg.exists()) {
+            logger.info("[WARNING] Failed to add comment for property: {}", propertyKey);
+            return;
+        }
+
+        List<String> lines = FileUtils.readLines(cfg, JahiaPropertiesUtils.CHARSET);
+        boolean modified = false;
+        String commentLine = comment.startsWith("#") ? comment : "# " + comment;
+
+        for (int i = 0; i < lines.size(); i++) {
+            String currentLine = lines.get(i);
+            if (getPropertyLine(propertyKey, currentLine) != null || getCommentedPropertyLine(propertyKey, currentLine) != null) {
+                // Check if the comment is already present above
+                if (i == 0 || !lines.get(i - 1).trim().equals(commentLine.trim())) {
+                    lines.add(i, commentLine);
+                    modified = true;
+                    break;
+                }
+            }
+        }
+
+        if (modified) {
+            FileUtils.writeLines(cfg, JahiaPropertiesUtils.CHARSET.name(), lines);
+            logger.info("Added comment for property {} in {}", propertyKey, cfg);
+        }
+    }
+
 }

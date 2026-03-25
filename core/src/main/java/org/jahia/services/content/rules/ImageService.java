@@ -46,6 +46,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -118,7 +119,7 @@ public class ImageService {
         if (it.hasNext()) {
             return (Image) it.next();
         }
-        Image iw = imageService.getImage(imageNode.getNode());
+        Image iw = getImageService().getImage(imageNode.getNode());
         if (iw == null) {
             return null;
         }
@@ -220,7 +221,7 @@ public class ImageService {
 
         final File f = File.createTempFile("thumb", StringUtils.isNotEmpty(fileExtension) ? "." + fileExtension : null, contentTempFolder);
 
-        if (imageService.createThumb(iw, f, size, square)) {
+        if (getImageService().createThumb(iw, f, size, square)) {
             f.deleteOnExit();
             return f;
         } else {
@@ -234,7 +235,7 @@ public class ImageService {
         if (iw == null) {
             return;
         }
-        int height = imageService.getHeight(iw);
+        int height = getImageService().getHeight(iw);
         if (height == -1) {
             return;
         }
@@ -246,7 +247,7 @@ public class ImageService {
         if (iw == null) {
             return;
         }
-        int width = imageService.getWidth(iw);
+        int width = getImageService().getWidth(iw);
         if (width == -1) {
             return;
         }
@@ -272,5 +273,12 @@ public class ImageService {
             img.dispose();
             img = null;
         }
+    }
+    private JahiaImageService getImageService() {
+        JahiaImageService osgiService = BundleUtils.getOsgiService(JahiaImageService.class, null);
+        if (osgiService == null) {
+            return imageService;
+        }
+        return osgiService;
     }
 }

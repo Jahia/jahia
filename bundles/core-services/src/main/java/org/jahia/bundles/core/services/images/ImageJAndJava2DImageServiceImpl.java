@@ -323,7 +323,6 @@ public class ImageJAndJava2DImageServiceImpl extends AbstractImageService {
         }
     }
 
-    @Override
     public boolean resizeImage(Image i, File outputFile, int width, int height, ResizeType resizeType) throws IOException {
         if (i instanceof BufferImage) {
             BufferedImage dest = resizeImage(((BufferImage) i).getOriginalImage(), width, height, resizeType);

@@ -77,7 +77,7 @@ public class ImageServiceDelegator implements JahiaImageService {
 
     private static final String SERVICE_IMAGEMAGICK6 = "ImageMagickImage6Service";
     private static final String SERVICE_IMAGEMAGICK = "ImageMagickImageService";
-    private static final String SERVICE_JAVA2D = "Java2DImageService";
+    private static final String IMAGE_JIMAGE_SERVICE = "ImageJImageService";
     private static final String SERVICE_IMAGEJ_JAVA2D = "ImageJAndJava2DImageService";
 
     private JahiaImageService delegateService;
@@ -118,7 +118,9 @@ public class ImageServiceDelegator implements JahiaImageService {
             logger.info("Image service successfully switched to: {}", serviceType);
             if (!SERVICE_IMAGEMAGICK.equals(serviceType)) {
                 DeprecationUtils.onDeprecatedFeatureUsage("Image Service", "8.2.4.0", true,
-                        "Please configure imageMagick 7 for your environment, other ImageService implementations are now deprecated");
+                        String.format("Configured '%s' service is deprecated and will be removed in a future version. " +
+                                "Please update jahia.properties to configure Image magick as image service and restart Jahia. " +
+                                "ImageMagick 7+ is required.", serviceType));
             }
 
         } catch (Exception e) {
@@ -155,13 +157,13 @@ public class ImageServiceDelegator implements JahiaImageService {
             case SERVICE_IMAGEMAGICK:
             case SERVICE_IMAGEMAGICK6:
                 return new ImageMagickImageServiceImpl();
-            case SERVICE_JAVA2D:
+            case IMAGE_JIMAGE_SERVICE:
                 return new Java2DImageServiceImpl();
             case SERVICE_IMAGEJ_JAVA2D:
                 return new ImageJAndJava2DImageServiceImpl();
             default:
                 throw new IllegalArgumentException("Unknown image service type: " + serviceType +
-                        ". Valid values: " + SERVICE_IMAGEMAGICK + ", " + SERVICE_JAVA2D + ", " + SERVICE_IMAGEJ_JAVA2D);
+                        ". Valid values: " + SERVICE_IMAGEMAGICK + ", " + IMAGE_JIMAGE_SERVICE + ", " + SERVICE_IMAGEJ_JAVA2D);
         }
     }
 

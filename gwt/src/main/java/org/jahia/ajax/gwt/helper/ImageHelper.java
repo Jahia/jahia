@@ -46,6 +46,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
@@ -82,7 +83,7 @@ public class ImageHelper {
                     !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
-            Image image = imageService.getImage(node);
+            Image image = getImageService().getImage(node);
             String fileExtension = FilenameUtils.getExtension(node.getName());
             if ((fileExtension != null) && (!"".equals(fileExtension))) {
                 fileExtension += "." + fileExtension;
@@ -90,7 +91,7 @@ public class ImageHelper {
                 fileExtension = null;
             }
             File f = File.createTempFile("image", fileExtension);
-            imageService.cropImage(image, f, top, left, width, height);
+            getImageService().cropImage(image, f, top, left, width, height);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {
@@ -116,7 +117,7 @@ public class ImageHelper {
                     !forceReplace) {
                 throw new ExistingFileException(Messages.getInternalWithArguments("file.already.exists", uiLocale, target));
             }
-            Image image = imageService.getImage(node);
+            Image image = getImageService().getImage(node);
             String fileExtension = FilenameUtils.getExtension(node.getName());
             if ((fileExtension != null) && (!"".equals(fileExtension))) {
                 fileExtension += "." + fileExtension;
@@ -124,7 +125,7 @@ public class ImageHelper {
                 fileExtension = null;
             }
             File f = File.createTempFile("image", fileExtension);
-            imageService.resizeImage(image, f, width, height, ResizeType.SCALE_TO_FILL);
+            getImageService().resizeImage(image, f, width, height, ResizeType.SCALE_TO_FILL);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {
@@ -150,7 +151,7 @@ public class ImageHelper {
                     !forceReplace) {
                 throw new ExistingFileException(Messages.getInternalWithArguments("file.already.exists", uiLocale, target));
             }
-            Image image = imageService.getImage(node);
+            Image image = getImageService().getImage(node);
             String fileExtension = FilenameUtils.getExtension(node.getName());
             if ((fileExtension != null) && (!"".equals(fileExtension))) {
                 fileExtension += "." + fileExtension;
@@ -158,7 +159,7 @@ public class ImageHelper {
                 fileExtension = null;
             }
             File f = File.createTempFile("image", fileExtension);
-            imageService.rotateImage(image, f, clockwise);
+            getImageService().rotateImage(image, f, clockwise);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {
@@ -176,5 +177,11 @@ public class ImageHelper {
         }
     }
 
-
+    private JahiaImageService getImageService() {
+        JahiaImageService osgiService = BundleUtils.getOsgiService(JahiaImageService.class, null);
+        if (osgiService == null) {
+            return imageService;
+        }
+        return osgiService;
+    }
 }

@@ -90,7 +90,7 @@ public class ImageServiceDelegatorTest {
     @Test
     @Parameters({
             "ImageJAndJava2DImageService",
-            "Java2DImageService"
+            "ImageJImageService"
     })
     public void GIVEN_valid_config_WHEN_activate_THEN_service_initialized(String serviceType) throws Exception {
         // GIVEN:

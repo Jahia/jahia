@@ -43,6 +43,7 @@
 package org.jahia.bundles.core.services.images;
 
 import org.jahia.services.image.Image;
+import org.jahia.services.image.JahiaImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,12 +57,86 @@ import java.util.Hashtable;
 /**
  * Abstract base class for image service implementations providing common utility methods.
  */
-public abstract class AbstractImageService extends org.jahia.services.image.AbstractImageService {
+public abstract class AbstractImageService implements JahiaImageService {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractImageService.class);
 
     protected enum OperationType {
         RESIZE, CROP, ROTATE
+    }
+
+    public static class ResizeCoords {
+        private final int targetStartPosX;
+        private final int targetStartPosY;
+        private final int targetHeight;
+        private final int targetWidth;
+        private final int sourceStartPosX;
+        private final int sourceStartPosY;
+        private final int sourceWidth;
+        private final int sourceHeight;
+
+        public ResizeCoords(int targetStartPosX, int targetStartPosY, int targetWidth, int targetHeight,
+                            int sourceStartPosX, int sourceStartPosY, int sourceWidth, int sourceHeight) {
+            this.targetStartPosX = targetStartPosX;
+            this.targetStartPosY = targetStartPosY;
+            this.targetWidth = targetWidth;
+            this.targetHeight = targetHeight;
+            this.sourceStartPosX = sourceStartPosX;
+            this.sourceStartPosY = sourceStartPosY;
+            this.sourceWidth = sourceWidth;
+            this.sourceHeight = sourceHeight;
+        }
+
+        public int getTargetStartPosX() { return targetStartPosX; }
+        public int getTargetStartPosY() { return targetStartPosY; }
+        public int getTargetHeight() { return targetHeight; }
+        public int getTargetWidth() { return targetWidth; }
+        public int getSourceStartPosX() { return sourceStartPosX; }
+        public int getSourceStartPosY() { return sourceStartPosY; }
+        public int getSourceWidth() { return sourceWidth; }
+        public int getSourceHeight() { return sourceHeight; }
+    }
+
+    public ResizeCoords getResizeCoords(ResizeType resizeType, int sourceWidth, int sourceHeight,
+                                        int targetWidth, int targetHeight) {
+        int resultTargetStartPosX = 0;
+        int resultTargetStartPosY = 0;
+        int resultTargetWidth = targetWidth;
+        int resultTargetHeight = targetHeight;
+        int resultSourceWidth = sourceWidth;
+        int resultSourceHeight = sourceHeight;
+        int resultSourceStartPosX = 0;
+        int resultSourceStartPosY = 0;
+
+        double xScaleRatio = (double) targetWidth / sourceWidth;
+        double yScaleRatio = (double) targetHeight / sourceHeight;
+
+        if (ResizeType.SCALE_TO_FILL.equals(resizeType)) {
+            // nothing to do in this case, the defaults are fine
+        } else if (ResizeType.ADJUST_SIZE.equals(resizeType)) {
+            if (sourceWidth > sourceHeight) {
+                resultTargetHeight = sourceHeight * targetWidth / sourceWidth;
+            } else {
+                resultTargetWidth = sourceWidth * targetHeight / sourceHeight;
+            }
+        } else if (ResizeType.ASPECT_FIT.equals(resizeType)) {
+            double scaleRatio = sourceHeight * xScaleRatio > targetHeight ? yScaleRatio : xScaleRatio;
+            resultTargetWidth = (int) (sourceWidth * scaleRatio);
+            resultTargetHeight = (int) (sourceHeight * scaleRatio);
+            resultTargetStartPosX = (targetWidth - resultTargetWidth) / 2;
+            resultTargetStartPosY = (targetHeight - resultTargetHeight) / 2;
+        } else if (ResizeType.ASPECT_FILL.equals(resizeType)) {
+            double scaleRatio = sourceHeight * xScaleRatio < targetHeight ? yScaleRatio : xScaleRatio;
+            resultSourceWidth = (int) (targetWidth / scaleRatio);
+            resultSourceHeight = (int) (targetHeight / scaleRatio);
+            resultSourceStartPosX = (sourceWidth - resultSourceWidth) / 2;
+            resultSourceStartPosY = (sourceHeight - resultSourceHeight) / 2;
+        }
+
+        return new ResizeCoords(resultTargetStartPosX, resultTargetStartPosY,
+                resultTargetWidth, resultTargetHeight,
+                resultSourceStartPosX, resultSourceStartPosY,
+                resultSourceWidth, resultSourceHeight);
     }
 
     @Override

@@ -46,7 +46,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Simple image type to represent a buffered image
- * @deprecated since 8.2.4.0 - Use {@link org.jahia.services.image.JahiaImageService} OSGi service instead (org.jahia.bundles.imageservice)
+ * @deprecated since 8.2.4.0 - Use {@link org.jahia.services.image.ImageMagickImage} instead
  */
 @Deprecated(since = "8.2.4.0", forRemoval = true)
 public class BufferImage implements Image {

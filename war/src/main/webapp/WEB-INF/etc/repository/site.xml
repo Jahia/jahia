@@ -7,6 +7,23 @@
     <files jcr:primaryType="jnt:folder">
     </files>
 
+    <users jcr:primaryType="jnt:usersFolder">
+        <j:acl j:inherit="false"
+               jcr:primaryType="jnt:acl">
+            <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
+                           jcr:primaryType="jnt:ace"/>
+            <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="reader" j:aceType="GRANT"
+                           jcr:primaryType="jnt:ace"/>
+            <GRANT_g_site-administrators j:aceType="GRANT"
+                                         j:principal="g:site-administrators"
+                                         j:protected="false"
+                                         j:roles="site-administrator"
+                                         jcr:primaryType="jnt:ace"/>
+            <GRANT_g_site-privileged j:protected="false" j:principal="g:site-privileged" j:roles="privileged" j:aceType="GRANT"
+                                     jcr:primaryType="jnt:ace"/>
+        </j:acl>
+    </users>
+
     <groups jcr:primaryType="jnt:groupsFolder">
         <site-users jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
@@ -17,6 +34,20 @@
         <site-privileged jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
         </site-privileged>
+        <j:acl j:inherit="false"
+               jcr:primaryType="jnt:acl">
+            <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
+                           jcr:primaryType="jnt:ace"/>
+            <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="reader" j:aceType="GRANT"
+                           jcr:primaryType="jnt:ace"/>
+            <GRANT_g_site-administrators j:aceType="GRANT"
+                                         j:principal="g:site-administrators"
+                                         j:protected="false"
+                                         j:roles="site-administrator"
+                                         jcr:primaryType="jnt:ace"/>
+            <GRANT_g_site-privileged j:protected="false" j:principal="g:site-privileged" j:roles="privileged" j:aceType="GRANT"
+                                     jcr:primaryType="jnt:ace"/>
+        </j:acl>
     </groups>
 
     <contents jcr:primaryType="jnt:contentFolder"/>

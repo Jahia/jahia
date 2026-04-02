@@ -12,7 +12,8 @@ This checklist is here to ensure all the stakeholders have reviewed it before it
 <h2 id="tests-checklist">Checklist</h2>
 
 - [ ] The security page has been created on the Academy
-- [ ] The security page content has been reviewed and tested by the Product team
+- [ ] The security page content has been reviewed by the Product team
+- [ ] The security page content has been tested by the Product team
 - [ ] The security page has been reviewed by the Support team
 - [ ] The security page has been reviewed by the Cloud team
 - [ ] If available, the suggested mitigation has been implemented by the Cloud team

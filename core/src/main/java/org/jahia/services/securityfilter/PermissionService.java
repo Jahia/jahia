@@ -98,7 +98,7 @@ public interface PermissionService {
      * @return <code>true</code> if the current user is allowed to access the api; <code>false</code> otherwise
      * @throws RepositoryException in case of an error during permission check
      */
-    public boolean hasPermission(Map<String, Object> query);
+    boolean hasPermission(Map<String, Object> query);
 
     /**
      * Checks if the current user has access to the specified API key.
@@ -107,7 +107,7 @@ public interface PermissionService {
      * @return <code>true</code> if the current user is allowed to access the api; <code>false</code> otherwise
      * @throws RepositoryException in case of an error during permission check
      */
-    public boolean hasPermission(String api) throws RepositoryException;
+    boolean hasPermission(String api) throws RepositoryException;
 
     /**
      * Checks if the current user has access to the specified node using the provided API key (used in configuration rules).
@@ -117,5 +117,5 @@ public interface PermissionService {
      * @return <code>true</code> if the current user is allowed to access the api; <code>false</code> otherwise
      * @throws RepositoryException in case of an error during permission check
      */
-    public boolean hasPermission(String api, Node node) throws RepositoryException;
+    boolean hasPermission(String api, Node node) throws RepositoryException;
 }

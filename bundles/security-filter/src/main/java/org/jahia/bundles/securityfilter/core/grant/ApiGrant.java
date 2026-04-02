@@ -49,18 +49,47 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Check pattern on the requested API
  */
 public class ApiGrant implements Grant {
+    /**
+     * Set of recognized keys for the {@code api} configuration block.
+     */
+    public static final Set<String> KNOWN_KEYS = Set.of("include", "exclude");
+
     private Set<String> apis;
     private Set<String> excludes;
 
-    public static Grant build(PropertiesValues grantValues) {
+    /**
+     * Builds an {@link ApiGrant} from the given grant configuration values.
+     *
+     * <p>Supports two forms for the {@code api} key:
+     * <ul>
+     *   <li><b>Scalar</b> — {@code api: "graphql"}: matches the listed API name(s) with no exclusions.</li>
+     *   <li><b>Block</b> — {@code api: {include: [...], exclude: [...]}}: matches APIs listed under
+     *       {@code include} while excluding those listed under {@code exclude}.
+     *       Recognized keys are defined in {@link #KNOWN_KEYS}.</li>
+     * </ul>
+     *
+     * @param grantValues the parsed configuration values for a single grant entry
+     * @return an {@link ApiGrant} if an {@code api} key is present, or {@code null} if this grant
+     * entry does not contain an {@code api} definition
+     * @throws IllegalArgumentException if the {@code api} block contains keys not in {@link #KNOWN_KEYS}
+     */
+    public static Grant build(PropertiesValues grantValues) throws IllegalArgumentException {
         PropertiesValues subValues = grantValues.getValues("api");
 
         if (!subValues.getKeys().isEmpty()) {
+            Set<String> unknownKeys = subValues.getKeys().stream()
+                    .filter(k -> !KNOWN_KEYS.contains(k))
+                    .collect(Collectors.toSet());
+            if (!unknownKeys.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Invalid key(s) in 'api' block: " + unknownKeys + ". Valid keys are: " + KNOWN_KEYS);
+            }
             return new ApiGrant(ParserHelper.buildSet(subValues, "include"), ParserHelper.buildSet(subValues, "exclude"));
         } else if (grantValues.getKeys().contains("api")) {
             return new ApiGrant(ParserHelper.buildSet(grantValues, "api"),Collections.emptySet());

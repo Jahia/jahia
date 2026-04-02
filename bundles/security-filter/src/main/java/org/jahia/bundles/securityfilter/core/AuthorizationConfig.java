@@ -105,15 +105,19 @@ public class AuthorizationConfig implements ManagedServiceFactory {
             Set<String> keys = values.getKeys();
 
             for (String key : keys) {
-                PropertiesValues scopeValues = values.getValues(key);
-                String description = scopeValues.getProperty("description");
-                Collection<Constraint> constraints = getList(scopeValues.getList("constraints"), constraintBuilders);
-                Collection<AutoApply> apply = getList(scopeValues.getList("auto_apply"), applyBuilders);
-                Collection<Grant> grants = getList(scopeValues.getList("grants"), Collections.singleton(this::buildCompoundGrant));
-                PropertiesValues metadataValues = scopeValues.getValues("metadata");
-                Map<String, String> metadata = metadataValues.getKeys().stream().collect(Collectors.toMap(s -> s, metadataValues::getProperty));
-                ScopeDefinitionImpl definition = new ScopeDefinitionImpl(pid, key, description, apply, constraints, grants, metadata);
-                scopeDefinitions.add(definition);
+                try {
+                    PropertiesValues scopeValues = values.getValues(key);
+                    String description = scopeValues.getProperty("description");
+                    Collection<Constraint> constraints = getList(scopeValues.getList("constraints"), constraintBuilders);
+                    Collection<AutoApply> apply = getList(scopeValues.getList("auto_apply"), applyBuilders);
+                    Collection<Grant> grants = getList(scopeValues.getList("grants"), Collections.singleton(this::buildCompoundGrant));
+                    PropertiesValues metadataValues = scopeValues.getValues("metadata");
+                    Map<String, String> metadata = metadataValues.getKeys().stream().collect(Collectors.toMap(s -> s, metadataValues::getProperty));
+                    ScopeDefinitionImpl definition = new ScopeDefinitionImpl(pid, key, description, apply, constraints, grants, metadata);
+                    scopeDefinitions.add(definition);
+                } catch (IllegalArgumentException e) {
+                    logger.error("Scope '{}' will NOT be registered due to an invalid configuration", key, e);
+                }
             }
         }
 

@@ -61,6 +61,12 @@ import java.util.stream.Collectors;
  * Check conditions on the context node
  */
 public class NodeGrant implements Grant {
+    /**
+     * Set of recognized keys for the {@code node} configuration block.
+     */
+    public static final Set<String> KNOWN_KEYS = Set.of("nodeType", "excludedNodeType", "pathPattern", "excludedPathPattern", "workspace",
+            "withPermission");
+
     private Set<String> nodeTypes;
     private Set<String> excludesNodeTypes;
     private Set<Pattern> pathPatterns;
@@ -77,9 +83,32 @@ public class NodeGrant implements Grant {
         this.withPermission = withPermission;
     }
 
-    public static Grant build(PropertiesValues grantValues) {
+    /**
+     * Builds a {@link NodeGrant} from the given grant configuration values.
+     *
+     * <p>Supports two forms for the {@code node} key:
+     * <ul>
+     *   <li><b>Block</b> — {@code node: {pathPattern: ..., nodeType: ..., ...}}: matches nodes
+     *       satisfying the provided criteria. Recognized keys are defined in {@link #KNOWN_KEYS}</li>
+     *   <li><b>Scalar {@code none}</b> — {@code node: none}: matches only API calls that do
+     *       <em>not</em> return a node (excludes all paths).</li>
+     * </ul>
+     *
+     * @param grantValues the parsed configuration values for a single grant entry
+     * @return a {@link NodeGrant} if a {@code node} key is present, or {@code null} if this grant
+     * entry does not contain a {@code node} definition
+     * @throws IllegalArgumentException if the {@code node} block contains keys not in {@link #KNOWN_KEYS}
+     */
+    public static Grant build(PropertiesValues grantValues) throws IllegalArgumentException {
         PropertiesValues nodeValues = grantValues.getValues("node");
         if (!nodeValues.getKeys().isEmpty()) {
+            Set<String> unknownKeys = nodeValues.getKeys().stream()
+                    .filter(k -> !KNOWN_KEYS.contains(k))
+                    .collect(Collectors.toSet());
+            if (!unknownKeys.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Invalid key(s) in 'node' block: " + unknownKeys + ". Valid keys are: " + KNOWN_KEYS);
+            }
             return new NodeGrant(ParserHelper.buildSet(nodeValues, "nodeType"),
                     ParserHelper.buildSet(nodeValues, "excludedNodeType"),
                     ParserHelper.buildSet(nodeValues, "pathPattern").stream().map(Pattern::compile).collect(Collectors.toSet()),

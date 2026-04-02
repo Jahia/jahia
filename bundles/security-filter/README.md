@@ -1,7 +1,6 @@
 # API Security service and filter
 
-This bundle protects specific API (graphql/rest/views, and others) from unauthorized usage, potential XSS/CSRF attacks
-and provide support for CORS requests.
+This bundle protects specific API (graphql/rest/views, and others) from unauthorized usage, potential XSS/CSRF attacks and provides support for CORS requests.
 
 It prevents API from being called from anywhere, first in a generic way through a global CORS filter, then per API configuration.
 
@@ -83,6 +82,8 @@ You can use one these conditions, or both of them in the same grant :
   This grant will apply to all graphql API calls, except the ones on GqlAdmin and JcrNode fields.
   Access to excluded API can be granted by other scopes or grant entries.
 
+  > **Warning:** if the `api` block contains any key other than `include` or `exclude`, the scope will **not** be registered and an error will be logged.
+
 - `node` : Matches the API calls related to a node. You can specify `node: none` to only match API calls that do *not* return a node.
   To match some nodes, you can use the following sub entries :
     - `pathPattern` / `excludedPathPattern` : Regular expressions that will be tested on the node path.
@@ -97,7 +98,9 @@ You can use one these conditions, or both of them in the same grant :
              excludedPathPattern: /sites/[^/]+/users(/.*)?
     ```
 
-You can combining multiple conditions in one grant :
+  > **Warning:** if the `node` block contains any key other than `pathPattern`, `excludedPathPattern`, `workspace`, `nodeType`, `excludedNodeType` or `withPermission`, the scope will **not** be registered and an error will be logged.
+
+You can combine multiple conditions in one grant :
 
 ```yaml
    grants:
@@ -159,11 +162,11 @@ The scope will be available only to users who fulfill the constraints. It will n
 
 The user can choose a predefined security profile by setting a value in `security.profile`, in `org.jahia.bundles.api.security.cfg` file. These profiles can be found [here](src/main/resources/META-INF/configuration-profiles).
 
-- "[default](src/main/resources/META-INF/configuration-profiles/profiles-default.yml)" profile is recommended one. It will not allow any API call from external origin, and from non-privileged users.
+- "[default](src/main/resources/META-INF/configuration-profiles/profiles-default.yml)" profile is the recommended one. It will not allow any API call from external origin, and from non-privileged users.
 - "[compat](src/main/resources/META-INF/configuration-profiles/profiles-compat.yml)" profile (**DEPRECATED**) is more open and is compatible with the previous security-filter implementation. Most graphql/rest calls are allowed for any user
 - "[open](src/main/resources/META-INF/configuration-profiles/profiles-open.yml)" profile allows every call.
 
-It's also possible to not use any profile (everything will be denied by default) - you will have to fully provide your own configuration. Without any configuration Jahia GUI will not be work.
+It's also possible to not use any profile (everything will be denied by default) - you will have to fully provide your own configuration. Without any configuration, Jahia GUI will not work.
 
 ### Legacy mode and migration report
 
@@ -182,8 +185,8 @@ Reporting can be enabled when running in standard mode (`security.legacyMode=fal
 
 In order to understand why a call is granted or not, you can set the `org.jahia.bundles.securityfilter.core` package (or `org.jahia.bundles.securityfilter.legacy`, if using legacy mode) to `DEBUG`.
 This will enable log for every permission check, with the API that is being checked and the result, and the grant that matches, if any. 
-If no grant match, the list of enabled scopes will give you the information on which grants were unsuccesfully checked. 
-Here an example of a graphql execution once the logger is enabled:
+If no grant matches, the list of enabled scopes will give you the information on which grants were unsuccessfully checked. 
+Here is an example of a graphql execution once the logger is enabled:
 ```
 2022-03-14 14:14:53,323: DEBUG [PermissionServiceImpl] - ============ Start query check {node=null, api=graphql.GenericJCRNode.path} ============
 2022-03-14 14:14:53,323: DEBUG [ScopeDefinitionImpl] - Grant apis: [view.json.treeRootItem], excludes: [],  - nodeTypes: [jnt:virtualsite] - pathPatterns: [[/sites/.*]]: DENIED
@@ -241,7 +244,7 @@ A module can package a configuration file in META-INF/configurations folder. Sin
 
 ### Extending existing scope
 
-It's possible to extends an existing scope in another configuration file, in order to add grants or auto-apply rules.
+It's possible to extend an existing scope in another configuration file, in order to add grants or auto-apply rules.
 You just need to redeclare the scope, and the list of grants/rules you want to add :
 
 ```yaml
@@ -310,7 +313,7 @@ Finally, the application will add the token to its `Authentication: Bearer` head
 
 ### Graphql
 
-Graphql provider use the security-filter service to check every field access.
+Graphql provider uses the security-filter service to check every field access.
 The API name is built from the graphql type and the requested field : `graphql.<gql-type>.<gql-field>`.
 
 When a graphql field returns a JCR node or a list of JCR nodes, it filters the result based on API authorization on these nodes.
@@ -345,12 +348,12 @@ In order to check an API call, you should call the `hasPermission` method, with 
 The query map contains information that describes your API call, and will be tested against the different `grants` :
 
 - It must at least contain the `api` entry, with a string describing it in a dot-separated fashion : `my-api.type.sub-type`. It is tested by the `ApiGrant` class.
-- It can optionally contains a `node` entry, with a `JCRNodeWrapper` value. This one is tested by the `NodeGrant` class.
+- It can optionally contain a `node` entry, with a `JCRNodeWrapper` value. This one is tested by the `NodeGrant` class.
 
 Other `Grant` implementations may check other entries.
 
 ## CORS Filter
 
-Security-filter module embeds a global CORS filter. It is based on tomcat implementation, and can use all configuration settings described here :
+Security-filter module embeds a global CORS filter. It is based on tomcat implementation and can use all configuration settings described here:
 [CORS Filter](https://tomcat.apache.org/tomcat-9.0-doc/config/filter.html#CORS_Filter).
 These settings must be set in the `org.jahia.bundles.api.security.cfg` file. 

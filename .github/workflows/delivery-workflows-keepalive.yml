@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Re-enable workflows
-        uses: Fgerthoffert/actions-workflow-keepalive@v1.0.1
+        uses: Fgerthoffert/actions-workflow-keepalive@54742e85959a9283476d9afa67fd138508d2cc38 # v1.0.1
         with:
           token: ${{ secrets.GH_ISSUES_PRS_CHORES }}        
           org: Jahia

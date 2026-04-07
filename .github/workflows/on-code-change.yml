@@ -31,19 +31,19 @@ jobs:
       current_branch: ${{ steps.tags.outputs.current_branch }}
     steps:
       - name: Set up JDK 17
-        uses: actions/setup-java@v4.6.0
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           java-version: 17
           distribution: temurin
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Cache local Maven repository
-        uses: actions/cache@v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: jahia-default-maven-m2-cache
       - name: Save/Restore build artifacts from cache
-        uses: actions/cache@v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           key: run-${{ github.run_id }}
           path: |
@@ -53,11 +53,11 @@ jobs:
         run: |
           echo "NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}" >> $GITHUB_ENV
           echo "NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}" >> $GITHUB_ENV
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           registry: ghcr.io
           username: ${{ secrets.GH_PACKAGES_USERNAME }}
@@ -67,7 +67,7 @@ jobs:
         run: mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > jahia.version
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v8
+        uses: tj-actions/branch-names@5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2
       - name: Determine tag
         shell: bash
         run: |
@@ -114,7 +114,7 @@ jobs:
             -Pgwt-development \
             -Dbamboo.buildNumber=${{ github.run_id }}
       - name: Generate Docker shorthand tags
-        uses: fgerthoffert/actions-docker-shorthand-tags@main
+        uses: fgerthoffert/actions-docker-shorthand-tags@08a8f24b0e04860e4f473a1077e8924234b98fd0 # v1.1.1
         if: ${{ github.event_name != 'pull_request' }}
         with:
           src_registry: github
@@ -164,13 +164,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up JDK 11
-        uses: actions/setup-java@v4.6.0
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           java-version: 11
           distribution: temurin
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Cache local Maven repository
-        uses: actions/cache@v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -189,7 +189,7 @@ jobs:
       - build
       - unit-tests-jdk11
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: jahia/jahia-modules-action/static-analysis@v2
         with:
           node_version: 20
@@ -205,26 +205,26 @@ jobs:
       - build
       - unit-tests-jdk11
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/login-action@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           registry: ghcr.io
           username: ${{ secrets.GH_PACKAGES_USERNAME }}
           password: ${{ secrets.GH_PACKAGES_TOKEN }}
       - name: Scan image
         id: scan-build-sbom
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2 # v7.4.0
         with:
           image: ghcr.io/jahia/jahia-core-dev:${{needs.build.outputs.image_tag}}
           fail-build: false
       - name: Print content from the SARIF file
         shell: bash
         run: cat ${{ steps.scan-build-sbom.outputs.sarif }} | jq -r '.runs[0].tool.driver.rules[].shortDescription.text'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: SARIF
           retention-days: 5
@@ -238,16 +238,16 @@ jobs:
       - unit-tests-jdk11
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v8
+        uses: tj-actions/branch-names@5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2
       - name: Save/Restore build artifacts from cache
-        uses: actions/cache@v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           key: run-${{ github.run_id }}
           path: |
@@ -296,7 +296,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: jahia/jahia-modules-action/dependencies-check-java@v2
         with:
           github_token: ${{ secrets.GH_API_TOKEN }}

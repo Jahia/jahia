@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Delete the previous version of the cache
-      - uses: snnaplab/delete-branch-cache-action@v1
+      - uses: snnaplab/delete-branch-cache-action@20f7992a7b8b51aa719420d11b32c9d34a5eb362 # v1.0.0
         with:
           key: jahia-default-maven-m2-cache
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Generate cache with restore key jahia-default-maven-m2-cache
-        uses: actions/cache@v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ~/.m2/repository
           key: jahia-default-maven-m2-cache

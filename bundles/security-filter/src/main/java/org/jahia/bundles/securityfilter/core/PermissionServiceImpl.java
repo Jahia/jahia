@@ -52,7 +52,6 @@ import org.jahia.services.securityfilter.ScopeDefinition;
 import org.jahia.utils.DeprecationUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -70,21 +69,14 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component(
-        service = {PermissionService.class, ManagedService.class},
-        immediate = true,
-        property = {
-                Constants.SERVICE_PID + "=org.jahia.bundles.api.security",
-                Constants.SERVICE_DESCRIPTION + "=Security filter: core service",
-                Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME
-        }
-)
+@Component(service = { PermissionService.class, ManagedService.class }, immediate = true, property = {
+        Constants.SERVICE_PID + "=org.jahia.bundles.api.security", Constants.SERVICE_DESCRIPTION + "=Security filter: core service",
+        Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME })
 public class PermissionServiceImpl implements PermissionService, ManagedService {
     private static final Logger logger = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
@@ -129,51 +121,71 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         return Collections.unmodifiableSet(new HashSet<>(authorizationConfig.getScopes()));
     }
 
+    static final String PROFILE_OFF = "off";
+    static final String PROFILE_DEFAULT = "default";
+    static final String AUTHORIZATION_DEFAULT_FILE = "org.jahia.bundles.api.authorization-default.yml";
+    static final String MANAGED_FILE_HEADER =
+            "# This file is managed by Jahia (security-filter bundle) and should not be modified directly.\n"
+                    + "# To change the active security profile, update the 'security.profile' property in\n"
+                    + "# org.jahia.bundles.api.security.cfg (karaf/etc/).\n";
+
     @Override
-    public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
+    public void updated(Dictionary<String, ?> properties) {
         Map<String, String> m = ConfigUtil.getMap(properties);
         String profile = m.get("security.profile");
-        if (profile != null) {
-            if ("compat".equals(profile)) {
-                DeprecationUtils.onDeprecatedFeatureUsage("Security 'compat' profile", "8.2.4.0", true,
-                        "The 'compat' ('compatibility') is strongly discouraged, please use 'default' instead.");
-            }
-            deployProfileConfig(profile);
+        if (profile == null) {
+            // fallback to 'default' if not specified
+            logger.warn("No security.profile property found, falling back to '{}' profile", PROFILE_DEFAULT);
+            profile = PROFILE_DEFAULT;
+        }
+        if ("compat".equals(profile)) {
+            DeprecationUtils.onDeprecatedFeatureUsage("Security 'compat' profile", "8.2.4.0", true,
+                    "The 'compat' ('compatibility') is strongly discouraged, please use 'default' instead.");
+        }
+        if (PROFILE_OFF.equals(profile)) {
+            disableProfile();
         } else {
-            removeProfile();
+            deployProfileConfig(profile);
         }
         legacyMode = Boolean.parseBoolean(m.get("security.legacyMode"));
         migrationReporting = Boolean.parseBoolean(m.get("security.migrationReporting"));
     }
 
     private void deployProfileConfig(String profile) {
-        URL url = context.getBundle().getResource("META-INF/configuration-profiles/profile-" + profile + "." + "yml");
+        URL url = context.getBundle().getResource("META-INF/configuration-profiles/profile-" + profile + ".yml");
         if (url != null) {
-            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.bundles.api.authorization-default." + "yml");
+            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", AUTHORIZATION_DEFAULT_FILE);
             try (InputStream input = url.openStream()) {
                 List<String> lines = IOUtils.readLines(input, StandardCharsets.UTF_8);
-                lines.add(0, "# Do not edit - Configuration file provided by module, any change will be lost");
+                lines.add(0, MANAGED_FILE_HEADER);
                 try (Writer w = new FileWriter(path.toFile())) {
                     IOUtils.writeLines(lines, null, w);
                 }
-                logger.info("Copied configuration file of module {} into {}", url, path);
+                logger.info("Deployed security profile '{}' into {}", profile, path);
             } catch (IOException e) {
-                logger.error("unable to copy configuration", e);
+                logger.error("Unable to deploy security profile '{}'", profile, e);
             }
         } else {
-            logger.error("Invalid security-filter profile : {}", profile);
-            removeProfile();
+            logger.error("Invalid security-filter profile: '{}'. Falling back to '{}' profile.", profile, PROFILE_DEFAULT);
+            if (!PROFILE_DEFAULT.equals(profile)) {
+                deployProfileConfig(PROFILE_DEFAULT);
+            }
         }
     }
 
-    private void removeProfile() {
-        try {
-            Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", "org.jahia.bundles.api.authorization-default.yml");
-            if (Files.exists(path)) {
-                Files.delete(path);
-            }
+    private void disableProfile() {
+        logger.warn(
+                "Security profile is set to '{}': no Jahia-provided security profile is active, the file {} will be emptied. Make sure you have provided authorization rules via other supported configuration mechanisms.",
+                PROFILE_OFF, AUTHORIZATION_DEFAULT_FILE);
+        Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", AUTHORIZATION_DEFAULT_FILE);
+        try (Writer w = new FileWriter(path.toFile())) {
+            w.write(MANAGED_FILE_HEADER);
+            w.write("# security.profile=off - No Jahia built-in profile is active.\n");
+            w.write("# Provide your own authorization configuration via other supported Jahia configuration mechanisms.\n");
+            w.write("{}\n"); // required to get a valid empty YAML file
+            logger.info("Emptied security authorization config at {} (profile=off)", path);
         } catch (IOException e) {
-            logger.error("unable to remove configuration", e);
+            logger.error("Unable to write disabled-profile placeholder to {}", path, e);
         }
     }
 
@@ -181,18 +193,13 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         if (currentScopesLocal.get() == null) {
             currentScopesLocal.set(new HashSet<>());
         }
-        currentScopesLocal.get().addAll(authorizationConfig.getScopes().stream()
-                .filter(scope -> scopes.contains(scope.getScopeName()))
-                .filter(scope -> scope.isValid(request))
-                .collect(Collectors.toSet()));
+        currentScopesLocal.get().addAll(authorizationConfig.getScopes().stream().filter(scope -> scopes.contains(scope.getScopeName()))
+                .filter(scope -> scope.isValid(request)).collect(Collectors.toSet()));
     }
 
     public void initScopes(HttpServletRequest request) {
-        Set<String> scopeNames = authorizationConfig.getScopes().stream()
-                .filter(scope -> scope.shouldAutoApply(request))
-                .filter(scope -> scope.isValid(request))
-                .map(ScopeDefinitionImpl::getScopeName)
-                .collect(Collectors.toSet());
+        Set<String> scopeNames = authorizationConfig.getScopes().stream().filter(scope -> scope.shouldAutoApply(request))
+                .filter(scope -> scope.isValid(request)).map(ScopeDefinitionImpl::getScopeName).collect(Collectors.toSet());
         logger.debug("Auto apply following scopes : {}", scopeNames);
         addScopes(scopeNames, request);
     }
@@ -259,7 +266,9 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         }
 
         if (migrationReporting && (hasLegacyPermission != hasPermission) && logger.isWarnEnabled()) {
-            logger.warn("Permission check for {} : legacy mode is {}, standard mode is {}. Active scopes are {}", query, debugResult(hasLegacyPermission), debugResult(hasPermission), currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.toList()));
+            logger.warn("Permission check for {} : legacy mode is {}, standard mode is {}. Active scopes are {}", query,
+                    debugResult(hasLegacyPermission), debugResult(hasPermission),
+                    currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.toList()));
         }
         if (logger.isTraceEnabled()) {
             logger.trace("============ End query check {} ============", query);
@@ -278,7 +287,8 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
 
         for (ScopeDefinitionImpl scope : authorizationConfig.getScopes()) {
             logger.trace("== Check Scope : [{}]", scope.getScopeName());
-            boolean sameScope = currentScopes.stream().anyMatch(scopeDefinition -> scopeDefinition.getScopeName().equals(scope.getScopeName()));
+            boolean sameScope = currentScopes.stream()
+                    .anyMatch(scopeDefinition -> scopeDefinition.getScopeName().equals(scope.getScopeName()));
             if (sameScope && scope.isGrantAccess(query)) {
                 if (logger.isTraceEnabled()) {
                     logger.trace("=> Scope [{}] : GRANTED", scope.getScopeName());
@@ -287,7 +297,8 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
             }
             if (logger.isTraceEnabled()) {
                 if (!currentScopes.contains(scope)) {
-                    logger.trace("Scope not in current scopes [{}]", currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.joining(",")));
+                    logger.trace("Scope not in current scopes [{}]",
+                            currentScopes.stream().map(ScopeDefinition::getScopeName).collect(Collectors.joining(",")));
                 }
                 logger.trace("=> Scope [{}] : DENIED", scope.getScopeName());
             }

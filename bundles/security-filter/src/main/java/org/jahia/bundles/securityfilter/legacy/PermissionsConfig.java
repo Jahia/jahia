@@ -45,15 +45,13 @@ package org.jahia.bundles.securityfilter.legacy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.bundles.securityfilter.jwt.JWTFilter;
-import org.jahia.bundles.securityfilter.jwt.TokenVerificationResult;
+import org.jahia.bundles.securityfilter.JWTService;
 import org.jahia.bundles.securityfilter.legacy.Permission.AccessType;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.*;
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ManagedServiceFactory;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +78,9 @@ import java.util.regex.Pattern;
 public class PermissionsConfig implements ManagedServiceFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(PermissionsConfig.class);
+
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    private volatile JWTService jwtService;
 
     @Activate
     public void activate() {
@@ -170,35 +171,6 @@ public class PermissionsConfig implements ManagedServiceFactory {
     private static boolean workspaceMatches(Node node, Permission permission) throws RepositoryException {
         return permission.getWorkspaces().isEmpty() || node == null
                 || permission.getWorkspaces().contains(node.getSession().getWorkspace().getName());
-    }
-
-    private static boolean tokenMatches(Set<String> scopes) {
-        TokenVerificationResult verificationResult = JWTFilter.getJWTTokenVerificationStatus();
-
-        if (scopes.isEmpty()) {
-            return true;
-        }
-
-//        if (!permission.getScopes().isEmpty() && verificationResult.getVerificationStatusCode() == TokenVerificationResult.VerificationStatus.NOT_FOUND) {
-//            return true;
-//        }
-
-        //Failed to verify token signature
-        if (verificationResult.getVerificationStatusCode() == TokenVerificationResult.VerificationStatus.REJECTED) {
-            return false;
-        }
-
-        //Token contains required scope, allow access
-        if (verificationResult.getToken() != null) {
-            List<String> tokenScopes = verificationResult.getToken().getClaim("scopes").asList(String.class);
-            for (String scope : scopes) {
-                if (tokenScopes.contains(scope)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private static boolean permissionMatches(String permission, JCRNodeWrapper node) {
@@ -298,13 +270,38 @@ public class PermissionsConfig implements ManagedServiceFactory {
         logger.info("Security configuration reloaded");
     }
 
+    /**
+     * Checks whether access is granted for a given API on a specific JCR node.
+     * <p>
+     * Evaluates permissions in priority order (lowest to highest) and applies the first matching rule.
+     * A permission matches when all configured criteria are met (workspace, API, path, node type, scopes, permissions).
+     * <p>
+     * Access is determined by the matched permission's access type:
+     * <ul>
+     *   <li>{@code denied}: Access is denied</li>
+     *   <li>{@code restricted}: Access granted only if user has the restricted access permission</li>
+     *   <li>{@code granted}: Access granted when all required conditions are met</li>
+     * </ul>
+     * If no permission matches, access is denied by default.
+     *
+     * @param apiToCheck the API identifier to check (e.g., "graphql.node.properties")
+     * @param jcrNode the target JCR node, or {@code null} to use the workspace root
+     * @return {@code true} if access is granted, {@code false} otherwise
+     * @throws RepositoryException if an error occurs accessing the JCR repository
+     * @throws IllegalStateException if the JWT service is unavailable
+     */
     public boolean hasPermission(String apiToCheck, JCRNodeWrapper jcrNode) throws RepositoryException {
+
+        if (jwtService == null) {
+            throw new IllegalStateException("Invalid Configuration: A JWT service implementation is mandatory for legacy/migration modes. This service is now provided by the 'security-filter-tool' module.");
+        }
+
         for (Permission permission : permissions) {
             JCRNodeWrapper targetNode = jcrNode != null ? jcrNode : getDefaultTargetNode();
 
             if (!workspaceMatches(targetNode, permission) || !apiMatches(apiToCheck, permission)
                     || !pathMatches(targetNode, permission) || !nodeTypeMatches(targetNode, permission)
-                    || !tokenMatches(permission.getScopes()) || !permissionMatches(permission.getPermission(), targetNode)) {
+                    || jwtService.tokenMatches(permission.getScopes()) || !permissionMatches(permission.getPermission(), targetNode)) {
                 continue;
             }
 
@@ -314,7 +311,7 @@ public class PermissionsConfig implements ManagedServiceFactory {
                 return false;
             } else if (!permissionMatches(permission.getRequiredPermission(), targetNode)) {
                 return false;
-            } else if (!tokenMatches(permission.getRequiredScopes())) {
+            } else if (!jwtService.tokenMatches(permission.getRequiredScopes())) {
                 return false;
             }
             logger.debug("Permission {} on {} granted by {}", apiToCheck, jcrNode, permission);

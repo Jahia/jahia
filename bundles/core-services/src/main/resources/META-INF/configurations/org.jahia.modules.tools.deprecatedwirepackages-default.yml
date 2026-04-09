@@ -16,3 +16,5 @@ providers:
     - "com\\.jahia\\.ajax(\\..*)?"
   org.eclipse.gemini.blueprint.core:
     - "org\\.eclipse\\.gemini(\\..*)?"
+  org.ahia.bundles.securityfilter:
+    - "com\\.auth0\\.jwt(\\..*)?"

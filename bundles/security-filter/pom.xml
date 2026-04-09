@@ -64,7 +64,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.jahia.bundles.securityfilter,com.auth0.jwt.interfaces</Export-Package>
+                        <Export-Package>org.jahia.bundles.securityfilter,com.auth0.jwt.exceptions, com.auth0.jwt.interfaces,com.auth0.jwt.algorithms,com.auth0.jwt</Export-Package>
                         <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
                         <_dsannotations>org.jahia.bundles.securityfilter.*</_dsannotations>
                     </instructions>

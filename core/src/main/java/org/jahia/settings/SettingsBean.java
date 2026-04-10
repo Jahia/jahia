@@ -153,7 +153,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean considerPreferredLanguageAfterLogin;
     private boolean considerDefaultJVMLocale;
     private boolean permanentMoveForVanityURL = true;
-    private boolean dumpErrorsToFiles = true;
+    private boolean dumpErrorsToFiles = false;
     private int fileDumpMaxRegroupingOfPreviousException = 500;
     private boolean useJstackForThreadDumps;
     private boolean urlRewriteRemoveCmsPrefix;
@@ -423,7 +423,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             permanentMoveForVanityURL = getBoolean("permanentMoveForVanityURL", true);
 
-            dumpErrorsToFiles = getBoolean("dumpErrorsToFiles", true);
+            dumpErrorsToFiles = getBoolean("dumpErrorsToFiles", false);
             ErrorFileDumper.setFileDumpActivated(dumpErrorsToFiles);
             fileDumpMaxRegroupingOfPreviousException = getInt("fileDumpMaxRegroupingOfPreviousException", 500);
             useJstackForThreadDumps = getBoolean("useJstackForThreadDumps", false);

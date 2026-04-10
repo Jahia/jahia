@@ -218,27 +218,32 @@ public class ErrorFileDumperTest {
     }
 
     @Test
-    public void testDumpErrorsToFilesSetting() throws InterruptedException {
-        logger.info("Starting testDumpErrorsToFilesSetting test...");
+    public void testDumpErrorsToFilesSetting() {
+        boolean originalValue = SettingsBean.getInstance().isDumpErrorsToFiles();
+        try {
 
-        StopWatch stopWatch = new StopWatch("testDumpErrorsToFilesSetting");
-        stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
+            logger.info("Starting testDumpErrorsToFilesSetting test...");
 
-        ErrorFileDumper.start();
-        ErrorFileDumper.setFileDumpActivated(false);
+            StopWatch stopWatch = new StopWatch("testDumpErrorsToFilesSetting");
+            stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
 
-        generateExceptions();
+            ErrorFileDumper.start();
+            ErrorFileDumper.setFileDumpActivated(false);
 
-        stopWatch.stop();
-        long totalTime = stopWatch.getTotalTimeMillis();
-        double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
-        logger.info("Milliseconds per exception = " + averageTime);
-        logger.info(stopWatch.prettyPrint());
+            generateExceptions();
 
-        ErrorFileDumper.shutdown(10000L);
+            stopWatch.stop();
+            long totalTime = stopWatch.getTotalTimeMillis();
+            double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
+            logger.info("Milliseconds per exception = " + averageTime);
+            logger.info(stopWatch.prettyPrint());
 
-        SettingsBean.getInstance().setDumpErrorsToFiles(true);
-        Assert.assertFalse("Error dump directory should not exist !", todaysDirectory.exists());
+            ErrorFileDumper.shutdown(10000L);
+
+            Assert.assertFalse("Error dump directory should not exist !", todaysDirectory.exists());
+        } finally {
+            SettingsBean.getInstance().setDumpErrorsToFiles(originalValue); // reset it to its original value
+        }
     }
 
     @Test

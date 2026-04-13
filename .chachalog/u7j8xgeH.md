@@ -3,6 +3,6 @@
 jahia-private: patch
 ---
 
-Hardened access to site users and groups so that only site administrators can manage them (#4864)
+Tightened default permissions on users and groups for editors (both server-level and site-level editors).
 
-New sites include this restriction by default, and existing sites are updated automatically on upgrade.
+Existing sites are updated automatically on upgrade.

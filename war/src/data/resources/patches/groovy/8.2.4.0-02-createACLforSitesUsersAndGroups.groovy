@@ -27,8 +27,16 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
             log.info("Processing site: {}", siteKey)
             boolean changed = false
 
-            // Node types mirror what site.xml defines for new sites
+            // Node types and ACEs mirror what site.xml defines for new sites.
             Map<String, String> folderNodeTypes = ["users": "jnt:usersFolder", "groups": "jnt:groupsFolder"]
+
+            Map<String, String> requiredAces = [
+                "g:site-administrators": "site-administrator",
+                "u:guest"              : "reader",
+                "g:users"              : "reader",
+                "g:privileged"         : "privileged",
+                "g:site-privileged"    : "privileged"
+            ]
 
             folderNodeTypes.each { String folderName, String nodeType ->
                 JCRNodeWrapper folder
@@ -44,8 +52,6 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
 
                 // 1. Break ACL inheritance so site-level roles (editor, translator, …) do not flow
                 //    down into the users/groups subtree.
-                //    setAclInheritanceBreak() creates the j:acl node if absent and is a no-op when
-                //    the break is already in place.
                 if (!folder.getAclInheritanceBreak()) {
                     log.info("  Breaking ACL inheritance on {}", folderPath)
                     folder.setAclInheritanceBreak(true)
@@ -55,15 +61,6 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
                 }
 
                 // 2. Ensure all GRANT ACEs are present, mirroring what site.xml defines for new sites.
-                //    grantRoles() is idempotent: it creates or updates the ACE as needed.
-                //    The ACE node name is derived as GRANT_<principal> with ':' replaced by '_'.
-                Map<String, String> requiredAces = [
-                    "g:site-administrators": "site-administrator",
-                    "u:guest"              : "reader",
-                    "g:users"              : "reader",
-                    "g:site-privileged"    : "privileged"
-                ]
-
                 requiredAces.each { String principal, String role ->
                     String aceName = "GRANT_" + principal.replace(":", "_")
                     boolean aceExists = folder.hasNode("j:acl") && folder.getNode("j:acl").hasNode(aceName)
@@ -94,4 +91,3 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
         return null
     }
 })
-

@@ -638,7 +638,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 }
             }
             JCRSiteNode currentSite = nodes.peek().getResolveSite();
-            if (site == null || !currentSite.getIdentifier().equals(site.getIdentifier())) {
+            if (currentSite != null && (site == null || !currentSite.getIdentifier().equals(site.getIdentifier()))) {
                 dependencies = null;
                 site = currentSite;
                 if (site.hasProperty("j:resolvedDependencies")) {
@@ -657,11 +657,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 }
             }
-            for (ExtendedNodeType type : nodeTypes) {
-                if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getId())) {
-                    String fileName = type.getTemplatePackage().getId();
-                    logger.debug("Missing dependency : " + path + " (" + type.getName() + ") requires " + fileName + getLocation());
-                    if (!missingDependencies.contains(fileName)) {
+            if (dependencies != null) {
+                for (ExtendedNodeType type : nodeTypes) {
+                    if (type.getTemplatePackage() != null && !dependencies.contains(type.getTemplatePackage().getId())) {
+                        String fileName = type.getTemplatePackage().getId();
+                        logger.debug("Missing dependency : {} ({}) requires {}{}", path, type.getName(), fileName, getLocation());
                         missingDependencies.add(fileName);
                     }
                 }
@@ -1130,7 +1130,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     public List<String> getUuids() {
         return new ArrayList<>(uuidsSet);
     }
-    
+
      public Set<String> getUuidsSet() {
         return uuidsSet;
     }

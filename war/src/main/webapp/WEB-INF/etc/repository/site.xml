@@ -10,8 +10,6 @@
     <users jcr:primaryType="jnt:usersFolder">
         <j:acl j:inherit="false"
                jcr:primaryType="jnt:acl">
-            <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
-                           jcr:primaryType="jnt:ace"/>
             <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="reader" j:aceType="GRANT"
                            jcr:primaryType="jnt:ace"/>
             <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="privileged" j:aceType="GRANT"
@@ -38,8 +36,6 @@
         </site-privileged>
         <j:acl j:inherit="false"
                jcr:primaryType="jnt:acl">
-            <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
-                           jcr:primaryType="jnt:ace"/>
             <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="reader" j:aceType="GRANT"
                            jcr:primaryType="jnt:ace"/>
             <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="privileged" j:aceType="GRANT"

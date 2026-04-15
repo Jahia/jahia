@@ -7,7 +7,12 @@
 
     <users jcr:primaryType="jnt:usersFolder"
            j:usersFolderSkeleton="WEB-INF/etc/repository/user.xml,WEB-INF/etc/repository/user-*.xml,modules/**/META-INF/user-skeleton.xml,modules/**/META-INF/user-skeleton-*.xml">
-        <guest jcr:primaryType="jnt:user" jcr:mixinTypes="jmix:systemNode" j:password="" j:external="false"/>
+        <guest jcr:primaryType="jnt:user" jcr:mixinTypes="jmix:systemNode" j:password="" j:external="false">
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
+                              jcr:primaryType="jnt:ace"/>
+            </j:acl>
+        </guest>
     </users>
 
     <groups jcr:primaryType="jnt:groupsFolder">
@@ -26,18 +31,31 @@
     </groups>
     <settings jcr:primaryType="jnt:globalSettings"/>
     <sites jcr:primaryType="jnt:virtualsitesFolder"
-           j:virtualsitesFolderSkeleton="WEB-INF/etc/repository/site.xml,WEB-INF/etc/repository/site-*.xml"/>
+           j:virtualsitesFolderSkeleton="WEB-INF/etc/repository/site.xml,WEB-INF/etc/repository/site-*.xml">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
+                           jcr:primaryType="jnt:ace"/>
+        </j:acl>
+    </sites>
 
     <imports jcr:primaryType="jnt:importDropBox"/>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>
 
-    <mounts jcr:primaryType="jnt:mounts"/>
+    <mounts jcr:primaryType="jnt:mounts">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
+                           jcr:primaryType="jnt:ace"/>
+        </j:acl>
+    </mounts>
 
-    <modules jcr:primaryType="jnt:modules"/>
+    <modules jcr:primaryType="jnt:modules">
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
+                           jcr:primaryType="jnt:ace"/>
+        </j:acl>
+    </modules>
 
     <j:acl jcr:primaryType="jnt:acl">
-        <GRANT_u_guest j:protected="false" j:principal="u:guest" j:roles="reader" j:aceType="GRANT"
-                       jcr:primaryType="jnt:ace"/>
         <GRANT_g_users j:protected="false" j:principal="g:users" j:roles="reader" j:aceType="GRANT"
                        jcr:primaryType="jnt:ace"/>
         <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="privileged" j:aceType="GRANT"

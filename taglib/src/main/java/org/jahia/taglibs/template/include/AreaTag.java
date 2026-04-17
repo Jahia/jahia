@@ -418,7 +418,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
         // Push currentResource in top of stack in case of areaAsSubNode option is set
         if (areaAsSubNode) {
-            lookupStack.add(0, new AbstractMap.SimpleEntry<>(currentResource.getNode(), null));
+            // templateNode doubles as context state: non-null when the area is rendered from a template
+            // (preserving templateNode resolution context), null when rendered from a page (no template context).
+            // Either way, it already carries the correct value for this lookup stack entry.
+            lookupStack.add(0, new AbstractMap.SimpleEntry<>(currentResource.getNode(), templateNode));
         }
         // Last element of the stack is always mainResource (Aka the page)
         lookupStack.add(new AbstractMap.SimpleEntry<>(mainResource.getNode(), null));
@@ -457,6 +460,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 }
             }
         }
+
         if (logger.isDebugEnabled()) {
             String tempNS = (templateNode != null) ? templateNode.serialize() : null;
             String prevNS = (templateNodeMatch != null) ? templateNodeMatch.serialize() : null;

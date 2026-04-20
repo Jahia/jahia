@@ -127,6 +127,18 @@ public class GuestReadAccessTest extends AbstractJUnitTest {
         assertGuestIsDenied("/users", Constants.EDIT_WORKSPACE);
     }
 
+    // ==================== /groups subtree — guest MUST be denied (both WS) ====================
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_global_groups_folder_in_live_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/groups", Constants.LIVE_WORKSPACE);
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_global_groups_folder_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/groups", Constants.EDIT_WORKSPACE);
+    }
+
     // ==================== /settings — guest MUST be denied (both WS) ====================
 
     @Test
@@ -137,6 +149,66 @@ public class GuestReadAccessTest extends AbstractJUnitTest {
     @Test
     public void GIVEN_guest_user_WHEN_reading_settings_node_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
         assertGuestIsDenied("/settings", Constants.EDIT_WORKSPACE);
+    }
+
+    // ==================== /imports — guest MUST be denied (both WS) ====================
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_imports_node_in_live_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/imports", Constants.LIVE_WORKSPACE);
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_imports_node_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/imports", Constants.EDIT_WORKSPACE);
+    }
+
+    // ==================== /tools — guest MUST be denied (both WS) ====================
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_tools_node_in_live_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/tools", Constants.LIVE_WORKSPACE);
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_tools_node_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/tools", Constants.EDIT_WORKSPACE);
+    }
+
+    // ==================== /permissions — guest MUST be denied (both WS) ====================
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_permissions_node_in_live_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/permissions", Constants.LIVE_WORKSPACE);
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_permissions_node_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/permissions", Constants.EDIT_WORKSPACE);
+    }
+
+    // ==================== /roles — guest MUST be denied (both WS) ====================
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_roles_node_in_live_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/roles", Constants.LIVE_WORKSPACE);
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_roles_node_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/roles", Constants.EDIT_WORKSPACE);
+    }
+
+    // ==================== /module-management — guest MUST be denied (both WS) ====================
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_module_management_node_in_live_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/module-management", Constants.LIVE_WORKSPACE);
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_module_management_node_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/module-management", Constants.EDIT_WORKSPACE);
     }
 
     // ==================== Per-site sensitive folders — guest MUST be denied (both WS) ====================
@@ -191,6 +263,16 @@ public class GuestReadAccessTest extends AbstractJUnitTest {
     @Test
     public void GIVEN_guest_user_WHEN_reading_modules_folder_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
         assertGuestIsDenied("/modules", Constants.EDIT_WORKSPACE);
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_mounts_folder_in_live_workspace_THEN_should_be_allowed() throws RepositoryException {
+        assertGuestIsAllowedInLiveWS("/mounts");
+    }
+
+    @Test
+    public void GIVEN_guest_user_WHEN_reading_mounts_folder_in_edit_workspace_THEN_should_be_denied() throws RepositoryException {
+        assertGuestIsDenied("/mounts", Constants.EDIT_WORKSPACE);
     }
 
     @Test

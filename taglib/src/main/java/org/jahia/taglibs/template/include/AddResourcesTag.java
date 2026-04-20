@@ -48,9 +48,11 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,6 +190,27 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 for (JahiaTemplatesPackage pack : packages) {
                     if (pack.resourceExists(relativeResourcePath)) {
                         // we found it
+                        // if pack is assets, warn about deprecation
+                        if ("assets".equals(pack.getId())) {
+                            JahiaTemplatesPackage module  = getModule(renderContext, getCurrentResource());
+                            if (!isSupportedJahiaModule(module)) {
+                                String usingModule = getModuleName(module);
+                                String message = String.format(
+                                        "Resource '%s' from the 'assets' module is being used by module '%s'. " +
+                                                "The 'assets' module is intended for internal Jahia use only. " +
+                                                "Resources may be removed or changed without notice. " +
+                                                "Please copy this resource to your own module to ensure stability.",
+                                        relativeResourcePath,
+                                        usingModule
+                                );
+                                DeprecationUtils.onDeprecatedFeatureUsage(
+                                        relativeResourcePath,
+                                        "8.2.4.0",
+                                        true,
+                                        message
+                                );
+                            }
+                        }
                         String path = pack.getRootFolderPath() + relativeResourcePath;
                         String contextPath = renderContext.getRequest().getContextPath();
                         String pathWithContext = contextPath.isEmpty() ? path : contextPath + path;
@@ -219,6 +242,36 @@ public class AddResourcesTag extends AbstractJahiaTag {
         }
         return true;
     }
+
+    /**
+     * Safe helper to retrieve the module using the resource
+     */
+    private static JahiaTemplatesPackage getModule(RenderContext renderContext, Resource resource) {
+        try {
+            return resource.getScript(renderContext).getView().getModule();
+        } catch (Throwable e) {
+            logger.debug("Unable to determine module for resource {}: {}", resource, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Helper to check if the view belongs to a jahia supported module
+     */
+    private static boolean isSupportedJahiaModule(JahiaTemplatesPackage module) {
+        return module != null && "org.jahia.modules".equals(module.getGroupId());
+    }
+
+    /**
+     * Get the module name that is using the resource
+     */
+    private static String getModuleName(JahiaTemplatesPackage module) {
+        if (module == null) {
+            return "unknown module";
+        }
+        return module.getName() + " (" + module.getGroupId() + ")";
+    }
+
 
     public void setType(String type) {
         this.type = type != null ? type.toLowerCase() : null;

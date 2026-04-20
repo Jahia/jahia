@@ -63,14 +63,15 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -156,11 +157,7 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
         if (url != null) {
             Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", AUTHORIZATION_DEFAULT_FILE);
             try (InputStream input = url.openStream()) {
-                List<String> lines = IOUtils.readLines(input, StandardCharsets.UTF_8);
-                lines.add(0, MANAGED_FILE_HEADER);
-                try (Writer w = new FileWriter(path.toFile())) {
-                    IOUtils.writeLines(lines, null, w);
-                }
+                writeAuthorizationFile(path, IOUtils.toString(input, StandardCharsets.UTF_8));
                 logger.info("Deployed security profile '{}' into {}", profile, path);
             } catch (IOException e) {
                 logger.error("Unable to deploy security profile '{}'", profile, e);
@@ -178,15 +175,34 @@ public class PermissionServiceImpl implements PermissionService, ManagedService 
                 "Security profile is set to '{}': no Jahia-provided security profile is active, the file {} will be emptied. Make sure you have provided authorization rules via other supported configuration mechanisms.",
                 PROFILE_OFF, AUTHORIZATION_DEFAULT_FILE);
         Path path = Paths.get(settingsBean.getJahiaVarDiskPath(), "karaf", "etc", AUTHORIZATION_DEFAULT_FILE);
-        try (Writer w = new FileWriter(path.toFile())) {
-            w.write(MANAGED_FILE_HEADER);
-            w.write("# security.profile=off - No Jahia built-in profile is active.\n");
-            w.write("# Provide your own authorization configuration via other supported Jahia configuration mechanisms.\n");
-            w.write("{}\n"); // required to get a valid empty YAML file
+        String content = "# security.profile=off - No Jahia built-in profile is active.\n"
+                + "# Provide your own authorization configuration via other supported Jahia configuration mechanisms.\n"
+                + "{}\n"; // required to get a valid empty YAML file
+        try {
+            writeAuthorizationFile(path, content);
             logger.info("Emptied security authorization config at {} (profile=off)", path);
         } catch (IOException e) {
             logger.error("Unable to write disabled-profile placeholder to {}", path, e);
         }
+    }
+
+    /**
+     * Writes {@code content} to {@code target} via a temporary file in the same directory,
+     * then atomically replaces the target.
+     * <p>
+     * The {@link #MANAGED_FILE_HEADER} is always prepended.
+     * <p>
+     * The atomic move avoids a race condition where fileinstall could observe the target file
+     * mid-write: writing directly would truncate it first, and if fileinstall reads it before
+     * writing is complete, it would see an empty or incomplete file and fail to parse it.
+     */
+    private void writeAuthorizationFile(Path target, String content) throws IOException {
+        Path tmp = Files.createTempFile(target.getParent(), ".authorization-default-", ".yml.tmp");
+        try (Writer w = Files.newBufferedWriter(tmp)) {
+            w.write(MANAGED_FILE_HEADER);
+            w.write(content);
+        }
+        Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
     }
 
     public void addScopes(Collection<String> scopes, HttpServletRequest request) {

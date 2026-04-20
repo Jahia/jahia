@@ -72,6 +72,7 @@ import java.nio.file.Files;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jahia.bundles.config.ConfigUtil.flatten;
 
@@ -201,7 +202,8 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
             Map<String, Object> newValues = configImpl.getValues().getStructuredMap();
 
             if (!previousValues.equals(newValues)) {
-                try (StringReader input = new StringReader(configImpl.getContent());
+                String leadingComments = extractLeadingComments(previousContent.toString());
+                try (StringReader input = new StringReader(leadingComments + configImpl.getContent());
                      Writer fw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
                     IOUtils.copy(input, fw);
                 }
@@ -234,7 +236,7 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
     private boolean setConfigFromFile(final File f) throws IOException, InvalidSyntaxException{
         final Map<String, String> ht = new HashMap<>();
         try (InputStream in = new BufferedInputStream(new FileInputStream(f))) {
-            Map<String, Object> m = yamlMapper.readValue(in, new TypeReference<Map<String, Object>>() {
+            Map<String, Object> m = yamlMapper.readValue(in, new TypeReference<>() {
             });
             flatten(ht, "", m);
         }
@@ -328,11 +330,20 @@ public class YamlConfigInstaller implements ArtifactInstaller, ConfigurationList
         }
     }
 
+    /**
+     * Extracts the leading block of comment lines (and blank lines) from a YAML file's content.
+     * These comments are preserved when the file is written back after a ConfigAdmin update,
+     * because YAML serialization normally discards them.
+     */
+    private String extractLeadingComments(String content) {
+        String comments = content.lines().takeWhile(line -> line.startsWith("#") || line.isBlank()).collect(Collectors.joining("\n"));
+        return comments.isEmpty() ? "" : comments + "\n";
+    }
+
     private String escapeFilterValue(String s) {
         return s.replaceAll("[(]", "\\\\(").
                 replaceAll("[)]", "\\\\)").
                 replaceAll("[=]", "\\\\=").
                 replaceAll("[\\*]", "\\\\*");
     }
-
 }

@@ -38,6 +38,9 @@ import static org.mockito.Mockito.when;
  */
 public class PermissionServiceImplTest {
 
+    private static final String PROFILE_OFF_CONTENT = "# security.profile=off - No Jahia built-in profile is active.\n"
+            + "# Provide your own authorization configuration via other supported Jahia configuration mechanisms.\n" + "{}\n";
+
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -59,6 +62,8 @@ public class PermissionServiceImplTest {
     private PermissionServiceImpl service;
     private File authorizationDefaultFile;
     private String defaultProfileContent;
+    private String openProfileContent;
+    private String compatProfileContent;
 
     @Before
     public void setUp() throws IOException, java.net.URISyntaxException {
@@ -86,8 +91,10 @@ public class PermissionServiceImplTest {
         when(bundle.getResource("META-INF/configuration-profiles/profile-open.yml")).thenReturn(openProfileUrl);
         when(bundle.getResource("META-INF/configuration-profiles/profile-compat.yml")).thenReturn(compatProfileUrl);
 
-        // Load the raw content of the default profile for full-content comparison in assertions
+        // Load the raw content of each profile for content comparison in assertions
         defaultProfileContent = Files.readString(Paths.get(defaultProfileUrl.toURI()));
+        openProfileContent = Files.readString(Paths.get(openProfileUrl.toURI()));
+        compatProfileContent = Files.readString(Paths.get(compatProfileUrl.toURI()));
 
         // Build service under test
         service = new PermissionServiceImpl();
@@ -108,9 +115,7 @@ public class PermissionServiceImplTest {
         service.updated(new Hashtable<>());
 
         assertTrue("Authorization file should have been created", authorizationDefaultFile.exists());
-        String content = readAuthorizationFile();
-        assertTrue("File should start with the managed-file header", content.startsWith(MANAGED_FILE_HEADER));
-        assertDefaultProfileContent(content, true);
+        assertEquals(MANAGED_FILE_HEADER + defaultProfileContent, readAuthorizationFile());
     }
 
     /**
@@ -122,9 +127,7 @@ public class PermissionServiceImplTest {
         service.updated(createProperties("default"));
 
         assertTrue("Authorization file should have been created", authorizationDefaultFile.exists());
-        String content = readAuthorizationFile();
-        assertTrue("File should start with the managed-file header", content.startsWith(MANAGED_FILE_HEADER));
-        assertDefaultProfileContent(content, true);
+        assertEquals(MANAGED_FILE_HEADER + defaultProfileContent, readAuthorizationFile());
     }
 
     /**
@@ -136,9 +139,19 @@ public class PermissionServiceImplTest {
         service.updated(createProperties("open"));
 
         assertTrue("Authorization file should have been created", authorizationDefaultFile.exists());
-        String content = readAuthorizationFile();
-        assertTrue("File should start with the managed-file header", content.startsWith(MANAGED_FILE_HEADER));
-        assertDefaultProfileContent(content, false);
+        assertEquals(MANAGED_FILE_HEADER + openProfileContent, readAuthorizationFile());
+    }
+
+    /**
+     * When {@code security.profile=compat} is set, the compat profile YAML
+     * must be deployed with the managed-file header prepended.
+     */
+    @Test
+    public void GIVEN_securityProfileCompat_WHEN_updated_THEN_compatProfileIsDeployedWithHeader() throws Exception {
+        service.updated(createProperties("compat"));
+
+        assertTrue("Authorization file should have been created", authorizationDefaultFile.exists());
+        assertEquals(MANAGED_FILE_HEADER + compatProfileContent, readAuthorizationFile());
     }
 
     /**
@@ -154,12 +167,7 @@ public class PermissionServiceImplTest {
         service.updated(createProperties("off"));
 
         assertTrue("Authorization file should still exist after profile=off", authorizationDefaultFile.exists());
-        String content = readAuthorizationFile();
-        assertTrue("File should start with the managed-file header", content.startsWith(MANAGED_FILE_HEADER));
-        assertTrue("File should contain the off-profile comment", content.contains("security.profile=off"));
-        assertTrue("File should contain an empty YAML mapping so the file remains parseable", content.contains("{}"));
-        assertFalse("File must not contain previous authorization rules", content.contains("previous-content"));
-        assertDefaultProfileContent(content, false);
+        assertEquals(MANAGED_FILE_HEADER + PROFILE_OFF_CONTENT, readAuthorizationFile());
     }
 
     /**
@@ -171,9 +179,7 @@ public class PermissionServiceImplTest {
         service.updated(createProperties("nonexistent-profile"));
 
         assertTrue("Authorization file should have been created with fallback profile", authorizationDefaultFile.exists());
-        String content = readAuthorizationFile();
-        assertTrue("File should start with the managed-file header", content.startsWith(MANAGED_FILE_HEADER));
-        assertDefaultProfileContent(content, true);
+        assertEquals(MANAGED_FILE_HEADER + defaultProfileContent, readAuthorizationFile());
     }
 
     /**
@@ -184,9 +190,46 @@ public class PermissionServiceImplTest {
         service.updated(null);
 
         assertTrue("Authorization file should have been created", authorizationDefaultFile.exists());
-        String content = readAuthorizationFile();
-        assertTrue("File should start with the managed-file header", content.startsWith(MANAGED_FILE_HEADER));
-        assertDefaultProfileContent(content, true);
+        assertEquals(MANAGED_FILE_HEADER + defaultProfileContent, readAuthorizationFile());
+    }
+
+    /**
+     * Calling {@code updated()} twice with the same profile must not duplicate the managed-file header.
+     */
+    @Test
+    public void GIVEN_securityProfileDefault_WHEN_updatedTwice_THEN_headerAppearsOnlyOnce() throws Exception {
+        service.updated(createProperties("default"));
+        service.updated(createProperties("default"));
+
+        assertEquals(MANAGED_FILE_HEADER + defaultProfileContent, readAuthorizationFile());
+    }
+
+    /**
+     * When {@code security.profile=off} is set and the authorization file does not yet exist,
+     * the file must be created with the managed-file header and the off-profile placeholder.
+     */
+    @Test
+    public void GIVEN_securityProfileOff_AND_fileDoesNotExist_WHEN_updated_THEN_fileIsCreatedWithHeader() throws Exception {
+        assertFalse("Pre-condition: file should not exist", authorizationDefaultFile.exists());
+
+        service.updated(createProperties("off"));
+
+        assertTrue("Authorization file should have been created", authorizationDefaultFile.exists());
+        assertEquals(MANAGED_FILE_HEADER + PROFILE_OFF_CONTENT, readAuthorizationFile());
+    }
+
+    /**
+     * Switching from a real profile to {@code off} must replace the file content entirely,
+     * leaving no trace of the previous profile's authorization rules.
+     */
+    @Test
+    public void GIVEN_securityProfileDefault_WHEN_switchedToOff_THEN_previousProfileContentIsGone() throws Exception {
+        service.updated(createProperties("default"));
+        assertTrue("Pre-condition: default profile should have been deployed", authorizationDefaultFile.exists());
+
+        service.updated(createProperties("off"));
+
+        assertEquals(MANAGED_FILE_HEADER + PROFILE_OFF_CONTENT, readAuthorizationFile());
     }
 
     // -----------------------------------------------------------------------
@@ -201,23 +244,6 @@ public class PermissionServiceImplTest {
 
     private String readAuthorizationFile() throws IOException {
         return new String(Files.readAllBytes(authorizationDefaultFile.toPath()));
-    }
-
-    /**
-     * Asserts whether the authorization file contains (or does not contain) the full content
-     * of the default built-in security profile ({@code profile-default.yml}).
-     *
-     * @param content         the file content to inspect
-     * @param expectedPresent {@code true} if the default profile rules are expected to be present,
-     *                        {@code false} if they must be absent
-     */
-    private void assertDefaultProfileContent(String content, boolean expectedPresent) {
-
-        if (expectedPresent) {
-            assertTrue("File should contain the full content of profile-default.yml", content.contains(defaultProfileContent));
-        } else {
-            assertFalse("File must NOT contain the content of profile-default.yml", content.contains(defaultProfileContent));
-        }
     }
 
 }

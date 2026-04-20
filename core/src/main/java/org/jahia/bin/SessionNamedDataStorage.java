@@ -45,6 +45,7 @@ package org.jahia.bin;
 /**
  * Storage of named data objects belonging to a single HTTP session.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface SessionNamedDataStorage<T> {
 
     /**

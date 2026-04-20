@@ -77,7 +77,9 @@ import java.util.stream.Collectors;
 
 /**
  * Custom resource factory
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
     private static final Logger logger = LoggerFactory.getLogger(JahiaResourceFactoryImpl.class);
     private static Set<String> allowedNodeTypes;

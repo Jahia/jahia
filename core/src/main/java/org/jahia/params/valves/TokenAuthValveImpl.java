@@ -43,12 +43,11 @@
  package org.jahia.params.valves;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.id.IdentifierGenerator;
-import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.usermanager.JahiaUser;
@@ -61,7 +60,6 @@ import org.jahia.services.usermanager.JahiaUser;
 @Deprecated(since = "8.2.3.0", forRemoval = true)
 public class TokenAuthValveImpl extends BaseAuthValve {
 
-    private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 
     private static Map<String, JahiaUser> map = new ConcurrentHashMap<String, JahiaUser>();
 
@@ -85,7 +83,7 @@ public class TokenAuthValveImpl extends BaseAuthValve {
     }
 
     public static String addToken(JahiaUser user) {
-        String s = idGen.nextIdentifier().toString();
+        String s = UUID.randomUUID().toString();
         map.put(s,user);
         return s;
     }

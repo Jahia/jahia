@@ -50,6 +50,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class MenuItem {
 
     private boolean enabled;

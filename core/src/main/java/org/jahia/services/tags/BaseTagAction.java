@@ -57,6 +57,7 @@ import java.util.Map;
  * Base render action for tagging purpose, tagging service is provided.
  * @author kevan
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 abstract public class BaseTagAction extends Action{
     protected TaggingService taggingService;
 

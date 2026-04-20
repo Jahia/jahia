@@ -42,6 +42,7 @@
  */
 package org.jahia.services.ui;
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface ToolbarWarningsService {
     void addMessage(String message);
 }

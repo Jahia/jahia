@@ -53,7 +53,9 @@ import javax.jcr.RepositoryException;
  * Decorator for the nodes, representing components and component folders.
  *
  * @author Sergiy Shyrkov
+ * @deprecated component is a dead concept since a very long time. todo search occurrences jnt:component and jnt:componentFolder
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JCRComponentNode extends JCRNodeDecorator {
 
     public JCRComponentNode(JCRNodeWrapper node) {

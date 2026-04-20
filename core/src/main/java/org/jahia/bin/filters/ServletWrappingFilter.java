@@ -65,7 +65,9 @@ import com.google.common.collect.Iterators;
  * Inspired by Spring's ServletWrappingController.
  *
  * @author Sergiy Shyrkov
+ * @deprecated only used by Spring 
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ServletWrappingFilter extends AbstractServletFilter implements BeanNameAware {
 
     private class DelegatingServletConfig implements ServletConfig {

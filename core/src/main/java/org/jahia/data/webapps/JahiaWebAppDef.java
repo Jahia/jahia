@@ -73,6 +73,7 @@ import java.util.List;
  * @author Khue ng
  * @version 1.0
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaWebAppDef {
 
     /** The Display name of the web App **/

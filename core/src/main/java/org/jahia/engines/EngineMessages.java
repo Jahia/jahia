@@ -62,6 +62,7 @@ import javax.servlet.jsp.PageContext;
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class EngineMessages {
 
     public static final String GLOBAL_MESSAGE = "org.jahia.engines.global_message";

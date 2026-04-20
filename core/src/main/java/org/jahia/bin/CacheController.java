@@ -47,6 +47,7 @@ import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.utils.DeprecationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,7 @@ import java.io.IOException;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class CacheController extends JahiaMultiActionController {
 
     private static Logger logger = LoggerFactory.getLogger(CacheController.class);
@@ -70,6 +72,9 @@ public class CacheController extends JahiaMultiActionController {
             throws ServletException, IOException {
         try {
             checkUserAuthorized();
+
+            DeprecationUtils.onDeprecatedFeatureUsage("CacheController", "8.2.4.0", true,
+                    "The endpoint /cms/cache/** is deprecated and will be removed in the future.");
 
             String name = getParameter(request, "name");
 

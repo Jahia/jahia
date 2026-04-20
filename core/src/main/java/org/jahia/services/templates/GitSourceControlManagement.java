@@ -55,7 +55,9 @@ import java.util.*;
  * Git based source control management service.
  *
  * @author Thomas Draier
+ * @deprecated Studio code may be moved/removed from Jahia core at any moment. Don't use it
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class GitSourceControlManagement extends SourceControlManagement {
 
 

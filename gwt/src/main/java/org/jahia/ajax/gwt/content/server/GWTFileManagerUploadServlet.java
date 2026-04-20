@@ -82,6 +82,7 @@ import java.util.Map;
  * @author rfelden
  * @version 2 avr. 2008 - 16:51:39
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class GWTFileManagerUploadServlet extends HttpServlet {
 
     private static final int OK = 0;

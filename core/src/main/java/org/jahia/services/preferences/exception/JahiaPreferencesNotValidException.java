@@ -48,6 +48,7 @@ package org.jahia.services.preferences.exception;
  * Date: 19 mars 2008
  * Time: 14:54:06
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaPreferencesNotValidException extends JahiaPreferencesException {
     private static final long serialVersionUID = -8259366479173953531L;
 

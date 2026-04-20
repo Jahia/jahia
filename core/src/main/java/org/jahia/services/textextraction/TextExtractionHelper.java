@@ -59,7 +59,9 @@ import org.slf4j.LoggerFactory;
  * Text extraction utility class for (re-)extracting text on existing document nodes.
  *
  * @author Benjamin Papez
+ * @deprecated only used in the tools module, may be moved to it at some point or removed from core only.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public final class TextExtractionHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(TextExtractionHelper.class);

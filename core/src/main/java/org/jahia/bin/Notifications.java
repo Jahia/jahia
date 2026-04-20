@@ -46,6 +46,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,7 @@ import java.util.Locale;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class Notifications extends JahiaMultiActionController {
 
     private static Logger logger = LoggerFactory.getLogger(Notifications.class);
@@ -79,6 +81,9 @@ public class Notifications extends JahiaMultiActionController {
 
     public void testEmail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        DeprecationUtils.onDeprecatedFeatureUsage("NotificationsController", "8.2.4.0", true,
+                "The endpoint /cms/notification/testEmail is deprecated and will be removed in the future.");
+
         try {
             checkUserAuthorized();
 

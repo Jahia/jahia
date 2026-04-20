@@ -52,6 +52,7 @@ import java.security.Principal;
  * Date: 20 mars 2008
  * Time: 09:53:32
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaPreference<T extends JCRNodeWrapper>  {
     private Principal principal;
     private T node;

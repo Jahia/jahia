@@ -59,6 +59,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public abstract class JahiaObject implements Serializable {
 
     private static final long serialVersionUID = -2624062108412420112L;

@@ -52,6 +52,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 /**
  * JCR utilities.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JcrUtils {
 
     /**

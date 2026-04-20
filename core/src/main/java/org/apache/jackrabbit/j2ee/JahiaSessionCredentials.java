@@ -58,7 +58,9 @@ import javax.servlet.http.HttpServletRequest;
  * Date: 27 déc. 2007
  * Time: 19:30:31
  *
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaSessionCredentials extends BasicCredentialsProvider {
 
     /**

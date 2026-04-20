@@ -42,7 +42,8 @@
  */
 package org.jahia.services.render.webflow;
 
-import org.apache.commons.id.uuid.UUID;
+import java.util.UUID;
+
 import org.springframework.webflow.core.collection.MutableAttributeMap;
 import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.FlowExecutionListenerAdapter;

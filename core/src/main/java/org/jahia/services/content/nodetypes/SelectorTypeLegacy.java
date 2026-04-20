@@ -53,6 +53,7 @@ import java.util.HashMap;
  * Time: 17:06:46
  *
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SelectorTypeLegacy {
     public static final int SMALLTEXT = 1;
     public static final int RICHTEXT = 2;

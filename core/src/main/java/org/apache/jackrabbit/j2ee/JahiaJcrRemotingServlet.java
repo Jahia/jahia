@@ -49,7 +49,9 @@ import org.apache.jackrabbit.server.JahiaBasicCredentialsProvider;
  * Digital Experience Manager specific implementation of the JCR remoting servlet.
  *
  * @author Sergiy Shyrkov
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaJcrRemotingServlet extends JcrRemotingServlet {
 
     private static final long serialVersionUID = 138589398400864325L;

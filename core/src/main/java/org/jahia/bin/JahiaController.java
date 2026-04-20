@@ -58,6 +58,7 @@ import org.springframework.web.servlet.mvc.Controller;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public abstract class JahiaController implements Controller {
 
     /**

@@ -44,6 +44,7 @@ package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.utils.DeprecationUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,16 +53,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Validates the submitted user token.
  *
  * @author toto
+ * @deprecated probably a very old remote JCR client authentication system, not used anymore and not secure, should be removed
+ * (todo: when removed, also clean servlet in web.xml and JahiaHTTPLoginModule.java)
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ValidateTicket extends HttpServlet {
 
     private static final long serialVersionUID = -7524215255135608239L;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        DeprecationUtils.onDeprecatedFeatureUsage("ValidateTicketServlet", "8.2.4.0", true,
+                "The endpoint /validateTicket is deprecated and will be removed in the future.");
+
         String user = req.getParameter("user");
         String pass = req.getParameter("pass");
         if (StringUtils.isNotEmpty(user) && StringUtils.isNotEmpty(pass) && JahiaLoginModule.getToken(user, pass) == null) {

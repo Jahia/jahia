@@ -43,7 +43,6 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.jackrabbit.server.JahiaBasicCredentialsProvider;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.security.AuthenticationOptions;
 import org.jahia.services.security.AuthenticationRequest;
@@ -66,6 +65,8 @@ import java.nio.charset.StandardCharsets;
  * @author toto
  */
 public class HttpBasicAuthValveImpl extends BaseAuthValve {
+
+    private static final String IMPERSONATOR = " impersonator ";
 
     private static final Logger logger = LoggerFactory.getLogger(HttpBasicAuthValveImpl.class);
     private static final AuthenticationOptions AUTH_OPTIONS = AuthenticationOptions.Builder.withDefaults()
@@ -97,7 +98,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                 String cred = new String(decoder.decode(auth.getBytes(StandardCharsets.UTF_8)));
                 int colonInd = cred.indexOf(':');
                 String user = cred.substring(0, colonInd);
-                if (!user.contains(JahiaBasicCredentialsProvider.IMPERSONATOR)) {
+                if (!user.contains(IMPERSONATOR)) {
                     String pass = cred.substring(colonInd + 1);
                     AuthenticationService authenticationService = BundleUtils.getOsgiService(AuthenticationService.class, null);
                     try {

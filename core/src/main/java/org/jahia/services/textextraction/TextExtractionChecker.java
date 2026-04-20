@@ -67,7 +67,9 @@ import org.slf4j.LoggerFactory;
  * Utility class for performing text extraction check and fixing.
  *
  * @author Benjamin Papez
+ * @deprecated only used in the tools module, may be moved to it at some point or removed from core only.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 class TextExtractionChecker {
 
     private static final Logger logger = LoggerFactory

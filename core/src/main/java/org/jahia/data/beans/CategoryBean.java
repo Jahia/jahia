@@ -96,6 +96,7 @@ public class CategoryBean extends AbstractJahiaObjectBean {
      * @return an instance of an AbstractJahiaObjectBean descendant corresponding
      *         to the JahiaObject type and request context
      */
+    @Deprecated(since = "8.2.4.0", forRemoval = true)
     public static AbstractJahiaObjectBean getChildInstance(JahiaObject jahiaObject) {
         return new CategoryBean((Category) jahiaObject);
     }

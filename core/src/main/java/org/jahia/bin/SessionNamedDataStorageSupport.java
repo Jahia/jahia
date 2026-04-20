@@ -54,6 +54,7 @@ import org.springframework.context.ApplicationListener;
  * <p>
  * SessionNamedDataStorage implementors should extend this class in order to have session data cleanup working automatically.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public abstract class SessionNamedDataStorageSupport<T> implements SessionNamedDataStorage<T>, ApplicationListener<JahiaContextLoaderListener.HttpSessionDestroyedEvent> {
 
     // Use a logger dedicated to a specific actual sub-class rather than this abstract one.

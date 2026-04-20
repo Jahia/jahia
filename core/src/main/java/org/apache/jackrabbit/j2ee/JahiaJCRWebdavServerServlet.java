@@ -55,7 +55,9 @@ import java.io.IOException;
  * Date: 27 déc. 2007
  * Time: 18:44:08
  *
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaJCRWebdavServerServlet extends JCRWebdavServerServlet {
 
     private static final long serialVersionUID = -2235958694965528476L;

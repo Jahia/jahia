@@ -59,7 +59,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Source control management central factory class responsible for checking out a remote SCM repository content and instantiating
  * {@link SourceControlManagement} helpers for SCM operations on module's sources.
+ * @deprecated Studio code may be moved/removed from Jahia core at any moment. Don't use it
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SourceControlFactory {
     
     private static final Logger logger = LoggerFactory.getLogger(SourceControlFactory.class);

@@ -52,6 +52,7 @@ import java.util.List;
  *
  * @author Benjamin Papez
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public final class ArrayUtils {
 
     public static <T> T[] join(T[]... arrays) {

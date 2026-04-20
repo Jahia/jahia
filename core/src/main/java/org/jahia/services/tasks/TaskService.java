@@ -62,7 +62,9 @@ import java.util.Set;
  * Task management service.
  *
  * @author Sergiy Shyrkov
+ * @deprecated only usage in task module, consider moving the service in the module directly.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class TaskService {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaskService.class);

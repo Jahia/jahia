@@ -1,4 +1,4 @@
-package org.jahia.tools.bytecode;
+package org.jahia.tools.bytecode.internal;
 
 import net.bytebuddy.build.Plugin;
 import net.bytebuddy.description.annotation.AnnotationDescription;

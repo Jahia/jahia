@@ -51,6 +51,7 @@ import java.util.List;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class PaginatedList<Data> implements Serializable {
 
     private static final long serialVersionUID = 2679599836163823112L;

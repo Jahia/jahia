@@ -66,6 +66,7 @@ import com.google.common.collect.Lists;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class AtmosphereServlet extends org.atmosphere.cpr.AtmosphereServlet {
 
     private static final String DEFAULT_ASYNC_SUPPORT = "org.atmosphere.container.Servlet30CometSupport";

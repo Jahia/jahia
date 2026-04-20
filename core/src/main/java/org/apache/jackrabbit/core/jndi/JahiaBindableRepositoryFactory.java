@@ -57,6 +57,7 @@ import java.util.Map;
  * a reference for a <code>BindableRepository</code> object, will create an
  * instance of the corresponding  <code>BindableRepository</code>.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaBindableRepositoryFactory implements ObjectFactory {
 
     /**

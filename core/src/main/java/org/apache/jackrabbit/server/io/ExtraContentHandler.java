@@ -55,7 +55,9 @@ import org.apache.jackrabbit.webdav.DavResource;
  * Date: 12 juil. 2007
  * Time: 20:38:16
  *
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ExtraContentHandler extends DefaultHandler implements IOHandler {
 
     public ExtraContentHandler(IOManager ioManager) {

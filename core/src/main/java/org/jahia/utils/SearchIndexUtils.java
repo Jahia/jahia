@@ -55,6 +55,7 @@ import org.apache.lucene.store.FSDirectory;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public final class SearchIndexUtils {
 
     /**

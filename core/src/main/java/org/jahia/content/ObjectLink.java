@@ -62,6 +62,7 @@ import java.util.Map;
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ObjectLink implements Serializable {
 
     private static final long serialVersionUID = -300945884777460149L;

@@ -44,8 +44,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jahia.utils.DeprecationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +56,17 @@ import java.util.Map;
  *
  * @author cedric.mailleux@jahia.com
  * @since JAHIA 7.0
+ * @deprecated  not used in any place
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class NamespaceChoiceListInitializer implements ChoiceListInitializer {
     @Override
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param,
                                                      List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
+        DeprecationUtils.onDeprecatedFeatureUsage("NamespaceChoiceListInitializer", "8.2.4.0", true,
+                "'namespace' choice list initializer is deprecated and will be removed in the future");
+
         List<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         for (Map.Entry<String, String> entry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
             String s = entry.getKey() + " (" + entry.getValue() + ")";

@@ -59,6 +59,7 @@ import org.apache.taglibs.standard.tag.common.core.Util;
  * Time: 11:32:03 AM
  * 
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class TextDiffTag extends TagSupport {
 
     private static final long serialVersionUID = 5137407997753630923L;

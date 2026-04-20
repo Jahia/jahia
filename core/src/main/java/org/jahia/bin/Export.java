@@ -58,6 +58,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.WebUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,6 +88,7 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  * Created : 2 avr. 2010
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class Export extends JahiaController implements ServletContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(Export.class);
@@ -123,9 +125,10 @@ public class Export extends JahiaController implements ServletContextAware {
      */
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+        DeprecationUtils.onDeprecatedFeatureUsage("ExportController", "8.2.4.0", true,
+                "The endpoint /cms/export is deprecated and will be removed in the future. " +
+                        "New alternative yet to come, in the meantime the back-end service ImportExportService is available for custom dev");
         try {
-
             checkUserLoggedIn();
 
             Matcher m = getMatcher(request);

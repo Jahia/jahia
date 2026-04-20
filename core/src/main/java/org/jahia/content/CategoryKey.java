@@ -54,6 +54,7 @@ import java.util.HashSet;
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class CategoryKey extends ObjectKey {
 
     private static final long serialVersionUID = 5874862723244322929L;

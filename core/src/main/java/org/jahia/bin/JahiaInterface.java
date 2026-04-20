@@ -49,6 +49,7 @@ package org.jahia.bin;
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface JahiaInterface {
 
     /** Jahia core mode */

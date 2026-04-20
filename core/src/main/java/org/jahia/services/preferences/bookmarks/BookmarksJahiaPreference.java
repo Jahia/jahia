@@ -52,6 +52,7 @@ import javax.jcr.RepositoryException;
  * Date: 15 mai 2008
  * Time: 16:24:45
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class BookmarksJahiaPreference extends JCRNodeDecorator {
     public BookmarksJahiaPreference(JCRNodeWrapper node) {
         super(node);

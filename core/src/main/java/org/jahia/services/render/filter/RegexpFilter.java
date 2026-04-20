@@ -69,6 +69,7 @@ import java.util.regex.Pattern;
  *   </property>
  * </bean>
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class RegexpFilter extends AbstractFilter {
     private Map<Pattern, String> regexp;
     private boolean contentOnly;

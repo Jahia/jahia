@@ -135,6 +135,7 @@ import java.util.*;
  * unquoted_string ::= [A-Za-z0-9:_]+
  * </pre>
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaCndReaderLegacy {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaCndReader.class);
 

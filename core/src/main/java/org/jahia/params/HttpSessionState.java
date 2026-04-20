@@ -58,6 +58,7 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
  * Time: 3:59:01 PM
  *
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class HttpSessionState implements SessionState {
 
     private HttpSession httpSession;

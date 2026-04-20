@@ -117,7 +117,7 @@
                 <entry key="nt:folder" value="org.jahia.services.content.decorator.JCRFileNode"/>
                 <entry key="nt:query" value="org.jahia.services.content.decorator.JCRQueryNode"/>
                 <entry key="jnt:mountPoint" value="org.jahia.services.content.decorator.JCRMountPointNode"/>
-                <entry key="jnt:layout" value="org.jahia.services.content.decorator.JCRLayoutNode"/>
+                <entry key="jnt:layout" value="org.jahia.services.content.decorator.JCRLayoutNode"/> <!-- Deprecated to be removed-->
                 <entry key="nt:version" value="org.jahia.services.content.decorator.JCRVersion"/>
                 <entry key="nt:versionHistory" value="org.jahia.services.content.decorator.JCRVersionHistory"/>
                 <entry key="nt:frozenNode" value="org.jahia.services.content.decorator.JCRFrozenNode"/>
@@ -126,15 +126,13 @@
                 <entry key="jnt:contentReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:contentFolderReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:nodeLink" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
-                <entry key="jnt:simplePreference"
-                       value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
-                <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
+                <entry key="jnt:simplePreference" value="org.jahia.services.preferences.generic.GenericJahiaPreference"/> <!-- Deprecated to be removed-->
+                <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/> <!-- Deprecated to be removed-->
                 <entry key="jnt:user" value="org.jahia.services.content.decorator.JCRUserNode"/>
                 <entry key="jnt:group" value="org.jahia.services.content.decorator.JCRGroupNode"/>
-                <entry key="jnt:component" value="org.jahia.services.content.decorator.JCRComponentNode"/>
-                <entry key="jnt:componentFolder" value="org.jahia.services.content.decorator.JCRComponentNode"/>
-                <entry key="jnt:passwordHistoryEntry"
-                       value="org.jahia.services.content.decorator.JCRPasswordHistoryEntryNode"/>
+                <entry key="jnt:component" value="org.jahia.services.content.decorator.JCRComponentNode"/> <!-- Deprecated to be removed-->
+                <entry key="jnt:componentFolder" value="org.jahia.services.content.decorator.JCRComponentNode"/> <!-- Deprecated to be removed-->
+                <entry key="jnt:passwordHistoryEntry" value="org.jahia.services.content.decorator.JCRPasswordHistoryEntryNode"/>
             </map>
         </property>
         <property name="noValidityCheckTypes">

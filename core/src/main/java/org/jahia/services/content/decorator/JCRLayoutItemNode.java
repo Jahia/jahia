@@ -53,7 +53,9 @@ import javax.jcr.Node;
  * Date: 18 mars 2009
  * Time: 16:39:18
  *
+ * @deprecated layout is a dead concept since a very long time. todo search occurrences jnt:layout when removal
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JCRLayoutItemNode extends JCRNodeDecorator {
 
     public JCRLayoutItemNode(JCRNodeWrapper node) {

@@ -57,6 +57,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6.0.0
  */
+
 public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implements InitializingBean, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(AutoRegisteredBaseAuthValve.class);

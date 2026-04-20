@@ -58,6 +58,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ModuleDelegatingFilterProxy extends DelegatingFilterProxy {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleDelegatingFilterProxy.class);

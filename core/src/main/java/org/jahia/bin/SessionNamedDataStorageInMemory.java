@@ -50,6 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Storage implementation that keeps session data in memory.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SessionNamedDataStorageInMemory<T> extends SessionNamedDataStorageSupport<T> implements SessionNamedDataStorage<T> {
 
     private ConcurrentHashMap<String, ConcurrentHashMap<String, T>> sessionByID = new ConcurrentHashMap<String, ConcurrentHashMap<String, T>>();

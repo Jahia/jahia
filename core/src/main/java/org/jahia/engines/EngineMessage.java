@@ -54,6 +54,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class EngineMessage implements Serializable {
 
     private static final long serialVersionUID = 8836639382833159715L;

@@ -60,7 +60,7 @@ package org.jahia.services.content.files;
  */
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.HttpResponseUtils;

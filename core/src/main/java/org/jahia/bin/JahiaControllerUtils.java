@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public final class JahiaControllerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaControllerUtils.class);

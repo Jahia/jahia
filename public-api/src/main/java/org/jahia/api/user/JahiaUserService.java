@@ -48,7 +48,10 @@ import org.jahia.jaas.JahiaPrincipal;
  * User: toto
  * Date: 12 nov. 2007
  * Time: 12:16:35
+ * @deprecated probably a very old remote JCR client authentication system, not used anymore and not secure, should be removed
+ * (todo: when removed, also clean servlet in web.xml and ValidateTicket.java servlet)
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface JahiaUserService {
 
     boolean checkPassword(String username, String password);

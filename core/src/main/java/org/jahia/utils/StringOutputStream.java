@@ -51,6 +51,7 @@ import java.io.StringWriter;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class StringOutputStream extends OutputStream {
 
     private StringWriter stringWriter = new StringWriter(256);

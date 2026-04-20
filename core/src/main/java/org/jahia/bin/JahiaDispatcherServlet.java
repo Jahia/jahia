@@ -53,7 +53,9 @@ import java.util.List;
 /**
  * Jahia dispatcher servlet
  * Allows additional mappings by modules
+ * @deprecated Spring usage in module is deprecated since 8.2.0.0, naturally Spring MVC handlers from module too
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaDispatcherServlet extends DispatcherServlet {
 
     private static final long serialVersionUID = -4741097601486350141L;

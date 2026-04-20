@@ -57,7 +57,9 @@ import java.util.Map;
 
 /**
  * Base service class for SCM related operations.
+ * @deprecated  may be moved/removed from Jahia core at any moment. In doubt don't use it.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public abstract class SourceControlManagement {
 
     private static final Logger logger = LoggerFactory.getLogger(SourceControlManagement.class);

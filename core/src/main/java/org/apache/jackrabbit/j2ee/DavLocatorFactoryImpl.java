@@ -50,7 +50,9 @@ import org.apache.jackrabbit.webdav.AbstractLocatorFactory;
  * Date: 19 févr. 2008
  * Time: 16:47:37
  *
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DavLocatorFactoryImpl extends AbstractLocatorFactory  {
 
 

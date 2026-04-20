@@ -68,6 +68,7 @@ import java.util.Map;
  * @author Khue ng
  * @version 1.0
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class Web_App_Xml {
 
     /**

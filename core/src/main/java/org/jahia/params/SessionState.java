@@ -50,6 +50,7 @@ import java.util.Iterator;
  * HttpSessionState because we want to be able to use this data out of
  * a servlet context.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface SessionState {
 
     public String getId();

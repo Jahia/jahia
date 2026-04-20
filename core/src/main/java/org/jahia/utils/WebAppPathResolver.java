@@ -55,7 +55,6 @@ import javax.servlet.ServletContext;
  * @author Serge Huber
  * @version 1.0
  */
-
 public class WebAppPathResolver implements PathResolver, ServletContextAware {
 
     ServletContext servletContext = null;

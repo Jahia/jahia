@@ -54,6 +54,7 @@ import javax.jcr.RepositoryException;
  * Time: 10:30:57
  *
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class PageJahiaPreference extends JCRNodeDecorator {
 
     public PageJahiaPreference(JCRNodeWrapper node) throws RepositoryException {

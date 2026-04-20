@@ -71,6 +71,7 @@ import java.util.MissingResourceException;
  * Date: 22/11/11
  * Time: 10:27 AM
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class PublisherSubscriberService {
 
     private transient static Logger logger = LoggerFactory.getLogger(PublisherSubscriberService.class);

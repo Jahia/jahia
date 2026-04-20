@@ -119,7 +119,7 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.6.0</version>
         </dependency>
-        <dependency>
+        <dependency> <!-- todo: Remove in next major Jahia 8.3 or 9 -->
             <groupId>commons-id</groupId>
             <artifactId>commons-id</artifactId>
             <version>0.1-dev</version>
@@ -424,12 +424,12 @@
             <version>${hibernate.version}</version>
         </dependency>
 
-        <dependency>
+        <dependency>  <!-- todo: Remove in next major Jahia 8.3 or 9 -->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.14</version>
         </dependency>
-        <dependency>
+        <dependency>  <!-- todo: Remove in next major Jahia 8.3 or 9 -->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.4.16</version>
@@ -1980,10 +1980,30 @@
                 <configuration>
                     <transformations>
                         <transformation>
-                            <plugin>org.jahia.tools.bytecode.DeprecationTrackerPlugin</plugin>
+                            <plugin>org.jahia.tools.bytecode.internal.DeprecationTrackerPlugin</plugin>
                         </transformation>
                     </transformations>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <configLocation>checkstyle-core-banned-imports.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failOnViolation>true</failOnViolation>
+                    <violationSeverity>error</violationSeverity>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-banned-imports</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

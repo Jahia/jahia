@@ -23,7 +23,7 @@
         <!ELEMENT nodetype (CDATA) >
 ]>
 -->
-
+<!-- Webdav deprecated since 8.2.4.0, todo remove this file and clean associated classes -->
 <config>
     <!--
     Defines the IOManager implementation that is responsible for passing import/export

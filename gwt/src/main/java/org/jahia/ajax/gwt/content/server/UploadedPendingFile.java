@@ -47,6 +47,7 @@ import java.io.InputStream;
 /**
  * A file uploaded and pending further processing.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface UploadedPendingFile {
 
     /**

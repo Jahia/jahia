@@ -42,8 +42,6 @@
  */
 package org.jahia.services.scheduler;
 
-import org.apache.commons.id.IdentifierGenerator;
-import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -56,6 +54,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Base class for Jahia background tasks.
@@ -65,7 +64,6 @@ import java.util.Date;
 public abstract class BackgroundJob implements StatefulJob {
     private final static Logger logger = LoggerFactory.getLogger(BackgroundJob.class);
 
-    public static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 
     //job details constants
     public static final String JOB_CREATED = "created";
@@ -87,7 +85,7 @@ public abstract class BackgroundJob implements StatefulJob {
 
     public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass) {
         // jobdetail is non-volatile,durable,non-recoverable
-        JobDetail jobDetail = new JobDetail(getGroupName(jobClass) + "-" + idGen.nextIdentifier(),
+        JobDetail jobDetail = new JobDetail(getGroupName(jobClass) + "-" + UUID.randomUUID(),
                 getGroupName(jobClass),
                 jobClass,
                 false,

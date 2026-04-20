@@ -63,6 +63,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Serge Huber
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public abstract class ObjectKey implements
     ObjectKeyInterface,
     Serializable, Comparable<ObjectKey> {

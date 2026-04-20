@@ -49,7 +49,9 @@ import java.util.Date;
  * Represents a single task item.
  *
  * @author Sergiy Shyrkov
+ * @deprecated only usage in task module, consider moving the service in the module directly.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class Task implements Serializable {
 
     private static final long serialVersionUID = 2865115744967740455L;

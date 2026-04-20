@@ -43,6 +43,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +87,7 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
  * @since JAHIA 6.5
  * Created : 8 mars 2010
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class Initializers extends JahiaController {
 
     private static final String CONTROLLER_MAPPING = "/initializers";
@@ -102,6 +104,9 @@ public class Initializers extends JahiaController {
     private String defaultWorkspace = LIVE_WORKSPACE;
 
     private void handle(HttpServletRequest request, HttpServletResponse response) throws RepositoryException, IllegalStateException, JSONException, IOException {
+        DeprecationUtils.onDeprecatedFeatureUsage("InitializersController", "8.2.4.0", true,
+                "The endpoint /cms/initializers is deprecated and will be removed in the future.");
+
         String name = getParameter(request, "name");
 
         String[] params = parseParameters(request);

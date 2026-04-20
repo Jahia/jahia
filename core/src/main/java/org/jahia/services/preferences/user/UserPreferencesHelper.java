@@ -62,7 +62,9 @@ import org.jahia.utils.LanguageCodeConverters;
  * Helper class for accessing user preferences.
  *
  * @author Sergiy Shyrkov
+ * @deprecated may be still in used in a couple of places, would easily be replaced by using a less anemic model (moving used code directly in JCRUserNode, for example)
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public final class UserPreferencesHelper {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserPreferencesHelper.class);

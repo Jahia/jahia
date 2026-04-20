@@ -47,6 +47,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.RequestLoadAverage;
 import org.jahia.utils.SessionIdHashingUtils;
 import org.json.JSONException;
@@ -79,6 +80,10 @@ public class ServerStats implements Controller {
     }
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        DeprecationUtils.onDeprecatedFeatureUsage("ServerStatsController", "8.2.1.0", true,
+                "The endpoint /cms/serverStats is deprecated and will be removed in the future. Use Server Availability Module (SAM) instead");
+
         long startTime = System.currentTimeMillis();
         try {
             if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {

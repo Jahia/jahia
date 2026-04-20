@@ -55,6 +55,7 @@ import java.util.Map;
  * Time: 3:53:33 PM
  *
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class BasicSessionState implements SessionState, Serializable {
 
     private static final long serialVersionUID = 6088001336642210422L;

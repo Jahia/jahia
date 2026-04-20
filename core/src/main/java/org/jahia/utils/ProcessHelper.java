@@ -58,6 +58,7 @@ import java.util.Map;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public final class ProcessHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessHelper.class);

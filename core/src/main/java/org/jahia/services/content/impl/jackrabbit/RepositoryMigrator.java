@@ -73,7 +73,9 @@ import org.slf4j.LoggerFactory;
  * A utility tool to automatically migrate an existing Jackrabbit repository from BLOB storage to a DataStore one, if required.
  *
  * @author Sergiy Shyrkov
+ * @deprecated used for one time migrate from Jahia 6.6, todo: also remove scripts under /war/src/data/resources/db/sql/migration/..
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class RepositoryMigrator {
 
     private static final Logger logger = LoggerFactory.getLogger(RepositoryMigrator.class);

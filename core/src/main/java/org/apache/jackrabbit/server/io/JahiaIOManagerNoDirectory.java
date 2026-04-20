@@ -46,7 +46,9 @@ import org.jahia.api.Constants;
 
 /**
  * <code>JahiaIOManager</code>...
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaIOManagerNoDirectory extends IOManagerImpl {
 
     /**

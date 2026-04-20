@@ -84,6 +84,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -290,6 +291,13 @@ public class Functions {
     public static long length(Object obj) throws JspTagException {
         return (obj != null && obj instanceof RangeIterator) ? JCRContentUtils.size((RangeIterator) obj)
                 : org.apache.taglibs.standard.functions.Functions.length(obj);
+    }
+
+    /**
+     * @return a pseudorandom long value between zero (inclusive) and {@link Long#MAX_VALUE}
+     */
+    public static Long nextLongIdentifier() {
+        return ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
     }
 
     public static boolean matches(String pattern, String str) {

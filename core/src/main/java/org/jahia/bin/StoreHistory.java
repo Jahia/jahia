@@ -45,6 +45,7 @@ package org.jahia.bin;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.HistoryTrackerBean;
+import org.jahia.utils.DeprecationUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,6 +71,9 @@ public class StoreHistory extends JahiaController {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
+            DeprecationUtils.onDeprecatedFeatureUsage("StoreHistoryController", "8.2.1.0", true,
+                    "The endpoint /cms/storeHistory is deprecated and will be removed in the future.");
+
             HttpSession session = request.getSession();
             String name = getParameter(request, "h", "historyTracker");
 

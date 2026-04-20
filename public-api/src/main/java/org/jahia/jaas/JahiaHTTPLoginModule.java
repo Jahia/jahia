@@ -54,10 +54,12 @@ import java.net.HttpURLConnection;
 import java.util.logging.Logger;
 
 /**
- * TODO Comment me
  *
  * @author toto
+ * @deprecated probably a very old remote JCR client authentication system, not used anymore and not secure, should be removed
+ * (todo: when removed, also clean servlet in web.xml and ValidateTicket.java servlet)
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaHTTPLoginModule  implements LoginModule {
 
     private static final Logger LOGGER = Logger.getLogger(JahiaHTTPLoginModule.class.getName());

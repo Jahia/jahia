@@ -6,8 +6,8 @@ package org.jahia.tools.bytecode;
  * This service provides two main tracking mechanisms:
  * </p>
  * <ul>
- *   <li><strong>Automatic method tracking:</strong> Invoked automatically by the {@link DeprecationTrackerPlugin}
- *       bytecode instrumentation layer whenever a method annotated with {@link Deprecated} is called at runtime.</li>
+ *   <li><strong>Automatic method tracking:</strong> Invoked automatically by bytecode instrumentation layer
+ *      whenever a method annotated with {@link Deprecated} is called at runtime.</li>
  *   <li><strong>Manual feature tracking:</strong> Explicitly called to track usage of deprecated features,
  *       patterns, or behaviors that are not specific methods.</li>
  * </ul>
@@ -23,8 +23,6 @@ package org.jahia.tools.bytecode;
  *   <li>{@code excludedMethodsRegexes} - Regular expressions to exclude specific methods from tracking</li>
  *   <li>{@code developmentModeOnly} - When enabled, tracking only occurs when {@code operatingMode=development} in jahia.properties</li>
  * </ul>
- *
- * @see DeprecationTrackerPlugin
  */
 public interface DeprecationTrackerService {
 

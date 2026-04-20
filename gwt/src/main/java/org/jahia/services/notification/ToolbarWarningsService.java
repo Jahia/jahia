@@ -57,6 +57,7 @@ import java.util.*;
  * Simple service used to fill potential warnings during startup/execution
  * return them as translated messages.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ToolbarWarningsService implements org.jahia.services.ui.ToolbarWarningsService {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ToolbarWarningsService.class);
 

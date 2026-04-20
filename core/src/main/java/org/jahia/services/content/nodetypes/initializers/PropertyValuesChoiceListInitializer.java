@@ -47,6 +47,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.utils.DeprecationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,9 @@ import java.util.Map;
  *
  * @author Sergiy Shyrkov
  * @since Jahia 6.6.1.0
+ * @deprecated  not used in any place
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class PropertyValuesChoiceListInitializer implements ChoiceListInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyValuesChoiceListInitializer.class);
@@ -73,6 +76,9 @@ public class PropertyValuesChoiceListInitializer implements ChoiceListInitialize
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values,
             Locale locale, Map<String, Object> context) {
+        DeprecationUtils.onDeprecatedFeatureUsage("PropertyValuesChoiceListInitializer", "8.2.4.0", true,
+                "'propertyValues' choice list initializer is deprecated and will be removed in the future");
+
         if (param == null || !param.contains(";")) {
             throw new IllegalArgumentException(
                     "Parameter format is wrong. Expecting 'targetNode;targetProperty' or 'targetNode;targetProperty;valueType'");

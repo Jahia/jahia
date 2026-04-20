@@ -72,7 +72,9 @@ import org.slf4j.LoggerFactory;
  * @see org.apache.jackrabbit.core.persistence.PersistenceCopier
  *
  * @author Sergiy Shyrkov
+ * @deprecated used for one time migrate from Jahia 6.6
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaPersistenceCopier {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaPersistenceCopier.class);

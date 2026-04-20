@@ -77,6 +77,7 @@ import java.awt.image.*;
 * fine Java utilities: http://www.acme.com/java/
 */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class GifEncoder {
 
     private boolean interlace = false;
@@ -589,6 +590,7 @@ public class GifEncoder {
 
     }
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 class GifEncoderHashitem {
 	public int rgb;
 	public int count;

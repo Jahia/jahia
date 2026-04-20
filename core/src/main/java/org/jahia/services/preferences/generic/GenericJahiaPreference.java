@@ -53,6 +53,7 @@ import javax.jcr.RepositoryException;
  * Date: 27 mars 2008
  * Time: 16:30:31
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class GenericJahiaPreference extends JCRNodeDecorator {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(GenericJahiaPreference.class);
 

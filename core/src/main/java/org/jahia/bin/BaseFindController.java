@@ -53,6 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.1.0", forRemoval = true)
 public abstract class BaseFindController extends JahiaController {
 
     public static class PropertyFilter {
@@ -124,6 +126,10 @@ public abstract class BaseFindController extends JahiaController {
             response.sendError(SC_NOT_FOUND);
             return null;
         }
+
+        DeprecationUtils.onDeprecatedFeatureUsage("BaseFindController", "8.2.1.0", true,
+                "The endpoint /cms/findHistory is deprecated and will be removed in the future.");
+
         long startTime = System.currentTimeMillis();
         try {
             if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {

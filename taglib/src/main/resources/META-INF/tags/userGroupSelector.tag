@@ -12,6 +12,6 @@
 <c:set target="${attributes}" property="onSelect" value="${onSelect}"/>
 <c:set target="${attributes}" property="fieldId" value="${fieldId}"/>
 <c:set target="${attributes}" property="singleSelectionMode" value="${not functions:default(multiple, false)}"/>
-<c:set var="elementId" value='<%= "usergroup_" + org.apache.commons.id.IdentifierUtils.nextLongIdentifier() %>'/>
+<c:set var="elementId" value="usergroup_${functions:nextLongIdentifier()}"/>
 <c:set target="${attributes}" property="id" value="${functions:default(attributes.id, elementId)}"/>
 <span ${functions:attributes(attributes)} label="${empty label ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : label}"></span>

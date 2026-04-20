@@ -53,6 +53,7 @@ import org.jahia.services.content.rules.AddedNodeFact;
  * Date: 22/11/11
  * Time: 10:10 AM
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SitePublisherSubscriberRuleService {
     private PublisherSubscriberService publisherSubscriberService;
 

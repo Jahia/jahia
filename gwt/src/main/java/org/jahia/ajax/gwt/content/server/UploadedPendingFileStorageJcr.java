@@ -63,6 +63,7 @@ import java.io.InputStream;
 /**
  * File storage that keeps files in JCR.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSupport<UploadedPendingFile> {
 
     private String jcrFolderName;

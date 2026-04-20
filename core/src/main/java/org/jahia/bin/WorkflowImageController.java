@@ -49,6 +49,7 @@ import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorklowTypeRegistration;
+import org.jahia.utils.DeprecationUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -61,12 +62,16 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Thomas Draier
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class WorkflowImageController implements Controller {
 
     private WorkflowService workflowService;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
+            DeprecationUtils.onDeprecatedFeatureUsage("WorkflowImageController", "8.2.4.0", true,
+                    "The endpoint /cms/wfImage is deprecated and will be removed in the future.");
+
             String wfKey = request.getParameter("workflowKey");
             String basePath = "/" + StringUtils.substringBefore(wfKey, ":").replaceAll("\\.", "/") + "/";
             wfKey = StringUtils.substringAfter(wfKey, ":");

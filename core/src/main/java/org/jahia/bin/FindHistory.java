@@ -55,6 +55,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.HistoryTrackerBean;
+import org.jahia.utils.DeprecationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.render.RenderException;
@@ -106,6 +107,9 @@ public class FindHistory extends BaseFindController {
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
             IOException, RepositoryException {
+        DeprecationUtils.onDeprecatedFeatureUsage("findHistoryController", "8.2.1.0", true,
+                "The endpoint /cms/findHistory is deprecated and will be removed in the future.");
+
         URLResolver urlResolver = urlResolverFactory.createURLResolver(request.getPathInfo(), request.getServerName(), request);
         try {
             if (request.getSession() == null) {

@@ -47,7 +47,10 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-
+/**
+ * @deprecated Not used anymore, use OSGI compliant alternative
+ */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaModuleAwareProcessor implements BeanPostProcessor {
     private JahiaTemplatesPackage module;
 

@@ -47,6 +47,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.utils.DeprecationUtils;
 import org.json.JSONObject;
 
 import javax.jcr.Node;
@@ -55,10 +56,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DefaultDeleteAction extends Action {
 
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+        DeprecationUtils.onDeprecatedFeatureUsage("DefaultDeleteAction", "8.2.4.0", true,
+                "The direct DELETE Http method support on Jahia resources URL (pages, contents) is deprecated and will be removed in the future. " +
+                        "Consider using more recent Http APIs like GraphQL");
+
         JCRNodeWrapper node = session.getNode(urlResolver.getPath());
         String url = null;
 

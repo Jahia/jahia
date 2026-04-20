@@ -51,6 +51,7 @@ import org.jahia.utils.ArrayUtils;
 /**
  * Lexer
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class LexerLegacy {
     public static final char SINGLE_QUOTE = '\'';
     public static final char DOUBLE_QUOTE = '\"';

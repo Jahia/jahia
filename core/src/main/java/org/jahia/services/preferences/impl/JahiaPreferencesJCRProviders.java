@@ -72,6 +72,7 @@ import java.util.Map;
  * Date: 11 mars 2009
  * Time: 12:18:34
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements JahiaPreferencesProvider<T> {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JahiaPreferencesJCRProviders.class);
 

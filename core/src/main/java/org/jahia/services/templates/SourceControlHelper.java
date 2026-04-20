@@ -76,7 +76,9 @@ import java.util.UUID;
  * Utility class for SCM related module operations.
  *
  * @author Sergiy Shyrkov
+ * @deprecated  may be moved/removed from Jahia core at any moment. In doubt don't use it.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SourceControlHelper {
 
     private static class ModuleInfo {

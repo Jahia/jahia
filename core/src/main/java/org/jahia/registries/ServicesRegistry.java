@@ -77,7 +77,9 @@ import java.util.Collection;
  * @author Eric Vassalli
  * @author Khue Nguyen
  * @author Fulco Houkes
+ * @deprecated OSGI service injection should be preferred to consume Jahia core services.
  */
+@Deprecated (since = "8.2.4.0", forRemoval = true)
 public class ServicesRegistry {
 
     private transient static Logger logger = LoggerFactory.getLogger(ServicesRegistry.class);

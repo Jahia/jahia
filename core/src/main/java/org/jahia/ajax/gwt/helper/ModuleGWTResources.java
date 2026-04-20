@@ -44,6 +44,7 @@ package org.jahia.ajax.gwt.helper;
 
 import java.util.List;
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ModuleGWTResources {
 
     private List<String> cssResources;

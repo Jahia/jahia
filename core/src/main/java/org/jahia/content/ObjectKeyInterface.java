@@ -53,6 +53,7 @@
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface ObjectKeyInterface {
 
     static final String KEY_SEPARATOR = "_";

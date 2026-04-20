@@ -51,6 +51,7 @@ import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
+import org.jahia.utils.DeprecationUtils;
 import org.slf4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -66,7 +67,9 @@ import java.util.Map;
  * Performs text and metadata extraction from the submitted document.
  *
  * @author Sergiy Shyrkov
+ * @deprecated only used in tools (todo: consider refactor/remove associated tool before removing controller)
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class TextExtractor extends JahiaController {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractor.class);
@@ -86,6 +89,9 @@ public class TextExtractor extends JahiaController {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
+            DeprecationUtils.onDeprecatedFeatureUsage("TextExtractorController", "8.2.4.0", true,
+                    "The endpoint /cms/text-extract is deprecated and will be removed in the future.");
+
             if (!textExtractionService.isEnabled()) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Text extraction service is not enabled.");
                 return null;

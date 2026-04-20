@@ -57,6 +57,7 @@ import javax.servlet.ServletResponse;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class PassThroughFilter implements Filter {
 
     public static final PassThroughFilter INSTANCE = new PassThroughFilter();

@@ -86,7 +86,9 @@ import org.apache.jackrabbit.webdav.lock.Type;
  * <code>JahiaServerRootCollection</code> represent the WebDAV root resource that does not
  * represent any repository item. A call to getMembers() returns
  * <code>DavResourceIterator</code> containing only one resource where WebDav repositories mapped
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaServerRootCollection extends AbstractResource {
 
     public static final String MAP_POINT = "repository";

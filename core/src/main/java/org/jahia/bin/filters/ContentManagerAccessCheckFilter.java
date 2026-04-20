@@ -85,6 +85,7 @@ import org.springframework.context.ApplicationListener;
  * @author Sergiy Shyrkov
  * @deprecated
  */
+@Deprecated(since = "8.2.0.0", forRemoval = true)
 public class ContentManagerAccessCheckFilter implements Filter,
         ApplicationListener<TemplatePackageRedeployedEvent> {
 

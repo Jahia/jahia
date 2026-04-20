@@ -25,7 +25,7 @@ package org.jahia.test.services.modules;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.jahia.bin.Jahia;
 import org.jahia.test.JahiaTestCase;
 import org.junit.Test;

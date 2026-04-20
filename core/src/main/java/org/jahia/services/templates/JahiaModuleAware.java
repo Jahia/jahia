@@ -44,6 +44,10 @@ package org.jahia.services.templates;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
 
+/**
+ * @deprecated used in Spring context, not OSGI compliant, use OSGI compliant alternative
+ */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface JahiaModuleAware {
 
     void setJahiaModule(JahiaTemplatesPackage module);

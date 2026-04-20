@@ -48,7 +48,9 @@ import java.util.Set;
  * Filter to find files to redo text extractions
  *
  * @author Benjamin Papez
+ * @deprecated only used in the tools module, may be moved to it at some point or removed from core only.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class RepositoryFileFilter {
     String workspace;
     Set<String> mimeTypes;

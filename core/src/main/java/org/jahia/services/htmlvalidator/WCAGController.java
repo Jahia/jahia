@@ -54,6 +54,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.JahiaMultiActionController;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaUnauthorizedException;
+import org.jahia.utils.DeprecationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,9 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  * Performs WAI checking of the supplied HTML text.
  *
  * @author Sergiy Shyrkov
+ * @deprecated only used in tools (todo: consider refactor/remove associated tool before removing controller)
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class WCAGController extends JahiaMultiActionController {
 
     private static Logger log = LoggerFactory.getLogger(WCAGController.class);
@@ -98,6 +101,8 @@ public class WCAGController extends JahiaMultiActionController {
 
     public void validate(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        DeprecationUtils.onDeprecatedFeatureUsage("WCAGController", "8.2.4.0", true,
+                "The endpoint /cms/wcag/** is deprecated and will be removed in the future.");
         try {
             checkUserLoggedIn();
 

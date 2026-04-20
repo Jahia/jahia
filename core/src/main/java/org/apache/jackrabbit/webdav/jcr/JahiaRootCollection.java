@@ -64,7 +64,9 @@ import org.slf4j.LoggerFactory;
  * represent any repository item. A call to getMembers() returns a
  * <code>DavResourceIterator</code> containing only workspace resources
  * resources, thus revealing the names of the accessible JCR workspaces.
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaRootCollection extends JahiaServerRootCollection {
 
     private static Logger log = LoggerFactory.getLogger(JahiaRootCollection.class);

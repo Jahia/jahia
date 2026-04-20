@@ -49,6 +49,7 @@ package org.jahia.services.pagesusers;
  * Time: 12:08:17
  *
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class PageUserProperty {
     private int pageId;
     private String principalKey;

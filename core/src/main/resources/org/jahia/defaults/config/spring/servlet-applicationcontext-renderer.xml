@@ -84,7 +84,7 @@
                 <entry key="/studioframe/**" value-ref="org.jahia.bin.Studio"/>
                 <entry key="/studiovisual/**" value-ref="org.jahia.bin.StudioVisual"/>
                 <entry key="/studiovisualframe/**" value-ref="org.jahia.bin.StudioVisual"/>
-                <entry key="/findHistory/**">
+                <entry key="/findHistory/**"> <!-- deprecated -->
                     <bean class="org.jahia.bin.FindHistory">
                         <property name="urlResolverFactory" ref="urlResolverFactory"/>
                     </bean>
@@ -92,7 +92,7 @@
                 <entry key="/login">
                     <bean name="org.jahia.bin.Login" class="org.jahia.bin.Login"/>
                 </entry>
-                <entry key="/initializers/**">
+                <entry key="/initializers/**"> <!-- deprecated -->
                     <bean name="org.jahia.bin.Initializers" class="org.jahia.bin.Initializers"/>
                 </entry>
                 <entry key="/logout">
@@ -105,7 +105,7 @@
                         <property name="userManagerService" ref="JahiaUserManagerService"/>
                     </bean>
                 </entry>
-                <entry key="/export/**">
+                <entry key="/export/**"> <!-- deprecated -->
                     <bean name="org.jahia.bin.Export" class="org.jahia.bin.Export">
                         <property name="importExportService" ref="ImportExportService"/>
                         <property name="requireAuthenticatedUser" value="true"/>
@@ -113,33 +113,33 @@
                         <property name="downloadExportedXmlAsFile" value="${jahia.export.downloadExportedXmlAsFile:true}"/>
                     </bean>
                 </entry>
-                <entry key="/wcag/**">
+                <entry key="/wcag/**"> <!-- deprecated -->
                     <bean class="org.jahia.services.htmlvalidator.WCAGController"/>
                 </entry>
-                <entry key="/serverStats/**">
+                <entry key="/serverStats/**"> <!-- deprecated -->
                     <bean class="org.jahia.bin.ServerStats">
                         <property name="requestLoadAverage" ref="RequestLoadAverage"/>
                     </bean>
                 </entry>
-                <entry key="/wfImage" value-ref="wfImage"/>
-                <entry key="/storeHistory">
+                <entry key="/wfImage" value-ref="wfImage"/> <!-- deprecated -->
+                <entry key="/storeHistory"> <!-- deprecated -->
                     <bean class="org.jahia.bin.StoreHistory"/>
                 </entry>
-                <entry key="/cache/**">
+                <entry key="/cache/**"> <!-- deprecated -->
                     <bean class="org.jahia.bin.CacheController">
                         <property name="cacheService" ref="JahiaCacheService"/>
                         <property name="requiredPermission" value="adminCache"/>
                     </bean>
                 </entry>
-                <entry key="/convert" value-ref="DocumentConverterController"/>
-                <entry key="/convert/**" value-ref="DocumentConverterController"/>
-                <entry key="/notification/**">
+                <entry key="/convert" value-ref="DocumentConverterController"/> <!-- deprecated -->
+                <entry key="/convert/**" value-ref="DocumentConverterController"/> <!-- deprecated -->
+                <entry key="/notification/**"> <!-- deprecated -->
                     <bean class="org.jahia.bin.Notifications">
                         <property name="mailService" ref="MailService"/>
                         <property name="requiredPermission" value="adminEmailSettings"/>
                     </bean>
                 </entry>
-                <entry key="/text-extract">
+                <entry key="/text-extract"> <!-- deprecated -->
                     <bean class="org.jahia.bin.TextExtractor">
                         <property name="settingsBean" ref="settingsBean"/>
                         <property name="textExtractionService"

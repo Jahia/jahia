@@ -48,7 +48,9 @@ import org.slf4j.helpers.MessageFormatter;
  * Result of the extraction check operation.
  *
  * @author Benjamin Papez
+ * @deprecated only used in the tools module, may be moved to it at some point or removed from core only.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ExtractionCheckStatus {
 
     long checked;

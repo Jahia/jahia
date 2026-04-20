@@ -61,6 +61,7 @@ import org.slf4j.LoggerFactory;
  * @author Sergiy Shyrkov
  * @deprecated
  */
+@Deprecated(since = "8.0.0.0", forRemoval = true)
 public final class RBACUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(RBACUtils.class);

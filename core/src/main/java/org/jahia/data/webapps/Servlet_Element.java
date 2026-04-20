@@ -77,6 +77,7 @@ package org.jahia.data.webapps;
  * @author Khue ng
  * @version 1.0
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class Servlet_Element {
 
    /** The servlet name <servlet-name> **/

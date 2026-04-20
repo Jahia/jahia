@@ -62,7 +62,9 @@ import org.apache.jackrabbit.webdav.DavConstants;
  * supports impersonation.
  *
  * @author Sergiy Shyrkov
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaBasicCredentialsProvider extends BasicCredentialsProvider {
 
     public static final String IMPERSONATOR = " impersonator ";

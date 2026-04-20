@@ -51,6 +51,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.SessionIdHashingUtils;
 import org.json.JSONObject;
@@ -68,6 +69,7 @@ import java.util.*;
  * @since JAHIA 6.5
  * Created : 11 mars 2010
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DefaultPostAction extends Action {
 
     public static final String ACTION_NAME = "default";
@@ -139,6 +141,10 @@ public class DefaultPostAction extends Action {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   final JCRSessionWrapper session, final Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
+        DeprecationUtils.onDeprecatedFeatureUsage("DefaultPostAction", "8.2.4.0", true,
+                "The direct POST Http method support on Jahia resources URL (pages, contents) is deprecated and will be removed in the future. " +
+                        "Consider using more recent Http APIs like GraphQL");
+
         JCRNodeWrapper newNode = null;
         String[] subPaths = Patterns.SLASH.split(urlResolver.getPath());
         String lastPath = subPaths[subPaths.length - 1];

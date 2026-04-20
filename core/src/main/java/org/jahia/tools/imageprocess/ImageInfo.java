@@ -183,6 +183,7 @@ import java.util.List;
  * </ul>
  * @author Marco Schmidt
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class ImageInfo {
       /**
        * Return value of {@link #getFormat()} for JPEG streams.

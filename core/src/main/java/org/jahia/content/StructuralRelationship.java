@@ -51,6 +51,7 @@
  * @version 1.0
  */
 
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class StructuralRelationship {
 
     public static final String METADATA_LINK = "metadata_relationship";

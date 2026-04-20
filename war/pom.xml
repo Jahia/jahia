@@ -793,8 +793,6 @@
                                 <packageExclude>org.codehaus.groovy.ast*</packageExclude>
                                 <packageExclude>org.eclipse*</packageExclude>
                                 <packageExclude>org.hibernate*</packageExclude>
-                                <packageExclude>org.jahia.services.security.shiro</packageExclude>
-                                <packageExclude>org.jahia.services.ui</packageExclude>
                                 <packageExclude>org.springframework.http.converter*</packageExclude>
                                 <packageExclude>org.springframework.web.client*</packageExclude>
                                 <packageExclude>org.springframework.web.servlet.config*</packageExclude>
@@ -818,6 +816,9 @@
                                 <packageExclude>trax</packageExclude>
                                 <!-- private Jahia packages -->
                                 <packageExclude>org.jahia.services.io.adapter</packageExclude>
+                                <packageExclude>org.jahia.services.security.shiro</packageExclude>
+                                <packageExclude>org.jahia.services.ui</packageExclude>
+                                <packageExclude>org.jahia.tools.bytecode.internal</packageExclude>
                             </packageExcludes>
                             <packageVersionOverrides>
                                 <!-- Xalan jar manifest is broken, does not detect proper version -->

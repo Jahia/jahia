@@ -52,6 +52,7 @@ import java.util.HashMap;
  * Date: 11 mars 2009
  * Time: 15:06:47
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaPreferencesQueryHelper {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPreferencesQueryHelper.class);
 

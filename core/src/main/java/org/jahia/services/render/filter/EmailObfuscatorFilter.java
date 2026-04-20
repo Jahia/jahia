@@ -53,6 +53,7 @@ import java.util.regex.Pattern;
  *
  * Based on http://obfuscatortool.sourceforge.net
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class EmailObfuscatorFilter extends AbstractFilter {
 
     // Whitespace rules

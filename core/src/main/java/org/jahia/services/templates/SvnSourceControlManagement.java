@@ -52,7 +52,9 @@ import java.util.*;
 
 /**
  * SVN based source control management service.
+ * @deprecated  may be moved/removed from Jahia core at any moment. In doubt don't use it.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SvnSourceControlManagement extends SourceControlManagement {
 
     /**

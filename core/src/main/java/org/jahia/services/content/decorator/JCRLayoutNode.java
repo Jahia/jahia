@@ -53,7 +53,9 @@ import java.util.ArrayList;
  * User: jahia
  * Date: 18 mars 2009
  * Time: 16:38:46
+ * @deprecated layout is a dead concept since a very long time. todo search occurrences jnt:layout when removal
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JCRLayoutNode extends JCRNodeDecorator {
     public JCRLayoutNode(JCRNodeWrapper node) {
         super(node);

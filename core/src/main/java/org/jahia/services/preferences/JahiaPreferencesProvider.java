@@ -56,6 +56,7 @@ import java.util.Map;
  * Date: 19 mars 2008
  * Time: 11:44:07
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
 
     /**

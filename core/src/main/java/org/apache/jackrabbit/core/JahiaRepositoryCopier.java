@@ -63,7 +63,9 @@ import org.slf4j.LoggerFactory;
  * {@link org.apache.jackrabbit.core.RepositoryCopier}.
  *
  * @author Sergiy Shyrkov
+ * @deprecated used for one time migrate from Jahia 6.6
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaRepositoryCopier {
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaRepositoryCopier.class);

@@ -73,7 +73,10 @@ import org.springframework.core.io.Resource;
  * Spring application context holder.
  *
  * @author Sergiy Shyrkov
+ * @deprecated Spring usage in modules is already deprecated. This class still offers a back door to access Jahia internal Spring beans. But this may be removed in the future.
+ * Prefer OSGI compliant alternatives to access Jahia core services.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener<TemplatePackageRedeployedEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);

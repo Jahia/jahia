@@ -42,8 +42,6 @@
  */
 package org.apache.jackrabbit.core.security;
 
-import org.apache.commons.id.IdentifierGenerator;
-import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.jackrabbit.core.security.authentication.CredentialsCallback;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
@@ -63,10 +61,8 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.security.SecureRandom;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -81,11 +77,10 @@ public class JahiaLoginModule implements LoginModule {
     public static final String GUEST = " guest ";
     public static final String REALM_ATTRIBUTE = "org.jahia.realm";
 
-    private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().sessionIdGenerator();
-    private static Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
+    private static final Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
 
     private Subject subject;
-    private Set<Principal> principals = new HashSet<Principal>();
+    private final Set<Principal> principals = new HashSet<Principal>();
     private CallbackHandler callbackHandler;
 
     @Override
@@ -237,9 +232,14 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     private static String getSystemPass(String user, List<String> deniedPaths) {
-        String p = idGen.nextIdentifier().toString();
-        systemPass.put(p, new Token(user, deniedPaths));
-        return p;
+        // UUID.randomUUID() is usually fine, but for auth/session-like secrets, a dedicated random token is preferable
+        // SecureRandom gives stronger entropy and URL-safe tokens.
+        SecureRandom sr = new SecureRandom();
+        byte[] b = new byte[32]; // 256-bit
+        sr.nextBytes(b);
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(b);
+        systemPass.put(token, new Token(user, deniedPaths));
+        return token;
     }
 
     public static Credentials getSystemCredentials() {

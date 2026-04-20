@@ -58,6 +58,7 @@ import java.util.regex.Matcher;
  * Time: 4:09:38 PM
  *
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaBindableRepository extends BindableRepository {
     private static final long serialVersionUID = -6081646750488342618L;
 

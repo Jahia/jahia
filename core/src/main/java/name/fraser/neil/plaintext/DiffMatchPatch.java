@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
  * Class containing the diff, match and patch methods.
  * Also contains the behaviour settings.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DiffMatchPatch {
 
   // Defaults.

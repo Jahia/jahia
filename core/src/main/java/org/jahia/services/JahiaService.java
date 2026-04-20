@@ -56,7 +56,9 @@ import org.jahia.settings.SettingsBean;
  * @author  Fulco Houkes
  *
  * @version 1.2
+ * @deprecated newly develop services are following OSGI compliant specification.
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public abstract class JahiaService {
 
     protected SettingsBean settingsBean;

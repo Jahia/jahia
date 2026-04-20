@@ -56,6 +56,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.DeprecationUtils;
 import org.jahia.utils.SessionIdHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
- * @deprecated not supported anymore
+ * @deprecated only used in tools (todo: consider refactor/remove associated tool before removing controller)
  */
 @Deprecated(since = "8.2.4.0", forRemoval = true)
 public class DocumentConverter extends JahiaController {
@@ -192,6 +193,9 @@ public class DocumentConverter extends JahiaController {
     }
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        DeprecationUtils.onDeprecatedFeatureUsage("DocumentConverterController", "8.2.4.0", true,
+                "The endpoint /cms/convert is deprecated and will be removed in the future.");
+
         if (requireAuthenticatedUser && isUserGuest()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "The service is available only for authenticated users.");
             return null;

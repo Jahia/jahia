@@ -64,6 +64,7 @@ import java.util.Map;
  * Date: 19 mars 2008
  * Time: 11:39:09
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaPreferencesService extends JahiaService {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPreferencesService.class);
     private CacheService cacheService;

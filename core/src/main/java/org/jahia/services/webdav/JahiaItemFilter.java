@@ -55,7 +55,9 @@ import javax.jcr.nodetype.NodeType;
  * {@link DefaultItemFilter} otherwise.
  *
  * @author Sergiy Shyrkov
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class JahiaItemFilter extends DefaultItemFilter {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaItemFilter.class);
 

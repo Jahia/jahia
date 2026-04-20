@@ -72,7 +72,9 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
  * Helper class for Private App Store related operations.
  *
  * @author Sergiy Shyrkov
+ * @deprecated Studio code may be moved/removed from Jahia core at any moment. Don't use it
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 class ForgeHelper {
 
     private static Logger logger = LoggerFactory.getLogger(ForgeHelper.class);

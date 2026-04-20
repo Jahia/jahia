@@ -70,6 +70,7 @@ import java.util.jar.JarFile;
  *
  * @author Sergiy Shyrkov
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public final class PomUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(PomUtils.class);

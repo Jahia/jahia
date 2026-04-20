@@ -48,6 +48,7 @@ import java.util.List;
 /**
  * @author Xavier Lawrence
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class LanguageCodesComparator implements Comparator<String> {
 
     private List<String> pattern;

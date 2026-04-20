@@ -45,16 +45,14 @@ package org.jahia.services.mail;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.NameValuePair;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -320,14 +318,9 @@ public class MailSettings implements Serializable {
         Map<String, String> options = new HashMap<String, String>();
 
         try {
-            URI parsedUri = new URI(uri);
-            String query = parsedUri.getQuery();
-
-            if (query != null) {
-                List<NameValuePair> params = URLEncodedUtils.parse(query, Charset.forName("UTF-8"));
-                for (NameValuePair param : params) {
-                    options.put(param.getName(), param.getValue());
-                }
+            URIBuilder builder = new URIBuilder(uri);
+            for (NameValuePair param : builder.getQueryParams()) {
+                options.put(param.getName(), param.getValue());
             }
         } catch (URISyntaxException e) {
             logger.error("Invalid uri", e);

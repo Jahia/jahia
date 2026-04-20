@@ -54,8 +54,10 @@ import javax.jcr.RepositoryException;
  * User: toto
  * Date: 14 janv. 2008
  * Time: 17:59:02
- * 
+ *
+ * @deprecated Webdav and JCR remoting servers are deprecated
  */
+@Deprecated(since = "8.2.4.0", forRemoval = true)
 public class SymLinkHandler extends DefaultHandler implements IOHandler {
 
     public SymLinkHandler(IOManager ioManager) {

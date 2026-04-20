@@ -42,7 +42,6 @@
  */
 package org.jahia.osgi;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.apache.felix.utils.version.VersionRange;

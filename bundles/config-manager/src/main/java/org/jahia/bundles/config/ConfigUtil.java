@@ -48,18 +48,51 @@ public class ConfigUtil {
     private ConfigUtil() {
     }
 
-    public static Map<String, String> getMap(Dictionary<String, ?> d) {
+    /**
+     * Converts an OSGi configuration {@link Dictionary} into a flat {@code Map<String, String>}.
+     *
+     * <p>Internal OSGi/Felix keys (those starting with {@code felix.} or {@code service.}) are excluded.</p>
+     *
+     * <p>Multi-value properties (stored as arrays or {@link java.util.Collection}s by the OSGi runtime or
+     * the Felix web console) are expanded into indexed entries using bracket notation, e.g.:
+     * <pre>
+     *   "myProp" = ["a", "b", "c"]  →  "myProp[0]"="a", "myProp[1]"="b", "myProp[2]"="c"
+     * </pre>
+     * This matches the flat representation used by {@link org.jahia.services.modulemanager.util.PropertiesManager}.
+     * </p>
+     *
+     * @param dictionary the OSGi configuration dictionary, may be {@code null}
+     * @return a flat string map of the configuration properties, never {@code null}
+     */
+    public static Map<String, String> getMap(Dictionary<String, ?> dictionary) {
         Map<String, String> m = new HashMap<>();
-        if (d != null) {
-            Enumeration<String> en = d.keys();
+        if (dictionary != null) {
+            Enumeration<String> en = dictionary.keys();
             while (en.hasMoreElements()) {
                 String key = en.nextElement();
                 if (!key.startsWith("felix.") && !key.startsWith("service.")) {
-                    m.put(key, d.get(key).toString());
+                    Object value = dictionary.get(key);
+                    if (value instanceof Object[]) {
+                        putIndexedEntries(m, key, Arrays.asList((Object[]) value));
+                    } else if (value instanceof Collection) {
+                        putIndexedEntries(m, key, (Collection<?>) value);
+                    } else if (value != null) {
+                        m.put(key, value.toString());
+                    }
                 }
             }
         }
         return m;
+    }
+
+    private static void putIndexedEntries(Map<String, String> m, String key, Collection<?> items) {
+        int i = 0;
+        for (Object item : items) {
+            if (item != null) {
+                m.put(key + "[" + i + "]", item.toString());
+            }
+            i++;
+        }
     }
 
     public static void flatten(Map<String, String> builder, String key, Map<String, ?> m) {

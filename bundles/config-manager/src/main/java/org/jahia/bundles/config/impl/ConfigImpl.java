@@ -154,7 +154,7 @@ public class ConfigImpl implements Config {
             YAMLMapper yamlMapper = YAMLMapper.builder().build();
             final Map<String, String> ht = new HashMap<>();
             try (Reader r = new StringReader(content)) {
-                Map<String, Object> m = yamlMapper.readValue(r, new TypeReference<Map<String, Object>>() {
+                Map<String, Object> m = yamlMapper.readValue(r, new TypeReference<>() {
                 });
                 flatten(ht, "", m);
             }

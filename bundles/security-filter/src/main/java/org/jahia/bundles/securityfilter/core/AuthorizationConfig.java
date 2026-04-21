@@ -51,6 +51,7 @@ import org.jahia.bundles.securityfilter.core.constraint.PermissionConstraint;
 import org.jahia.bundles.securityfilter.core.constraint.PrivilegedConstraint;
 import org.jahia.bundles.securityfilter.core.grant.ApiGrant;
 import org.jahia.bundles.securityfilter.core.grant.Grant;
+import org.jahia.bundles.securityfilter.core.grant.GrantBuilder;
 import org.jahia.bundles.securityfilter.core.grant.NodeGrant;
 import org.jahia.services.modulemanager.util.PropertiesList;
 import org.jahia.services.modulemanager.util.PropertiesManager;
@@ -79,15 +80,18 @@ public class AuthorizationConfig implements ManagedServiceFactory {
 
     private final Collection<Function<PropertiesValues, AutoApply>> applyBuilders;
     private final Collection<Function<PropertiesValues, Constraint>> constraintBuilders;
-    private final Collection<Function<PropertiesValues, Grant>> grantBuilders;
-    private Collection<ScopeDefinitionImpl> scopeDefinitions = new ArrayList<>();
+    private final Collection<GrantBuilder> grantBuilders;
+    private final Set<String> knownGrantKeys;
+    private final Collection<ScopeDefinitionImpl> scopeDefinitions = new ArrayList<>();
     private Collection<ScopeDefinitionImpl> aggregatedScopes = new ArrayList<>();
 
     public AuthorizationConfig() {
         // Should be configurable/extendable
         applyBuilders = Arrays.asList(AutoApplyByOrigin::build, AlwaysAutoApply::build);
         constraintBuilders = Arrays.asList(PermissionConstraint::build, PrivilegedConstraint::build);
-        grantBuilders = Arrays.asList(ApiGrant::build, NodeGrant::build);
+        grantBuilders = Arrays.asList(ApiGrant.BUILDER, NodeGrant.BUILDER);
+        // Cache known keys once since grantBuilders is final and never changes
+        knownGrantKeys = grantBuilders.stream().map(GrantBuilder::getKey).collect(Collectors.toSet());
     }
 
     @Override
@@ -171,9 +175,17 @@ public class AuthorizationConfig implements ManagedServiceFactory {
         return aggregatedScopes;
     }
 
+
     private CompoundGrant buildCompoundGrant(PropertiesValues grantValues) {
+        Set<String> unknownKeys = grantValues.getKeys().stream()
+                .filter(k -> !knownGrantKeys.contains(k))
+                .collect(Collectors.toSet());
+        if (!unknownKeys.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Invalid key(s) in grant block: " + unknownKeys + ". Valid keys are: " + knownGrantKeys);
+        }
         Collection<Grant> grants = grantBuilders.stream()
-                .map(builder -> builder.apply(grantValues))
+                .map(builder -> builder.build(grantValues))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         return new CompoundGrant(grants);

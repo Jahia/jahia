@@ -56,12 +56,38 @@ import java.util.stream.Collectors;
  */
 public class ApiGrant implements Grant {
     /**
+     * The top-level configuration key for this grant type.
+     */
+    public static final String KEY = "api";
+
+    /**
      * Set of recognized keys for the {@code api} configuration block.
      */
     public static final Set<String> KNOWN_KEYS = Set.of("include", "exclude");
 
-    private Set<String> apis;
-    private Set<String> excludes;
+    /**
+     * {@link GrantBuilder} for {@link ApiGrant}.
+     * Kept here so that {@code ApiGrant} remains the single owner of its parsing logic.
+     */
+    public static final GrantBuilder BUILDER = new GrantBuilder() {
+        @Override
+        public String getKey() {
+            return KEY;
+        }
+
+        @Override
+        public Grant build(PropertiesValues grantValues) throws IllegalArgumentException {
+            return ApiGrant.build(grantValues);
+        }
+    };
+
+    private final Set<String> apis;
+    private final Set<String> excludes;
+
+    public ApiGrant(Set<String> apis, Set<String> excludes) {
+        this.apis = apis;
+        this.excludes = excludes;
+    }
 
     /**
      * Builds an {@link ApiGrant} from the given grant configuration values.
@@ -80,27 +106,20 @@ public class ApiGrant implements Grant {
      * @throws IllegalArgumentException if the {@code api} block contains keys not in {@link #KNOWN_KEYS}
      */
     public static Grant build(PropertiesValues grantValues) throws IllegalArgumentException {
-        PropertiesValues subValues = grantValues.getValues("api");
+        PropertiesValues subValues = grantValues.getValues(KEY);
 
         if (!subValues.getKeys().isEmpty()) {
-            Set<String> unknownKeys = subValues.getKeys().stream()
-                    .filter(k -> !KNOWN_KEYS.contains(k))
-                    .collect(Collectors.toSet());
+            Set<String> unknownKeys = subValues.getKeys().stream().filter(k -> !KNOWN_KEYS.contains(k)).collect(Collectors.toSet());
             if (!unknownKeys.isEmpty()) {
                 throw new IllegalArgumentException(
-                        "Invalid key(s) in 'api' block: " + unknownKeys + ". Valid keys are: " + KNOWN_KEYS);
+                        "Invalid key(s) in '" + KEY + "' block: " + unknownKeys + ". Valid keys are: " + KNOWN_KEYS);
             }
             return new ApiGrant(ParserHelper.buildSet(subValues, "include"), ParserHelper.buildSet(subValues, "exclude"));
-        } else if (grantValues.getKeys().contains("api")) {
-            return new ApiGrant(ParserHelper.buildSet(grantValues, "api"),Collections.emptySet());
+        } else if (grantValues.getKeys().contains(KEY)) {
+            return new ApiGrant(ParserHelper.buildSet(grantValues, KEY), Collections.emptySet());
         }
 
         return null;
-    }
-
-    public ApiGrant(Set<String> apis, Set<String> excludes) {
-        this.apis = apis;
-        this.excludes = excludes;
     }
 
     @Override

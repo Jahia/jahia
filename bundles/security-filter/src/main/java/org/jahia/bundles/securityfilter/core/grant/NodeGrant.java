@@ -62,19 +62,41 @@ import java.util.stream.Collectors;
  */
 public class NodeGrant implements Grant {
     /**
+     * The top-level configuration key for this grant type.
+     */
+    public static final String KEY = "node";
+
+    /**
      * Set of recognized keys for the {@code node} configuration block.
      */
     public static final Set<String> KNOWN_KEYS = Set.of("nodeType", "excludedNodeType", "pathPattern", "excludedPathPattern", "workspace",
             "withPermission");
 
-    private Set<String> nodeTypes;
-    private Set<String> excludesNodeTypes;
-    private Set<Pattern> pathPatterns;
-    private Set<Pattern> excludedPathPatterns;
-    private Set<String> workspaces;
-    private String withPermission;
+    /**
+     * {@link GrantBuilder} for {@link NodeGrant}.
+     * Kept here so that {@code NodeGrant} remains the single owner of its parsing logic.
+     */
+    public static final GrantBuilder BUILDER = new GrantBuilder() {
+        @Override
+        public String getKey() {
+            return KEY;
+        }
 
-    private NodeGrant(Set<String> nodeTypes, Set<String> excludesNodeTypes, Set<Pattern> pathPatterns, Set<Pattern> excludedPathPatterns, Set<String> workspaces, String withPermission) {
+        @Override
+        public Grant build(PropertiesValues grantValues) throws IllegalArgumentException {
+            return NodeGrant.build(grantValues);
+        }
+    };
+
+    private final Set<String> nodeTypes;
+    private final Set<String> excludesNodeTypes;
+    private final Set<Pattern> pathPatterns;
+    private final Set<Pattern> excludedPathPatterns;
+    private final Set<String> workspaces;
+    private final String withPermission;
+
+    private NodeGrant(Set<String> nodeTypes, Set<String> excludesNodeTypes, Set<Pattern> pathPatterns, Set<Pattern> excludedPathPatterns,
+            Set<String> workspaces, String withPermission) {
         this.nodeTypes = nodeTypes;
         this.excludesNodeTypes = excludesNodeTypes;
         this.pathPatterns = pathPatterns;
@@ -100,29 +122,21 @@ public class NodeGrant implements Grant {
      * @throws IllegalArgumentException if the {@code node} block contains keys not in {@link #KNOWN_KEYS}
      */
     public static Grant build(PropertiesValues grantValues) throws IllegalArgumentException {
-        PropertiesValues nodeValues = grantValues.getValues("node");
+        PropertiesValues nodeValues = grantValues.getValues(KEY);
         if (!nodeValues.getKeys().isEmpty()) {
-            Set<String> unknownKeys = nodeValues.getKeys().stream()
-                    .filter(k -> !KNOWN_KEYS.contains(k))
-                    .collect(Collectors.toSet());
+            Set<String> unknownKeys = nodeValues.getKeys().stream().filter(k -> !KNOWN_KEYS.contains(k)).collect(Collectors.toSet());
             if (!unknownKeys.isEmpty()) {
                 throw new IllegalArgumentException(
-                        "Invalid key(s) in 'node' block: " + unknownKeys + ". Valid keys are: " + KNOWN_KEYS);
+                        "Invalid key(s) in '" + KEY + "' block: " + unknownKeys + ". Valid keys are: " + KNOWN_KEYS);
             }
-            return new NodeGrant(ParserHelper.buildSet(nodeValues, "nodeType"),
-                    ParserHelper.buildSet(nodeValues, "excludedNodeType"),
+            return new NodeGrant(ParserHelper.buildSet(nodeValues, "nodeType"), ParserHelper.buildSet(nodeValues, "excludedNodeType"),
                     ParserHelper.buildSet(nodeValues, "pathPattern").stream().map(Pattern::compile).collect(Collectors.toSet()),
                     ParserHelper.buildSet(nodeValues, "excludedPathPattern").stream().map(Pattern::compile).collect(Collectors.toSet()),
-                    ParserHelper.buildSet(nodeValues, "workspace"),
-                    nodeValues.getProperty("withPermission"));
+                    ParserHelper.buildSet(nodeValues, "workspace"), nodeValues.getProperty("withPermission"));
         }
-        if ("none".equals(grantValues.getProperty("node"))) {
-            return new NodeGrant(Collections.emptySet(),
-                    Collections.emptySet(),
-                    Collections.emptySet(),
-                    Collections.singleton(Pattern.compile(".*")),
-                    Collections.emptySet(),
-                    null);
+        if ("none".equals(grantValues.getProperty(KEY))) {
+            return new NodeGrant(Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
+                    Collections.singleton(Pattern.compile(".*")), Collections.emptySet(), null);
         }
 
         return null;
@@ -161,11 +175,18 @@ public class NodeGrant implements Grant {
 
     @Override
     public String toString() {
-        return (withPermission == null ? "" : String.format(" - permission: [%s]", withPermission)) +
-                (nodeTypes == null || nodeTypes.isEmpty() ? "" : String.format(" - nodeTypes: [%s]", String.join(",", nodeTypes))) +
-                (excludesNodeTypes == null || excludesNodeTypes.isEmpty() ? "" : String.format(" - excludesNodeTypes: [%s]", String.join(",", excludesNodeTypes))) +
-                (pathPatterns == null || pathPatterns.isEmpty() ? "" : String.format(" - pathPatterns: [%s]", pathPatterns.stream().map(Pattern::toString).collect(Collectors.toSet()))) +
-                (excludedPathPatterns == null || excludedPathPatterns.isEmpty() ? "" : String.format(" - excludedPathPatterns: [%s]", excludedPathPatterns.stream().map(Pattern::toString).collect(Collectors.toSet()))) +
-                (workspaces == null || workspaces.isEmpty() ? "" : String.format(" - workspaces: [%s]", String.join(",", workspaces)));
+        return (withPermission == null ? "" : String.format(" - permission: [%s]", withPermission)) + (
+                nodeTypes == null || nodeTypes.isEmpty() ? "" : String.format(" - nodeTypes: [%s]", String.join(",", nodeTypes))) + (
+                excludesNodeTypes == null || excludesNodeTypes.isEmpty() ?
+                        "" :
+                        String.format(" - excludesNodeTypes: [%s]", String.join(",", excludesNodeTypes))) + (
+                pathPatterns == null || pathPatterns.isEmpty() ?
+                        "" :
+                        String.format(" - pathPatterns: [%s]", pathPatterns.stream().map(Pattern::toString).collect(Collectors.toSet())))
+                + (excludedPathPatterns == null || excludedPathPatterns.isEmpty() ?
+                "" :
+                String.format(" - excludedPathPatterns: [%s]",
+                        excludedPathPatterns.stream().map(Pattern::toString).collect(Collectors.toSet()))) + (
+                workspaces == null || workspaces.isEmpty() ? "" : String.format(" - workspaces: [%s]", String.join(",", workspaces)));
     }
 }

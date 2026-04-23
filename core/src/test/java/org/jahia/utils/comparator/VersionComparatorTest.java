@@ -89,6 +89,19 @@ public class VersionComparatorTest {
         assertTrue(VersionComparator.compare(v2, v1) < 0);
     }
 
+    /**
+     * Compare raw Maven version strings directly (bypassing VersionCleaner / OSGi Version),
+     * which is the path used by ModuleVersion.compareTo.
+     */
+    private void testStringGreater(String version1, String version2) {
+        assertTrue(version1 + " should be > " + version2, VersionComparator.compare(version1, version2) > 0);
+        assertTrue(version2 + " should be < " + version1, VersionComparator.compare(version2, version1) < 0);
+    }
+
+    private void testStringEqual(String version1, String version2) {
+        assertEquals(version1 + " should be == " + version2, 0, VersionComparator.compare(version1, version2));
+    }
+
     /* Tests */
 
     @Test
@@ -117,5 +130,37 @@ public class VersionComparatorTest {
         testGreater("2-alpha", "2-alpha-SNAPSHOT", "Test qualifier with snapshot comparison");
         testGreater("1.4-qualifier2-SNAPSHOT", "1.4-qualifier1",
                 "Test next qualifier with snapshot with previous qualifier");
+    }
+
+    /**
+     * Test logical version ordering, which was not always correct in maven-artifact's ComparableVersion implementation.
+     * 
+     * Rows 1-5: SNAPSHOT is always older than the equivalent release (SNAPSHOT &lt; release).
+     *   Row 1 was a regression in maven-artifact 3.9.15 (dot-separated qualifier prefix) fixed by the
+     *   VersionComparator SNAPSHOT workaround.
+     * Row 6-7:  alpha &lt; beta / RC1 &lt; RC2 — wrong in maven-artifact 3.8.x, correct in 3.9.15 (MNG-7644 fix).
+     * Rows 8-9: dot-separator and hyphen-separator are equivalent (== ) — wrong in maven-artifact 3.8.x,
+     *   correct in 3.9.15.
+     */
+    @Test
+    public void testLogicalOrderingCases() {
+        // Row 1: dot-qualified SNAPSHOT — regression in 3.9.15 without workaround
+        testStringGreater("2.0.0.alpha", "2.0.0.alpha-SNAPSHOT");
+        // Row 2: hyphen-qualified SNAPSHOT — correct in both versions
+        testStringGreater("2.0.0-alpha", "2.0.0-alpha-SNAPSHOT");
+        // Row 3: plain SNAPSHOT — correct in both versions
+        testStringGreater("2.0.0", "2.0.0-SNAPSHOT");
+        // Row 4: dot RC SNAPSHOT — correct in both versions
+        testStringGreater("2.0.0.RC1", "2.0.0.RC1-SNAPSHOT");
+        // Row 5: hyphen RC SNAPSHOT — correct in both versions
+        testStringGreater("2.0.0-RC1", "2.0.0-RC1-SNAPSHOT");
+        // Row 6: alpha < beta — wrong in 3.8.x (MNG-7644), fixed in 3.9.15
+        testStringGreater("1.0.0.beta", "1.0.0-alpha");
+        // Row 7: RC1 < RC2 — wrong in 3.8.x (MNG-7644), fixed in 3.9.15
+        testStringGreater("1.0.0-RC2", "1.0.0.RC1");
+        // Row 8: dot vs hyphen separator equivalence — wrong in 3.8.x, fixed in 3.9.15
+        testStringEqual("1.0.0.alpha", "1.0.0-alpha");
+        // Row 9: same for beta
+        testStringEqual("1.0.0-beta", "1.0.0.beta");
     }
 }

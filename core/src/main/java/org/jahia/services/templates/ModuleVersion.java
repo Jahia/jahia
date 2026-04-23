@@ -78,7 +78,19 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
 
     @Override
     public int compareTo(ModuleVersion o) {
-        return VersionComparator.compare(this.versionString, o.versionString);
+        int result = VersionComparator.compare(this.versionString, o.versionString);
+        if (result != 0) {
+            return result;
+        }
+
+        // ModuleVersion is used as a SortedMap key, so compareTo() must only return 0 when equals()
+        // would also return true. VersionComparator intentionally standardizes semantic ordering on top
+        // of Maven ComparableVersion, but Maven can consider different raw syntaxes equivalent, for
+        // example "1.0.0.alpha" == "1.0.0-alpha" or "1.0-SNAPSHOT" == "1.0.0-SNAPSHOT".
+        // In those cases we preserve the shared semantic ordering from VersionComparator and use the
+        // raw version string only as a deterministic tie-break so distinct deployed versions do not
+        // collapse to the same TreeMap key.
+        return this.versionString.compareTo(o.versionString);
     }
 
     @Override

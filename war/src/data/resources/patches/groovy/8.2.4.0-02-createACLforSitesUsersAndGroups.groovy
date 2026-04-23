@@ -32,7 +32,6 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
 
             Map<String, String> requiredAces = [
                 "g:site-administrators": "site-administrator",
-                "u:guest"              : "reader",
                 "g:users"              : "reader",
                 "g:privileged"         : "privileged",
                 "g:site-privileged"    : "privileged"

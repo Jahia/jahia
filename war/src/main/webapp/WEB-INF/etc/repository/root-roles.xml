@@ -30,7 +30,7 @@
                              j:privilegedAccess="true"
                              j:roleGroup="edit-role"
                              jcr:primaryType="jnt:role">
-                <j:translation_en jcr:description="View all engine tabs, is also allowed to grant and revoke roles on content"
+                <j:translation_en jcr:description="View all engine tabs and advanced edit operations such as publication and workflow tasks"
                                   jcr:language="en"
                                   jcr:primaryType="jnt:translation"
                                   jcr:title="Editor in chief"/>

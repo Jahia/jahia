@@ -144,7 +144,7 @@
         <assembly.plugin.version>2.6</assembly.plugin.version>
         <site.plugin.version>3.21.0</site.plugin.version>
         <war.plugin.version>3.5.1</war.plugin.version>
-        <enforcer.plugin.version>1.4.1</enforcer.plugin.version>
+        <enforcer.plugin.version>3.6.2</enforcer.plugin.version>
         <compiler.plugin.version>3.14.1</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
         <source.plugin.version>2.4</source.plugin.version>
@@ -1051,10 +1051,10 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.3.0,)</version>
+                                    <version>[3.6.3,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>[1.8,)</version>
+                                    <version>[1.11,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>

@@ -189,15 +189,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.plugin.version}</version>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-            <plugin>
                 <!--
                     This manifest is reused by war building Jahia framework system export-package.
                     It's here to keep compatibility during 8.2.x life.

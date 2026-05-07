@@ -247,10 +247,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+      - name: Cache local Maven repository
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
-          path: ~/.m2
+          path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: jahia-default-maven-m2-cache
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2
@@ -267,6 +269,33 @@ jobs:
           echo "SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}" >> $GITHUB_ENV
           echo "NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}" >> $GITHUB_ENV
           echo "NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}" >> $GITHUB_ENV
+          echo "SONAR_USER_HOME=${GITHUB_WORKSPACE}/.cache/sonar" >> $GITHUB_ENV
+          echo "SONAR_CACHE_DIR=${GITHUB_WORKSPACE}/.cache/sonar/cache" >> $GITHUB_ENV
+          echo "OWASP_DATA_DIR=${GITHUB_WORKSPACE}/.cache/owasp/dependency-check-data" >> $GITHUB_ENV
+          echo "NVD_DATAFEED_URL=https://dependency-check.github.io/DependencyCheck_Builder/nvd_cache/" >> $GITHUB_ENV
+          echo "CISA_KEV_URL=https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json" >> $GITHUB_ENV
+          if [[ -n "${{ secrets.NVD_APIKEY }}" ]]; then
+            echo "NVD_API_KEY=${{ secrets.NVD_APIKEY }}" >> $GITHUB_ENV
+          fi
+      - name: Cache local Sonar data
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: ${{ github.workspace }}/.cache/sonar/cache
+          key: v1-sonar-cache
+      - name: Generate OWASP cache bucket
+        id: owasp-cache-bucket
+        shell: bash
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          echo "week=$(date -u +%G%V)" >> $GITHUB_OUTPUT
+      - name: Cache local OWASP Dependency-Check data
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          path: ${{ github.workspace }}/.cache/owasp/dependency-check-data
+          key: v1-owasp-dependencies-${{ steps.owasp-cache-bucket.outputs.week }}
+          restore-keys: |
+            v1-owasp-dependencies-
       - name: Analyze pull request with sonar
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash
@@ -274,27 +303,45 @@ jobs:
           mvn -B -U -ntp -s .github/maven.settings.xml sonar:sonar -Dsonar.pullrequest.branch=${{ steps.branch-name.outputs.current_branch }} \
           -Dsonar.pullrequest.key=${{ github.run_id }} \
           -Dsonar.pullrequest.base=${{ env.TARGET_BRANCH }} \
-          -Dsonar.pullrequest.github.repository=${{ github.event.repository.name }}
+          -Dsonar.pullrequest.github.repository=${{ github.event.repository.name }} \
+          -Dsonar.userHome=${SONAR_USER_HOME}
       - name: Sonar analysis
         shell: bash
         if: ${{ github.event_name != 'pull_request' }}
-        env:
-          DEPENDENCY_CHECK_SETTINGS: -DfailOnError=false -DskipProvidedScope=true -DskipTestScope=true -DskipSystemScope=true
-            -DassemblyAnalyzerEnabled=false -Dformats=HTML,JSON -DnvdApiKey=${{ secrets.NVD_APIKEY }}
-            -DossIndexUsername=${{ secrets.OSS_USERNAME }} -DossIndexPassword=${{ secrets.OSS_API_TOKEN }}
-            -DossindexAnalyzerUrl=https://api.guide.sonatype.com -DossindexAnalyzerUseCache=false
-            -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json
-            -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html
-            -DdataDirectory=~/.owasp/dependency-check-data
-            -DsuppressionFiles=.owasp/suppressions.xml,.owasp/custom-suppressions.xml
         run: |
+          DEPENDENCY_CHECK_SETTINGS="-DfailOnError=false -DskipProvidedScope=true -DskipTestScope=true -DskipSystemScope=true \
+            -DassemblyAnalyzerEnabled=false -Dformats=HTML,JSON \
+            -DdataDirectory=${OWASP_DATA_DIR} \
+            -DnvdDatafeedUrl=${NVD_DATAFEED_URL} \
+            -DknownExploitedUrl=${CISA_KEV_URL} \
+            -DsuppressionFiles=.owasp/suppressions.xml,.owasp/custom-suppressions.xml"
+
+          if [[ -n "${NVD_API_KEY:-}" ]]; then
+            DEPENDENCY_CHECK_SETTINGS+=" -DnvdApiKeyEnvironmentVariable=NVD_API_KEY"
+          fi
+
+          OSS_ARGS=""
+          if [[ -n "${{ secrets.OSS_USERNAME }}" && -n "${{ secrets.OSS_API_TOKEN }}" ]]; then
+            OSS_ARGS="-DossIndexUsername=${{ secrets.OSS_USERNAME }} -DossIndexPassword=${{ secrets.OSS_API_TOKEN }} -DossIndexAnalyzerUrl=https://api.guide.sonatype.com -DossIndexAnalyzerUseCache=true"
+          else
+            OSS_ARGS="-DossIndexAnalyzerEnabled=false"
+          fi
+          DEPENDENCY_CHECK_SETTINGS+=" ${OSS_ARGS}"
+
+          SONAR_SCAN_SETTINGS="-Dsonar.userHome=${SONAR_USER_HOME} \
+            -Dsonar.dependencyCheck.jsonReportPath=target/dependency-check-report.json \
+            -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html"
+
           if [[ "${{ steps.branch-name.outputs.current_branch }}" == "master" ]];
           then
             mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
-                $DEPENDENCY_CHECK_SETTINGS
+                $DEPENDENCY_CHECK_SETTINGS \
+                $SONAR_SCAN_SETTINGS
           else
             mvn -B -U -ntp -s .github/maven.settings.xml dependency-check:aggregate sonar:sonar \
-                -Dsonar.branch.name=$CIRCLE_BRANCH $DEPENDENCY_CHECK_SETTINGS
+                -Dsonar.branch.name=$CIRCLE_BRANCH \
+                $DEPENDENCY_CHECK_SETTINGS \
+                $SONAR_SCAN_SETTINGS
           fi
 
   java-checks:

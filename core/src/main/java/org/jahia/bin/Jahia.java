@@ -99,13 +99,12 @@ import java.util.Properties;
  */
 public final class Jahia {
 
-    public static final String YEAR = "2025";
     public static final String CODE_NAME = "Kimchi";
     public static final String PRODUCT_NAME = "Jahia";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";
-    public static final String COPYRIGHT = "&copy; Copyright 2002-" + YEAR + "  <a href=\"https://www.jahia.com\" target=\"newJahia\">"
+    public static final String COPYRIGHT = "&copy; Copyright (since 2002)  <a href=\"https://www.jahia.com\" target=\"newJahia\">"
             + VENDOR_NAME + "</a> -";
-    public static final String COPYRIGHT_TXT = YEAR + " " + VENDOR_NAME;
+    public static final String COPYRIGHT_TXT = VENDOR_NAME;
     private static final Logger logger = LoggerFactory.getLogger(Jahia.class);
 
     private static final Version JAHIA_VERSION;

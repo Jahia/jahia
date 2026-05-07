@@ -432,7 +432,6 @@ public class JahiaContextLoaderListener extends ContextLoaderListener implements
         msg = StringUtils.replace(msg, "@BUILD_DATE@", Jahia.getBuildDate());
         msg = StringUtils.replace(msg, "@VERSION@", versionBuffer.toString());
         msg = StringUtils.replace(msg, "@CODENAME@", codeNameBuffer.toString());
-        msg = StringUtils.replace(msg, "@YEAR@", Jahia.YEAR);
 
         System.out.println(msg);
         System.out.flush();

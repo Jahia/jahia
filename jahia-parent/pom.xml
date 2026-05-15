@@ -194,7 +194,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.1.0</jahia.commons.version>
-        <jahia.plugin.version>6.14.0</jahia.plugin.version>
+        <jahia.plugin.version>6.15.0-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
